@@ -9,7 +9,7 @@ import java.time.LocalDate
 data class Option(val id: String, val label: String)
 
 object Presets {
-    val markets = listOf(Option("stock", "股票"), Option("futures", "期货"), Option("forex", "外汇"), Option("crypto", "数字资产"))
+    val markets = listOf(Option("stock", "股票"), Option("futures", "国内期货"), Option("forex", "外汇"), Option("crypto", "数字资产"))
     val directions = listOf(Option("long", "做多"), Option("short", "做空"))
     val currencies = listOf(Option("CNY", "人民币"), Option("USD", "美元"), Option("USDT", "USDT"))
     val strategies = listOf(Option("trend", "趋势跟随"), Option("breakout", "突破交易"), Option("pullback", "回调入场"), Option("range", "区间交易"))
@@ -43,6 +43,7 @@ data class Trade(
     val mistakes: List<String> = emptyList(),
     val discipline: List<String> = emptyList(),
     val reviewed: Boolean = false,
+    @ColumnInfo(defaultValue = "''") val note: String = "",
     @ColumnInfo(defaultValue = "''") val recordKey: String = java.util.UUID.randomUUID().toString().replace("-", ""),
 )
 

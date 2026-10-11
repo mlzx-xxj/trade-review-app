@@ -16,14 +16,16 @@ import java.time.LocalDate
 
 class BackupException(message: String) : IllegalArgumentException(message)
 
-data class BackupData(val exportedAt: String, val trades: List<Trade>, val dailyReviews: List<DailyReview>) {
+data class BackupData(val exportedAt: String, val trades: List<Trade>, val dailyReviews: List<DailyReview>,
+    val tags: List<ManagedTag> = CatalogSeeds.tags, val instruments: List<Instrument> = CatalogSeeds.instruments,
+    val settings: AppSettings = AppSettings(), val drafts: List<EntryDraft> = emptyList(), val sourceSchemaVersion: Int = 2) {
     val planCount get() = dailyReviews.count { it.planSaved }
     val reviewCount get() = dailyReviews.count { it.reviewSaved }
 }
 
 /** Schema version is the interchange format version, independent of Room's version. */
 object BackupCodec {
-    const val SCHEMA_VERSION = 1
+    const val SCHEMA_VERSION = 2
     const val MAX_BYTES = 16 * 1024 * 1024
     const val MAX_RECORDS = 10_000
     private val gson = GsonBuilder().disableHtmlEscaping().create()
@@ -66,18 +68,30 @@ object BackupCodec {
                 requireBackup(reader.peek() == JsonToken.END_DOCUMENT, "JSON 后有多余内容")
                 value.obj()
             }
-            root.fields("format", "schemaVersion", "exportedAt", "counts", "trades", "dailyReviews", "checksumSha256")
+            val rawVersion = root.integer("schemaVersion")
+            requireBackup(rawVersion in 1..SCHEMA_VERSION.toLong(), "不支持此备份版本")
+            val version = rawVersion.toInt()
+            requireBackup(version in 1..SCHEMA_VERSION, "不支持此备份版本，请使用匹配版本的应用")
+            if (version == 1) root.fields("format", "schemaVersion", "exportedAt", "counts", "trades", "dailyReviews", "checksumSha256")
+            else root.fields("format", "schemaVersion", "exportedAt", "counts", "trades", "dailyReviews", "tags", "instruments", "settings", "drafts", "checksumSha256")
             requireBackup(root.string("format") == "trade-review-backup", "不是交易复盘备份文件")
-            requireBackup(root.integer("schemaVersion") == SCHEMA_VERSION.toLong(), "不支持此备份版本，请使用匹配版本的应用")
-            val data = BackupData(root.string("exportedAt"), root.array("trades").map { parseTrade(it.obj()) },
-                root.array("dailyReviews").map { parseReview(it.obj()) })
+            val data = BackupData(root.string("exportedAt"), root.array("trades").map { parseTrade(it.obj(), version) },
+                root.array("dailyReviews").map { parseReview(it.obj()) },
+                tags = if (version == 1) CatalogSeeds.tags else root.array("tags").map { parseTag(it.obj()) },
+                instruments = if (version == 1) CatalogSeeds.instruments else root.array("instruments").map { parseInstrument(it.obj()) },
+                settings = if (version == 1) AppSettings() else parseSettings(root.get("settings").obj()),
+                drafts = if (version == 1) emptyList() else root.array("drafts").map { parseDraft(it.obj()) }, sourceSchemaVersion = version)
             validate(data)
             val counts = root.getAsJsonObject("counts") ?: throw BackupException("缺少数量校验")
-            counts.fields("trades", "dailyReviews", "plans", "reviews")
+            if (version == 1) counts.fields("trades", "dailyReviews", "plans", "reviews")
+            else {
+                counts.fields("trades", "dailyReviews", "plans", "reviews", "tags", "instruments", "drafts")
+                requireBackup(counts.integer("tags") == data.tags.size.toLong() && counts.integer("instruments") == data.instruments.size.toLong() && counts.integer("drafts") == data.drafts.size.toLong(), "目录或草稿数量不一致")
+            }
             requireBackup(counts.integer("trades") == data.trades.size.toLong() &&
                 counts.integer("dailyReviews") == data.dailyReviews.size.toLong() &&
                 counts.integer("plans") == data.planCount.toLong() && counts.integer("reviews") == data.reviewCount.toLong(), "数量不一致，备份可能不完整")
-            requireBackup(root.string("checksumSha256") == digest(gson.toJson(payload(data))), "完整性校验失败，文件可能损坏或被修改")
+            requireBackup(root.string("checksumSha256") == digest(gson.toJson(payload(data, version))), "完整性校验失败，文件可能损坏或被修改")
             return data
         } catch (error: BackupException) { throw error }
         catch (_: Exception) { throw BackupException("JSON 格式或字段类型不正确，未恢复任何数据") }
@@ -89,6 +103,23 @@ object BackupCodec {
         requireBackup(data.trades.map { it.id }.toSet().size == data.trades.size, "交易编号重复")
         requireBackup(data.trades.map { it.recordKey }.toSet().size == data.trades.size, "交易稳定标识重复")
         requireBackup(data.dailyReviews.map { it.date }.toSet().size == data.dailyReviews.size, "每日日志日期重复")
+        requireBackup(data.tags.size <= MAX_RECORDS && data.instruments.size <= MAX_RECORDS && data.drafts.size <= MAX_RECORDS, "目录或草稿超过上限")
+        requireBackup(data.tags.map { it.kind to it.id }.distinct().size == data.tags.size, "标签 ID 重复")
+        data.tags.forEach { t ->
+            requireBackup(t.kind in TagKind.names && Regex("[A-Za-z0-9_]{1,64}").matches(t.id), "标签类型或 ID 无效")
+            name(t.name); requireBackup(t.sortOrder in 0..100000 && t.lastUsed in 0..4133980799999L, "标签排序或最近时间无效")
+        }
+        CatalogSeeds.tags.forEach { seed -> requireBackup(data.tags.any { it.kind == seed.kind && it.id == seed.id }, "缺少原有稳定标签 ID") }
+        requireBackup(data.instruments.map { it.id }.distinct().size == data.instruments.size, "品种 ID 重复")
+        requireBackup(data.instruments.map { it.market to it.name }.distinct().size == data.instruments.size, "同一市场品种重名")
+        data.instruments.forEach { i ->
+            requireBackup(Regex("[A-Za-z0-9_]{1,64}").matches(i.id), "品种 ID 无效")
+            choice(i.market, Presets.markets); name(i.name); name(i.code)
+            requireBackup(i.sortOrder in 0..100000 && i.lastUsed in 0..4133980799999L, "品种排序或最近时间无效")
+        }
+        requireBackup(data.settings.id == 1 && data.settings.theme in listOf("system", "light", "dark"), "应用设置无效")
+        choice(data.settings.lastMarket, Presets.markets)
+        fun options(kind: String) = data.tags.filter { it.kind == kind }.map { Option(it.id, it.name) }
         data.trades.forEach { trade ->
             requireBackup(trade.id in 1 until Long.MAX_VALUE, "交易编号无效")
             requireBackup(Regex("[0-9a-f]{32}").matches(trade.recordKey), "交易稳定标识无效")
@@ -97,38 +128,57 @@ object BackupCodec {
             requireBackup(trade.symbol.isNotBlank() && trade.symbol.length <= 30 && '\u0000' !in trade.symbol, "品种名称无效")
             requireBackup(Money.parse(trade.netPnl)?.toPlainString() == trade.netPnl, "交易金额无效，需使用规范的两位小数文本")
             requireBackup(trade.positionPercent in 1..100, "交易仓位无效")
+            requireBackup(trade.note.length <= 300 && '\u0000' !in trade.note, "备注无效")
             choice(trade.market, Presets.markets); choice(trade.direction, Presets.directions)
-            choice(trade.currency, Presets.currencies); choice(trade.strategy, Presets.strategies)
-            choice(trade.emotion, Presets.emotions); tags(trade.mistakes, Presets.mistakes)
-            tags(trade.discipline, Presets.discipline)
+            choice(trade.currency, Presets.currencies); choice(trade.strategy, options("strategy"))
+            choice(trade.emotion, options("emotion")); tags(trade.mistakes, options("mistake"))
+            tags(trade.discipline, options("discipline"))
         }
         data.dailyReviews.forEach { review ->
             day(review.date)
             requireBackup(!review.reviewSaved || review.date <= today, "盘后复盘日期不能晚于今天")
             requireBackup(review.maxPosition in 1..100 && review.rating in 1..5, "每日日志仓位或评分无效")
-            choice(review.outlook, Presets.outlooks); choice(review.emotion, Presets.emotions)
-            tags(review.strategies, Presets.strategies); tags(review.preparations, Presets.preparations)
-            tags(review.discipline, Presets.discipline); tags(review.mistakes, Presets.mistakes); tags(review.lessons, Presets.lessons)
+            choice(review.outlook, Presets.outlooks); choice(review.emotion, options("emotion"))
+            tags(review.strategies, options("strategy")); tags(review.preparations, options("preparation"))
+            tags(review.discipline, options("discipline")); tags(review.mistakes, options("mistake")); tags(review.lessons, options("lesson"))
+        }
+        requireBackup(data.drafts.map { it.key }.distinct().size == data.drafts.size, "草稿键重复")
+        data.drafts.forEach { d ->
+            requireBackup(Regex("[0-9a-f]{32}").matches(d.recordKey), "草稿交易标识无效")
+            requireBackup((d.key == "new" && d.tradeId == 0L) || (d.key == d.recordKey && data.trades.any { it.id == d.tradeId && it.recordKey == d.recordKey }), "草稿关联不完整")
+            requireBackup(d.key != "new" || data.trades.none { it.recordKey == d.recordKey }, "新增草稿标识与已保存交易重复")
+            day(d.date); requireBackup(d.date <= today, "草稿日期不能晚于今天")
+            name(d.symbol); requireBackup(d.note.length <= 300 && '\u0000' !in d.note && d.amount.length <= 32 && '\u0000' !in d.amount, "草稿文字无效")
+            requireBackup(d.outcome in listOf("", "gain", "loss", "flat") && d.positionPercent in 1..100, "草稿选项无效")
+            choice(d.market, Presets.markets); choice(d.direction, Presets.directions); choice(d.currency, Presets.currencies)
+            choice(d.strategy, options("strategy")); choice(d.emotion, options("emotion"))
+            tags(d.mistakes, options("mistake")); tags(d.discipline, options("discipline"))
         }
     }
 
     // Fixed field order makes the checksum independent of whitespace or incoming object key order.
-    private fun payload(data: BackupData) = JsonObject().apply {
-        addProperty("format", "trade-review-backup"); addProperty("schemaVersion", SCHEMA_VERSION)
+    private fun payload(data: BackupData, version: Int = SCHEMA_VERSION) = JsonObject().apply {
+        addProperty("format", "trade-review-backup"); addProperty("schemaVersion", version)
         addProperty("exportedAt", data.exportedAt)
         add("counts", JsonObject().apply {
             addProperty("trades", data.trades.size); addProperty("dailyReviews", data.dailyReviews.size)
             addProperty("plans", data.planCount); addProperty("reviews", data.reviewCount)
+            if (version >= 2) { addProperty("tags", data.tags.size); addProperty("instruments", data.instruments.size); addProperty("drafts", data.drafts.size) }
         })
-        add("trades", JsonArray().apply { data.trades.forEach { add(tradeJson(it)) } })
+        add("trades", JsonArray().apply { data.trades.forEach { add(tradeJson(it, version)) } })
         add("dailyReviews", JsonArray().apply { data.dailyReviews.forEach { add(reviewJson(it)) } })
+        if (version >= 2) {
+            add("tags", gson.toJsonTree(data.tags)); add("instruments", gson.toJsonTree(data.instruments))
+            add("settings", gson.toJsonTree(data.settings)); add("drafts", gson.toJsonTree(data.drafts))
+        }
     }
-    private fun tradeJson(t: Trade) = JsonObject().apply {
+    private fun tradeJson(t: Trade, version: Int) = JsonObject().apply {
         addProperty("id", t.id); addProperty("recordKey", t.recordKey); addProperty("date", t.date)
         addProperty("market", t.market); addProperty("symbol", t.symbol); addProperty("direction", t.direction)
         addProperty("currency", t.currency); addProperty("netPnl", t.netPnl); addProperty("positionPercent", t.positionPercent)
         addProperty("strategy", t.strategy); addProperty("emotion", t.emotion)
         add("mistakes", tagJson(t.mistakes)); add("discipline", tagJson(t.discipline)); addProperty("reviewed", t.reviewed)
+        if (version >= 2) addProperty("note", t.note)
     }
     private fun reviewJson(r: DailyReview) = JsonObject().apply {
         addProperty("date", r.date); addProperty("outlook", r.outlook); add("strategies", tagJson(r.strategies))
@@ -137,12 +187,13 @@ object BackupCodec {
         add("lessons", tagJson(r.lessons)); addProperty("rating", r.rating); addProperty("reviewSaved", r.reviewSaved)
     }
     private fun tagJson(values: List<String>) = JsonArray().apply { values.forEach { add(it) } }
-    private fun parseTrade(o: JsonObject): Trade {
-        o.fields("id", "recordKey", "date", "market", "symbol", "direction", "currency", "netPnl", "positionPercent", "strategy", "emotion", "mistakes", "discipline", "reviewed")
+    private fun parseTrade(o: JsonObject, version: Int): Trade {
+        val fields = listOf("id", "recordKey", "date", "market", "symbol", "direction", "currency", "netPnl", "positionPercent", "strategy", "emotion", "mistakes", "discipline", "reviewed")
+        o.fields(*(fields + if (version >= 2) listOf("note") else emptyList()).toTypedArray())
         return Trade(id = o.integer("id"), recordKey = o.string("recordKey"), date = o.integer("date"), market = o.string("market"),
             symbol = o.string("symbol"), direction = o.string("direction"), currency = o.string("currency"), netPnl = o.string("netPnl"),
             positionPercent = o.smallInt("positionPercent"), strategy = o.string("strategy"), emotion = o.string("emotion"),
-            mistakes = o.strings("mistakes"), discipline = o.strings("discipline"), reviewed = o.boolean("reviewed"))
+            mistakes = o.strings("mistakes"), discipline = o.strings("discipline"), reviewed = o.boolean("reviewed"), note = if (version >= 2) o.string("note") else "")
     }
     private fun parseReview(o: JsonObject): DailyReview {
         o.fields("date", "outlook", "strategies", "preparations", "maxPosition", "planSaved", "emotion", "discipline", "mistakes", "lessons", "rating", "reviewSaved")
@@ -150,6 +201,25 @@ object BackupCodec {
             maxPosition = o.smallInt("maxPosition"), planSaved = o.boolean("planSaved"), emotion = o.string("emotion"), discipline = o.strings("discipline"),
             mistakes = o.strings("mistakes"), lessons = o.strings("lessons"), rating = o.smallInt("rating"), reviewSaved = o.boolean("reviewSaved"))
     }
+    private fun parseTag(o: JsonObject): ManagedTag {
+        o.fields("kind", "id", "name", "sortOrder", "favorite", "hidden", "lastUsed")
+        return ManagedTag(o.string("kind"), o.string("id"), o.string("name"), o.smallInt("sortOrder"), o.boolean("favorite"), o.boolean("hidden"), o.integer("lastUsed"))
+    }
+    private fun parseInstrument(o: JsonObject): Instrument {
+        o.fields("id", "market", "name", "code", "sortOrder", "favorite", "lastUsed")
+        return Instrument(o.string("id"), o.string("market"), o.string("name"), o.string("code"), o.smallInt("sortOrder"), o.boolean("favorite"), o.integer("lastUsed"))
+    }
+    private fun parseSettings(o: JsonObject): AppSettings {
+        o.fields("id", "lastMarket", "theme")
+        return AppSettings(o.smallInt("id"), o.string("lastMarket"), o.string("theme"))
+    }
+    private fun parseDraft(o: JsonObject): EntryDraft {
+        o.fields("key", "recordKey", "tradeId", "date", "market", "symbol", "direction", "currency", "amount", "outcome", "positionPercent", "strategy", "emotion", "mistakes", "discipline", "reviewed", "note", "details")
+        return EntryDraft(key = o.string("key"), recordKey = o.string("recordKey"), tradeId = o.integer("tradeId"), date = o.integer("date"), market = o.string("market"), symbol = o.string("symbol"),
+            direction = o.string("direction"), currency = o.string("currency"), amount = o.string("amount"), outcome = o.string("outcome"), positionPercent = o.smallInt("positionPercent"),
+            strategy = o.string("strategy"), emotion = o.string("emotion"), mistakes = o.strings("mistakes"), discipline = o.strings("discipline"), reviewed = o.boolean("reviewed"), note = o.string("note"), details = o.boolean("details"))
+    }
+    private fun name(value: String) = requireBackup(value.isNotBlank() && value.length <= 30 && '\u0000' !in value, "名称或代码无效")
     private fun readNode(r: JsonReader, depth: Int): JsonElement {
         requireBackup(depth <= 8, "JSON 嵌套过深")
         return when (r.peek()) {

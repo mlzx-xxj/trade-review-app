@@ -9,3 +9,9 @@ captures/
 *.aab
 *.jks
 *.keystore
+*.p12
+*.pfx
+__pycache__/
+/private-signing/
+/trade-review-v03/
+*-signing-PRIVATE.tar.gz

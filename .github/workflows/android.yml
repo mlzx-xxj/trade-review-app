@@ -5,6 +5,11 @@ on:
     branches: [main]
   pull_request:
   workflow_dispatch:
+    inputs:
+      signed_apk_blob_sha:
+        description: 'Optional public fixed-signed APK Git blob; payload and signer must match this build and committed pin'
+        required: false
+        type: string
 
 permissions:
   contents: read
@@ -46,16 +51,20 @@ jobs:
       - name: Validate official wrapper
         uses: gradle/actions/wrapper-validation@v4
       - name: Test signature publication guards without private keys
-        run: python3 scripts/tests/test_signing_guard.py
-      - name: Configure existing signing key from Secrets when available
+        run: |
+          python3 scripts/tests/test_signing_guard.py
+          python3 scripts/tests/test_signing_config.py
+          python3 scripts/tests/test_signed_payload.py
+      - name: Configure fixed V0.3 signing key from Secrets when available
         id: signing
         env:
           EXISTING_KEY_BASE64: ${{ secrets.TRADE_REVIEW_KEYSTORE_BASE64 }}
-          EXISTING_STORE_PASSWORD: ${{ secrets.TRADE_REVIEW_KEYSTORE_PASSWORD || 'android' }}
-          EXISTING_KEY_ALIAS: ${{ secrets.TRADE_REVIEW_KEY_ALIAS || 'androiddebugkey' }}
-          EXISTING_KEY_PASSWORD: ${{ secrets.TRADE_REVIEW_KEY_PASSWORD || 'android' }}
+          EXISTING_STORE_PASSWORD: ${{ secrets.TRADE_REVIEW_KEYSTORE_PASSWORD }}
+          EXISTING_KEY_ALIAS: ${{ secrets.TRADE_REVIEW_KEY_ALIAS }}
+          EXISTING_KEY_PASSWORD: ${{ secrets.TRADE_REVIEW_KEY_PASSWORD }}
         run: |
-          if [ -n "$EXISTING_KEY_BASE64" ]; then
+          configured=$(python3 scripts/signing-config-state.py)
+          if [ "$configured" = true ]; then
             umask 077
             key_path="$RUNNER_TEMP/trade-review-existing.keystore"
             printf '%s' "$EXISTING_KEY_BASE64" | base64 --decode > "$key_path"
@@ -68,8 +77,8 @@ jobs:
             printf 'configured=false\n' >> "$GITHUB_OUTPUT"
           fi
       - name: Compile, run JVM tests and Android lint
-        run: ./gradlew --no-daemon --stacktrace :app:assembleDebug :app:assembleDebugAndroidTest :app:testDebugUnitTest :app:lintDebug
-      - name: Verify selected V0.1 signer or label APK as test only
+        run: ./gradlew --no-daemon --no-build-cache --stacktrace :app:assembleDebug :app:assembleDebugAndroidTest :app:testDebugUnitTest :app:lintDebug
+      - name: Verify fixed signer certificate pin or label APK as temporary test
         id: signature
         env:
           TRADE_REVIEW_EXISTING_KEY_CONFIGURED: ${{ steps.signing.outputs.configured }}
@@ -78,11 +87,25 @@ jobs:
       - name: Remove temporary existing key
         if: always()
         run: rm -f "$RUNNER_TEMP/trade-review-existing.keystore"
+      - name: Verify explicitly supplied public fixed-signed APK against this build
+        if: github.event_name == 'workflow_dispatch' && inputs.signed_apk_blob_sha != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SIGNED_APK_BLOB_SHA: ${{ inputs.signed_apk_blob_sha }}
+        run: |
+          [[ "$SIGNED_APK_BLOB_SHA" =~ ^[0-9a-f]{40}$ ]] || exit 1
+          gh api "repos/$GITHUB_REPOSITORY/git/blobs/$SIGNED_APK_BLOB_SHA" > "$RUNNER_TEMP/public-apk-blob.json"
+          python3 scripts/adopt-signed-apk.py \
+            --blob-file "$RUNNER_TEMP/public-apk-blob.json" --blob-sha "$SIGNED_APK_BLOB_SHA" \
+            --compiled-apk app/build/outputs/apk/debug/app-debug.apk \
+            --apksigner "$ANDROID_HOME/build-tools/35.0.0/apksigner" \
+            --expected-cert-file docs/V03-CERTIFICATE-SHA256.txt --output-dir dist \
+            --source-commit "$GITHUB_SHA" --secrets-configured '${{ steps.signing.outputs.configured }}'
       - name: Upload debug APK
         id: apk
         uses: actions/upload-artifact@v4
         with:
-          name: TradeReview-v0.2-${{ github.run_number }}
+          name: TradeReview-v0.3-${{ github.run_number }}
           path: dist/
           if-no-files-found: error
           retention-days: 30
@@ -108,7 +131,7 @@ jobs:
           retention-days: 30
 
   device-tests:
-    name: Room persistence and Compose navigation
+    name: Room migrations, fast entry, catalogs, backups and Compose UI
     runs-on: ubuntu-latest
     needs: build
     timeout-minutes: 30
@@ -158,7 +181,7 @@ jobs:
           emulator-boot-timeout: 300
           emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -no-metrics -partition-size 2048
           disable-animations: true
-          script: ./gradlew --no-daemon --stacktrace :app:connectedDebugAndroidTest
+          script: ./gradlew --no-daemon --no-build-cache --stacktrace :app:connectedDebugAndroidTest
       - name: Upload Android test reports
         if: always()
         uses: actions/upload-artifact@v4
@@ -170,7 +193,7 @@ jobs:
           retention-days: 30
 
   publish:
-    name: Publish verified test APK or matching-signature upgrade APK
+    name: Publish verified V0.3 APK with explicit signing status
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     needs: [build, device-tests]
     runs-on: ubuntu-latest
@@ -180,19 +203,19 @@ jobs:
       - uses: actions/checkout@v5
       - uses: actions/download-artifact@v4
         with:
-          name: TradeReview-v0.2-${{ github.run_number }}
+          name: TradeReview-v0.3-${{ github.run_number }}
           path: dist
       - name: Publish after all verification jobs pass
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          tag="v02-debug-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
-          if [ -f dist/TradeReview-v0.2-upgrade.apk ]; then
-            title="交易复盘 V0.2 · 旧证书一致的 Debug 升级包"
-            notes="Debug 编译、单元测试、Lint、Room 迁移/恢复和 Compose 模拟器测试均通过。已核对所选 V0.1 证书；安装前确认 SIGNING.txt 与已安装版本一致。密钥仅来自 Actions Secrets。"
+          tag="v03-debug-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          if [ -f dist/TradeReview-v0.3-stable.apk ]; then
+            title="交易复盘 V0.3 · 固定签名 Debug 包"
+            notes="Debug 编译、JVM 单元测试、Lint、Room 迁移/事务恢复、快速录入/标签/品种/草稿及 Compose 模拟器测试均通过。固定签名已验证证书 pin，真实签名来源和 Secrets 配置状态见 SIGNING.txt；若 Secrets 尚未配置，仓库所有者仍需完成配置才能自动签署未来更新。后续必须使用相同私钥和更大 versionCode。旧测试版不同签名时需手动卸载。模拟器测试不是手机实测。"
           else
-            title="交易复盘 V0.2 · 仅供新设备测试，不能升级 V0.1"
-            notes="Debug 编译、单元测试、Lint、Room 迁移/恢复和 Compose 模拟器测试均通过。旧 V0.1 私钥未配置：此测试 APK 不能覆盖升级现有 V0.1。请勿为安装此包卸载已有应用，以免删除本地交易。覆盖升级包发布已阻止。"
+            title="交易复盘 V0.3 · 临时签名测试包"
+            notes="Debug 编译、JVM 单元测试、Lint、Room 迁移/事务恢复、快速录入/标签/品种/草稿及 Compose 模拟器测试均通过。固定签名 Secrets 未配置，此包不保证未来长期覆盖升级。按你的授权，可手动卸载旧 V0.1/V0.2 测试版后重新安装；卸载会清空本地数据。V0.3 新数据请定期 JSON 备份。模拟器测试不是手机实测。"
           fi
           printf '%s\n' "$notes" > "$RUNNER_TEMP/release-notes.txt"
           gh release create "$tag" dist/*.apk dist/SHA256SUMS.txt dist/SIGNING.txt --repo "$GITHUB_REPOSITORY" --target "${{ github.event.pull_request.head.sha || github.sha }}" --title "$title" --prerelease --notes-file "$RUNNER_TEMP/release-notes.txt"

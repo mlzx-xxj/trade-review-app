@@ -1,6 +1,7 @@
 package com.tradereview.app.data
 
 import androidx.room.Room
+import com.tradereview.app.data.CatalogSeeds
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import android.content.Context
@@ -15,7 +16,7 @@ class TradeDatabaseTest {
         val context = ApplicationProvider.getApplicationContext<Context>()
         val name = "persistence-test.db"
         context.deleteDatabase(name)
-        fun open() = Room.databaseBuilder(context, TradeDatabase::class.java, name).build()
+        fun open() = Room.databaseBuilder(context, TradeDatabase::class.java, name).addCallback(CatalogSeeds.callback).build()
         var db = open()
         try {
             val original = Trade(netPnl = "123.45", mistakes = listOf("chase", "oversize"), discipline = listOf("respect_stop"))

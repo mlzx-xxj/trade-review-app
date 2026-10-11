@@ -41,7 +41,7 @@ class BackupViewModel(database: TradeDatabase, private val resolver: ContentReso
         _message.value = "JSON 完整备份已保存到你选择的位置"
     }
     fun exportCsv(uri: Uri) = operation("CSV 导出失败，请检查所选位置后重新导出") {
-        write(uri, TradeCsv.encode(repository.export().trades))
+        write(uri, repository.export().let { TradeCsv.encode(it.trades, com.tradereview.app.data.Catalog(it.tags)) })
         _message.value = "交易明细 CSV 已保存（UTF-8 中文）"
     }
     private fun write(uri: Uri, text: String) {

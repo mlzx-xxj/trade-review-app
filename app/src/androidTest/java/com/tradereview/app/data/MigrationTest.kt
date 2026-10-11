@@ -25,8 +25,8 @@ class MigrationTest {
             execSQL("INSERT INTO daily_reviews VALUES(20000,'bullish','trend|breakout','risk',25,1,'anxious','respect_stop','chase','stop|rest',4,1)")
             close()
         }
-        helper.runMigrationsAndValidate(name, 2, true, MIGRATION_1_2).close()
-        fun open() = Room.databaseBuilder(context, TradeDatabase::class.java, name).addMigrations(MIGRATION_1_2).build()
+        helper.runMigrationsAndValidate(name, 3, true, MIGRATION_1_2, MIGRATION_2_3).close()
+        fun open() = Room.databaseBuilder(context, TradeDatabase::class.java, name).addMigrations(MIGRATION_1_2, MIGRATION_2_3).build()
         var db = open()
         try {
             val trade = requireNotNull(db.trades().findTrade(7))
@@ -46,12 +46,33 @@ class MigrationTest {
     }
     @Test fun emptyV1DatabaseMigratesAndAcceptsNewRecords() = runBlocking {
         helper.createDatabase(name, 1).close()
-        helper.runMigrationsAndValidate(name, 2, true, MIGRATION_1_2).close()
-        val db = Room.databaseBuilder(context, TradeDatabase::class.java, name).addMigrations(MIGRATION_1_2).build()
+        helper.runMigrationsAndValidate(name, 3, true, MIGRATION_1_2, MIGRATION_2_3).close()
+        val db = Room.databaseBuilder(context, TradeDatabase::class.java, name).addMigrations(MIGRATION_1_2, MIGRATION_2_3).build()
         try {
             val record = Trade()
             val id = db.trades().insert(record)
             assertEquals(record.copy(id = id), db.trades().findTrade(id))
         } finally { db.close() }
     }
+    @Test fun officialV2ToV3PreservesRecordsSeedsAllStableTagsAndKeepsCustomSymbols() = runBlocking {
+        helper.createDatabase(name, 2).apply {
+            execSQL("INSERT INTO trades VALUES(7,20000,'futures','老品种文字','short','CNY','-123.45',25,'trend','anxious','chase|oversize','respect_stop',1,'0123456789abcdef0123456789abcdef')")
+            execSQL("INSERT INTO daily_reviews VALUES(20000,'bullish','trend','risk',25,1,'anxious','respect_stop','chase','stop',4,1)")
+            close()
+        }
+        helper.runMigrationsAndValidate(name, 3, true, MIGRATION_2_3).close()
+        val db = Room.databaseBuilder(context, TradeDatabase::class.java, name).addMigrations(MIGRATION_1_2, MIGRATION_2_3).build()
+        try {
+            val trade = requireNotNull(db.trades().findTrade(7))
+            assertEquals("老品种文字", trade.symbol); assertEquals("", trade.note)
+            assertEquals("0123456789abcdef0123456789abcdef", trade.recordKey)
+            assertEquals(listOf("chase", "oversize"), trade.mistakes)
+            assertTrue(db.trades().findReview(20000)!!.reviewSaved)
+            assertEquals(CatalogSeeds.tags.map { it.kind to it.id }.toSet(), db.trades().allTags().map { it.kind to it.id }.toSet())
+            assertTrue(db.trades().allInstruments().any { it.name == "老品种文字" })
+            assertEquals(16, db.trades().allInstruments().count { it.market == "futures" })
+            assertEquals(AppSettings(), db.trades().settings()); assertTrue(db.trades().allDrafts().isEmpty())
+        } finally { db.close() }
+    }
+
 }

@@ -15,7 +15,7 @@ class BackupRepositoryTest {
     private lateinit var db: TradeDatabase
     private lateinit var repository: BackupRepository
     @Before fun open() {
-        db = Room.inMemoryDatabaseBuilder(ApplicationProvider.getApplicationContext<Context>(), TradeDatabase::class.java).build()
+        db = Room.inMemoryDatabaseBuilder(ApplicationProvider.getApplicationContext<Context>(), TradeDatabase::class.java).addCallback(CatalogSeeds.callback).build()
         repository = BackupRepository(db)
     }
     @After fun close() { db.close() }
@@ -25,7 +25,7 @@ class BackupRepositoryTest {
         db.trades().saveReview(DailyReview(date = 20000, planSaved = true, reviewSaved = true, strategies = listOf("trend"), lessons = listOf("stop")))
         return trade.copy(id = id)
     }
-    private suspend fun state() = DatabaseSnapshot(db.trades().allTrades(), db.trades().allReviews())
+    private suspend fun state() = DatabaseSnapshot(db.trades().allTrades(), db.trades().allReviews(), db.trades().allTags(), db.trades().allInstruments(), db.trades().settings() ?: AppSettings(), db.trades().allDrafts())
 
     @Test fun exportDecodeReplaceRoundTripPreservesAllData() = runBlocking {
         seed(); val before = state()

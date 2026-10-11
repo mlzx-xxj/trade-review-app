@@ -13,6 +13,10 @@ import androidx.compose.ui.test.onFirst
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.tradereview.app.MainActivity
 import org.junit.Rule
+import org.junit.Before
+import kotlinx.coroutines.runBlocking
+import com.tradereview.app.TradeReviewApplication
+import com.tradereview.app.data.AppSettings
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -20,6 +24,10 @@ import org.junit.runner.RunWith
 class NavigationTest {
     @get:Rule val compose = createAndroidComposeRule<MainActivity>()
 
+    @Before fun resetData() = runBlocking {
+        val dao = (compose.activity.application as TradeReviewApplication).database.trades()
+        dao.clearTrades(); dao.clearDrafts(); dao.saveSettings(AppSettings())
+    }
     @Test fun bottomNavigationShowsEachPage() {
         compose.waitUntil(10_000) { compose.onAllNodesWithText("让每一笔交易都有收获").fetchSemanticsNodes().isNotEmpty() }
         compose.onNodeWithText("让每一笔交易都有收获").assertIsDisplayed()
@@ -36,23 +44,21 @@ class NavigationTest {
     @Test fun userCanCreateEditAndDeleteATrade() {
         compose.waitUntil(10_000) { compose.onAllNodesWithText("让每一笔交易都有收获").fetchSemanticsNodes().isNotEmpty() }
         compose.onNodeWithContentDescription("新增交易").performClick()
-        compose.onNodeWithText("品种（可自定义）").performScrollTo().performTextClearance()
-        compose.onNodeWithText("品种（可自定义）").performTextInput("MVP测试品种")
         compose.onNodeWithText("净盈亏金额（CNY）").performScrollTo().performTextInput("123.45")
         compose.onNodeWithText("保存交易").performClick()
-        compose.waitUntil(10_000) { compose.onAllNodesWithText("记录一笔交易").fetchSemanticsNodes().isEmpty() }
+        compose.waitUntil(10_000) { compose.onAllNodesWithText("快速记录交易").fetchSemanticsNodes().isEmpty() }
         compose.onAllNodesWithText("交易记录").onFirst().performClick()
-        compose.waitUntil(10_000) { compose.onAllNodesWithText("MVP测试品种").fetchSemanticsNodes().isNotEmpty() }
-        compose.onNodeWithText("MVP测试品种").assertIsDisplayed().performClick()
+        compose.waitUntil(10_000) { compose.onAllNodesWithText("沪深300").fetchSemanticsNodes().isNotEmpty() }
+        compose.onNodeWithText("沪深300").assertIsDisplayed().performClick()
         compose.onNodeWithText("亏损").performScrollTo().performClick()
         compose.onNodeWithText("保存交易").performClick()
         compose.waitUntil(10_000) { compose.onAllNodesWithText("编辑交易与复盘").fetchSemanticsNodes().isEmpty() }
         compose.waitUntil(10_000) { compose.onAllNodesWithText("-123.45").fetchSemanticsNodes().isNotEmpty() }
         compose.onNodeWithText("-123.45").assertIsDisplayed()
-        compose.onNodeWithText("MVP测试品种").performClick()
+        compose.onNodeWithText("沪深300").performClick()
         compose.onNodeWithContentDescription("删除交易").performClick()
         compose.onNodeWithText("删除").performClick()
-        compose.waitUntil(10_000) { compose.onAllNodesWithText("MVP测试品种").fetchSemanticsNodes().isEmpty() }
-        compose.onNodeWithText("MVP测试品种").assertDoesNotExist()
+        compose.waitUntil(10_000) { compose.onAllNodesWithText("沪深300").fetchSemanticsNodes().isEmpty() }
+        compose.onNodeWithText("沪深300").assertDoesNotExist()
     }
 }

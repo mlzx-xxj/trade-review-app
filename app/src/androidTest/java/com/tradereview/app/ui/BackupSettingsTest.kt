@@ -23,7 +23,7 @@ class BackupSettingsTest {
     private lateinit var model: BackupViewModel
     private lateinit var file: File
     @Before fun open() {
-        db = Room.inMemoryDatabaseBuilder(context, TradeDatabase::class.java).build()
+        db = Room.inMemoryDatabaseBuilder(context, TradeDatabase::class.java).addCallback(CatalogSeeds.callback).build()
         model = BackupViewModel(db, context.contentResolver)
         file = File(context.cacheDir, "backup-ui-test.json")
     }
@@ -65,7 +65,7 @@ class BackupSettingsTest {
         val id = db.trades().insert(trade)
         file.writeText("{}")
         compose.setContent { TradeReviewTheme { SettingsPage(model, false) } }
-        compose.onNodeWithText("应用信息").performScrollTo()
+        compose.onNodeWithTag("settings-list").performScrollToNode(hasText("应用信息"))
         compose.runOnIdle { model.readBackup(Uri.fromFile(file)) }
         compose.waitUntil(10000) { model.message.value != null && !model.busy.value }
         compose.onNodeWithText(requireNotNull(model.message.value)).assertIsDisplayed()

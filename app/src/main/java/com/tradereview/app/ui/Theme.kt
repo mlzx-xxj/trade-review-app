@@ -11,7 +11,7 @@ val ProfitColor = Color(0xFF16846B)
 val LossColor = Color(0xFFC34356)
 
 @Composable
-fun TradeReviewTheme(content: @Composable () -> Unit) {
+fun TradeReviewTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
     val light = lightColorScheme(
         primary = Color(0xFF155AAB), onPrimary = Color.White,
         primaryContainer = Color(0xFFDCEAFF), onPrimaryContainer = Color(0xFF123457),
@@ -23,5 +23,5 @@ fun TradeReviewTheme(content: @Composable () -> Unit) {
         secondary = Color(0xFF80E3BF), background = Color(0xFF111820),
         surface = Color(0xFF1B2530), surfaceVariant = Color(0xFF29333E),
     )
-    MaterialTheme(colorScheme = if (isSystemInDarkTheme()) dark else light, content = content)
+    MaterialTheme(colorScheme = if (darkTheme) dark else light, content = content)
 }
