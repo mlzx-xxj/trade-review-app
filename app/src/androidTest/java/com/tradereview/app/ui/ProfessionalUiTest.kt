@@ -3,6 +3,9 @@ package com.tradereview.app.ui
 import android.content.Context
 import android.content.ContentValues
 import android.graphics.Bitmap
+import android.graphics.Rect
+import android.accessibilityservice.AccessibilityServiceInfo
+import android.view.accessibility.AccessibilityWindowInfo
 import android.os.Build
 import android.os.SystemClock
 import android.provider.MediaStore
@@ -94,7 +97,8 @@ class ProfessionalUiTest {
         compose.onNodeWithTag("save-risk-rules").performScrollTo().performClick();compose.waitUntil(15000) { model.state.value.riskRules.size==1 && !model.busy.value };feedbackGone()
         compose.onNodeWithTag("risk-settings-list").performScrollToNode(hasText("新增合约参数模板"));compose.onNodeWithText("新增合约参数模板").performClick()
         compose.onNodeWithText("模板名称").performTextInput("用户螺纹参数");compose.onNodeWithTag("template-multiplier").performScrollTo().performTextInput("10")
-        compose.onNodeWithTag("template-user-verified").performScrollTo().performClick();compose.onNodeWithText("保存模板").performClick()
+        compose.onNodeWithTag("template-editor-list").performScrollToNode(hasTestTag("template-user-verified"))
+        compose.onNodeWithTag("template-user-verified").performClick();compose.onNodeWithText("保存模板").performClick()
         compose.waitUntil(15000) { model.state.value.contractTemplates.size==1 && !model.busy.value };feedbackGone()
         runBlocking { assertEquals("10000.00",db.trades().allRiskRules().single().accountEquity);assertEquals("10",db.trades().allTemplates().single().multiplier);assertTrue(db.trades().allTemplates().single().userVerified) }
         compose.onNodeWithTag("risk-settings-list").performScrollToNode(hasTestTag("rule-equity"));capture("11-risk-rules")
@@ -123,6 +127,7 @@ class ProfessionalUiTest {
         // The compositor captures all windows, including dialogs; the frame barrier
         // and short presentation wait avoid the previous page's system frame.
         SystemClock.sleep(250)
+        if(name == "09-professional-auto") assertSaveAboveKeyboard()
         val bitmap=requireNotNull(instrumentation.uiAutomation.takeScreenshot())
         val root=File(requireNotNull(InstrumentationRegistry.getArguments().getString("additionalTestOutputDir")),"v05-screenshots").apply { mkdirs() }
         File(root,"$name.png").outputStream().use { assertTrue(bitmap.compress(Bitmap.CompressFormat.PNG,100,it)) }
@@ -133,5 +138,20 @@ class ProfessionalUiTest {
             context.contentResolver.update(uri,ContentValues().apply { put(MediaStore.MediaColumns.IS_PENDING,0) },null,null)
         }
         bitmap.recycle()
+    }
+    private fun assertSaveAboveKeyboard() {
+        val automation=InstrumentationRegistry.getInstrumentation().uiAutomation
+        val info=automation.serviceInfo
+        info.flags=info.flags or AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS
+        automation.serviceInfo=info
+        val windows=automation.windows
+        val keyboard=windows.firstOrNull { it.type==AccessibilityWindowInfo.TYPE_INPUT_METHOD }
+        assertNotNull("Real software keyboard must be visible for this acceptance check",keyboard)
+        val keyboardBounds=Rect();keyboard!!.getBoundsInScreen(keyboardBounds)
+        val buttons=windows.filter { it.type==AccessibilityWindowInfo.TYPE_APPLICATION }
+            .flatMap { it.root?.findAccessibilityNodeInfosByText("保存交易").orEmpty() }
+        assertTrue("Save accessibility node exists",buttons.isNotEmpty())
+        val bounds=Rect();buttons.last().getBoundsInScreen(bounds)
+        assertTrue("Save must be visible above IME: save=$bounds keyboard=$keyboardBounds",bounds.height()>0 && bounds.bottom<=keyboardBounds.top)
     }
 }

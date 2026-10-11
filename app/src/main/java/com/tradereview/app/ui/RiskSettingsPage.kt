@@ -70,7 +70,7 @@ private fun TemplateEditor(initial: ContractTemplate, busy: Boolean, onDismiss: 
     var symbol by remember { mutableStateOf(initial.symbol) }; var unit by remember { mutableStateOf(initial.quantityUnit) }
     var multiplier by remember { mutableStateOf(initial.multiplier.orEmpty()) }; var tick by remember { mutableStateOf(initial.minTick.orEmpty()) }
     var note by remember { mutableStateOf(initial.note) }; var verified by remember { mutableStateOf(false) }; var error by remember { mutableStateOf<String?>(null) }
-    AlertDialog(onDismissRequest = onDismiss, title = { Text("用户合约参数模板") }, text = { LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+    AlertDialog(onDismissRequest = onDismiss, title = { Text("用户合约参数模板") }, text = { LazyColumn(Modifier.heightIn(max = 480.dp).testTag("template-editor-list"), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         item { OutlinedTextField(name, { name = it.take(30) }, label = { Text("模板名称") }, singleLine = true) }
         item { SingleChoice(Presets.markets, market) { market = it; unit = "unknown" } }
         item { OutlinedTextField(symbol, { symbol = it.take(30) }, label = { Text("品种名称，与交易品种一致") }, singleLine = true) }

@@ -31,8 +31,8 @@ fun LazyListScope.riskAnalyticsItems(report: RiskReport, currency: String, catal
         if(p.valid in 1..19) Text("有效样本少于 20 笔，结论可能不稳定。", color = MaterialTheme.colorScheme.primary)
         Text("R = 实际已入账净盈亏 / 本笔有效初始计划风险。无仓位到风险的自动换算。金额/胜率/回撤继续沿用 V0.4 口径。", style = MaterialTheme.typography.bodySmall)
     } }
-    item { SectionCard("风险纪律记录", "显示保存时曾触发的参考纪律；改规则或改交易不删除旧检查。") {
-        Text("曾触发 ${report.violations.size} 笔 / 有检查快照 ${report.checked} 笔 · ${RiskAnalytics.percent(report.violations.size, report.checked)}", modifier = Modifier.testTag("risk-violation-summary"))
+    item { SectionCard("风险纪律记录", "显示保存时曾触发的参考纪律；缺数据不能计作守规，改规则不删除旧检查。") {
+        Text("曾触发 ${report.violations.size} 笔 / 有可执行检查 ${report.checked} 笔 · ${RiskAnalytics.percent(report.violations.size, report.checked)}", modifier = Modifier.testTag("risk-violation-summary"))
         Text("超出本笔计划仓位 ${report.exceededPositions.size} / 明确计划仓位 ${report.plannedPositions} 笔 · ${RiskAnalytics.percent(report.exceededPositions.size, report.plannedPositions)}")
         Text("连续亏损段（至少 2 笔）${report.lossRuns} 段 · 最大连亏 ${report.longestLoss} 笔 · 筛选样本 ${report.r.total} 笔")
         Text("不同提醒可关联同一笔交易，各项不能直接相加作为违规交易总数；只描述记录，不判断因果。", style = MaterialTheme.typography.bodySmall)

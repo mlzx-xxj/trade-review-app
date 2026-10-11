@@ -16,6 +16,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.window.DialogWindowProvider
+import android.view.WindowManager
 import com.tradereview.app.data.*
 import com.tradereview.app.domain.FastEntry
 import com.tradereview.app.domain.*
@@ -62,6 +65,8 @@ fun DateControl(date: Long, onDate: (Long) -> Unit, allowFuture: Boolean = false
     }
 }
 
+private data class RiskPreview(val trade: Trade, val rules: List<RiskRules>, val history: List<Trade>, val event: RiskEvent)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TradeEditor(original: Trade?, state: JournalState, busy: Boolean, saveError: String?, onDismiss: () -> Unit,
@@ -90,8 +95,8 @@ fun TradeEditor(original: Trade?, state: JournalState, busy: Boolean, saveError:
     LaunchedEffect(busy) { if(busy) focus.clearFocus() }
     LaunchedEffect(draft) { onDraft(draft); if(error != null) error = FastEntry.error(draft) }
     val current = runCatching { FastEntry.trade(draft) }.getOrNull()
-    val riskPreview by produceState<RiskEvent?>(null, current, state.riskRules, state.trades) {
-        value = withContext(Dispatchers.Default) { current?.let { RiskEngine.check(it, state.riskRules.firstOrNull { r -> r.currency == it.currency }, state.trades) } }
+    val riskPreview by produceState<RiskPreview?>(null, current, state.riskRules, state.trades) {
+        value = withContext(Dispatchers.Default) { current?.let { RiskPreview(it, state.riskRules, state.trades, RiskEngine.check(it, state.riskRules.firstOrNull { r -> r.currency == it.currency }, state.trades)) } }
     }
     fun leave() { onDraft(draft); onDismiss() }
     fun commit(saving: EntryDraft, keepOpen: Boolean, approved: String? = null) {
@@ -110,7 +115,14 @@ fun TradeEditor(original: Trade?, state: JournalState, busy: Boolean, saveError:
         if(RiskEngine.financialFactsChanged(original, candidate) && check.violations.isNotEmpty()) pendingRisk = Triple(draft, keepOpen, check)
         else commit(draft, keepOpen)
     }
-    Dialog(onDismissRequest = { if (!busy) leave() }, properties = DialogProperties(usePlatformDefaultWidth = false, dismissOnBackPress = !busy)) {
+    Dialog(onDismissRequest = { if (!busy) leave() }, properties = DialogProperties(usePlatformDefaultWidth = false, dismissOnBackPress = !busy, decorFitsSystemWindows = false)) {
+        val dialogView = LocalView.current
+        SideEffect {
+            (dialogView.parent as? DialogWindowProvider)?.window?.apply {
+                setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT)
+                setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+            }
+        }
         BackHandler(busy) { }
         Surface(Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
             Scaffold(modifier = Modifier.imePadding(), topBar = {
@@ -184,7 +196,7 @@ fun TradeEditor(original: Trade?, state: JournalState, busy: Boolean, saveError:
                         state.contractTemplates, busy, { draft = draft.copy(professional = it) }, onTemplate)
                     val r = current?.let(ProfessionalMath::r)
                     Text("本笔 R：${ProfessionalMath.formatR(r)}", modifier = Modifier.testTag("entry-r"), color = r?.let { pnlColor(it) } ?: MaterialTheme.colorScheme.onSurface)
-                    current?.let { t -> riskPreview?.takeIf { it.recordKey == t.recordKey && it.netPnl == t.netPnl && it.date == t.date && it.positionPercent == t.positionPercent }?.let { check ->
+                    current?.let { t -> riskPreview?.takeIf { it.trade == t && it.rules == state.riskRules && it.history == state.trades }?.event?.let { check ->
                         if(check.violations.isNotEmpty()) Text(check.violations.joinToString("；") { RiskEngine.labels.getValue(it) }, color = MaterialTheme.colorScheme.error, modifier = Modifier.testTag("entry-risk-warning"))
                         check.notChecked.forEach { Text(it, style = MaterialTheme.typography.bodySmall) }
                     } }

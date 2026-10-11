@@ -14,6 +14,7 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class V05DataTest {
     private val context=ApplicationProvider.getApplicationContext<Context>()
+    private val assets=androidx.test.platform.app.InstrumentationRegistry.getInstrumentation().context.assets
     private lateinit var db: TradeDatabase
     @Before fun open() { db=Room.inMemoryDatabaseBuilder(context,TradeDatabase::class.java).addCallback(CatalogSeeds.callback).build() }
     @After fun close() { db.close() }
@@ -41,7 +42,7 @@ class V05DataTest {
         assertEquals(saved.riskRecord,db.trades().allTrades().single().riskRecord)
     }
     @Test fun backupRestoresAllNewDataAndMergeKeepsLocalConflictsAsWholeTrades()=runBlocking {
-        val incoming=BackupCodec.read(context.assets.open("v05-backup.json"));val repository=BackupRepository(db)
+        val incoming=BackupCodec.read(assets.open("v05-backup.json"));val repository=BackupRepository(db)
         repository.restore(repository.preview(incoming),RestoreMode.REPLACE)
         val first=repository.export();assertEquals(incoming.trades,first.trades);assertEquals(incoming.riskRules,first.riskRules);assertEquals(incoming.contractTemplates,first.contractTemplates)
         assertEquals(first,BackupCodec.decode(BackupCodec.encode(first)))
@@ -56,7 +57,7 @@ class V05DataTest {
         val repository=BackupRepository(db)
         db.trades().insert(Trade(netPnl="1.23"));db.trades().saveRiskRules(RiskRules(currency="USD",maxPositionPercent="40"))
         db.trades().saveDraft(EntryDraft(amount="12.",professional=ProfessionalDraft(entryPrice="3500.")))
-        val incoming=BackupCodec.read(context.assets.open("v05-backup.json"))
+        val incoming=BackupCodec.read(assets.open("v05-backup.json"))
         db.openHelper.writableDatabase.execSQL("CREATE TRIGGER fail_v05_template BEFORE INSERT ON contract_templates BEGIN SELECT RAISE(ABORT,'synthetic failure'); END")
         for(mode in RestoreMode.values()) {
             val before=repository.export();val preview=repository.preview(incoming)
@@ -67,11 +68,11 @@ class V05DataTest {
     @Test fun riskOrTemplateChangesInvalidateRestorePreviewAndOldFormatsPreserveAmounts()=runBlocking {
         val repo=BackupRepository(db)
         for(name in listOf("v02-backup.json","v03-backup.json","v03-android-backup.json","v04-backup.json")) {
-            val old=BackupCodec.read(context.assets.open(name));repo.restore(repo.preview(old),RestoreMode.REPLACE)
+            val old=BackupCodec.read(assets.open(name));repo.restore(repo.preview(old),RestoreMode.REPLACE)
             assertEquals(old.trades,db.trades().allTrades());assertTrue(db.trades().allTrades().all { it.professional==null && it.riskRecord==null })
             assertTrue(db.trades().allRiskRules().isEmpty());assertTrue(db.trades().allTemplates().isEmpty())
         }
-        val data=BackupCodec.read(context.assets.open("v05-backup.json"));val preview=repo.preview(data)
+        val data=BackupCodec.read(assets.open("v05-backup.json"));val preview=repo.preview(data)
         db.trades().saveRiskRules(RiskRules(maxPositionPercent="20"))
         try { repo.restore(preview,RestoreMode.REPLACE);fail("Stale rule snapshot") } catch(_:BackupException) { }
         val second=repo.preview(data);db.trades().saveTemplate(ContractTemplate(name="用户模板",market="futures",symbol="螺纹钢",quantityUnit="futures_lot",multiplier="10"))
@@ -81,6 +82,6 @@ class V05DataTest {
         val raw=EntryDraft(amount="12.",professional=ProfessionalDraft(entryPrice="3500.",expanded=true))
         EntryRepository(db).saveDraft(raw);assertEquals(raw,db.trades().allDrafts().single())
         val backup=BackupCodec.decode(BackupCodec.encode(BackupRepository(db).export()));assertEquals(raw,backup.drafts.single());assertEquals("",backup.drafts.single().professional!!.fees)
-        assertEquals("935070b335dad76a94d1d3bcd8615268260bb46adffd97fdebc1f1b622cea78a",com.google.gson.JsonParser.parseString(BackupCodec.encode(BackupCodec.read(context.assets.open("v05-backup.json")))).asJsonObject["checksumSha256"].asString)
+        assertEquals("935070b335dad76a94d1d3bcd8615268260bb46adffd97fdebc1f1b622cea78a",com.google.gson.JsonParser.parseString(BackupCodec.encode(BackupCodec.read(assets.open("v05-backup.json")))).asJsonObject["checksumSha256"].asString)
     }
 }
