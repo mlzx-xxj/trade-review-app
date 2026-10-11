@@ -105,7 +105,7 @@ jobs:
         id: apk
         uses: actions/upload-artifact@v4
         with:
-          name: TradeReview-v0.3-${{ github.run_number }}
+          name: TradeReview-v0.4-${{ github.run_number }}
           path: dist/
           if-no-files-found: error
           retention-days: 30
@@ -131,7 +131,7 @@ jobs:
           retention-days: 30
 
   device-tests:
-    name: Room migrations, fast entry, catalogs, backups and Compose UI
+    name: Room upgrades, calendar, analytics, filters, backups and Compose UI
     runs-on: ubuntu-latest
     needs: build
     timeout-minutes: 30
@@ -193,7 +193,7 @@ jobs:
           retention-days: 30
 
   publish:
-    name: Publish verified V0.3 APK with explicit signing status
+    name: Publish verified V0.4 APK with explicit signing status
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     needs: [build, device-tests]
     runs-on: ubuntu-latest
@@ -203,19 +203,19 @@ jobs:
       - uses: actions/checkout@v5
       - uses: actions/download-artifact@v4
         with:
-          name: TradeReview-v0.3-${{ github.run_number }}
+          name: TradeReview-v0.4-${{ github.run_number }}
           path: dist
       - name: Publish after all verification jobs pass
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          tag="v03-debug-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
-          if [ -f dist/TradeReview-v0.3-stable.apk ]; then
-            title="交易复盘 V0.3 · 固定签名 Debug 包"
-            notes="Debug 编译、JVM 单元测试、Lint、Room 迁移/事务恢复、快速录入/标签/品种/草稿及 Compose 模拟器测试均通过。固定签名已验证证书 pin，真实签名来源和 Secrets 配置状态见 SIGNING.txt；若 Secrets 尚未配置，仓库所有者仍需完成配置才能自动签署未来更新。后续必须使用相同私钥和更大 versionCode。旧测试版不同签名时需手动卸载。模拟器测试不是手机实测。"
+          tag="v04-debug-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          if [ -f dist/TradeReview-v0.4-stable.apk ]; then
+            title="交易复盘 V0.4 · 固定签名 Debug 包"
+            notes="Debug 编译、JVM 单元测试、Lint、Room 迁移/事务恢复、快速录入/标签/品种/草稿、日历/筛选/分币种统计及 Compose 模拟器测试均通过。固定签名已验证证书 pin，真实签名来源和 Secrets 配置状态见 SIGNING.txt；若 Secrets 尚未配置，仓库所有者仍需完成配置才能自动签署未来更新。后续必须使用相同私钥和更大 versionCode。旧测试版不同签名时需手动卸载。模拟器测试不是手机实测。"
           else
-            title="交易复盘 V0.3 · 临时签名测试包"
-            notes="Debug 编译、JVM 单元测试、Lint、Room 迁移/事务恢复、快速录入/标签/品种/草稿及 Compose 模拟器测试均通过。固定签名 Secrets 未配置，此包不保证未来长期覆盖升级。按你的授权，可手动卸载旧 V0.1/V0.2 测试版后重新安装；卸载会清空本地数据。V0.3 新数据请定期 JSON 备份。模拟器测试不是手机实测。"
+            title="交易复盘 V0.4 · 临时签名测试包"
+            notes="Debug 编译、JVM 单元测试、Lint、Room 迁移/事务恢复、快速录入/标签/品种/草稿、日历/筛选/分币种统计及 Compose 模拟器测试均通过。固定签名 Secrets 未配置，此包不保证未来长期覆盖升级。此临时包不能覆盖安装固定签名 V0.3；请先 JSON 备份，确认后自行处理不同签名的旧版安装，卸载会清空本地数据。V0.4 数据请定期备份。模拟器测试不是手机实测。"
           fi
           printf '%s\n' "$notes" > "$RUNNER_TEMP/release-notes.txt"
           gh release create "$tag" dist/*.apk dist/SHA256SUMS.txt dist/SIGNING.txt --repo "$GITHUB_REPOSITORY" --target "${{ github.event.pull_request.head.sha || github.sha }}" --title "$title" --prerelease --notes-file "$RUNNER_TEMP/release-notes.txt"

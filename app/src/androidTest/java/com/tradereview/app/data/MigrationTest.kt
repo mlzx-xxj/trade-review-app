@@ -25,8 +25,8 @@ class MigrationTest {
             execSQL("INSERT INTO daily_reviews VALUES(20000,'bullish','trend|breakout','risk',25,1,'anxious','respect_stop','chase','stop|rest',4,1)")
             close()
         }
-        helper.runMigrationsAndValidate(name, 3, true, MIGRATION_1_2, MIGRATION_2_3).close()
-        fun open() = Room.databaseBuilder(context, TradeDatabase::class.java, name).addMigrations(MIGRATION_1_2, MIGRATION_2_3).build()
+        helper.runMigrationsAndValidate(name, 4, true, MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4).close()
+        fun open() = Room.databaseBuilder(context, TradeDatabase::class.java, name).addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4).build()
         var db = open()
         try {
             val trade = requireNotNull(db.trades().findTrade(7))
@@ -46,8 +46,8 @@ class MigrationTest {
     }
     @Test fun emptyV1DatabaseMigratesAndAcceptsNewRecords() = runBlocking {
         helper.createDatabase(name, 1).close()
-        helper.runMigrationsAndValidate(name, 3, true, MIGRATION_1_2, MIGRATION_2_3).close()
-        val db = Room.databaseBuilder(context, TradeDatabase::class.java, name).addMigrations(MIGRATION_1_2, MIGRATION_2_3).build()
+        helper.runMigrationsAndValidate(name, 4, true, MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4).close()
+        val db = Room.databaseBuilder(context, TradeDatabase::class.java, name).addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4).build()
         try {
             val record = Trade()
             val id = db.trades().insert(record)
@@ -61,7 +61,7 @@ class MigrationTest {
             close()
         }
         helper.runMigrationsAndValidate(name, 3, true, MIGRATION_2_3).close()
-        val db = Room.databaseBuilder(context, TradeDatabase::class.java, name).addMigrations(MIGRATION_1_2, MIGRATION_2_3).build()
+        val db = Room.databaseBuilder(context, TradeDatabase::class.java, name).addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4).build()
         try {
             val trade = requireNotNull(db.trades().findTrade(7))
             assertEquals("老品种文字", trade.symbol); assertEquals("", trade.note)
@@ -75,4 +75,29 @@ class MigrationTest {
         } finally { db.close() }
     }
 
+    @Test fun v3ToV4PreservesEveryTableAndAddsNonDestructiveDefaults() = runBlocking {
+        helper.createDatabase(name, 3).apply {
+            CatalogSeeds.insert(this)
+            execSQL("UPDATE app_settings SET theme='dark', lastMarket='futures'")
+            execSQL("UPDATE tags SET name='改名的历史策略', hidden=1 WHERE kind='strategy' AND id='trend'")
+            execSQL("UPDATE instruments SET favorite=1, sortOrder=42, lastUsed=123 WHERE id='preset_futures_0'")
+            execSQL("INSERT INTO trades VALUES(7,20000,'stock','沪深300','short','CNY','-123.45',25,'trend','anxious','chase|oversize','respect_stop',1,'旧备注','0123456789abcdef0123456789abcdef')")
+            execSQL("INSERT INTO daily_reviews VALUES(20000,'bullish','trend','risk',25,1,'anxious','respect_stop','chase','stop',4,1)")
+            execSQL("INSERT INTO entry_drafts VALUES('new','1123456789abcdef0123456789abcdef',0,20000,'stock','沪深300','long','CNY','12.','gain',10,'trend','calm','','',0,'草稿',0)")
+            close()
+        }
+        helper.runMigrationsAndValidate(name, 4, true, MIGRATION_3_4).close()
+        val db = Room.databaseBuilder(context, TradeDatabase::class.java, name).addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4).build()
+        try {
+            assertEquals("旧备注", db.trades().findTrade(7)!!.note); assertEquals("-123.45", db.trades().findTrade(7)!!.netPnl)
+            assertEquals("0123456789abcdef0123456789abcdef", db.trades().findTrade(7)!!.recordKey)
+            assertEquals(4, db.trades().findReview(20000)!!.rating)
+            assertTrue(db.trades().allTags().first { it.id == "trend" && it.kind == "strategy" }.hidden)
+            assertEquals(42, db.trades().allInstruments().first { it.id == "preset_futures_0" }.sortOrder)
+            assertEquals("12.", db.trades().allDrafts().single().amount)
+            assertEquals(AppSettings(lastMarket = "futures", theme = "dark"), db.trades().settings()); assertTrue(db.trades().allFilters().isEmpty())
+            val filter = SavedFilter(name = "新筛选", criteria = com.tradereview.app.domain.TradeFilter(strategies = listOf("trend")))
+            db.trades().saveFilter(filter); assertEquals(filter, db.trades().allFilters().single())
+        } finally { db.close() }
+    }
 }
