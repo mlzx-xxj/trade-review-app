@@ -72,14 +72,14 @@ class FastEntryUiTest {
         compose.onNodeWithTag("settings-list").performScrollToNode(hasText("管理自定义标签"))
         compose.onNodeWithText("管理自定义标签").performClick()
         compose.onNodeWithText("新增标签").performClick()
-        compose.onNodeWithText("标签名称").performTextInput("快速策略")
+        compose.onNodeWithTag("tag-name-field").performTextInput("快速策略")
         compose.onNodeWithText("保存标签").performClick()
         compose.waitUntil(10000) { !model.busy.value && model.state.value.tags.any { it.name == "快速策略" } }
         val id = model.state.value.tags.first { it.name == "快速策略" }.id
         compose.onNodeWithTag("tag-list").performScrollToNode(hasTestTag("rename-$id"))
         compose.onNodeWithTag("rename-$id").assertIsEnabled().performClick()
         compose.onNodeWithText("重命名标签").assertIsDisplayed()
-        compose.onNodeWithText("标签名称").performTextClearance(); compose.onNodeWithText("标签名称").performTextInput("改名策略")
+        compose.onNodeWithTag("tag-name-field").performTextClearance(); compose.onNodeWithTag("tag-name-field").performTextInput("改名策略")
         compose.onNodeWithText("保存标签").performClick()
         compose.waitUntil(10000) { !model.busy.value && model.state.value.tags.any { it.id == id && it.name == "改名策略" } }
         compose.onNodeWithTag("hide-$id").performScrollTo().assertIsEnabled().performClick()
