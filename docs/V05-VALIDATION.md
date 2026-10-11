@@ -21,3 +21,5 @@
 第二轮模拟器 XML 实际 55 项，49 通过、6 失败（0 错误/跳过）。1 项旧格式摘要重导出预期未升级，4 项错误地从主 APK 而非测试 APK 读取 fixtures，均已按先前审查修正。另 1 项为模板编辑 LazyColumn 回收了屏外勾选项，已先滚动到目标后再点击。迁移、风险确认/快照、专业保存/编辑与金额/R 界面测试已实际通过，但本轮整体失败，不发布 APK。
 
 本轮 12 张截图真实导出；手工查看发现数字键盘覆盖保存区，说明旧 assertIsDisplayed 无法证明没有另一窗口遮挡。已改全屏 Dialog 的窗口 Insets/ADJUST_RESIZE 布局，并增加实际 AccessibilityWindowInfo 输入法与保存按钮屏幕矩形断言。本轮错误与视觉发现都未当成全部成功，修复后须重新完整 CI。
+
+第三轮提交 9de36e6，[Actions 38183806245](https://github.com/mlzx-xxj/trade-review-app/actions/runs/38183806245)：编译、76 JVM、16 发布门禁、Lint 0 错误/13 警告再次通过，实际 APK 0.5.0 / 5 无 INTERNET、临时单 signer 独立验证成功。模拟器实际仍需 XML 核对完整计数，日志只剩键盘验收的“Save accessibility node exists”失败；其他迁移/fixture/模板修复通过。Compose 的虚拟节点不能依赖系统 find-by-text 快捷路径，验收改为实际树遍历并寻找完整可点击按钮、检查至少 48dp 高度与键盘上沿；失败前也先保留实际截图。此轮整体失败，发布跳过，不将编译或其他用例通过当作完成。

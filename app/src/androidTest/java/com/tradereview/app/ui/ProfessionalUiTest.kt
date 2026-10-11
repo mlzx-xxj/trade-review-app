@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.graphics.Rect
 import android.accessibilityservice.AccessibilityServiceInfo
 import android.view.accessibility.AccessibilityWindowInfo
+import android.view.accessibility.AccessibilityNodeInfo
 import android.os.Build
 import android.os.SystemClock
 import android.provider.MediaStore
@@ -127,7 +128,6 @@ class ProfessionalUiTest {
         // The compositor captures all windows, including dialogs; the frame barrier
         // and short presentation wait avoid the previous page's system frame.
         SystemClock.sleep(250)
-        if(name == "09-professional-auto") assertSaveAboveKeyboard()
         val bitmap=requireNotNull(instrumentation.uiAutomation.takeScreenshot())
         val root=File(requireNotNull(InstrumentationRegistry.getArguments().getString("additionalTestOutputDir")),"v05-screenshots").apply { mkdirs() }
         File(root,"$name.png").outputStream().use { assertTrue(bitmap.compress(Bitmap.CompressFormat.PNG,100,it)) }
@@ -138,6 +138,7 @@ class ProfessionalUiTest {
             context.contentResolver.update(uri,ContentValues().apply { put(MediaStore.MediaColumns.IS_PENDING,0) },null,null)
         }
         bitmap.recycle()
+        if(name == "09-professional-auto") assertSaveAboveKeyboard()
     }
     private fun assertSaveAboveKeyboard() {
         val automation=InstrumentationRegistry.getInstrumentation().uiAutomation
@@ -148,10 +149,21 @@ class ProfessionalUiTest {
         val keyboard=windows.firstOrNull { it.type==AccessibilityWindowInfo.TYPE_INPUT_METHOD }
         assertNotNull("Real software keyboard must be visible for this acceptance check",keyboard)
         val keyboardBounds=Rect();keyboard!!.getBoundsInScreen(keyboardBounds)
-        val buttons=windows.filter { it.type==AccessibilityWindowInfo.TYPE_APPLICATION }
-            .flatMap { it.root?.findAccessibilityNodeInfosByText("保存交易").orEmpty() }
+        // Compose provides virtual accessibility nodes but does not implement the
+        // platform's find-by-text provider shortcut. Traverse the actual tree.
+        fun find(node:AccessibilityNodeInfo?):List<AccessibilityNodeInfo> {
+            if(node==null) return emptyList()
+            val found=mutableListOf<AccessibilityNodeInfo>()
+            if(node.text?.toString()=="保存交易" || node.contentDescription?.toString()=="保存交易") found+=node
+            for(i in 0 until node.childCount) found+=find(node.getChild(i))
+            return found
+        }
+        val buttons=windows.filter { it.type==AccessibilityWindowInfo.TYPE_APPLICATION }.flatMap { find(it.root) }
         assertTrue("Save accessibility node exists",buttons.isNotEmpty())
-        val bounds=Rect();buttons.last().getBoundsInScreen(bounds)
-        assertTrue("Save must be visible above IME: save=$bounds keyboard=$keyboardBounds",bounds.height()>0 && bounds.bottom<=keyboardBounds.top)
+        var button=buttons.last()
+        while(!button.isClickable && button.parent!=null) button=button.parent
+        val bounds=Rect();button.getBoundsInScreen(bounds)
+        val minimumHeight=(48*context.resources.displayMetrics.density).toInt()-2
+        assertTrue("Whole save button must be visible above IME: save=$bounds keyboard=$keyboardBounds",bounds.height()>=minimumHeight && bounds.bottom<=keyboardBounds.top)
     }
 }
