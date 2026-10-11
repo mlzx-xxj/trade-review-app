@@ -6,6 +6,7 @@ import android.content.ContentValues
 import android.os.Build
 import android.provider.MediaStore
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.lifecycle.SavedStateHandle
@@ -176,7 +177,10 @@ class CalendarAnalyticsUiTest {
         // AGP copies this supported output directory before uninstalling test APKs.
         val output = requireNotNull(InstrumentationRegistry.getArguments().getString("additionalTestOutputDir")) { "AGP additional test output is not configured" }
         val directory = File(output, "v04-screenshots").apply { mkdirs() }
-        val image = requireNotNull(InstrumentationRegistry.getInstrumentation().uiAutomation.takeScreenshot())
+        // Compose's PixelCopy capture waits for the target root to finish drawing.
+        // A system screenshot taken just after semantics became idle could still
+        // contain the previous screen on the emulator's asynchronous renderer.
+        val image = compose.onAllNodes(isRoot()).onLast().captureToImage().asAndroidBitmap()
         File(directory, "$name.png").outputStream().use { assertTrue(image.compress(Bitmap.CompressFormat.PNG, 100, it)) }
         // Owned scoped-storage downloads survive AGP's APK uninstall, without any
         // storage permission. This is AndroidTest-only, synthetic screenshot data.

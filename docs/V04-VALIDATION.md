@@ -2,7 +2,27 @@
 
 基础：PR #3 已合并 main `afefcfa`，分支 codex/v04-calendar-analytics，独立 PR #4，不自动合并。Base 无 Android SDK，没有声称本地 Android 编译或手机实测。没有安装 Android Studio 或创建新环境。
 
-## 已实际执行
+## 完整 CI 已实际成功
+
+提交 `289cbaad9273a569bcc565119119a4fb486bd9df` 的 [Actions 38140762209](https://github.com/mlzx-xxj/trade-review-app/actions/runs/38140762209) 三个任务全部成功，已下载并解析实际 XML/签名/APK/截图产物：
+
+| 检查 | 实际结果 |
+| --- | --- |
+| Debug APK / Android 测试 APK | 编译成功 |
+| JVM 单元测试 | 49 项，0 失败、0 错误、0 跳过 |
+| 签名、Secrets、公开 APK 与截图交付脚本 | 16 项通过（6 + 3 + 4 + 3） |
+| Android Lint | 0 错误、13 警告：OldTargetApi 1、AppBundleLocaleChanges 1、GradleDependency 11 |
+| API 29 x86_64 Pixel 2 模拟器 | 43 项，0 失败、0 错误、0 跳过 |
+| 编译 APK 的实际身份及权限 | com.tradereview.app / 0.4.0 / 4；无 INTERNET |
+| 发布任务 | 全部上游测试成功后发布临时测试包和截图 ZIP |
+
+模拟器 43 项：BackupRepositoryTest 8、MigrationTest 4、TradeDatabaseTest 1、V03DataTest 7、V04DataTest 6、BackupSettingsTest 3、CalendarAnalyticsUiTest 8、FastEntryUiTest 4、NavigationTest 2。包含旧全部功能回归、完整 v1→v4 / v3→v4 升级、旧 ART/JVM 备份恢复、新版往返、SQL 失败回滚与新界面交互。
+
+首个完整成功发布：[临时 APK 与签名资料](https://github.com/mlzx-xxj/trade-review-app/releases/tag/v04-debug-38140762209-1)。APK SHA-256 为 `a7dea61efcb89166c1222cba693d48de7640063ffbfd15b32b6fcd353d3cf6b6`；用官方 apksigner 对下载的 APK 独立验证成功，v2 签名、单 signer，实际临时证书 `cc4ea8406f9c15ddfc91c55dc2cba2f5706634e92e40867ef0f19bc6483db02b`。SIGNING.txt 明确 `GitHubActionsSecretsConfigured=false`，未把该证书当作 V0.3 固定 pin。PR 流水线的 sourceCommit 为其合成 merge ref，head SHA 见 Actions。
+
+此轮导出 8 张真实截图，但人工查看发现最后一张系统截图仍显示切页前画面；改为 Compose 渲染同步的 PixelCopy 截图，避免语义树已更新但系统显示帧滞后。截图全部来自测试合成数据。此修复及文档以普通提交重新运行完整 CI，不使用 skip ci；最终提交结果、最新 APK 和逐张截图核验以 PR #4 的验证记录为准，不将上一提交的通过结果移用于新提交。
+
+## 开发阶段的实际失败与修复
 
 本地运行签名门禁 6 项、Secrets 完整性 3 项、公开签名 APK 内容比较 4 项，均通过；它们不处理真实私钥，不能替代 Android 编译。
 
