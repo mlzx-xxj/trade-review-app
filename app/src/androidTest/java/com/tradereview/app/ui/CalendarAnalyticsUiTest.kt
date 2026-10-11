@@ -180,7 +180,19 @@ class CalendarAnalyticsUiTest {
         // Compose's PixelCopy capture waits for the target root to finish drawing.
         // A system screenshot taken just after semantics became idle could still
         // contain the previous screen on the emulator's asynchronous renderer.
-        val image = compose.onAllNodes(isRoot()).onLast().captureToImage().asAndroidBitmap()
+        // Dialogs have their own roots; registry order is not window z-order.
+        val content = when (name) {
+            "01-home" -> hasText("让每一笔交易都有收获")
+            "02-calendar-heatmap", "08-dark-red-calendar" -> hasTestTag("calendar-list")
+            "03-daily-details" -> hasTestTag("day-details-list")
+            "04-combined-filters" -> hasTestTag("filter-options")
+            "05-statistics", "06-pnl-chart" -> hasTestTag("statistics-list")
+            "07-dark-settings" -> hasTestTag("settings-list")
+            else -> error("Unknown screenshot target: $name")
+        }
+        val screen = compose.onNode(isRoot() and hasAnyDescendant(content), useUnmergedTree = true)
+        screen.assertIsDisplayed()
+        val image = screen.captureToImage().asAndroidBitmap()
         File(directory, "$name.png").outputStream().use { assertTrue(image.compress(Bitmap.CompressFormat.PNG, 100, it)) }
         // Owned scoped-storage downloads survive AGP's APK uninstall, without any
         // storage permission. This is AndroidTest-only, synthetic screenshot data.
