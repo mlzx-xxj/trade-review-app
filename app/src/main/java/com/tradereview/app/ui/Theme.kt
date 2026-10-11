@@ -5,10 +5,26 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.luminance
+import java.math.BigDecimal
 
-val ProfitColor = Color(0xFF16846B)
-val LossColor = Color(0xFFC34356)
+data class PnlColors(val profit: Color, val loss: Color)
+val LocalPnlColors = staticCompositionLocalOf { PnlColors(Color(0xFF086B54), Color(0xFFA82D43)) }
+val ProfitColor: Color @Composable get() = LocalPnlColors.current.profit
+val LossColor: Color @Composable get() = LocalPnlColors.current.loss
+
+@Composable
+fun paletteColors(palette: String): PnlColors {
+    val dark = MaterialTheme.colorScheme.surface.luminance() < 0.5f
+    val green = if (dark) Color(0xFF80E3BF) else Color(0xFF086B54)
+    val red = if (dark) Color(0xFFFFA6B2) else Color(0xFFA82D43)
+    return if (palette == "red_profit") PnlColors(red, green) else PnlColors(green, red)
+}
+
+@Composable
+fun pnlColor(amount: BigDecimal): Color = when (amount.signum()) { 1 -> ProfitColor; -1 -> LossColor; else -> MaterialTheme.colorScheme.onSurfaceVariant }
 
 @Composable
 fun TradeReviewTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {

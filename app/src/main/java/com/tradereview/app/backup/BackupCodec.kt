@@ -95,7 +95,13 @@ object BackupCodec {
             requireBackup(counts.integer("trades") == data.trades.size.toLong() &&
                 counts.integer("dailyReviews") == data.dailyReviews.size.toLong() &&
                 counts.integer("plans") == data.planCount.toLong() && counts.integer("reviews") == data.reviewCount.toLong(), "数量不一致，备份可能不完整")
-            requireBackup(root.string("checksumSha256") == digest(gson.toJson(payload(data, version))), "完整性校验失败，文件可能损坏或被修改")
+            val checksum = root.string("checksumSha256")
+            val canonical = digest(gson.toJson(payload(data, version)))
+            // V0.3 used reflection for catalog/draft objects: ART sorts declared fields,
+            // whereas the JVM follows declaration order. Accept only those two legacy
+            // layouts, after complete strict validation; schema 3 never uses reflection.
+            val legacyAndroid = version == 2 && checksum == digest(gson.toJson(payload(data, version, androidLegacy = true)))
+            requireBackup(checksum == canonical || legacyAndroid, "完整性校验失败，文件可能损坏或被修改")
             return data
         } catch (error: BackupException) { throw error }
         catch (_: Exception) { throw BackupException("JSON 格式或字段类型不正确，未恢复任何数据") }
@@ -166,7 +172,7 @@ object BackupCodec {
     }
 
     // Fixed field order makes the checksum independent of whitespace or incoming object key order.
-    private fun payload(data: BackupData, version: Int = SCHEMA_VERSION) = JsonObject().apply {
+    private fun payload(data: BackupData, version: Int = SCHEMA_VERSION, androidLegacy: Boolean = false) = JsonObject().apply {
         addProperty("format", "trade-review-backup"); addProperty("schemaVersion", version)
         addProperty("exportedAt", data.exportedAt)
         add("counts", JsonObject().apply {
@@ -178,14 +184,33 @@ object BackupCodec {
         add("trades", JsonArray().apply { data.trades.forEach { add(tradeJson(it, version)) } })
         add("dailyReviews", JsonArray().apply { data.dailyReviews.forEach { add(reviewJson(it)) } })
         if (version >= 2) {
-            add("tags", gson.toJsonTree(data.tags)); add("instruments", gson.toJsonTree(data.instruments))
+            fun legacy(o: JsonObject): JsonObject = if (version == 2 && androidLegacy) JsonObject().apply { o.keySet().sorted().forEach { add(it, o[it]) } } else o
+            add("tags", JsonArray().apply { data.tags.forEach { add(legacy(tagObject(it))) } })
+            add("instruments", JsonArray().apply { data.instruments.forEach { add(legacy(instrumentObject(it))) } })
             // Preserve the exact V0.3 canonical field set for old-format checksum verification.
             add("settings", JsonObject().apply {
                 addProperty("id", data.settings.id); addProperty("lastMarket", data.settings.lastMarket); addProperty("theme", data.settings.theme)
                 if (version >= 3) addProperty("pnlPalette", data.settings.pnlPalette)
-            }); add("drafts", gson.toJsonTree(data.drafts))
-            if (version >= 3) add("savedFilters", gson.toJsonTree(data.savedFilters))
+            }); add("drafts", JsonArray().apply { data.drafts.forEach { add(legacy(draftObject(it))) } })
+            if (version >= 3) add("savedFilters", JsonArray().apply { data.savedFilters.forEach { f -> add(JsonObject().apply {
+                addProperty("id", f.id); addProperty("name", f.name); addProperty("currency", f.currency); add("criteria", FilterCodec.json(f.criteria))
+            }) } })
         }
+    }
+    private fun tagObject(t: ManagedTag) = JsonObject().apply {
+        addProperty("kind", t.kind); addProperty("id", t.id); addProperty("name", t.name); addProperty("sortOrder", t.sortOrder)
+        addProperty("favorite", t.favorite); addProperty("hidden", t.hidden); addProperty("lastUsed", t.lastUsed)
+    }
+    private fun instrumentObject(i: Instrument) = JsonObject().apply {
+        addProperty("id", i.id); addProperty("market", i.market); addProperty("name", i.name); addProperty("code", i.code)
+        addProperty("sortOrder", i.sortOrder); addProperty("favorite", i.favorite); addProperty("lastUsed", i.lastUsed)
+    }
+    private fun draftObject(d: EntryDraft) = JsonObject().apply {
+        addProperty("key", d.key); addProperty("recordKey", d.recordKey); addProperty("tradeId", d.tradeId); addProperty("date", d.date)
+        addProperty("market", d.market); addProperty("symbol", d.symbol); addProperty("direction", d.direction); addProperty("currency", d.currency)
+        addProperty("amount", d.amount); addProperty("outcome", d.outcome); addProperty("positionPercent", d.positionPercent)
+        addProperty("strategy", d.strategy); addProperty("emotion", d.emotion); add("mistakes", tagJson(d.mistakes)); add("discipline", tagJson(d.discipline))
+        addProperty("reviewed", d.reviewed); addProperty("note", d.note); addProperty("details", d.details)
     }
     private fun tradeJson(t: Trade, version: Int) = JsonObject().apply {
         addProperty("id", t.id); addProperty("recordKey", t.recordKey); addProperty("date", t.date)

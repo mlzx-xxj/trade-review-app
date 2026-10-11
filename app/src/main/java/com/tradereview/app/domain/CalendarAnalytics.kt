@@ -50,6 +50,7 @@ object TradingCalendar {
 
 object AdvancedAnalytics {
     fun performance(trades: List<Trade>): Performance {
+        require(trades.map { it.currency }.distinct().size <= 1) { "不同币种不能混合统计" }
         val ordered = trades.sortedWith(compareBy<Trade> { it.date }.thenBy { it.id }.thenBy { it.recordKey })
         var wins = 0; var losses = 0; var reviewed = 0
         var winsTotal = BigDecimal.ZERO; var lossesTotal = BigDecimal.ZERO
@@ -69,7 +70,7 @@ object AdvancedAnalytics {
         fun average(total: BigDecimal, count: Int): BigDecimal? = if (count == 0) null else total.divide(count.toBigDecimal(), 8, RoundingMode.HALF_UP)
         val averageWin = average(winsTotal, wins); val averageLoss = average(lossesTotal, losses)
         return Performance(trades.size, wins, losses, trades.size - wins - losses, running, averageWin, averageLoss, average(running, trades.size),
-            if (averageWin == null || averageLoss == null) null else averageWin.divide(averageLoss.abs(), 8, RoundingMode.HALF_UP),
+            if (averageWin == null || averageLoss == null) null else (winsTotal * losses.toBigDecimal()).divide(lossesTotal.abs() * wins.toBigDecimal(), 8, RoundingMode.HALF_UP),
             reviewed, maxWinning, maxLosing, drawdown)
     }
     fun report(trades: List<Trade>, reviews: List<DailyReview>, filter: TradeFilter, today: LocalDate): AnalysisReport {
@@ -83,8 +84,12 @@ object AdvancedAnalytics {
             .toSortedMap().map { (date, group) -> AmountPoint(date, amount(group), group.size) }
         fun groups(key: (Trade) -> String) = trades.groupBy(key).map { (id, group) -> GroupResult(id, performance(group)) }
             .sortedWith(compareByDescending<GroupResult> { it.performance.netPnl }.thenBy { it.key })
-        fun tags(key: (Trade) -> List<String>) = trades.flatMap { key(it).distinct() }.distinct().map { id -> GroupResult(id, performance(trades.filter { id in key(it) })) }
-            .sortedWith(compareByDescending<GroupResult> { it.performance.count }.thenBy { it.key })
+        fun tags(key: (Trade) -> List<String>): List<GroupResult> {
+            val grouped = linkedMapOf<String, MutableList<Trade>>()
+            trades.forEach { t -> key(t).distinct().forEach { id -> grouped.getOrPut(id) { mutableListOf() }.add(t) } }
+            return grouped.map { (id, group) -> GroupResult(id, performance(group)) }
+                .sortedWith(compareByDescending<GroupResult> { it.performance.count }.thenBy { it.key })
+        }
         val dates = trades.map { it.date }.toSet(); val range = filter.bounds(today)
         val ratings = reviews.filter { it.reviewSaved && (range == null || it.date in range) && (!filter.hasTradeConditions || it.date in dates) }
             .sortedBy { it.date }.map { RatingPoint(it.date, it.rating) }

@@ -36,6 +36,24 @@ class V04DataTest {
         assertTrue(db.trades().allTags().first { it.id == "custom_v03" }.hidden)
         assertEquals("green_profit", db.trades().settings()!!.pnlPalette); assertTrue(db.trades().allFilters().isEmpty())
     }
+    @Test fun bothJvmAndArtV03ChecksumsImportAndReExportWithIdenticalCanonicalV04Bytes() = runBlocking {
+        val assets = androidx.test.platform.app.InstrumentationRegistry.getInstrumentation().context.assets
+        val jvm = assets.open("v03-backup.json").use(BackupCodec::read)
+        val art = assets.open("v03-android-backup.json").use(BackupCodec::read)
+        assertEquals(jvm, art); assertEquals(BackupCodec.encode(jvm), BackupCodec.encode(art))
+        assertTrue(BackupCodec.encode(jvm).indexOf("\"kind\"") < BackupCodec.encode(jvm).indexOf("\"favorite\""))
+        backup.restore(backup.preview(art), RestoreMode.REPLACE)
+        val roundTrip = BackupCodec.decode(BackupCodec.encode(backup.export()))
+        assertEquals(art.trades, roundTrip.trades); assertEquals(art.tags.associateBy { it.kind to it.id }, roundTrip.tags.associateBy { it.kind to it.id })
+        // Generate the old format using the actual ART reflection layout, not a mock.
+        val gson = com.google.gson.GsonBuilder().disableHtmlEscaping().create()
+        val root = com.google.gson.JsonParser.parseString(assets.open("v03-backup.json").bufferedReader().use { it.readText() }).asJsonObject
+        root.remove("checksumSha256")
+        root.add("tags", gson.toJsonTree(jvm.tags)); root.add("instruments", gson.toJsonTree(jvm.instruments)); root.add("drafts", gson.toJsonTree(jvm.drafts))
+        val bytes = java.security.MessageDigest.getInstance("SHA-256").digest(gson.toJson(root).toByteArray(Charsets.UTF_8))
+        root.addProperty("checksumSha256", bytes.joinToString("") { "%02x".format(it) })
+        assertEquals(jvm, BackupCodec.decode(gson.toJson(root)))
+    }
     @Test fun failureInNewFilterTableRollsBackAllTablesAndPaletteInBothModes() = runBlocking {
         db.trades().insert(Trade(date = 20000, netPnl = "7.00"))
         db.trades().saveFilter(SavedFilter(name = "原筛选"))

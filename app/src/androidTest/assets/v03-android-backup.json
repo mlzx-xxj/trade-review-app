@@ -1,0 +1,347 @@
+{
+  "format": "trade-review-backup",
+  "schemaVersion": 2,
+  "exportedAt": "2026-10-11T07:00:00Z",
+  "counts": {
+    "trades": 1,
+    "dailyReviews": 1,
+    "plans": 1,
+    "reviews": 1,
+    "tags": 29,
+    "instruments": 1,
+    "drafts": 0
+  },
+  "trades": [
+    {
+      "id": 7,
+      "recordKey": "0123456789abcdef0123456789abcdef",
+      "date": 20000,
+      "market": "futures",
+      "symbol": "旧备份黄金",
+      "direction": "short",
+      "currency": "CNY",
+      "netPnl": "-123.45",
+      "positionPercent": 25,
+      "strategy": "custom_v03",
+      "emotion": "anxious",
+      "mistakes": [
+        "chase",
+        "oversize"
+      ],
+      "discipline": [
+        "respect_stop"
+      ],
+      "reviewed": true,
+      "note": "V0.3 原始备注"
+    }
+  ],
+  "dailyReviews": [
+    {
+      "date": 20000,
+      "outlook": "bullish",
+      "strategies": [
+        "trend",
+        "breakout"
+      ],
+      "preparations": [
+        "risk"
+      ],
+      "maxPosition": 25,
+      "planSaved": true,
+      "emotion": "anxious",
+      "discipline": [
+        "respect_stop"
+      ],
+      "mistakes": [
+        "chase"
+      ],
+      "lessons": [
+        "stop",
+        "rest"
+      ],
+      "rating": 4,
+      "reviewSaved": true
+    }
+  ],
+  "tags": [
+    {
+      "favorite": false,
+      "hidden": false,
+      "id": "trend",
+      "kind": "strategy",
+      "lastUsed": 0,
+      "name": "趋势跟随",
+      "sortOrder": 0
+    },
+    {
+      "favorite": false,
+      "hidden": false,
+      "id": "breakout",
+      "kind": "strategy",
+      "lastUsed": 0,
+      "name": "突破交易",
+      "sortOrder": 1
+    },
+    {
+      "favorite": false,
+      "hidden": false,
+      "id": "pullback",
+      "kind": "strategy",
+      "lastUsed": 0,
+      "name": "回调入场",
+      "sortOrder": 2
+    },
+    {
+      "favorite": false,
+      "hidden": false,
+      "id": "range",
+      "kind": "strategy",
+      "lastUsed": 0,
+      "name": "区间交易",
+      "sortOrder": 3
+    },
+    {
+      "favorite": false,
+      "hidden": false,
+      "id": "calm",
+      "kind": "emotion",
+      "lastUsed": 0,
+      "name": "平静",
+      "sortOrder": 0
+    },
+    {
+      "favorite": false,
+      "hidden": false,
+      "id": "confident",
+      "kind": "emotion",
+      "lastUsed": 0,
+      "name": "自信",
+      "sortOrder": 1
+    },
+    {
+      "favorite": false,
+      "hidden": false,
+      "id": "anxious",
+      "kind": "emotion",
+      "lastUsed": 0,
+      "name": "焦虑",
+      "sortOrder": 2
+    },
+    {
+      "favorite": false,
+      "hidden": false,
+      "id": "impatient",
+      "kind": "emotion",
+      "lastUsed": 0,
+      "name": "急躁",
+      "sortOrder": 3
+    },
+    {
+      "favorite": false,
+      "hidden": false,
+      "id": "excited",
+      "kind": "emotion",
+      "lastUsed": 0,
+      "name": "兴奋",
+      "sortOrder": 4
+    },
+    {
+      "favorite": false,
+      "hidden": false,
+      "id": "chase",
+      "kind": "mistake",
+      "lastUsed": 0,
+      "name": "追涨杀跌",
+      "sortOrder": 0
+    },
+    {
+      "favorite": false,
+      "hidden": false,
+      "id": "no_stop",
+      "kind": "mistake",
+      "lastUsed": 0,
+      "name": "未设止损",
+      "sortOrder": 1
+    },
+    {
+      "favorite": false,
+      "hidden": false,
+      "id": "early_exit",
+      "kind": "mistake",
+      "lastUsed": 0,
+      "name": "提前止盈",
+      "sortOrder": 2
+    },
+    {
+      "favorite": false,
+      "hidden": false,
+      "id": "oversize",
+      "kind": "mistake",
+      "lastUsed": 0,
+      "name": "仓位过重",
+      "sortOrder": 3
+    },
+    {
+      "favorite": false,
+      "hidden": false,
+      "id": "countertrend",
+      "kind": "mistake",
+      "lastUsed": 0,
+      "name": "逆势交易",
+      "sortOrder": 4
+    },
+    {
+      "favorite": false,
+      "hidden": false,
+      "id": "overtrade",
+      "kind": "mistake",
+      "lastUsed": 0,
+      "name": "频繁交易",
+      "sortOrder": 5
+    },
+    {
+      "favorite": false,
+      "hidden": false,
+      "id": "follow_plan",
+      "kind": "discipline",
+      "lastUsed": 0,
+      "name": "遵守入场计划",
+      "sortOrder": 0
+    },
+    {
+      "favorite": false,
+      "hidden": false,
+      "id": "respect_stop",
+      "kind": "discipline",
+      "lastUsed": 0,
+      "name": "按计划止损",
+      "sortOrder": 1
+    },
+    {
+      "favorite": false,
+      "hidden": false,
+      "id": "size_control",
+      "kind": "discipline",
+      "lastUsed": 0,
+      "name": "控制仓位",
+      "sortOrder": 2
+    },
+    {
+      "favorite": false,
+      "hidden": false,
+      "id": "no_impulse",
+      "kind": "discipline",
+      "lastUsed": 0,
+      "name": "避免冲动交易",
+      "sortOrder": 3
+    },
+    {
+      "favorite": false,
+      "hidden": false,
+      "id": "levels",
+      "kind": "preparation",
+      "lastUsed": 0,
+      "name": "确认关键价位",
+      "sortOrder": 0
+    },
+    {
+      "favorite": false,
+      "hidden": false,
+      "id": "risk",
+      "kind": "preparation",
+      "lastUsed": 0,
+      "name": "设定止损与风险",
+      "sortOrder": 1
+    },
+    {
+      "favorite": false,
+      "hidden": false,
+      "id": "news",
+      "kind": "preparation",
+      "lastUsed": 0,
+      "name": "检查重要事件",
+      "sortOrder": 2
+    },
+    {
+      "favorite": false,
+      "hidden": false,
+      "id": "size",
+      "kind": "preparation",
+      "lastUsed": 0,
+      "name": "确定最大仓位",
+      "sortOrder": 3
+    },
+    {
+      "favorite": false,
+      "hidden": false,
+      "id": "wait",
+      "kind": "lesson",
+      "lastUsed": 0,
+      "name": "等待信号确认",
+      "sortOrder": 0
+    },
+    {
+      "favorite": false,
+      "hidden": false,
+      "id": "smaller",
+      "kind": "lesson",
+      "lastUsed": 0,
+      "name": "降低单笔仓位",
+      "sortOrder": 1
+    },
+    {
+      "favorite": false,
+      "hidden": false,
+      "id": "stop",
+      "kind": "lesson",
+      "lastUsed": 0,
+      "name": "严格执行止损",
+      "sortOrder": 2
+    },
+    {
+      "favorite": false,
+      "hidden": false,
+      "id": "rest",
+      "kind": "lesson",
+      "lastUsed": 0,
+      "name": "情绪不稳时休息",
+      "sortOrder": 3
+    },
+    {
+      "favorite": false,
+      "hidden": false,
+      "id": "keep",
+      "kind": "lesson",
+      "lastUsed": 0,
+      "name": "保持当前纪律",
+      "sortOrder": 4
+    },
+    {
+      "favorite": true,
+      "hidden": true,
+      "id": "custom_v03",
+      "kind": "strategy",
+      "lastUsed": 100,
+      "name": "隐藏的旧策略",
+      "sortOrder": 20
+    }
+  ],
+  "instruments": [
+    {
+      "code": "OLD",
+      "favorite": true,
+      "id": "custom_v03_symbol",
+      "lastUsed": 100,
+      "market": "futures",
+      "name": "旧备份黄金",
+      "sortOrder": 3
+    }
+  ],
+  "settings": {
+    "id": 1,
+    "lastMarket": "futures",
+    "theme": "dark"
+  },
+  "drafts": [],
+  "checksumSha256": "cd7efc09fbde6f6c52ee5d87b6a58264b6e6dd1a0409691d1ade82d7a2679dff"
+}

@@ -54,7 +54,14 @@ object TradeFilters {
 object FilterCodec {
     private val gson = Gson().newBuilder().disableHtmlEscaping().create()
     private val fields = setOf("period", "startDay", "endDay", "markets", "symbols", "directions", "outcomes", "strategies", "mistakes", "discipline", "emotions", "tagMatch", "review", "errorPresence")
-    fun encode(value: TradeFilter): String { validate(value); return gson.toJson(value) }
+    fun encode(value: TradeFilter): String { validate(value); return gson.toJson(json(value)) }
+    fun json(value: TradeFilter) = JsonObject().apply {
+        addProperty("period", value.period); addProperty("startDay", value.startDay); addProperty("endDay", value.endDay)
+        add("markets", gson.toJsonTree(value.markets)); add("symbols", gson.toJsonTree(value.symbols)); add("directions", gson.toJsonTree(value.directions))
+        add("outcomes", gson.toJsonTree(value.outcomes)); add("strategies", gson.toJsonTree(value.strategies)); add("mistakes", gson.toJsonTree(value.mistakes))
+        add("discipline", gson.toJsonTree(value.discipline)); add("emotions", gson.toJsonTree(value.emotions))
+        addProperty("tagMatch", value.tagMatch); addProperty("review", value.review); addProperty("errorPresence", value.errorPresence)
+    }
     fun decode(value: String): TradeFilter {
         require(value.length <= 32_768) { "筛选方案过长" }
         val parsed = JsonReader(StringReader(value)).use { reader ->

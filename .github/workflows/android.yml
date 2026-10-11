@@ -181,7 +181,19 @@ jobs:
           emulator-boot-timeout: 300
           emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -no-metrics -partition-size 2048
           disable-animations: true
-          script: ./gradlew --no-daemon --no-build-cache --stacktrace :app:connectedDebugAndroidTest
+          script: |
+            v04_test_status=0
+            ./gradlew --no-daemon --no-build-cache --stacktrace :app:connectedDebugAndroidTest || v04_test_status=$?
+            adb pull /sdcard/Android/data/com.tradereview.app/files/v04-screenshots ci-screenshots || true
+            exit "$v04_test_status"
+      - name: Upload real emulator screenshots from synthetic UI fixtures
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v04-emulator-screenshots
+          path: ci-screenshots/
+          if-no-files-found: error
+          retention-days: 30
       - name: Upload Android test reports
         if: always()
         uses: actions/upload-artifact@v4
@@ -190,6 +202,7 @@ jobs:
           path: |
             app/build/reports/androidTests/
             app/build/outputs/androidTest-results/
+            ci-screenshots/
           retention-days: 30
 
   publish:
@@ -205,6 +218,13 @@ jobs:
         with:
           name: TradeReview-v0.4-${{ github.run_number }}
           path: dist
+      - name: Download verified emulator screenshots
+        uses: actions/download-artifact@v4
+        with:
+          name: v04-emulator-screenshots
+          path: screenshots
+      - name: Package synthetic UI screenshots
+        run: zip -r dist/TradeReview-v0.4-emulator-screenshots.zip screenshots
       - name: Publish after all verification jobs pass
         env:
           GH_TOKEN: ${{ github.token }}
@@ -218,5 +238,5 @@ jobs:
             notes="Debug 编译、JVM 单元测试、Lint、Room 迁移/事务恢复、快速录入/标签/品种/草稿、日历/筛选/分币种统计及 Compose 模拟器测试均通过。固定签名 Secrets 未配置，此包不保证未来长期覆盖升级。此临时包不能覆盖安装固定签名 V0.3；请先 JSON 备份，确认后自行处理不同签名的旧版安装，卸载会清空本地数据。V0.4 数据请定期备份。模拟器测试不是手机实测。"
           fi
           printf '%s\n' "$notes" > "$RUNNER_TEMP/release-notes.txt"
-          gh release create "$tag" dist/*.apk dist/SHA256SUMS.txt dist/SIGNING.txt --repo "$GITHUB_REPOSITORY" --target "${{ github.event.pull_request.head.sha || github.sha }}" --title "$title" --prerelease --notes-file "$RUNNER_TEMP/release-notes.txt"
+          gh release create "$tag" dist/*.apk dist/SHA256SUMS.txt dist/SIGNING.txt dist/TradeReview-v0.4-emulator-screenshots.zip --repo "$GITHUB_REPOSITORY" --target "${{ github.event.pull_request.head.sha || github.sha }}" --title "$title" --prerelease --notes-file "$RUNNER_TEMP/release-notes.txt"
           printf '[APK 与真实验证结果](https://github.com/%s/releases/tag/%s)\n' "$GITHUB_REPOSITORY" "$tag" >> "$GITHUB_STEP_SUMMARY"

@@ -13,6 +13,14 @@ class V04BackupTest {
         assertEquals("dark", data.settings.theme); assertEquals("green_profit", data.settings.pnlPalette); assertTrue(data.savedFilters.isEmpty())
         assertEquals(data.copy(sourceSchemaVersion = 3), BackupCodec.decode(BackupCodec.encode(data)))
     }
+    @Test fun oldAndroidReflectionOrderIsAcceptedWithoutWeakeningIntegrity() {
+        val data = BackupCodec.read(requireNotNull(javaClass.getResourceAsStream("/v03-android-backup.json")))
+        val jvm = BackupCodec.read(requireNotNull(javaClass.getResourceAsStream("/v03-backup.json")))
+        assertEquals(jvm, data)
+        val json = requireNotNull(javaClass.getResourceAsStream("/v03-android-backup.json")).bufferedReader().use { it.readText() }
+        assertThrows(BackupException::class.java) { BackupCodec.decode(json.replace("隐藏的旧策略", "修改的旧策略")) }
+        assertEquals(data.copy(sourceSchemaVersion = 3), BackupCodec.decode(BackupCodec.encode(data)))
+    }
     @Test fun v04RoundTripPreservesPaletteFiltersAllTagModesAndCurrency() {
         val criteria = TradeFilter(period = "custom", startDay = 19999, endDay = 20000, markets = listOf("stock"), symbols = listOf("沪深300"),
             mistakes = listOf("chase", "oversize"), discipline = listOf("respect_stop"), outcomes = listOf("loss"), review = "reviewed", tagMatch = "all")

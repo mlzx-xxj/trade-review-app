@@ -70,7 +70,7 @@ fun TradeCard(trade: Trade, onClick: () -> Unit) {
         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Text(trade.symbol, style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
-                Text(Money.format(Money.value(trade), signed = true), color = if (Money.value(trade).signum() >= 0) ProfitColor else LossColor,
+                Text(Money.format(Money.value(trade), signed = true), color = pnlColor(Money.value(trade)),
                     style = MaterialTheme.typography.titleMedium)
             }
             Text("${dayLabel(trade.date)} · ${trade.currency}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
