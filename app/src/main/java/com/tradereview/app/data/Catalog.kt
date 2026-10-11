@@ -31,16 +31,20 @@ data class EntryDraft(@PrimaryKey val key: String = "new", val recordKey: String
     val direction: String = "long", val currency: String = "CNY", val amount: String = "", val outcome: String = "gain",
     val positionPercent: Int = 10, val strategy: String = "trend", val emotion: String = "calm",
     val mistakes: List<String> = emptyList(), val discipline: List<String> = emptyList(),
-    val reviewed: Boolean = false, val note: String = "", val details: Boolean = false) {
+    val reviewed: Boolean = false, val note: String = "", val details: Boolean = false,
+    @ColumnInfo(defaultValue = "NULL") val professional: ProfessionalDraft? = null) {
     companion object {
         fun from(trade: Trade) = EntryDraft(key = trade.recordKey, recordKey = trade.recordKey, tradeId = trade.id,
             date = trade.date, market = trade.market, symbol = trade.symbol, direction = trade.direction, currency = trade.currency,
             amount = if (java.math.BigDecimal(trade.netPnl).signum() == 0) "" else java.math.BigDecimal(trade.netPnl).abs().toPlainString(),
             outcome = when (java.math.BigDecimal(trade.netPnl).signum()) { -1 -> "loss"; 0 -> "flat"; else -> "gain" },
             positionPercent = trade.positionPercent, strategy = trade.strategy, emotion = trade.emotion,
-            mistakes = trade.mistakes, discipline = trade.discipline, reviewed = trade.reviewed, note = trade.note)
+            mistakes = trade.mistakes, discipline = trade.discipline, reviewed = trade.reviewed, note = trade.note,
+            professional = trade.professional?.let(ProfessionalDraft::from))
         fun copyReusable(trade: Trade) = EntryDraft(market = trade.market, symbol = trade.symbol, direction = trade.direction,
-            currency = trade.currency, positionPercent = trade.positionPercent, strategy = trade.strategy, outcome = "")
+            currency = trade.currency, positionPercent = trade.positionPercent, strategy = trade.strategy, outcome = "",
+            professional = trade.professional?.let { p -> ProfessionalDraft(quantityUnit = p.quantityUnit,
+                contractCode = p.contractCode.orEmpty(), multiplier = p.multiplier.orEmpty(), minTick = p.minTick.orEmpty(), templateName = p.templateName) })
     }
 }
 fun newKey(): String = java.util.UUID.randomUUID().toString().replace("-", "")

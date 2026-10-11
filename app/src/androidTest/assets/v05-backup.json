@@ -1,0 +1,494 @@
+{
+  "format": "trade-review-backup",
+  "schemaVersion": 4,
+  "exportedAt": "2026-10-11T07:00:00Z",
+  "counts": {
+    "trades": 1,
+    "dailyReviews": 1,
+    "plans": 1,
+    "reviews": 1,
+    "tags": 29,
+    "instruments": 1,
+    "drafts": 1,
+    "savedFilters": 1,
+    "riskRules": 1,
+    "contractTemplates": 1
+  },
+  "trades": [
+    {
+      "id": 7,
+      "recordKey": "0123456789abcdef0123456789abcdef",
+      "date": 20000,
+      "market": "futures",
+      "symbol": "螺纹钢",
+      "direction": "short",
+      "currency": "CNY",
+      "netPnl": "395.00",
+      "positionPercent": 25,
+      "strategy": "custom_v03",
+      "emotion": "anxious",
+      "mistakes": [
+        "chase",
+        "oversize"
+      ],
+      "discipline": [
+        "respect_stop"
+      ],
+      "reviewed": true,
+      "note": "V0.3 原始备注",
+      "professional": {
+        "contractCode": "rb2701",
+        "costsConfirmed": true,
+        "entryPrice": "3500",
+        "executionNote": "费用逐项确认\n避免重复滑点",
+        "exitPrice": "3480",
+        "fees": "3.00",
+        "initialStop": "3510",
+        "linearConfirmed": true,
+        "manualRisk": null,
+        "minTick": "1",
+        "multiplier": "10",
+        "otherCosts": "2.00",
+        "planStatus": "out",
+        "plannedPositionPercent": "20",
+        "pnlMode": "auto",
+        "quantity": "2",
+        "quantityUnit": "futures_lot",
+        "reason": "价格突破后入场，合约参数已核实",
+        "riskMode": "price",
+        "stopExecutionCost": null,
+        "takeProfit": "3470",
+        "templateName": "用户螺纹钢参数"
+      },
+      "riskRecord": {
+        "events": [
+          {
+            "checkedAt": "2026-10-11T22:00:00Z",
+            "currency": "CNY",
+            "dailyNet": "395.00",
+            "date": 20000,
+            "direction": "short",
+            "initialRisk": "200",
+            "lossStreak": 0,
+            "netPnl": "395.00",
+            "notChecked": [],
+            "plannedPositionPercent": "20",
+            "positionPercent": 25,
+            "recordKey": "0123456789abcdef0123456789abcdef",
+            "rules": {
+              "accountEquity": "10000.00",
+              "currency": "CNY",
+              "dailyLossLimit": "500.00",
+              "lossStreakThreshold": 3,
+              "maxPositionPercent": "20",
+              "maxRiskPercent": "1"
+            },
+            "violations": [
+              "single_risk",
+              "position_limit",
+              "plan_position"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "dailyReviews": [
+    {
+      "date": 20000,
+      "outlook": "bullish",
+      "strategies": [
+        "trend",
+        "breakout"
+      ],
+      "preparations": [
+        "risk"
+      ],
+      "maxPosition": 25,
+      "planSaved": true,
+      "emotion": "anxious",
+      "discipline": [
+        "respect_stop"
+      ],
+      "mistakes": [
+        "chase"
+      ],
+      "lessons": [
+        "stop",
+        "rest"
+      ],
+      "rating": 4,
+      "reviewSaved": true
+    }
+  ],
+  "tags": [
+    {
+      "kind": "strategy",
+      "id": "trend",
+      "name": "趋势跟随",
+      "sortOrder": 0,
+      "favorite": false,
+      "hidden": false,
+      "lastUsed": 0
+    },
+    {
+      "kind": "strategy",
+      "id": "breakout",
+      "name": "突破交易",
+      "sortOrder": 1,
+      "favorite": false,
+      "hidden": false,
+      "lastUsed": 0
+    },
+    {
+      "kind": "strategy",
+      "id": "pullback",
+      "name": "回调入场",
+      "sortOrder": 2,
+      "favorite": false,
+      "hidden": false,
+      "lastUsed": 0
+    },
+    {
+      "kind": "strategy",
+      "id": "range",
+      "name": "区间交易",
+      "sortOrder": 3,
+      "favorite": false,
+      "hidden": false,
+      "lastUsed": 0
+    },
+    {
+      "kind": "emotion",
+      "id": "calm",
+      "name": "平静",
+      "sortOrder": 0,
+      "favorite": false,
+      "hidden": false,
+      "lastUsed": 0
+    },
+    {
+      "kind": "emotion",
+      "id": "confident",
+      "name": "自信",
+      "sortOrder": 1,
+      "favorite": false,
+      "hidden": false,
+      "lastUsed": 0
+    },
+    {
+      "kind": "emotion",
+      "id": "anxious",
+      "name": "焦虑",
+      "sortOrder": 2,
+      "favorite": false,
+      "hidden": false,
+      "lastUsed": 0
+    },
+    {
+      "kind": "emotion",
+      "id": "impatient",
+      "name": "急躁",
+      "sortOrder": 3,
+      "favorite": false,
+      "hidden": false,
+      "lastUsed": 0
+    },
+    {
+      "kind": "emotion",
+      "id": "excited",
+      "name": "兴奋",
+      "sortOrder": 4,
+      "favorite": false,
+      "hidden": false,
+      "lastUsed": 0
+    },
+    {
+      "kind": "mistake",
+      "id": "chase",
+      "name": "追涨杀跌",
+      "sortOrder": 0,
+      "favorite": false,
+      "hidden": false,
+      "lastUsed": 0
+    },
+    {
+      "kind": "mistake",
+      "id": "no_stop",
+      "name": "未设止损",
+      "sortOrder": 1,
+      "favorite": false,
+      "hidden": false,
+      "lastUsed": 0
+    },
+    {
+      "kind": "mistake",
+      "id": "early_exit",
+      "name": "提前止盈",
+      "sortOrder": 2,
+      "favorite": false,
+      "hidden": false,
+      "lastUsed": 0
+    },
+    {
+      "kind": "mistake",
+      "id": "oversize",
+      "name": "仓位过重",
+      "sortOrder": 3,
+      "favorite": false,
+      "hidden": false,
+      "lastUsed": 0
+    },
+    {
+      "kind": "mistake",
+      "id": "countertrend",
+      "name": "逆势交易",
+      "sortOrder": 4,
+      "favorite": false,
+      "hidden": false,
+      "lastUsed": 0
+    },
+    {
+      "kind": "mistake",
+      "id": "overtrade",
+      "name": "频繁交易",
+      "sortOrder": 5,
+      "favorite": false,
+      "hidden": false,
+      "lastUsed": 0
+    },
+    {
+      "kind": "discipline",
+      "id": "follow_plan",
+      "name": "遵守入场计划",
+      "sortOrder": 0,
+      "favorite": false,
+      "hidden": false,
+      "lastUsed": 0
+    },
+    {
+      "kind": "discipline",
+      "id": "respect_stop",
+      "name": "按计划止损",
+      "sortOrder": 1,
+      "favorite": false,
+      "hidden": false,
+      "lastUsed": 0
+    },
+    {
+      "kind": "discipline",
+      "id": "size_control",
+      "name": "控制仓位",
+      "sortOrder": 2,
+      "favorite": false,
+      "hidden": false,
+      "lastUsed": 0
+    },
+    {
+      "kind": "discipline",
+      "id": "no_impulse",
+      "name": "避免冲动交易",
+      "sortOrder": 3,
+      "favorite": false,
+      "hidden": false,
+      "lastUsed": 0
+    },
+    {
+      "kind": "preparation",
+      "id": "levels",
+      "name": "确认关键价位",
+      "sortOrder": 0,
+      "favorite": false,
+      "hidden": false,
+      "lastUsed": 0
+    },
+    {
+      "kind": "preparation",
+      "id": "risk",
+      "name": "设定止损与风险",
+      "sortOrder": 1,
+      "favorite": false,
+      "hidden": false,
+      "lastUsed": 0
+    },
+    {
+      "kind": "preparation",
+      "id": "news",
+      "name": "检查重要事件",
+      "sortOrder": 2,
+      "favorite": false,
+      "hidden": false,
+      "lastUsed": 0
+    },
+    {
+      "kind": "preparation",
+      "id": "size",
+      "name": "确定最大仓位",
+      "sortOrder": 3,
+      "favorite": false,
+      "hidden": false,
+      "lastUsed": 0
+    },
+    {
+      "kind": "lesson",
+      "id": "wait",
+      "name": "等待信号确认",
+      "sortOrder": 0,
+      "favorite": false,
+      "hidden": false,
+      "lastUsed": 0
+    },
+    {
+      "kind": "lesson",
+      "id": "smaller",
+      "name": "降低单笔仓位",
+      "sortOrder": 1,
+      "favorite": false,
+      "hidden": false,
+      "lastUsed": 0
+    },
+    {
+      "kind": "lesson",
+      "id": "stop",
+      "name": "严格执行止损",
+      "sortOrder": 2,
+      "favorite": false,
+      "hidden": false,
+      "lastUsed": 0
+    },
+    {
+      "kind": "lesson",
+      "id": "rest",
+      "name": "情绪不稳时休息",
+      "sortOrder": 3,
+      "favorite": false,
+      "hidden": false,
+      "lastUsed": 0
+    },
+    {
+      "kind": "lesson",
+      "id": "keep",
+      "name": "保持当前纪律",
+      "sortOrder": 4,
+      "favorite": false,
+      "hidden": false,
+      "lastUsed": 0
+    },
+    {
+      "kind": "strategy",
+      "id": "custom_v03",
+      "name": "隐藏的旧策略",
+      "sortOrder": 20,
+      "favorite": true,
+      "hidden": true,
+      "lastUsed": 100
+    }
+  ],
+  "instruments": [
+    {
+      "id": "custom_v03_symbol",
+      "market": "futures",
+      "name": "旧备份黄金",
+      "code": "OLD",
+      "sortOrder": 3,
+      "favorite": true,
+      "lastUsed": 100
+    }
+  ],
+  "settings": {
+    "id": 1,
+    "lastMarket": "futures",
+    "theme": "dark",
+    "pnlPalette": "red_profit"
+  },
+  "drafts": [
+    {
+      "key": "new",
+      "recordKey": "1123456789abcdef0123456789abcdef",
+      "tradeId": 0,
+      "date": 20000,
+      "market": "stock",
+      "symbol": "沪深300",
+      "direction": "long",
+      "currency": "CNY",
+      "amount": "12.",
+      "outcome": "gain",
+      "positionPercent": 10,
+      "strategy": "custom_v03",
+      "emotion": "calm",
+      "mistakes": [
+        "chase"
+      ],
+      "discipline": [
+        "respect_stop"
+      ],
+      "reviewed": false,
+      "note": "旧版未完成草稿",
+      "details": true,
+      "professional": null
+    }
+  ],
+  "savedFilters": [
+    {
+      "id": "33333333333333333333333333333333",
+      "name": "旧数据筛选",
+      "currency": "CNY",
+      "criteria": {
+        "period": "custom",
+        "startDay": 19999,
+        "endDay": 20001,
+        "markets": [
+          "stock"
+        ],
+        "symbols": [
+          "沪深300"
+        ],
+        "directions": [
+          "short"
+        ],
+        "outcomes": [
+          "loss"
+        ],
+        "strategies": [
+          "custom_v03"
+        ],
+        "mistakes": [
+          "chase"
+        ],
+        "discipline": [
+          "respect_stop"
+        ],
+        "emotions": [
+          "anxious"
+        ],
+        "tagMatch": "any",
+        "review": "reviewed",
+        "errorPresence": "with"
+      }
+    }
+  ],
+  "riskRules": [
+    {
+      "accountEquity": "10000.00",
+      "currency": "CNY",
+      "dailyLossLimit": "500.00",
+      "lossStreakThreshold": 3,
+      "maxPositionPercent": "20",
+      "maxRiskPercent": "1"
+    }
+  ],
+  "contractTemplates": [
+    {
+      "id": "abababababababababababababababab",
+      "market": "futures",
+      "minTick": "1",
+      "multiplier": "10",
+      "name": "用户螺纹钢参数",
+      "note": "由用户核实，复用需再确认",
+      "quantityUnit": "futures_lot",
+      "symbol": "螺纹钢",
+      "userVerified": true
+    }
+  ],
+  "checksumSha256": "935070b335dad76a94d1d3bcd8615268260bb46adffd97fdebc1f1b622cea78a"
+}

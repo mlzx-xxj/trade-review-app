@@ -5,7 +5,7 @@ import tempfile
 import unittest
 
 SCRIPT = Path(__file__).resolve().parents[1] / "run-device-tests.sh"
-SCREENSHOTS = ["01-home", "02-calendar-heatmap", "03-daily-details", "04-combined-filters", "05-statistics", "06-pnl-chart", "07-dark-settings", "08-dark-red-calendar"]
+SCREENSHOTS = ["01-home", "02-calendar-heatmap", "03-daily-details", "04-combined-filters", "05-statistics", "06-pnl-chart", "07-dark-settings", "08-dark-red-calendar", "09-professional-auto", "10-risk-confirmation", "11-risk-rules", "12-r-analytics", "13-professional-dark"]
 
 
 class DeviceDeliveryTest(unittest.TestCase):
@@ -26,7 +26,7 @@ class DeviceDeliveryTest(unittest.TestCase):
     def test_success_copies_every_required_page_from_paths_with_spaces(self):
         result, root = self.invoke()
         self.assertEqual(0, result.returncode, result.stderr)
-        self.assertEqual(8, len(list((root / "ci-screenshots").glob("*.png"))))
+        self.assertEqual(13, len(list((root / "ci-screenshots").glob("*.png"))))
 
     def test_failed_device_tests_remain_failed_even_if_all_screenshots_exist(self):
         result, root = self.invoke(status=7)

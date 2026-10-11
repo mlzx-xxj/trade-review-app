@@ -31,7 +31,8 @@ data class AnalysisReport(val performance: Performance = Performance(), val dail
     val emotions: List<GroupResult> = emptyList(), val errorPresence: List<GroupResult> = emptyList(),
     val ratings: List<RatingPoint> = emptyList())
 data class AnalyticsState(val loading: Boolean = true, val filtered: List<Trade> = emptyList(), val report: AnalysisReport = AnalysisReport(),
-    val calendar: Map<Long, List<DailyPnl>> = emptyMap(), val home: Performance = Performance(), val today: Performance = Performance())
+    val calendar: Map<Long, List<DailyPnl>> = emptyMap(), val home: Performance = Performance(), val today: Performance = Performance(),
+    val risk: RiskReport = RiskReport())
 
 object TradingCalendar {
     /** Null cells are padding; all real dates are LocalDate epoch days, never UTC millis. */
@@ -101,6 +102,6 @@ object AdvancedAnalytics {
     fun calculate(trades: List<Trade>, reviews: List<DailyReview>, currency: String, filter: TradeFilter, today: LocalDate = LocalDate.now()): AnalyticsState {
         val filtered = TradeFilters.apply(trades, currency, filter, today)
         val home = trades.filter { it.currency == currency }
-        return AnalyticsState(false, filtered, report(filtered, reviews, filter, today), TradingCalendar.daily(trades), performance(home), performance(home.filter { it.date == today.toEpochDay() }))
+        return AnalyticsState(false, filtered, report(filtered, reviews, filter, today), TradingCalendar.daily(trades), performance(home), performance(home.filter { it.date == today.toEpochDay() }), RiskAnalytics.report(filtered))
     }
 }

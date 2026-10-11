@@ -19,7 +19,7 @@ import java.time.LocalDate
 @Composable
 fun SettingsPage(model: BackupViewModel, journalBusy: Boolean, modifier: Modifier = Modifier,
     onTags: () -> Unit = {}, onSymbols: () -> Unit = {}, theme: String = "system", onTheme: (String) -> Unit = {},
-    palette: String = "green_profit", onPalette: (String) -> Unit = {}) {
+    palette: String = "green_profit", onPalette: (String) -> Unit = {}, onRisk: () -> Unit = {}) {
     val busy by model.busy.collectAsStateWithLifecycle()
     val preview by model.preview.collectAsStateWithLifecycle()
     val message by model.message.collectAsStateWithLifecycle()
@@ -35,7 +35,7 @@ fun SettingsPage(model: BackupViewModel, journalBusy: Boolean, modifier: Modifie
         if (busy) item { LinearProgressIndicator(Modifier.fillMaxWidth()); Text("正在处理，请等待完成") }
         message?.let { item { SectionCard("处理结果") { Text(it, style = MaterialTheme.typography.bodyMedium) } } }
         item { SectionCard("数据安全", "数据保存在本机；文件由你选择位置，应用不联网上传。") {
-            Text("JSON 包含全部币种交易、每日日志、标签、品种、草稿、常用筛选和配色偏好。备份为明文，请选择你信任的位置。")
+            Text("JSON 包含全部币种交易、每日日志、标签、品种、草稿、常用筛选、专业交易、风险规则、合约模板和配色偏好。备份为明文，请选择你信任的位置。")
             Button(enabled = !locked && preview == null, onClick = { json.launch("交易复盘-${LocalDate.now()}.json") }, modifier = Modifier.fillMaxWidth()) { Text("保存完整 JSON 备份") }
             OutlinedButton(enabled = !locked, onClick = { restore.launch(arrayOf("application/json", "text/plain", "application/octet-stream")) }, modifier = Modifier.fillMaxWidth()) { Text("选择 JSON 备份恢复") }
             Text("卸载会删除本机数据。建议定期备份；系统文件选择器也可能提供你自行配置的云盘。", style = MaterialTheme.typography.bodySmall)
@@ -46,6 +46,8 @@ fun SettingsPage(model: BackupViewModel, journalBusy: Boolean, modifier: Modifie
             Text("盘前计划 ${p.backup.planCount} 份 · 盘后复盘 ${p.backup.reviewCount} 份（含全部标签）")
             Text("格式版本 ${p.backup.sourceSchemaVersion} · 标签 ${p.backup.tags.size} 个 · 品种 ${p.backup.instruments.size} 个 · 草稿 ${p.backup.drafts.size} 份")
             Text("常用筛选 ${p.backup.savedFilters.size} 份 · 盈亏配色 ${if(p.backup.settings.pnlPalette == "red_profit") "红盈绿亏" else "绿盈红亏"}")
+            Text("专业记录 ${p.backup.trades.count { it.professional != null }} 笔 · 风险规则 ${p.backup.riskRules.size} 个币种 · 合约模板 ${p.backup.contractTemplates.size} 份")
+            Text("冲突交易保留本地专业信息及纪律快照；覆盖会完整替换。")
             Text("合并将保留本地标签名称、收藏、排序与设置，补入新的稳定 ID 和草稿；覆盖替换全部数据。")
             Text("当前本地：${p.before.trades.size} 笔交易 · ${p.before.reviews.size} 个日志日期")
             Row { RadioButton(selected = mode == RestoreMode.MERGE.name, enabled = !locked, onClick = { mode = RestoreMode.MERGE.name }); Text("去重合并（保留本地冲突内容）", Modifier.padding(top = 12.dp)) }
@@ -63,6 +65,7 @@ fun SettingsPage(model: BackupViewModel, journalBusy: Boolean, modifier: Modifie
         item { SectionCard("偏好与管理") {
             OutlinedButton(enabled = !locked && preview == null, onClick = onTags, modifier = Modifier.fillMaxWidth()) { Text("管理自定义标签") }
             OutlinedButton(enabled = !locked && preview == null, onClick = onSymbols, modifier = Modifier.fillMaxWidth()) { Text("管理常用品种") }
+            OutlinedButton(enabled = !locked && preview == null, onClick = onRisk, modifier = Modifier.fillMaxWidth()) { Text("风险规则与合约模板") }
             Text("显示模式")
             SingleChoice(listOf(com.tradereview.app.data.Option("system", "跟随系统"), com.tradereview.app.data.Option("light", "浅色"), com.tradereview.app.data.Option("dark", "深色")), theme) { if(!locked && preview == null) onTheme(it) }
             Text("盈亏配色 · 日历、金额卡片与图表同步")
@@ -70,7 +73,7 @@ fun SettingsPage(model: BackupViewModel, journalBusy: Boolean, modifier: Modifie
         } }
         item { SectionCard("应用信息") {
             Text("交易复盘 ${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})")
-            Text("本地数据库版本 4 · JSON 备份格式版本 3（兼容 V0.2 / V0.3）")
+            Text("本地数据库版本 5 · JSON 备份格式版本 4（兼容 V0.2–V0.4）")
             Text("升级安装需要相同应用标识及签名；应用不会自动下载或上传数据。", style = MaterialTheme.typography.bodySmall)
         } }
     }

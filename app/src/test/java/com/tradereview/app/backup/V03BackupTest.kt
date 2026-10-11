@@ -11,7 +11,7 @@ class V03BackupTest {
         assertEquals(listOf("chase", "oversize"), data.trades.single().mistakes)
         assertEquals("", data.trades.single().note); assertTrue(data.dailyReviews.single().reviewSaved)
         assertEquals(CatalogSeeds.tags, data.tags)
-        assertEquals(data.copy(sourceSchemaVersion = 3), BackupCodec.decode(BackupCodec.encode(data)))
+        assertEquals(data.copy(sourceSchemaVersion = 4), BackupCodec.decode(BackupCodec.encode(data)))
     }
     @Test fun newBackupRoundTripCoversCatalogsOrderingSettingsAndPartialDrafts() {
         val tag = ManagedTag("strategy", "custom_abc", "自定义,策略\n第二行", 12, true, true, 500)

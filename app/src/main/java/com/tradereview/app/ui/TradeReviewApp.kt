@@ -73,7 +73,7 @@ fun TradeReviewApp(model: TradeViewModel, backup: BackupViewModel) {
     }
     CompositionLocalProvider(LocalContext provides chineseContext, LocalConfiguration provides chineseConfiguration, LocalActivityResultRegistryOwner provides activityResultOwner, LocalCatalog provides Catalog(state.tags), LocalPnlColors provides paletteColors(state.settings.pnlPalette)) {
         Scaffold(containerColor = MaterialTheme.colorScheme.background,
-            topBar = { TopAppBar(title = { Text(when(management) { "tags" -> "标签管理"; "symbols" -> "常用品种"; else -> if(settings) "设置" else if(selectedDay != null) "每日详情" else pages[page].title }) }, navigationIcon = {
+            topBar = { TopAppBar(title = { Text(when(management) { "tags" -> "标签管理"; "symbols" -> "常用品种"; "risk" -> "风险规则与合约模板"; else -> if(settings) "设置" else if(selectedDay != null) "每日详情" else pages[page].title }) }, navigationIcon = {
                 if (settings || selectedDay != null) IconButton(enabled = !backupBusy && !busy, onClick = { if(settings) { if(management != null) management = null else settings = false } else selectedDay = null }) { Icon(Icons.AutoMirrored.Filled.ArrowBack, "返回主页面") }
             }, actions = {
                 if (!settings && (page == 0 || page == 1)) IconButton(enabled = !state.loading && state.error == null, onClick = { editorId = 0 }) { Icon(Icons.Default.Add, "新增交易") }
@@ -91,8 +91,9 @@ fun TradeReviewApp(model: TradeViewModel, backup: BackupViewModel) {
                 when(management) {
                     "tags" -> TagManagement(state, busy, model, Modifier.padding(padding))
                     "symbols" -> InstrumentManagement(state, busy, model, Modifier.padding(padding))
+                    "risk" -> RiskSettingsPage(state, model, busy, Modifier.padding(padding))
                     else -> SettingsPage(backup, busy, Modifier.padding(padding), onTags = { management = "tags" }, onSymbols = { management = "symbols" }, theme = state.settings.theme, onTheme = model::selectTheme,
-                        palette = state.settings.pnlPalette, onPalette = model::selectPalette)
+                        palette = state.settings.pnlPalette, onPalette = model::selectPalette, onRisk = { management = "risk" })
                 }
             } else if (state.loading || (state.error == null && analytics.loading)) {
                 Box(Modifier.fillMaxSize().padding(padding), contentAlignment = androidx.compose.ui.Alignment.Center) { CircularProgressIndicator() }
@@ -112,7 +113,7 @@ fun TradeReviewApp(model: TradeViewModel, backup: BackupViewModel) {
                 if (editorId != null) {
                     val original = state.trades.firstOrNull { it.id == editorId }
                     TradeEditor(original, state, busy, saveError = message?.takeIf { it.startsWith("保存失败") }, onDismiss = { editorId = null },
-                        onDraft = model::persistDraft, onSave = model::saveEntry, onDelete = { model.deleteTrade(it) { editorId = null } }, notify = model::notify)
+                        onDraft = model::persistDraft, onSave = { draft, approved, done -> model.saveEntry(draft, done, approved) }, onDelete = { model.deleteTrade(it) { editorId = null } }, notify = model::notify, onTemplate = model::saveTemplate)
                 }
             }
         }

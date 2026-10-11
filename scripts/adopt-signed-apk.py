@@ -62,12 +62,12 @@ def main():
     for old_apk in output.glob("*.apk"):
         if old_apk != candidate:
             old_apk.unlink()
-    apk = output / "TradeReview-v0.4-stable.apk"
+    apk = output / "TradeReview-v0.5-stable.apk"
     candidate.replace(apk)
     digest = hashlib.sha256(signed).hexdigest()
     (output / "SHA256SUMS.txt").write_text(f"{digest}  {apk.name}\n")
     (output / "SIGNING.txt").write_text(
-        f"versionName=0.4.0\nversionCode=4\napplicationId=com.tradereview.app\n"
+        f"versionName=0.5.0\nversionCode=5\napplicationId=com.tradereview.app\n"
         f"sourceCommit={args.source_commit}\ncertificateSha256={expected}\napkSha256={digest}\n"
         "signingOrigin=explicitly authorized V0.3 long-term key; signed with official standalone apksigner in Base\n"
         f"GitHubActionsSecretsConfigured={args.secrets_configured}\n"

@@ -18,6 +18,9 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.platform.LocalFocusManager
 import com.tradereview.app.data.*
 import com.tradereview.app.domain.FastEntry
+import com.tradereview.app.domain.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import com.google.gson.Gson
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
@@ -62,8 +65,8 @@ fun DateControl(date: Long, onDate: (Long) -> Unit, allowFuture: Boolean = false
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TradeEditor(original: Trade?, state: JournalState, busy: Boolean, saveError: String?, onDismiss: () -> Unit,
-    onDraft: (EntryDraft) -> Unit, onSave: (EntryDraft, () -> Unit) -> Unit, onDelete: (Trade) -> Unit,
-    notify: (String) -> Unit) {
+    onDraft: (EntryDraft) -> Unit, onSave: (EntryDraft, String?, () -> Unit) -> Unit, onDelete: (Trade) -> Unit,
+    notify: (String) -> Unit, onTemplate: (ContractTemplate) -> Unit = {}) {
     val draftKey = original?.recordKey ?: "new"
     val restored = state.drafts.firstOrNull { it.key == draftKey }
     val initial = remember(draftKey) {
@@ -79,22 +82,33 @@ fun TradeEditor(original: Trade?, state: JournalState, busy: Boolean, saveError:
     var error by remember { mutableStateOf<String?>(null) }
     var feedback by remember { mutableStateOf(if (restored != null) "已恢复未保存草稿" else "") }
     var confirmDelete by remember { mutableStateOf(false) }
+    var pendingRisk by remember { mutableStateOf<Triple<EntryDraft, Boolean, RiskEvent>?>(null) }
     var chooseSymbol by remember { mutableStateOf(false) }
     val scroll = rememberScrollState()
     val catalog = LocalCatalog.current
     val focus = LocalFocusManager.current
     LaunchedEffect(busy) { if(busy) focus.clearFocus() }
-    LaunchedEffect(draft) { onDraft(draft) }
+    LaunchedEffect(draft) { onDraft(draft); if(error != null) error = FastEntry.error(draft) }
+    val current = runCatching { FastEntry.trade(draft) }.getOrNull()
+    val riskPreview by produceState<RiskEvent?>(null, current, state.riskRules, state.trades) {
+        value = withContext(Dispatchers.Default) { current?.let { RiskEngine.check(it, state.riskRules.firstOrNull { r -> r.currency == it.currency }, state.trades) } }
+    }
     fun leave() { onDraft(draft); onDismiss() }
-    fun save(keepOpen: Boolean) {
-        error = FastEntry.error(draft)
-        val saving = draft
-        if (error == null) onSave(saving) {
+    fun commit(saving: EntryDraft, keepOpen: Boolean, approved: String? = null) {
+        onSave(saving, approved) {
             if (keepOpen) {
                 draft = EntryDraft.copyReusable(FastEntry.trade(saving)).copy(outcome = "gain")
                 feedback = "交易已保存，可以继续记录下一笔"; error = null
             } else onDismiss()
         }
+    }
+    fun save(keepOpen: Boolean) {
+        error = FastEntry.error(draft)
+        if(error != null) return
+        val candidate = FastEntry.trade(draft)
+        val check = RiskEngine.check(candidate, state.riskRules.firstOrNull { it.currency == draft.currency }, state.trades)
+        if(RiskEngine.financialFactsChanged(original, candidate) && check.violations.isNotEmpty()) pendingRisk = Triple(draft, keepOpen, check)
+        else commit(draft, keepOpen)
     }
     Dialog(onDismissRequest = { if (!busy) leave() }, properties = DialogProperties(usePlatformDefaultWidth = false, dismissOnBackPress = !busy)) {
         BackHandler(busy) { }
@@ -118,7 +132,7 @@ fun TradeEditor(original: Trade?, state: JournalState, busy: Boolean, saveError:
             }) { padding ->
                 CompositionLocalProvider(LocalChoicesEnabled provides !busy) {
                 Column(Modifier.padding(padding).fillMaxSize().verticalScroll(scroll).padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    Text("已平仓交易 · 金额扣除手续费 · 未保存内容自动留为本地草稿", style = MaterialTheme.typography.bodySmall)
+                    Text("已平仓交易 · 手动默认，自动模式需核实成本 · 未保存内容自动留为本地草稿", style = MaterialTheme.typography.bodySmall)
                     if (original == null && state.trades.isNotEmpty()) OutlinedButton(enabled = !busy, onClick = {
                         draft = EntryDraft.copyReusable(state.trades.maxBy { it.id }); feedback = "已复制上一笔，盈亏及复盘状态已清空"; notify("已复制上一笔交易")
                     }, modifier = Modifier.fillMaxWidth()) { Text("复制上一笔交易") }
@@ -136,6 +150,7 @@ fun TradeEditor(original: Trade?, state: JournalState, busy: Boolean, saveError:
                         SingleChoice(visible, draft.symbol) { draft = draft.copy(symbol = it) }
                         TextButton(enabled = !busy, onClick = { chooseSymbol = true }) { Text("搜索 / 更多品种") }
                         SingleChoice(Presets.directions, draft.direction) { draft = draft.copy(direction = it) }
+                        if(draft.professional?.pnlMode != "auto") {
                         Text("盈亏结果")
                         SingleChoice(listOf(Option("gain", "盈利"), Option("loss", "亏损"), Option("flat", "持平")), draft.outcome) {
                             draft = draft.copy(outcome = it, amount = if(it == "flat") "" else draft.amount)
@@ -145,6 +160,7 @@ fun TradeEditor(original: Trade?, state: JournalState, busy: Boolean, saveError:
                             supportingText = { Text("输入大于 0 的金额，持平请选择“持平”。") },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal), modifier = Modifier.fillMaxWidth().testTag("entry-amount"))
                         else Text("已明确选择持平：净盈亏 0.00 ${draft.currency}")
+                        } else Text("使用专业区的自动净盈亏；原手工金额保留，未静默覆盖。")
                         Text("交易策略")
                         SingleChoice(catalog.options("strategy", listOf(draft.strategy)), draft.strategy) { draft = draft.copy(strategy = it) }
                     }
@@ -161,11 +177,29 @@ fun TradeEditor(original: Trade?, state: JournalState, busy: Boolean, saveError:
                         Row { Checkbox(enabled = !busy, checked = draft.reviewed, onCheckedChange = { draft = draft.copy(reviewed = it) }); Text("本笔已完成复盘", Modifier.padding(top = 12.dp)) }
                         OutlinedTextField(enabled = !busy, value = draft.note, onValueChange = { if(it.length <= 300) draft = draft.copy(note = it) }, label = { Text("简短补充备注（可选）") }, maxLines = 3, modifier = Modifier.fillMaxWidth())
                     }
+                    OutlinedButton(enabled = !busy, onClick = { draft = draft.copy(professional = (draft.professional ?: ProfessionalDraft()).let { it.copy(expanded = !it.expanded) }) }, modifier = Modifier.fillMaxWidth().testTag("expand-professional")) {
+                        Text(if(draft.professional?.expanded == true) "收起专业交易信息" else "展开专业交易信息（可选）")
+                    }
+                    if(draft.professional?.expanded == true) ProfessionalFields(requireNotNull(draft.professional), draft.market, draft.symbol, draft.direction, draft.currency,
+                        state.contractTemplates, busy, { draft = draft.copy(professional = it) }, onTemplate)
+                    val r = current?.let(ProfessionalMath::r)
+                    Text("本笔 R：${ProfessionalMath.formatR(r)}", modifier = Modifier.testTag("entry-r"), color = r?.let(::pnlColor) ?: MaterialTheme.colorScheme.onSurface)
+                    current?.let { t -> riskPreview?.takeIf { it.recordKey == t.recordKey && it.netPnl == t.netPnl && it.date == t.date && it.positionPercent == t.positionPercent }?.let { check ->
+                        if(check.violations.isNotEmpty()) Text(check.violations.joinToString("；") { RiskEngine.labels.getValue(it) }, color = MaterialTheme.colorScheme.error, modifier = Modifier.testTag("entry-risk-warning"))
+                        check.notChecked.forEach { Text(it, style = MaterialTheme.typography.bodySmall) }
+                    } }
+                    original?.riskRecord?.takeIf { it.events.isNotEmpty() }?.let { record -> Text("历史纪律检查 ${record.events.size} 次；曾触发：${record.violations.joinToString("、") { RiskEngine.labels.getValue(it) }.ifEmpty { "无违规" }}。修改规则不删除历史检查。", style = MaterialTheme.typography.bodySmall) }
                     Spacer(Modifier.height(8.dp))
                 }
                 }
             }
         }
+        pendingRisk?.let { pending -> AlertDialog(onDismissRequest = { if(!busy) pendingRisk = null }, title = { Text("风险纪律提醒，仍保存真实记录？") },
+            text = { Column { pending.third.violations.forEach { Text(RiskEngine.labels.getValue(it), color = MaterialTheme.colorScheme.error) }
+                Text("净盈亏 ${pending.third.netPnl} ${pending.third.currency} · 初始风险 ${pending.third.initialRisk ?: "未提供"}\n本日净盈亏 ${pending.third.dailyNet} · 连亏 ${pending.third.lossStreak} 笔")
+                Text("这是自定参考纪律，不是交易指令。确认后如实保存金额与违规快照，不修改成交事实。")
+            } }, confirmButton = { TextButton(enabled = !busy, onClick = { pendingRisk = null; commit(pending.first, pending.second, RiskEngine.fingerprint(pending.third)) }) { Text("仍保存真实记录") } },
+            dismissButton = { TextButton(enabled = !busy, onClick = { pendingRisk = null }) { Text("返回核对") } }) }
         if (confirmDelete && original != null) AlertDialog(onDismissRequest = { if(!busy) confirmDelete = false }, title = { Text("删除这笔交易？") },
             text = { Text("${original.symbol} · ${dayLabel(original.date)}\n删除后无法恢复。") },
             confirmButton = { TextButton(enabled = !busy, onClick = { onDelete(original) }) { Text("删除") } },

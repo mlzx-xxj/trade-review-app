@@ -67,6 +67,10 @@ fun TradeCard(trade: Trade, onClick: () -> Unit) {
             Text("${dayLabel(trade.date)} · ${trade.currency}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             Text("${Presets.label(Presets.markets, trade.market)} · ${Presets.label(Presets.directions, trade.direction)} · 仓位 ${trade.positionPercent}% · ${catalog.label("strategy", trade.strategy)}", style = MaterialTheme.typography.bodySmall)
             Text(if (trade.reviewed) "已复盘 · ${catalog.label("emotion", trade.emotion)}" else "待复盘 · 点击补充错误与纪律", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary)
+            val r = com.tradereview.app.domain.ProfessionalMath.r(trade)
+            Text("R：${com.tradereview.app.domain.ProfessionalMath.formatR(r)}", color = r?.let(::pnlColor) ?: MaterialTheme.colorScheme.onSurfaceVariant, style = MaterialTheme.typography.bodySmall)
+            trade.professional?.contractCode?.let { Text("合约：$it", style = MaterialTheme.typography.bodySmall) }
+            trade.riskRecord?.violations?.takeIf { it.isNotEmpty() }?.let { Text("曾触发风险纪律：${it.joinToString("、") { id -> com.tradereview.app.domain.RiskEngine.labels.getValue(id) }}", color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall) }
             if (trade.mistakes.isNotEmpty()) Text(trade.mistakes.joinToString(" · ") { catalog.label("mistake", it) }, style = MaterialTheme.typography.bodySmall, color = LossColor)
         }
     }
