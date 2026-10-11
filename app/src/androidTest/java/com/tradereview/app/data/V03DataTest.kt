@@ -89,7 +89,7 @@ class V03DataTest {
         catch (_: android.database.sqlite.SQLiteException) { assertEquals(original.copy(exportedAt = "x"), repo.export().copy(exportedAt = "x")) }
     }
     @Test fun legacyV02BackupCanReplaceAndThenExportAsNewFormat() = runBlocking {
-        val data = context.assets.open("v02-backup.json").use(BackupCodec::read)
+        val data = androidx.test.platform.app.InstrumentationRegistry.getInstrumentation().context.assets.open("v02-backup.json").use(BackupCodec::read)
         val repo = BackupRepository(db)
         repo.restore(repo.preview(data), RestoreMode.REPLACE)
         assertEquals("旧备份黄金", db.trades().allTrades().single().symbol)

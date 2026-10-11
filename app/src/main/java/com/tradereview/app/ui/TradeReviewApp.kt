@@ -12,6 +12,7 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.LocalActivityResultRegistryOwner
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -49,6 +50,7 @@ fun TradeReviewApp(model: TradeViewModel, backup: BackupViewModel) {
     var editorId by rememberSaveable { mutableStateOf<Long?>(null) }
     val snack = remember { SnackbarHostState() }
     // Material components (including the calendar) use Chinese even on an English phone.
+    val activityResultOwner = LocalActivityResultRegistryOwner.current
     val context = LocalContext.current
     val configuration = LocalConfiguration.current
     val chineseConfiguration = remember(configuration) {
@@ -58,7 +60,7 @@ fun TradeReviewApp(model: TradeViewModel, backup: BackupViewModel) {
     LaunchedEffect(message) {
         message?.let { snack.showSnackbar(it); model.clearMessage() }
     }
-    CompositionLocalProvider(LocalContext provides chineseContext, LocalConfiguration provides chineseConfiguration, LocalCatalog provides Catalog(state.tags)) {
+    CompositionLocalProvider(LocalContext provides chineseContext, LocalConfiguration provides chineseConfiguration, LocalActivityResultRegistryOwner provides activityResultOwner, LocalCatalog provides Catalog(state.tags)) {
         Scaffold(containerColor = MaterialTheme.colorScheme.background,
             topBar = { TopAppBar(title = { Text(when(management) { "tags" -> "标签管理"; "symbols" -> "常用品种"; else -> if(settings) "设置" else pages[page].title }) }, navigationIcon = {
                 if (settings) IconButton(enabled = !backupBusy && !busy, onClick = { if(management != null) management = null else settings = false }) { Icon(Icons.AutoMirrored.Filled.ArrowBack, "返回主页面") }
