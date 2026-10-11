@@ -1,5 +1,22 @@
 # 实际验证记录
 
+最终验证成功。应用与工作流源码提交：`5db47e533a1da46cb7385eb2e4e37f48a5017612`。
+
+| 检查 | 实际结果 |
+| --- | --- |
+| Debug 应用 APK、测试 APK 编译 | 通过 |
+| Gradle 官方 Wrapper 校验 | 通过，四个完整文件已入库，发行包带 SHA-256 校验 |
+| JVM 单元测试 | 6 项通过，0 失败/错误/跳过 |
+| Android Lint | 0 错误 |
+| API 29 x86_64 模拟器测试 | 3 项通过，0 失败/错误/跳过，22.412 秒 |
+| APK 校验与离线权限 | SHA-256 一致；实际 Manifest 无 INTERNET 权限，minSdk 26、targetSdk 35 |
+
+- [完整 PR CI #10](https://github.com/mlzx-xxj/trade-review-app/actions/runs/38115856371)：构建和设备任务均成功。
+- [源码分支 CI #9](https://github.com/mlzx-xxj/trade-review-app/actions/runs/38115853995)：成功构建并上传可下载 APK。
+- [手机浏览器下载预发布 APK](https://github.com/mlzx-xxj/trade-review-app/releases/tag/debug-38115853995-1)。私有仓库需要登录有访问权的 GitHub 账号。
+
+设备 JUnit XML 已下载核对：`tradesAndDailyReviewPersistAcrossReopenAndSupportEditDelete`、`bottomNavigationShowsEachPage`、`userCanCreateEditAndDeleteATrade` 全部通过。验证基于 CI 模拟器，未进行物理手机实测。
+
 ## Base 环境
 
 - 已使用现有 Base 工作区，未创建新环境，未安装 Android Studio。
@@ -23,4 +40,5 @@
 - 最新源码 `6146f95118eb1409145e521ec429d4d7b9c00c94` 的源码分支运行 #7 已完整成功（https://github.com/mlzx-xxj/trade-review-app/actions/runs/38114644226），包括应用 APK 与测试 APK 编译、JUnit 和 Lint。新版预发布附件：https://github.com/mlzx-xxj/trade-review-app/releases/tag/debug-38114644226-1 。
 - #8（https://github.com/mlzx-xxj/trade-review-app/actions/runs/38114646883）的应用与测试 APK 前置编译、6 项单元测试和 Lint 均通过；设备任务实际失败在模拟器启动阶段，仍未执行设备测试。
 - 日志明确原因：`Not enough space to create userdata partition`，可用 7147.83 MB，要求 7372.80 MB。已为一次性的 GitHub runner 清理未使用的 .NET SDK，并将 AVD 数据分区设为 2048 MB、启动超时改为 300 秒；Base 文件和系统配置不受影响。
-- 设备测试结果待修复后的实际云端运行填写。
+- #10 的磁盘清理与 2 GB 数据分区配置实际生效，模拟器成功启动并实际执行全部 3 项测试。JUnit XML 为 3 tests、0 failures、0 errors、0 skipped；运行状态 success。
+- 最终文档提交仅记录上述已经完成的结果，不修改应用代码或构建工作流，使用 `[skip ci]` 避免重复执行相同测试。
