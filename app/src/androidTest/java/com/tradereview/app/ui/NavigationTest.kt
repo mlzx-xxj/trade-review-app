@@ -1,7 +1,6 @@
 package com.tradereview.app.ui
 
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.assertDoesNotExist
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onAllNodesWithText
@@ -48,6 +47,7 @@ class NavigationTest {
         compose.onNodeWithText("亏损").performScrollTo().performClick()
         compose.onNodeWithText("保存交易").performClick()
         compose.waitUntil(10_000) { compose.onAllNodesWithText("编辑交易与复盘").fetchSemanticsNodes().isEmpty() }
+        compose.waitUntil(10_000) { compose.onAllNodesWithText("-123.45").fetchSemanticsNodes().isNotEmpty() }
         compose.onNodeWithText("-123.45").assertIsDisplayed()
         compose.onNodeWithText("MVP测试品种").performClick()
         compose.onNodeWithContentDescription("删除交易").performClick()

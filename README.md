@@ -14,9 +14,9 @@
 ## 手机下载
 
 1. 用安卓浏览器登录有此私有仓库访问权的 GitHub 账号。
-2. 打开 [Releases](../../releases)，选择最新的“交易复盘 Debug”预发布。
+2. 打开 [Releases](https://github.com/mlzx-xxj/trade-review-app/releases)，选择最新的“交易复盘 Debug”预发布。
 3. 展开 **Assets**，直接下载 `TradeReview-debug.apk`，按手机提示允许浏览器安装应用。
-4. 或在 [Actions](../../actions/workflows/android.yml) 成功运行底部的 **Artifacts** 下载 APK ZIP 并解压。Actions 产物保留 30 天，Release 附件保留直到删除。
+4. 或在 [Actions](https://github.com/mlzx-xxj/trade-review-app/actions/workflows/android.yml) 成功运行底部的 **Artifacts** 下载 APK ZIP 并解压。Actions 产物保留 30 天，Release 附件保留直到删除。
 
 Debug APK 为试用包。卸载会删除全部本地记录，MVP 暂无导出备份。CI 缓存调试签名保证通常可覆盖更新；缓存被清除后签名可能变化，此时覆盖安装会被 Android 拒绝。应用发布及正式签名不在本 MVP 范围内。
 
@@ -38,7 +38,7 @@ Debug APK 为试用包。卸载会删除全部本地记录，MVP 暂无导出备
 有 Android SDK 的机器可运行：
 
 ```sh
-./gradlew :app:assembleDebug :app:testDebugUnitTest :app:lintDebug
+./gradlew :app:assembleDebug :app:assembleDebugAndroidTest :app:testDebugUnitTest :app:lintDebug
 ./gradlew :app:connectedDebugAndroidTest  # 需要连接手机或模拟器
 ```
 
@@ -48,6 +48,8 @@ Debug APK 为试用包。卸载会删除全部本地记录，MVP 暂无导出备
 - `pull_request`：上述验证加 Android API 29 模拟器上的 Room 持久化与 Compose 导航测试。
 - `workflow_dispatch`：手动执行完整验证并上传可下载 APK。
 
-JUnit 覆盖精确金额、输入限制、币种隔离、持平/空样本、按日排序曲线、策略与错误计数。Android 测试覆盖 Room 重开后读回、修改/删除、每日计划与复盘合并，以及四页导航。测试结果以 Actions 的实际运行和 [验证记录](docs/VALIDATION.md) 为准。
+工作流合并至 main 后即可在 Actions 界面手动执行；合并前源码分支推送已经会自动构建并提供预发布 APK。测试 APK 编译也在前置构建中执行，编译错误会在启动模拟器前被发现。
+
+JUnit 覆盖精确金额、输入限制、币种隔离、持平/空样本、按日排序曲线、策略与错误计数。Android 测试覆盖 Room 重开后读回、修改/删除、每日计划与复盘合并、四页导航，以及通过界面新增/修改/删除交易。测试结果以 Actions 的实际运行和 [验证记录](docs/VALIDATION.md) 为准。
 
 [项目结构与阶段计划](docs/PLAN.md)

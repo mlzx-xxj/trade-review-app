@@ -17,4 +17,7 @@
 - 第二次云端源码运行 #3（https://github.com/mlzx-xxj/trade-review-app/actions/runs/38105291915）已实际生成官方 Wrapper、通过校验并完成 Debug APK 编译。JUnit XML 显示 6 项测试、0 失败、0 错误、0 跳过。
 - 该次 Lint 实际失败：API 26 不支持主题属性 `windowLightNavigationBar`；Compose 读取配置需使用 `LocalConfiguration`。已移除多余的主题属性（边到边样式由 Activity API 控制）并改为读取/提供中文 LocalConfiguration。
 - 已通过 GitHub 连接器取回云端生成的四个官方 Wrapper 文件与 Room v1 schema，无须本地绕过代理。
-- 模拟器测试在上述 Lint 失败后被跳过，尚未执行；修复后的完整结果待云端验证。
+- 第三次源码分支云端运行 #5（https://github.com/mlzx-xxj/trade-review-app/actions/runs/38113841843）完整成功；PR #6 的构建任务也成功。已实际验证：6 项 JUnit 测试、0 失败/错误/跳过；Lint XML 为 0 错误；Debug APK 上传且 SHA-256 与随附校验文件相符。
+- 已解析实际 APK 的二进制 Manifest：没有 INTERNET 权限，minSdk 26、targetSdk 35。
+- #6 的模拟器任务在测试 APK Kotlin 编译阶段失败：错误导入成员方法 `assertDoesNotExist`，尚未运行设备测试。已删除导入，并将测试 APK 编译移至前置构建；启用 Gradle 构建缓存供同仓库 PR 的设备任务复用，避免重复下载和编译。
+- 修复后设备测试结果待实际执行后填写。
