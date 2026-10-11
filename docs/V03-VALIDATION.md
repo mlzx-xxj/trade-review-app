@@ -48,3 +48,33 @@
 ## 剩余限制
 
 所有者须下载私密签名备份、离线保存并配置 Secrets/证书 pin，才能持续自动签署后续包。旧不同签名测试版需手动卸载再首次安装。没有实际手机安装、未来版本覆盖升级或所有手机厂商 SAF 提供方测试。JSON 是明文、完整性摘要不是加密或身份认证。模拟器通过不能代替真机结果。
+
+## PR #3 再审与无缓存复验（2026-10-11）
+
+再审开始时实时 GitHub API 显示 PR 已是 Ready、尚未合并、auto_merge=null。最新提交 ffde8a6 仅修改 .gitignore、计划和验证文档；签名交付工作流 fa38c1a 已有上文完整成功记录，但 ffde8a6 整个提交没有重新运行。因此本轮对最新分支完整复验，不把旧检查当作新提交检查。
+
+审核发现并修复的边界：
+
+- 原配置仅检查 keystore Secret，其他 Secret 单独存在时可能静默退回临时包；现在四个全空才允许临时包，任意残缺组合拒绝（覆盖 14 种部分配置）。
+- 原 Secrets 签名只匹配可修改的仓库变量；现在同时匹配变量和已提交的 V0.3 固定证书 pin，防止另一把密钥和它的变量被误认为原升级身份。
+- 要求 APK 恰有一个 signer；多个 signer 拒绝发布。SIGNING.txt 明确来源、源码 ref 和 Secrets 实际配置状态。
+- 编译/JVM/Lint 与 connectedDebugAndroidTest 均加 --no-build-cache，保留依赖缓存但重新执行验证任务。
+
+修复提交 **bffff7ad3d3adf155128130037f31ea29470cbda**，应用源码、Room schema、Android/JVM 功能测试和既有固定证书均未改变。[完整 Actions 38132365195](https://github.com/mlzx-xxj/trade-review-app/actions/runs/38132365195) 的 build / device-tests / publish 全部 success。
+
+| 已实际执行 | 结果 |
+| --- | --- |
+| 无缓存 Debug / Android 测试 APK 编译 | 成功 |
+| JVM | 26 通过，0 失败/错误/跳过；XML 时间 10:35:52–10:35:53 UTC |
+| 发布校验 Python 测试 | 6 签名门禁 + 3 配置 + 4 payload，合计 13 通过 |
+| Android Lint | 0 错误、13 警告 |
+| API 29 模拟器 | 28 通过，0 失败/错误/跳过；实际执行日志及 XML 均已检查 |
+| 临时包自动发布 | 成功，明确 test.apk 和 SecretsConfigured=false |
+
+已下载报告并解析 XML：verification-reports 11700220227、android-test-reports 11699538484；APK 11700120440。生成 v3 schema 与提交文件相同。PR 工作流检出 GitHub 合成 merge ref，SIGNING.txt 的 sourceCommit 记录该 ref；run.head_sha 对应 bffff7a，main 仍为 9dfd40f。
+
+[本轮临时包](https://github.com/mlzx-xxj/trade-review-app/releases/tag/v03-debug-38132365195-1)：APK SHA-256 `4e2158b7bc6b37629f5c53da4eb97ba45646b0c983ce6139878bd96b7b9bf7be`，证书 `a651dbfea2643b7f03cf6916b40ae519170e0781e5ec56f4a0ed20af9fcdd233`，与 V0.3 固定证书不同，不能将其作为固定身份的覆盖升级包。
+
+本轮实际比较发现：已授权、已签名的固定 APK 与新无缓存编译产物全部应用内容一致，可复用已有公开 APK 完成最终工作流验证，无需访问私钥或重新签名。现有固定包证书仍是 `30d5e88ac7f0ade3d8c5f10d7d894681e7953002377c85b5fa094ee7b71e071c`，APK 摘要仍为 `4b7422e1f9c03f6cafb166014dd306265fcf10aee49959ce7284d1f62c6db995`；本轮没有生成、替换或重新配置密钥。当前 Secrets public-key 接口再次实测 HTTP 403，未来自动固定签名仍未配置。
+
+此次文档更新使用正常提交，不使用 [skip ci]；更新后的完整 HEAD 将运行普通 PR CI，并显式运行固定 APK 交付验证。最终最新提交的运行与合并前状态以 [PR #3 最新 Checks](https://github.com/mlzx-xxj/trade-review-app/pull/3/checks) 和 PR 正文中的执行链接为准；不自动合并。

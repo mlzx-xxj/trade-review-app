@@ -27,7 +27,7 @@ Actions 实际执行 Debug/Android 测试 APK 编译、JVM 单元测试、Lint�
 ./gradlew :app:connectedDebugAndroidTest
 ```
 
-Base 缺少 SDK 时用 GitHub Actions，不需要完整 Android Studio。本地可执行 `python3 scripts/tests/test_signing_guard.py` 与 `python3 scripts/tests/test_signed_payload.py`（签名门禁与 APK 内容变更拒绝测试，不处理私钥）。
+Base 缺少 SDK 时用 GitHub Actions，不需要完整 Android Studio。本地可执行 `python3 scripts/tests/test_signing_guard.py`、`python3 scripts/tests/test_signing_config.py` 与 `python3 scripts/tests/test_signed_payload.py`（签名门禁、完整配置与 APK 内容变更拒绝测试，不处理私钥）。完整 CI 显式禁用 Gradle 构建缓存，以重新执行编译、测试和 Lint。
 
 JSON 为明文，校验摘要不提供加密或身份认证。模拟器结果不等于真实手机测试；请以本轮 Actions 和验证文档中的实际结果为准。
 
