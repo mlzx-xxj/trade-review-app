@@ -4,7 +4,7 @@
 
 - 已使用现有 Base 工作区，未创建新环境，未安装 Android Studio。
 - 已检查网络策略：文件快照为 unrestricted，运行时状态 unknown；环境代理为 proxy:8080。
-- 首次 Wrapper 下载报 curl (7) 无法连接代理。两次额外网络授权请求均被用户中止，因此没有确认获得执行联网命令的授权；三个目标域名的连通性测试没有完成。不修改代理、不绕过策略、不重复下载。
+- 首次 Wrapper 下载报 curl (7) 无法连接代理。两次额外网络授权请求均被用户中止，因此没有确认获得执行联网命令的授权；raw.githubusercontent.com、services.gradle.org、dl.google.com 的连接测试未完成。不修改代理、不绕过策略、不重复下载。
 - 没有 Android SDK 或 Kotlin 编译器。本地未执行 Android 编译、JVM 测试或模拟器测试。
 - 已执行并通过 XML 语法、工程骨架、Manifest 无 INTERNET 权限且禁用备份的静态检查。这些检查不等于 Android 编译通过。
 - 第二阶段已执行：10 个 Kotlin 源文件和 3 个测试文件存在性、5 个 XML 解析、4 项云端检查任务声明、GitHub Actions YAML 解析；结果通过。源码完整性检查不是 Kotlin 编译或 JUnit 运行。
@@ -20,4 +20,7 @@
 - 第三次源码分支云端运行 #5（https://github.com/mlzx-xxj/trade-review-app/actions/runs/38113841843）完整成功；PR #6 的构建任务也成功。已实际验证：6 项 JUnit 测试、0 失败/错误/跳过；Lint XML 为 0 错误；Debug APK 上传且 SHA-256 与随附校验文件相符。
 - 已解析实际 APK 的二进制 Manifest：没有 INTERNET 权限，minSdk 26、targetSdk 35。
 - #6 的模拟器任务在测试 APK Kotlin 编译阶段失败：错误导入成员方法 `assertDoesNotExist`，尚未运行设备测试。已删除导入，并将测试 APK 编译移至前置构建；启用 Gradle 构建缓存供同仓库 PR 的设备任务复用，避免重复下载和编译。
-- 修复后设备测试结果待实际执行后填写。
+- 最新源码 `6146f95118eb1409145e521ec429d4d7b9c00c94` 的源码分支运行 #7 已完整成功（https://github.com/mlzx-xxj/trade-review-app/actions/runs/38114644226），包括应用 APK 与测试 APK 编译、JUnit 和 Lint。新版预发布附件：https://github.com/mlzx-xxj/trade-review-app/releases/tag/debug-38114644226-1 。
+- #8（https://github.com/mlzx-xxj/trade-review-app/actions/runs/38114646883）的应用与测试 APK 前置编译、6 项单元测试和 Lint 均通过；设备任务实际失败在模拟器启动阶段，仍未执行设备测试。
+- 日志明确原因：`Not enough space to create userdata partition`，可用 7147.83 MB，要求 7372.80 MB。已为一次性的 GitHub runner 清理未使用的 .NET SDK，并将 AVD 数据分区设为 2048 MB、启动超时改为 300 秒；Base 文件和系统配置不受影响。
+- 设备测试结果待修复后的实际云端运行填写。
