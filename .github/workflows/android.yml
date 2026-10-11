@@ -78,6 +78,21 @@ jobs:
           fi
       - name: Compile, run JVM tests and Android lint
         run: ./gradlew --no-daemon --no-build-cache --stacktrace :app:assembleDebug :app:assembleDebugAndroidTest :app:testDebugUnitTest :app:lintDebug
+      - name: Verify compiled APK identity, V0.4 version and offline permissions
+        run: |
+          apk_path=app/build/outputs/apk/debug/app-debug.apk
+          aapt_path="$ANDROID_HOME/build-tools/35.0.0/aapt"
+          badging=$("$aapt_path" dump badging "$apk_path")
+          apk_identity=${badging%%$'\n'*}
+          printf '%s\n' "$apk_identity"
+          [[ "$apk_identity" == *"package: name='com.tradereview.app' versionCode='4' versionName='0.4.0'"* ]] || exit 1
+          permissions=$("$aapt_path" dump permissions "$apk_path")
+          if [[ "$permissions" == *"android.permission.INTERNET"* ]]; then
+            printf 'Offline APK unexpectedly requests INTERNET; publication refused\n' >&2
+            exit 1
+          fi
+          mkdir -p dist
+          printf '%s\n%s\n' "$apk_identity" "$permissions" > dist/APK-IDENTITY.txt
       - name: Verify fixed signer certificate pin or label APK as temporary test
         id: signature
         env:
@@ -181,11 +196,7 @@ jobs:
           emulator-boot-timeout: 300
           emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -no-metrics -partition-size 2048
           disable-animations: true
-          script: |
-            v04_test_status=0
-            ./gradlew --no-daemon --no-build-cache --stacktrace :app:connectedDebugAndroidTest || v04_test_status=$?
-            adb pull /sdcard/Android/data/com.tradereview.app/files/v04-screenshots ci-screenshots || true
-            exit "$v04_test_status"
+          script: bash scripts/run-device-tests.sh
       - name: Upload real emulator screenshots from synthetic UI fixtures
         if: success()
         uses: actions/upload-artifact@v4
@@ -202,6 +213,7 @@ jobs:
           path: |
             app/build/reports/androidTests/
             app/build/outputs/androidTest-results/
+            app/build/outputs/androidTest-additional-output/
             ci-screenshots/
           retention-days: 30
 
@@ -238,5 +250,5 @@ jobs:
             notes="Debug 编译、JVM 单元测试、Lint、Room 迁移/事务恢复、快速录入/标签/品种/草稿、日历/筛选/分币种统计及 Compose 模拟器测试均通过。固定签名 Secrets 未配置，此包不保证未来长期覆盖升级。此临时包不能覆盖安装固定签名 V0.3；请先 JSON 备份，确认后自行处理不同签名的旧版安装，卸载会清空本地数据。V0.4 数据请定期备份。模拟器测试不是手机实测。"
           fi
           printf '%s\n' "$notes" > "$RUNNER_TEMP/release-notes.txt"
-          gh release create "$tag" dist/*.apk dist/SHA256SUMS.txt dist/SIGNING.txt dist/TradeReview-v0.4-emulator-screenshots.zip --repo "$GITHUB_REPOSITORY" --target "${{ github.event.pull_request.head.sha || github.sha }}" --title "$title" --prerelease --notes-file "$RUNNER_TEMP/release-notes.txt"
+          gh release create "$tag" dist/*.apk dist/SHA256SUMS.txt dist/SIGNING.txt dist/APK-IDENTITY.txt dist/TradeReview-v0.4-emulator-screenshots.zip --repo "$GITHUB_REPOSITORY" --target "${{ github.event.pull_request.head.sha || github.sha }}" --title "$title" --prerelease --notes-file "$RUNNER_TEMP/release-notes.txt"
           printf '[APK 与真实验证结果](https://github.com/%s/releases/tag/%s)\n' "$GITHUB_REPOSITORY" "$tag" >> "$GITHUB_STEP_SUMMARY"

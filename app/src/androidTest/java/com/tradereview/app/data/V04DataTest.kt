@@ -35,6 +35,7 @@ class V04DataTest {
         assertEquals(old.trades, db.trades().allTrades()); assertEquals(old.dailyReviews, db.trades().allReviews())
         assertTrue(db.trades().allTags().first { it.id == "custom_v03" }.hidden)
         assertEquals("green_profit", db.trades().settings()!!.pnlPalette); assertTrue(db.trades().allFilters().isEmpty())
+        assertEquals(old.drafts, db.trades().allDrafts()); assertEquals("12.", db.trades().allDrafts().single().amount)
     }
     @Test fun bothJvmAndArtV03ChecksumsImportAndReExportWithIdenticalCanonicalV04Bytes() = runBlocking {
         val assets = androidx.test.platform.app.InstrumentationRegistry.getInstrumentation().context.assets
@@ -75,5 +76,15 @@ class V04DataTest {
         assertThrows(BackupException::class.java) { runBlocking { backup.restore(preview, RestoreMode.REPLACE) } }
         backup.restore(backup.preview(data), RestoreMode.MERGE)
         assertEquals("本地改名", db.trades().allFilters().single().name)
+    }
+    @Test fun canonicalV04GoldenBackupRestoresEveryNewFieldAndMatchesJvmDigest() = runBlocking {
+        val json = androidx.test.platform.app.InstrumentationRegistry.getInstrumentation().context.assets.open("v04-backup.json").bufferedReader().use { it.readText() }
+        val data = BackupCodec.decode(json)
+        val expected = com.google.gson.JsonParser.parseString(json).asJsonObject["checksumSha256"].asString
+        val actual = com.google.gson.JsonParser.parseString(BackupCodec.encode(data)).asJsonObject["checksumSha256"].asString
+        assertEquals(expected, actual)
+        backup.restore(backup.preview(data), RestoreMode.REPLACE)
+        assertEquals("red_profit", db.trades().settings()!!.pnlPalette)
+        assertEquals(data.savedFilters, db.trades().allFilters()); assertEquals(data.drafts, db.trades().allDrafts())
     }
 }

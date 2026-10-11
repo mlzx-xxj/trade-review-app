@@ -31,7 +31,7 @@ fun CalendarPage(state: JournalState, calendar: Map<Long, List<DailyPnl>>, curre
     var mode by rememberSaveable { mutableStateOf("calendar") }
     var range by rememberSaveable { mutableStateOf("month") }
     val month = YearMonth.parse(monthName)
-    val months = TradingCalendar.months(month, if (range == "three") 3 else 1)
+    val months = TradingCalendar.months(month, if (range == "three") 3 else 1).filter { it >= YearMonth.of(1900, 1) }
     val from = months.first().atDay(1).toEpochDay(); val to = month.atEndOfMonth().toEpochDay()
     val maximum = remember(calendar, currency, from, to) { calendar.filterKeys { it in from..to }.values.flatten().filter { it.currency == currency }.maxOfOrNull { it.netPnl.abs() } ?: BigDecimal.ZERO }
     val reviews = remember(state.reviews) { state.reviews.associateBy { it.date } }

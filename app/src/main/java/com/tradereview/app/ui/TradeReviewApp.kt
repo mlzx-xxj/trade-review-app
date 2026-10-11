@@ -17,6 +17,7 @@ import androidx.activity.compose.LocalActivityResultRegistryOwner
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -54,6 +55,7 @@ fun TradeReviewApp(model: TradeViewModel, backup: BackupViewModel) {
     var selectedDay by rememberSaveable { mutableStateOf<Long?>(null) }
     var reviewDate by rememberSaveable { mutableLongStateOf(LocalDate.now().toEpochDay()) }
     var reviewSection by rememberSaveable { mutableStateOf("plan") }
+    val pageState = rememberSaveableStateHolder()
     BackHandler(enabled = selectedDay != null && !settings) { selectedDay = null }
     BackHandler(enabled = settings) { if (!backupBusy && !busy) { if(management != null) management = null else settings = false } }
     var editorId by rememberSaveable { mutableStateOf<Long?>(null) }
@@ -98,15 +100,15 @@ fun TradeReviewApp(model: TradeViewModel, backup: BackupViewModel) {
                 Text(requireNotNull(state.error), Modifier.padding(padding).padding(24.dp), color = MaterialTheme.colorScheme.error)
             } else {
                 if (selectedDay != null) DailyDetailsPage(requireNotNull(selectedDay), state, analytics.calendar[requireNotNull(selectedDay)].orEmpty(),
-                    onOpen = { editorId = it.id }, onJournal = { section -> reviewDate = requireNotNull(selectedDay); reviewSection = section; selectedDay = null; page = 2 }, modifier = Modifier.padding(padding))
-                else when (page) {
+                    onOpen = { editorId = it.id }, onJournal = { section -> pageState.removeState("page:2"); reviewDate = requireNotNull(selectedDay); reviewSection = section; selectedDay = null; page = 2 }, modifier = Modifier.padding(padding))
+                else pageState.SaveableStateProvider("page:$page") { when (page) {
                     0 -> HomePage(state, analytics, currency, model::selectCurrency, Modifier.padding(padding),
-                        onAdd = { editorId = 0 }, onReview = { reviewDate = LocalDate.now().toEpochDay(); reviewSection = "plan"; page = 2 }, onOpen = { editorId = it.id }, onDemo = model::addDemo, busy = busy, onCalendar = { page = 4 })
+                        onAdd = { editorId = 0 }, onReview = { pageState.removeState("page:2"); reviewDate = LocalDate.now().toEpochDay(); reviewSection = "plan"; page = 2 }, onOpen = { editorId = it.id }, onDemo = model::addDemo, busy = busy, onCalendar = { page = 4 })
                     1 -> TradesPage(state, analytics.filtered, currency, filter, model, busy, Modifier.padding(padding), { editorId = 0 }, { editorId = it.id })
                     2 -> DailyReviewPage(state.reviews, busy, model::savePlan, model::saveReview, Modifier.padding(padding), reviewDate, reviewSection)
                     3 -> StatisticsPage(state, analytics, currency, filter, model, busy, onDay = { selectedDay = it }, onDrill = { model.updateFilter(it); page = 1 }, modifier = Modifier.padding(padding))
                     4 -> CalendarPage(state, analytics.calendar, currency, model::selectCurrency, { selectedDay = it }, Modifier.padding(padding))
-                }
+                } }
                 if (editorId != null) {
                     val original = state.trades.firstOrNull { it.id == editorId }
                     TradeEditor(original, state, busy, saveError = message?.takeIf { it.startsWith("保存失败") }, onDismiss = { editorId = null },

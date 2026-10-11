@@ -64,7 +64,7 @@ fun StatisticsPage(state: JournalState, analytics: AnalyticsState, currency: Str
             if (performance.smallSample) Text("样本量 ${performance.count} 笔，少于 20 笔，结论可能不稳定。", color = MaterialTheme.colorScheme.primary)
         } }
         item { SectionCard("每日净盈亏柱状图", "每日归集，点击柱形查看精确金额。") { AmountBarChart(report.daily, currency, onDay = onDay) } }
-        item { SectionCard("累计净盈亏曲线", "由同一筛选结果逐日累计。") { InteractivePnlChart(report.curve, currency, onDay) } }
+        item { SectionCard("累计净盈亏曲线", "由同一筛选结果逐日累计。") { PnlChart(report.curve, currency, onDay) } }
         item { SectionCard("每周盈亏汇总", "周一为每周首日；只汇总筛选范围内的交易。") { AmountBarChart(report.weekly, currency, weekly = true, onDay = onDay) } }
         item { SectionCard("策略表现横向对比", "条长表示净盈亏绝对值；点击策略查看对应交易。") {
             SingleChoice(listOf(Option("pnl", "按净盈亏"), Option("count", "按样本量"), Option("win", "按胜率")), sort) { sort = it }

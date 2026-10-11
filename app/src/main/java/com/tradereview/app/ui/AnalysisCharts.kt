@@ -16,7 +16,6 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.tradereview.app.domain.*
 import java.math.BigDecimal
@@ -28,7 +27,7 @@ import kotlinx.coroutines.withContext
 
 /** Floating point is used only for pixel coordinates; labels and aggregates retain BigDecimal. */
 private fun fraction(value: BigDecimal, span: BigDecimal): Float = if (span.signum() == 0) 0f else value.divide(span, 8, RoundingMode.HALF_UP).toFloat()
-private data class CurveGeometry(val low: BigDecimal, val high: BigDecimal, val span: BigDecimal, val vertices: List<Pair<Int, Float>>)
+private data class CurveGeometry(val source: List<CurvePoint>, val low: BigDecimal, val high: BigDecimal, val span: BigDecimal, val vertices: List<Pair<Int, Float>>)
 
 @Composable
 fun AmountBarChart(points: List<AmountPoint>, currency: String, weekly: Boolean = false, onDay: (Long) -> Unit) {
@@ -73,10 +72,10 @@ fun InteractivePnlChart(points: List<CurvePoint>, currency: String, onDay: (Long
             val block = maxOf(1, values.size / 300)
             val indices = sortedSetOf(0, values.lastIndex)
             values.indices.chunked(block).forEach { part -> indices += part.minBy { values[it] }; indices += part.maxBy { values[it] } }
-            CurveGeometry(low, high, span, indices.map { it to fraction(high - values[it], span) })
+            CurveGeometry(points, low, high, span, indices.map { it to fraction(high - values[it], span) })
         }
     }
-    val prepared = geometry
+    val prepared = geometry?.takeIf { it.source == points }
     if (prepared == null) { LinearProgressIndicator(Modifier.fillMaxWidth()); return }
     val low = prepared.low; val high = prepared.high; val span = prepared.span
     val profit = ProfitColor; val loss = LossColor; val neutral = MaterialTheme.colorScheme.onSurfaceVariant

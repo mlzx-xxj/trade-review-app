@@ -9,7 +9,7 @@
     "reviews": 1,
     "tags": 29,
     "instruments": 1,
-    "drafts": 0
+    "drafts": 1
   },
   "trades": [
     {
@@ -342,6 +342,31 @@
     "lastMarket": "futures",
     "theme": "dark"
   },
-  "drafts": [],
-  "checksumSha256": "cd7efc09fbde6f6c52ee5d87b6a58264b6e6dd1a0409691d1ade82d7a2679dff"
+  "drafts": [
+    {
+      "amount": "12.",
+      "currency": "CNY",
+      "date": 20000,
+      "details": true,
+      "direction": "long",
+      "discipline": [
+        "respect_stop"
+      ],
+      "emotion": "calm",
+      "key": "new",
+      "market": "stock",
+      "mistakes": [
+        "chase"
+      ],
+      "note": "旧版未完成草稿",
+      "outcome": "gain",
+      "positionPercent": 10,
+      "recordKey": "1123456789abcdef0123456789abcdef",
+      "reviewed": false,
+      "strategy": "custom_v03",
+      "symbol": "沪深300",
+      "tradeId": 0
+    }
+  ],
+  "checksumSha256": "0b4869ad7964a8ab4aa50d6b57c396d40ef2c689c2c53b69fa9b4a2fbc674557"
 }

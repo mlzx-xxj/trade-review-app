@@ -28,6 +28,15 @@ class V04BackupTest {
             settings = AppSettings(pnlPalette = "red_profit"), savedFilters = listOf(SavedFilter(name = "常用筛选", currency = "USDT", criteria = criteria)))
         assertEquals(data, BackupCodec.decode(BackupCodec.encode(data)))
     }
+    @Test fun canonicalV04GoldenChecksumMatchesAcrossRuntimeFieldOrders() {
+        val json = requireNotNull(javaClass.getResourceAsStream("/v04-backup.json")).bufferedReader().use { it.readText() }
+        val data = BackupCodec.decode(json)
+        assertEquals("red_profit", data.settings.pnlPalette); assertEquals("12.", data.drafts.single().amount)
+        assertEquals("custom_v03", data.savedFilters.single().criteria.strategies.single())
+        val before = com.google.gson.JsonParser.parseString(json).asJsonObject["checksumSha256"].asString
+        val after = com.google.gson.JsonParser.parseString(BackupCodec.encode(data)).asJsonObject["checksumSha256"].asString
+        assertEquals(before, after)
+    }
     @Test fun invalidFilterReferencesCountsSettingsAndTamperingAreRejected() {
         val data = BackupData("2026-10-11T07:00:00Z", emptyList(), emptyList(), savedFilters = listOf(SavedFilter(name = "常用")))
         listOf(data.copy(settings = AppSettings(pnlPalette = "bad")), data.copy(savedFilters = data.savedFilters + data.savedFilters),

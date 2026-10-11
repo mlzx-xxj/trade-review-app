@@ -98,6 +98,11 @@ class MigrationTest {
             assertEquals(AppSettings(lastMarket = "futures", theme = "dark"), db.trades().settings()); assertTrue(db.trades().allFilters().isEmpty())
             val filter = SavedFilter(name = "新筛选", criteria = com.tradereview.app.domain.TradeFilter(strategies = listOf("trend")))
             db.trades().saveFilter(filter); assertEquals(filter, db.trades().allFilters().single())
+            db.trades().saveSettings(db.trades().settings()!!.copy(pnlPalette = "red_profit"))
+            db.close()
+            val reopened = Room.databaseBuilder(context, TradeDatabase::class.java, name).addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4).build()
+            try { assertEquals(filter, reopened.trades().allFilters().single()); assertEquals("red_profit", reopened.trades().settings()!!.pnlPalette) }
+            finally { reopened.close() }
         } finally { db.close() }
     }
 }

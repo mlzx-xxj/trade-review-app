@@ -88,6 +88,22 @@ class CalendarAnalyticsUiTest {
         openDay(today.minusDays(2))
         compose.onNodeWithTag("day-pnl-CNY").assertTextEquals("CNY：0.00 · 1 笔")
     }
+    @Test fun calendarRestoresSelectedMonthAndScrollAfterDailyDetail() {
+        calendar(); compose.onNodeWithTag("calendar-previous").performClick()
+        val month = YearMonth.from(today).minusMonths(1); val day = month.atDay(1).toEpochDay()
+        compose.onNodeWithTag("calendar-list").performScrollToNode(hasTestTag("calendar-day-$day"))
+        compose.onNodeWithTag("calendar-day-$day").performScrollTo().performClick()
+        compose.onNodeWithContentDescription("返回主页面").performClick()
+        compose.onNodeWithTag("calendar-list").performScrollToNode(hasTestTag("calendar-month"))
+        compose.onNodeWithTag("calendar-month").assertTextEquals("${month.year}年${month.monthValue}月")
+        compose.onNodeWithTag("calendar-today").performClick()
+    }
+    @Test fun editingJournalFromCalendarUsesSelectedDayInsteadOfPreviouslyViewedDay() {
+        nav("勾选复盘"); nav("首页"); calendar(); openDay(today.plusDays(1))
+        compose.onNodeWithTag("day-details-list").performScrollToNode(hasText("编辑盘前计划"))
+        compose.onNodeWithText("编辑盘前计划").performClick()
+        compose.onNodeWithText("日期：${dayLabel(today.plusDays(1).toEpochDay())}").assertIsDisplayed()
+    }
     @Test fun combinationFiltersAreSharedByListAndStatisticsAndPresetRestoresThem() {
         nav("交易记录"); outcomeFilter()
         compose.onNodeWithTag("filtered-count").assertTextEquals("匹配 2 笔 · CNY")
@@ -120,10 +136,10 @@ class CalendarAnalyticsUiTest {
         nav("统计分析")
         compose.onNodeWithTag("statistics-list").performScrollToNode(hasTestTag("daily-bar-${today.toEpochDay()}"))
         compose.onNodeWithTag("daily-bar-${today.toEpochDay()}").performScrollTo().performClick()
-        compose.onNodeWithTag("daily-chart-value").assertTextContains("+0.30 CNY")
+        compose.onNodeWithTag("daily-chart-value").assertTextEquals("${dayLabel(today.toEpochDay())}：+0.30 CNY · 2 笔")
         compose.onNodeWithTag("statistics-list").performScrollToNode(hasTestTag("interactive-pnl-curve"))
         compose.onNodeWithTag("interactive-pnl-curve").performScrollTo().performTouchInput { click(androidx.compose.ui.geometry.Offset(center.x * 1.9f, center.y)) }
-        compose.onNodeWithTag("curve-chart-value").assertTextContains("-9.70 CNY")
+        compose.onNodeWithTag("curve-chart-value").assertTextEquals("${dayLabel(today.toEpochDay())}：累计 -9.70 CNY")
         compose.onNodeWithContentDescription("设置与备份").performClick()
         compose.onNodeWithTag("settings-list").performScrollToNode(hasText("红盈绿亏")); compose.onNodeWithText("红盈绿亏").performClick()
         compose.waitUntil(10000) { model.state.value.settings.pnlPalette == "red_profit" && !model.busy.value }
@@ -145,7 +161,9 @@ class CalendarAnalyticsUiTest {
     }
     private fun capture(name: String) {
         compose.waitForIdle()
-        val directory = File(context.getExternalFilesDir(null), "v04-screenshots").apply { mkdirs() }
+        // AGP copies this supported output directory before uninstalling test APKs.
+        val output = requireNotNull(InstrumentationRegistry.getArguments().getString("additionalTestOutputDir")) { "AGP additional test output is not configured" }
+        val directory = File(output, "v04-screenshots").apply { mkdirs() }
         val image = requireNotNull(InstrumentationRegistry.getInstrumentation().uiAutomation.takeScreenshot())
         File(directory, "$name.png").outputStream().use { assertTrue(image.compress(Bitmap.CompressFormat.PNG, 100, it)) }
         image.recycle()
