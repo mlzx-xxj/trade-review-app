@@ -50,7 +50,7 @@ fun TradeReviewApp(model: TradeViewModel, backup: BackupViewModel) {
     var editorId by rememberSaveable { mutableStateOf<Long?>(null) }
     val snack = remember { SnackbarHostState() }
     // Material components (including the calendar) use Chinese even on an English phone.
-    val activityResultOwner = LocalActivityResultRegistryOwner.current
+    val activityResultOwner = requireNotNull(LocalActivityResultRegistryOwner.current) { "ActivityResult owner is required for local file access" }
     val context = LocalContext.current
     val configuration = LocalConfiguration.current
     val chineseConfiguration = remember(configuration) {
