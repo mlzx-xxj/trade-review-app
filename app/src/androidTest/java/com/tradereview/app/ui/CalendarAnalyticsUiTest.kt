@@ -2,6 +2,9 @@ package com.tradereview.app.ui
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.content.ContentValues
+import android.os.Build
+import android.provider.MediaStore
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -84,7 +87,8 @@ class CalendarAnalyticsUiTest {
         compose.onNodeWithTag("day-pnl-CNY").assertDoesNotExist()
         compose.onNodeWithText("判断：观望 · 最大仓位 20%").assertIsDisplayed()
         compose.onNodeWithContentDescription("返回主页面").performClick()
-        compose.onNodeWithTag("calendar-today").performScrollTo().performClick()
+        compose.onNodeWithTag("calendar-list").performScrollToNode(hasTestTag("calendar-today"))
+        compose.onNodeWithTag("calendar-today").performClick()
         openDay(today.minusDays(2))
         compose.onNodeWithTag("day-pnl-CNY").assertTextEquals("CNY：0.00 · 1 笔")
     }
@@ -158,6 +162,11 @@ class CalendarAnalyticsUiTest {
         compose.onNodeWithContentDescription("设置与备份").performClick()
         compose.onNodeWithTag("settings-list").performScrollToNode(hasText("深色")); compose.onNodeWithText("深色").performClick()
         compose.waitUntil(10000) { model.state.value.settings.theme == "dark" && !model.busy.value }; capture("07-dark-settings")
+        compose.onNodeWithText("红盈绿亏").performScrollTo().performClick()
+        compose.waitUntil(10000) { model.state.value.settings.pnlPalette == "red_profit" && !model.busy.value }
+        compose.onNodeWithContentDescription("返回主页面").performClick(); calendar()
+        compose.onNodeWithTag("calendar-list").performScrollToNode(hasTestTag("calendar-day-${today.toEpochDay()}"))
+        compose.onNodeWithTag("calendar-day-${today.toEpochDay()}").performScrollTo(); capture("08-dark-red-calendar")
     }
     private fun capture(name: String) {
         compose.waitForIdle()
@@ -166,6 +175,19 @@ class CalendarAnalyticsUiTest {
         val directory = File(output, "v04-screenshots").apply { mkdirs() }
         val image = requireNotNull(InstrumentationRegistry.getInstrumentation().uiAutomation.takeScreenshot())
         File(directory, "$name.png").outputStream().use { assertTrue(image.compress(Bitmap.CompressFormat.PNG, 100, it)) }
+        // Owned scoped-storage downloads survive AGP's APK uninstall, without any
+        // storage permission. This is AndroidTest-only, synthetic screenshot data.
+        if (Build.VERSION.SDK_INT >= 29) {
+            val values = ContentValues().apply {
+                put(MediaStore.MediaColumns.DISPLAY_NAME, "$name.png")
+                put(MediaStore.MediaColumns.MIME_TYPE, "image/png")
+                put(MediaStore.MediaColumns.RELATIVE_PATH, "Download/TradeReview-v04-ui")
+                put(MediaStore.MediaColumns.IS_PENDING, 1)
+            }
+            val uri = requireNotNull(context.contentResolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values))
+            requireNotNull(context.contentResolver.openOutputStream(uri)).use { assertTrue(image.compress(Bitmap.CompressFormat.PNG, 100, it)) }
+            context.contentResolver.update(uri, ContentValues().apply { put(MediaStore.MediaColumns.IS_PENDING, 0) }, null, null)
+        }
         image.recycle()
     }
 }

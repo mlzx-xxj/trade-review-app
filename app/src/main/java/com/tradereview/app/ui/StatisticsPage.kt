@@ -70,7 +70,7 @@ fun StatisticsPage(state: JournalState, analytics: AnalyticsState, currency: Str
             SingleChoice(listOf(Option("pnl", "按净盈亏"), Option("count", "按样本量"), Option("win", "按胜率")), sort) { sort = it }
             if (strategies.isEmpty()) Text("暂无策略样本。")
         } }
-        items(strategies, key = { "strategy-${it.key}" }) { result -> SectionCard(catalog.label("strategy", result.key)) {
+        items(strategies, key = { "strategy-${it.key}" }) { result -> GroupResultCard {
             GroupBar(result, catalog.label("strategy", result.key), currency, strategyMaximum) {
                 onDrill(filter.copy(strategies = listOf(result.key)))
             }
@@ -80,14 +80,14 @@ fun StatisticsPage(state: JournalState, analytics: AnalyticsState, currency: Str
             SingleChoice(listOf(Option("pnl", "按净盈亏"), Option("count", "按样本量"), Option("win", "按胜率")), sort) { sort = it }
             if (groups.isEmpty()) Text("暂无匹配样本。")
         } }
-        items(groups, key = { "dimension-$dimension-${it.market}-${it.key}" }) { result -> SectionCard(groupLabel(result)) {
+        items(groups, key = { "dimension-$dimension-${it.market}-${it.key}" }) { result -> GroupResultCard {
             GroupBar(result, groupLabel(result), currency, groupMaximum) { drill(result) }
         } }
         item { SectionCard("错误标签频次与关联表现", "每个错误在同一笔交易中只计一次；一笔交易可关联多个标签，各行不可相加作为交易总数。") {
             Text("标签与盈亏展示统计相关性，不代表标签造成盈亏。")
             if (report.mistakes.isEmpty()) Text("暂无错误标签样本。")
         } }
-        items(report.mistakes, key = { "mistake-${it.key}" }) { result -> SectionCard(catalog.label("mistake", result.key)) {
+        items(report.mistakes, key = { "mistake-${it.key}" }) { result -> GroupResultCard {
             GroupBar(result, catalog.label("mistake", result.key), currency, errorMaximum, frequency = true) {
                 onDrill(filter.copy(mistakes = listOf(result.key)))
             }
@@ -100,5 +100,12 @@ fun StatisticsPage(state: JournalState, analytics: AnalyticsState, currency: Str
         item { SectionCard("每日执行评分趋势", "来自日期范围内已保存的盘后复盘；加入交易条件后，仅显示匹配交易日期。每日日志本身不区分币种。") {
             RatingTrend(report.ratings, onDay)
         } }
+    }
+}
+
+@Composable
+private fun GroupResultCard(content: @Composable ColumnScope.() -> Unit) {
+    Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
+        Column(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp), content = content)
     }
 }

@@ -55,6 +55,7 @@ jobs:
           python3 scripts/tests/test_signing_guard.py
           python3 scripts/tests/test_signing_config.py
           python3 scripts/tests/test_signed_payload.py
+          python3 scripts/tests/test_device_delivery.py
       - name: Configure fixed V0.3 signing key from Secrets when available
         id: signing
         env:

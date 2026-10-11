@@ -36,6 +36,7 @@ fun filterDescription(filter: TradeFilter, catalog: Catalog): String {
     return if (labels.isEmpty()) "全部记录 · 尚未设置额外条件" else labels.joinToString(" · ")
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun FilterCard(title: String, state: JournalState, currency: String, filter: TradeFilter, count: Int,
     onCurrency: (String) -> Unit, onFilter: (TradeFilter) -> Unit, onSave: (String) -> Unit,
@@ -45,15 +46,18 @@ fun FilterCard(title: String, state: JournalState, currency: String, filter: Tra
     var name by rememberSaveable { mutableStateOf("") }
     var remove by remember { mutableStateOf<SavedFilter?>(null) }
     val catalog = LocalCatalog.current
-    SectionCard(title, "列表与统计共用这些条件；金额仅汇总所选币种。") {
+    Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
+        Column(Modifier.fillMaxWidth().padding(12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        Text(title, style = MaterialTheme.typography.titleMedium)
         SingleChoice(Presets.currencies, currency, onCurrency)
         Text(filterDescription(filter, catalog), modifier = Modifier.testTag("active-filter-summary"), style = MaterialTheme.typography.bodySmall)
-        Text("匹配 $count 笔 · $currency", modifier = Modifier.testTag("filtered-count"))
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        Text("匹配 $count 笔 · $currency", modifier = Modifier.testTag("filtered-count"), style = MaterialTheme.typography.bodyMedium)
+        FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             Button(onClick = { open = true }, modifier = Modifier.testTag("open-filters")) { Text("组合筛选") }
             TextButton(onClick = { onFilter(TradeFilter()) }, enabled = filter.active, modifier = Modifier.testTag("clear-filters")) { Text("清除筛选") }
+            OutlinedButton(enabled = !busy, onClick = { name = ""; save = true }, modifier = Modifier.testTag("save-filter-preset")) { Text("保存") }
         }
-        OutlinedButton(enabled = !busy, onClick = { name = ""; save = true }, modifier = Modifier.testTag("save-filter-preset")) { Text("保存常用筛选") }
+        Text("列表与统计同步 · 金额按币种独立汇总", style = MaterialTheme.typography.labelSmall)
         if (state.savedFilters.isNotEmpty()) {
             Text("常用方案 · 相对日期随当天更新", style = MaterialTheme.typography.labelMedium)
             Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -63,6 +67,7 @@ fun FilterCard(title: String, state: JournalState, currency: String, filter: Tra
                         modifier = Modifier.testTag("preset-${value.id}"))
                 }
             }
+        }
         }
     }
     if (open) FilterDialog(state, filter, onDismiss = { open = false }, onApply = { onFilter(it); open = false })

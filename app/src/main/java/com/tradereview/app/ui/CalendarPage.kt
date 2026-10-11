@@ -37,22 +37,22 @@ fun CalendarPage(state: JournalState, calendar: Map<Long, List<DailyPnl>>, curre
     val reviews = remember(state.reviews) { state.reviews.associateBy { it.date } }
     val today = LocalDate.now().toEpochDay()
     LazyColumn(modifier.fillMaxSize().testTag("calendar-list"), contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        item { SectionCard("交易日历", "日期采用本地日历日期；每天按所选币种汇总已记录交易。") {
-            SingleChoice(Presets.currencies, currency, onCurrency)
-            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
+        item { Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
+            Column(Modifier.fillMaxWidth().padding(12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                 IconButton(enabled = month > YearMonth.of(1900, 1), onClick = { monthName = month.minusMonths(1).toString() }, modifier = Modifier.testTag("calendar-previous")) { Icon(Icons.AutoMirrored.Filled.KeyboardArrowLeft, "上个月") }
-                Text("${month.year}年${month.monthValue}月", style = MaterialTheme.typography.titleMedium, modifier = Modifier.testTag("calendar-month"))
+                Text("${month.year}年${month.monthValue}月", style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f).testTag("calendar-month"))
+                TextButton(onClick = { monthName = YearMonth.now().toString() }, modifier = Modifier.testTag("calendar-today")) { Text("今天") }
                 IconButton(enabled = month < YearMonth.of(2100, 12), onClick = { monthName = month.plusMonths(1).toString() }, modifier = Modifier.testTag("calendar-next")) { Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, "下个月") }
             }
-            TextButton(onClick = { monthName = YearMonth.now().toString() }, modifier = Modifier.testTag("calendar-today")) { Text("返回今天") }
+            SingleChoice(Presets.currencies, currency, onCurrency)
             SingleChoice(listOf(Option("calendar", "月历"), Option("heat", "盈亏热力图")), mode) { mode = it }
             SingleChoice(listOf(Option("month", "当前月"), Option("three", "近三个月")), range) { range = it }
-            Text("图例：盈利 / 亏损颜色越深，净金额绝对值越大。持平显示“平”；无交易显示“—”。每个日期均可点击。", style = MaterialTheme.typography.bodySmall)
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) { Text("盈利", color = ProfitColor); Text("亏损", color = LossColor); Text("持平 0"); Text("无交易 —") }
-            Text("配色：${if (state.settings.pnlPalette == "red_profit") "红盈绿亏" else "绿盈红亏"} · 在设置中调整", style = MaterialTheme.typography.bodySmall)
-            if (mode == "heat") Text("本范围颜色基准：最大每日绝对净金额 ${Money.format(maximum)} $currency；不同币种分别计算。", style = MaterialTheme.typography.bodySmall)
+            Text("$currency 独立汇总 · ${if (state.settings.pnlPalette == "red_profit") "红盈绿亏" else "绿盈红亏"} · 点击日期查看详情", style = MaterialTheme.typography.bodySmall)
+            }
         } }
-        items(months, key = { it.toString() }) { shown ->
+        items(months.asReversed(), key = { it.toString() }) { shown ->
             Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
                 Column(Modifier.fillMaxWidth().padding(8.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                     Text("${shown.year}年${shown.monthValue}月 · $currency", style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(8.dp))
@@ -88,7 +88,12 @@ fun CalendarPage(state: JournalState, calendar: Map<Long, List<DailyPnl>>, curre
                 }
             }
         }
-        item { Text("格内大额以“万”简写；点击日期查看完整金额、所有币种和日志。", style = MaterialTheme.typography.bodySmall) }
+        item { SectionCard("日历说明") {
+            Text("盈利 / 亏损颜色越深，净金额绝对值越大。持平显示“平”和金额 0；无交易显示“—”，仍可点击查看日志。")
+            Text("日期采用本地日历日期，周一为每周首日。格内大额以“万”简写；点击查看完整金额、所有币种和计划 / 复盘。")
+            if (mode == "heat") Text("本范围颜色基准：最大每日绝对净金额 ${Money.format(maximum)} $currency；不同币种分别计算。")
+            Text("在设置中选择红盈绿亏或绿盈红亏，金额卡片与图表同时切换。", style = MaterialTheme.typography.bodySmall)
+        } }
     }
 }
 
