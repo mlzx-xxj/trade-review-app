@@ -161,9 +161,12 @@ class CalendarAnalyticsUiTest {
         compose.onNodeWithTag("statistics-list").performScrollToNode(hasTestTag("interactive-pnl-curve")); capture("06-pnl-chart")
         compose.onNodeWithContentDescription("设置与备份").performClick()
         compose.onNodeWithTag("settings-list").performScrollToNode(hasText("深色")); compose.onNodeWithText("深色").performClick()
-        compose.waitUntil(10000) { model.state.value.settings.theme == "dark" && !model.busy.value }; capture("07-dark-settings")
-        compose.onNodeWithText("红盈绿亏").performScrollTo().performClick()
+        compose.waitUntil(10000) { model.state.value.settings.theme == "dark" && !model.busy.value }
+        compose.waitUntil(10000) { model.message.value == null }
+        compose.onNodeWithTag("settings-list").performScrollToNode(hasText("红盈绿亏")); capture("07-dark-settings")
+        compose.onNodeWithText("红盈绿亏").performScrollTo().assertIsDisplayed().performClick()
         compose.waitUntil(10000) { model.state.value.settings.pnlPalette == "red_profit" && !model.busy.value }
+        compose.waitUntil(10000) { model.message.value == null }
         compose.onNodeWithContentDescription("返回主页面").performClick(); calendar()
         compose.onNodeWithTag("calendar-list").performScrollToNode(hasTestTag("calendar-day-${today.toEpochDay()}"))
         compose.onNodeWithTag("calendar-day-${today.toEpochDay()}").performScrollTo(); capture("08-dark-red-calendar")
