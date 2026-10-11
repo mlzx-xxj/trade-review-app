@@ -74,20 +74,21 @@ class FastEntryUiTest {
         compose.onNodeWithText("新增标签").performClick()
         compose.onNodeWithText("标签名称").performTextInput("快速策略")
         compose.onNodeWithText("保存标签").performClick()
-        compose.waitUntil(10000) { model.state.value.tags.any { it.name == "快速策略" } }
+        compose.waitUntil(10000) { !model.busy.value && model.state.value.tags.any { it.name == "快速策略" } }
         val id = model.state.value.tags.first { it.name == "快速策略" }.id
         compose.onNodeWithTag("tag-list").performScrollToNode(hasTestTag("rename-$id"))
-        compose.onNodeWithTag("rename-$id").performClick()
+        compose.onNodeWithTag("rename-$id").assertIsEnabled().performClick()
+        compose.onNodeWithText("重命名标签").assertIsDisplayed()
         compose.onNodeWithText("标签名称").performTextClearance(); compose.onNodeWithText("标签名称").performTextInput("改名策略")
         compose.onNodeWithText("保存标签").performClick()
-        compose.waitUntil(10000) { model.state.value.tags.any { it.id == id && it.name == "改名策略" } }
-        compose.onNodeWithTag("hide-$id").performScrollTo().performClick()
-        compose.waitUntil(10000) { model.state.value.tags.any { it.id == id && it.hidden } }
+        compose.waitUntil(10000) { !model.busy.value && model.state.value.tags.any { it.id == id && it.name == "改名策略" } }
+        compose.onNodeWithTag("hide-$id").performScrollTo().assertIsEnabled().performClick()
+        compose.waitUntil(10000) { !model.busy.value && model.state.value.tags.any { it.id == id && it.hidden } }
         compose.onNodeWithContentDescription("返回主页面").performClick()
         compose.onNodeWithTag("settings-list").performScrollToNode(hasText("管理常用品种"))
         compose.onNodeWithText("管理常用品种").performClick()
         compose.onNodeWithTag("favorite-symbol-preset_stock_0").performScrollTo().performClick()
-        compose.waitUntil(10000) { model.state.value.instruments.any { it.id == "preset_stock_0" && !it.favorite } }
+        compose.waitUntil(10000) { !model.busy.value && model.state.value.instruments.any { it.id == "preset_stock_0" && !it.favorite } }
         compose.onNodeWithText("搜索名称或代码").performTextInput("NVDA")
         compose.onNodeWithText("NVDA · NVDA").assertIsDisplayed()
     }
