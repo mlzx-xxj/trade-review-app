@@ -4,17 +4,18 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ReceiptLong
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Assessment
 import androidx.compose.material.icons.filled.Checklist
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.ReceiptLong
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.tradereview.app.data.DailyReview
@@ -26,7 +27,7 @@ import com.tradereview.app.domain.Money
 import java.time.LocalDate
 
 private data class Page(val title: String, val icon: ImageVector)
-private val pages = listOf(Page("首页", Icons.Default.Home), Page("交易记录", Icons.Default.ReceiptLong),
+private val pages = listOf(Page("首页", Icons.Default.Home), Page("交易记录", Icons.AutoMirrored.Filled.ReceiptLong),
     Page("勾选复盘", Icons.Default.Checklist), Page("统计分析", Icons.Default.Assessment))
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -41,15 +42,15 @@ fun TradeReviewApp(model: TradeViewModel) {
     val snack = remember { SnackbarHostState() }
     // Material components (including the calendar) use Chinese even on an English phone.
     val context = LocalContext.current
-    val chineseContext = remember(context) {
-        val config = android.content.res.Configuration(context.resources.configuration)
-        config.setLocale(java.util.Locale.SIMPLIFIED_CHINESE)
-        context.createConfigurationContext(config)
+    val configuration = LocalConfiguration.current
+    val chineseConfiguration = remember(configuration) {
+        android.content.res.Configuration(configuration).apply { setLocale(java.util.Locale.SIMPLIFIED_CHINESE) }
     }
+    val chineseContext = remember(context, chineseConfiguration) { context.createConfigurationContext(chineseConfiguration) }
     LaunchedEffect(message) {
         message?.let { snack.showSnackbar(it); model.clearMessage() }
     }
-    CompositionLocalProvider(LocalContext provides chineseContext) {
+    CompositionLocalProvider(LocalContext provides chineseContext, LocalConfiguration provides chineseConfiguration) {
         Scaffold(containerColor = MaterialTheme.colorScheme.background,
             topBar = { TopAppBar(title = { Text(pages[page].title) }, actions = {
                 if (page == 0 || page == 1) IconButton(enabled = !state.loading && state.error == null, onClick = { editorId = 0 }) { Icon(Icons.Default.Add, "新增交易") }

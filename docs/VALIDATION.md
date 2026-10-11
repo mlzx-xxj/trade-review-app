@@ -14,4 +14,7 @@
 
 - 初次运行 #2（https://github.com/mlzx-xxj/trade-review-app/actions/runs/38105221389）实际失败在 SDK 初始化，原因是 setup-android 默认安装已下架的 `tools` 包；日志：`Failed to find package 'tools'`。尚未进入应用编译。
 - 已改为仅安装 `platform-tools`，同时使用独立 command-line tools；两项任务均修复，并更新 checkout/setup-java 至 Node 24 对应的 v5。
-- 后续编译及测试结果待实际运行后填写。
+- 第二次云端源码运行 #3（https://github.com/mlzx-xxj/trade-review-app/actions/runs/38105291915）已实际生成官方 Wrapper、通过校验并完成 Debug APK 编译。JUnit XML 显示 6 项测试、0 失败、0 错误、0 跳过。
+- 该次 Lint 实际失败：API 26 不支持主题属性 `windowLightNavigationBar`；Compose 读取配置需使用 `LocalConfiguration`。已移除多余的主题属性（边到边样式由 Activity API 控制）并改为读取/提供中文 LocalConfiguration。
+- 已通过 GitHub 连接器取回云端生成的四个官方 Wrapper 文件与 Room v1 schema，无须本地绕过代理。
+- 模拟器测试在上述 Lint 失败后被跳过，尚未执行；修复后的完整结果待云端验证。

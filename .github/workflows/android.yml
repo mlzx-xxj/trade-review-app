@@ -39,6 +39,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.11.1'
+          cache-read-only: ${{ github.event_name == 'pull_request' }}
       - name: Generate official wrapper when absent
         if: ${{ hashFiles('gradle/wrapper/gradle-wrapper.jar') == '' }}
         run: bash scripts/generate-wrapper.sh
@@ -128,6 +129,7 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.11.1'
+          cache-read-only: true
       - name: Download verified wrapper from build job
         uses: actions/download-artifact@v4
         with:
