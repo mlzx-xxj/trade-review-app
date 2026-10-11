@@ -25,7 +25,12 @@ class EntryRepository(private val database: TradeDatabase) {
         dao.deleteDraft(draft.key)
     }
     suspend fun delete(trade: Trade) = database.withTransaction { dao.delete(trade); dao.deleteDraft(trade.recordKey) }
-    suspend fun saveDraft(draft: EntryDraft) { dao.saveDraft(draft) }
+    suspend fun saveDraft(draft: EntryDraft) = database.withTransaction {
+        // A delayed UI write must not resurrect a saved/deleted transaction's draft.
+        if (draft.key == "new" && dao.findTradeByKey(draft.recordKey) != null) return@withTransaction
+        if (draft.key != "new" && dao.findTrade(draft.tradeId)?.recordKey != draft.recordKey) return@withTransaction
+        dao.saveDraft(draft)
+    }
     suspend fun saveTag(tag: ManagedTag) {
         require(tag.kind in TagKind.names && Regex("[A-Za-z0-9_]{1,64}").matches(tag.id))
         require(tag.name.isNotBlank() && tag.name.length <= 30 && '\u0000' !in tag.name)

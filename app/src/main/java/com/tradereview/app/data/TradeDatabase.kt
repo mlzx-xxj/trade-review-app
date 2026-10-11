@@ -28,6 +28,8 @@ interface TradeDao {
     @Query("SELECT * FROM trades WHERE id = :id")
     suspend fun findTrade(id: Long): Trade?
 
+    @Query("SELECT * FROM trades WHERE recordKey = :key") suspend fun findTradeByKey(key: String): Trade?
+
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insert(trade: Trade): Long
 

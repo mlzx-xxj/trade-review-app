@@ -85,6 +85,7 @@ fun TradeEditor(original: Trade?, state: JournalState, busy: Boolean, saveError:
     val focus = LocalFocusManager.current
     LaunchedEffect(busy) { if(busy) focus.clearFocus() }
     LaunchedEffect(draft) { onDraft(draft) }
+    fun leave() { onDraft(draft); onDismiss() }
     fun save(keepOpen: Boolean) {
         error = FastEntry.error(draft)
         val saving = draft
@@ -95,12 +96,12 @@ fun TradeEditor(original: Trade?, state: JournalState, busy: Boolean, saveError:
             } else onDismiss()
         }
     }
-    Dialog(onDismissRequest = { if (!busy) onDismiss() }, properties = DialogProperties(usePlatformDefaultWidth = false, dismissOnBackPress = !busy)) {
+    Dialog(onDismissRequest = { if (!busy) leave() }, properties = DialogProperties(usePlatformDefaultWidth = false, dismissOnBackPress = !busy)) {
         BackHandler(busy) { }
         Surface(Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
             Scaffold(modifier = Modifier.imePadding(), topBar = {
                 TopAppBar(title = { Text(if (original == null) "快速记录交易" else "编辑交易与复盘") },
-                    navigationIcon = { IconButton(enabled = !busy, onClick = onDismiss) { Icon(Icons.AutoMirrored.Filled.ArrowBack, "返回") } },
+                    navigationIcon = { IconButton(enabled = !busy, onClick = ::leave) { Icon(Icons.AutoMirrored.Filled.ArrowBack, "返回") } },
                     actions = { if (original != null) IconButton(enabled = !busy, onClick = { confirmDelete = true }) { Icon(Icons.Default.Delete, "删除交易") } })
             }, bottomBar = {
                 Surface(shadowElevation = 4.dp) {

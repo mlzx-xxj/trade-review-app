@@ -83,7 +83,7 @@ class BackupRepository(private val database: TradeDatabase) {
                 val draftKeys = preview.before.drafts.map { it.key }.toSet()
                 val restoredTrades = dao.allTrades().associateBy { it.recordKey }
                 preview.backup.drafts.filter { it.key !in draftKeys }.forEach { d ->
-                    if (d.key == "new") dao.saveDraft(d)
+                    if (d.key == "new") { if(d.recordKey !in restoredTrades) dao.saveDraft(d) }
                     else restoredTrades[d.recordKey]?.let { dao.saveDraft(d.copy(tradeId = it.id)) }
                 }
             }

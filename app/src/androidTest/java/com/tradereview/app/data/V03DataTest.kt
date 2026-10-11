@@ -107,4 +107,13 @@ class V03DataTest {
             assertTrue(db.trades().allInstruments().all { it.lastUsed == 0L })
         }
     }
+    @Test fun delayedDraftWriteCannotResurrectSavedOrDeletedEntry() = runBlocking {
+        val repo = EntryRepository(db); val d = EntryDraft(amount = "1")
+        repo.saveDraft(d); repo.save(d); repo.saveDraft(d)
+        assertTrue(db.trades().allDrafts().isEmpty())
+        val trade = db.trades().allTrades().single(); val edit = EntryDraft.from(trade)
+        repo.saveDraft(edit); repo.delete(trade); repo.saveDraft(edit)
+        assertTrue(db.trades().allDrafts().isEmpty())
+    }
+
 }

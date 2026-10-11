@@ -107,7 +107,7 @@ object BackupCodec {
         requireBackup(data.tags.map { it.kind to it.id }.distinct().size == data.tags.size, "标签 ID 重复")
         data.tags.forEach { t ->
             requireBackup(t.kind in TagKind.names && Regex("[A-Za-z0-9_]{1,64}").matches(t.id), "标签类型或 ID 无效")
-            name(t.name); requireBackup(t.sortOrder in 0..100000 && t.lastUsed >= 0, "标签排序或最近时间无效")
+            name(t.name); requireBackup(t.sortOrder in 0..100000 && t.lastUsed in 0..4133980799999L, "标签排序或最近时间无效")
         }
         CatalogSeeds.tags.forEach { seed -> requireBackup(data.tags.any { it.kind == seed.kind && it.id == seed.id }, "缺少原有稳定标签 ID") }
         requireBackup(data.instruments.map { it.id }.distinct().size == data.instruments.size, "品种 ID 重复")
@@ -115,7 +115,7 @@ object BackupCodec {
         data.instruments.forEach { i ->
             requireBackup(Regex("[A-Za-z0-9_]{1,64}").matches(i.id), "品种 ID 无效")
             choice(i.market, Presets.markets); name(i.name); name(i.code)
-            requireBackup(i.sortOrder in 0..100000 && i.lastUsed >= 0, "品种排序或最近时间无效")
+            requireBackup(i.sortOrder in 0..100000 && i.lastUsed in 0..4133980799999L, "品种排序或最近时间无效")
         }
         requireBackup(data.settings.id == 1 && data.settings.theme in listOf("system", "light", "dark"), "应用设置无效")
         choice(data.settings.lastMarket, Presets.markets)
@@ -146,6 +146,7 @@ object BackupCodec {
         data.drafts.forEach { d ->
             requireBackup(Regex("[0-9a-f]{32}").matches(d.recordKey), "草稿交易标识无效")
             requireBackup((d.key == "new" && d.tradeId == 0L) || (d.key == d.recordKey && data.trades.any { it.id == d.tradeId && it.recordKey == d.recordKey }), "草稿关联不完整")
+            requireBackup(d.key != "new" || data.trades.none { it.recordKey == d.recordKey }, "新增草稿标识与已保存交易重复")
             day(d.date); requireBackup(d.date <= today, "草稿日期不能晚于今天")
             name(d.symbol); requireBackup(d.note.length <= 300 && '\u0000' !in d.note && d.amount.length <= 32 && '\u0000' !in d.amount, "草稿文字无效")
             requireBackup(d.outcome in listOf("", "gain", "loss", "flat") && d.positionPercent in 1..100, "草稿选项无效")

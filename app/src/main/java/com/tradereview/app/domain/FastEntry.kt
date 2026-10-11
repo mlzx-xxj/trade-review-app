@@ -6,6 +6,7 @@ import java.time.LocalDate
 object FastEntry {
     fun error(d: EntryDraft): String? {
         if (d.date !in LocalDate.of(1900, 1, 1).toEpochDay()..LocalDate.now().toEpochDay()) return "交易日期需在 1900 年至今天之间"
+        if (d.market !in Presets.markets.map { it.id } || d.direction !in Presets.directions.map { it.id } || d.currency !in Presets.currencies.map { it.id }) return "市场、方向或币种无效"
         if (d.symbol.isBlank() || d.symbol.length > 30 || '\u0000' in d.symbol) return "请选择品种，名称最多 30 字"
         if (d.note.length > 300 || '\u0000' in d.note) return "备注最多 300 字"
         if (d.outcome !in listOf("gain", "loss", "flat")) return "请选择盈利、亏损或持平"
