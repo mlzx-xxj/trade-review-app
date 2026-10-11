@@ -12,11 +12,12 @@ android {
         applicationId = "com.tradereview.app"
         minSdk = 26
         targetSdk = 35
-        versionCode = 1
-        versionName = "0.1.0"
+        versionCode = 2
+        versionName = "0.2.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
-    buildFeatures { compose = true }
+    buildFeatures { compose = true; buildConfig = true }
+    sourceSets["androidTest"].assets.srcDir("$projectDir/schemas")
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -24,6 +25,16 @@ android {
     kotlinOptions { jvmTarget = "17" }
     packaging { resources.excludes += "/META-INF/{AL2.0,LGPL2.1}" }
     testOptions { animationsDisabled = true }
+    // Optional existing key supplied only at build time. No release key is generated here.
+    val existingKey = providers.environmentVariable("TRADE_REVIEW_KEYSTORE_PATH").orNull
+    if (existingKey != null) {
+        signingConfigs.getByName("debug") {
+            storeFile = file(existingKey)
+            storePassword = providers.environmentVariable("TRADE_REVIEW_KEYSTORE_PASSWORD").get()
+            keyAlias = providers.environmentVariable("TRADE_REVIEW_KEY_ALIAS").get()
+            keyPassword = providers.environmentVariable("TRADE_REVIEW_KEY_PASSWORD").get()
+        }
+    }
 }
 
 ksp { arg("room.schemaLocation", "$projectDir/schemas") }
@@ -43,6 +54,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-savedstate:2.9.0")
     implementation("androidx.room:room-runtime:2.7.2")
     implementation("androidx.room:room-ktx:2.7.2")
+    implementation("com.google.code.gson:gson:2.12.1")
     ksp("androidx.room:room-compiler:2.7.2")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")

@@ -1,6 +1,8 @@
 package com.tradereview.app.data
 
 import androidx.room.Entity
+import androidx.room.ColumnInfo
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import java.time.LocalDate
 
@@ -26,7 +28,7 @@ object Presets {
     }
 }
 
-@Entity(tableName = "trades")
+@Entity(tableName = "trades", indices = [Index(value = ["recordKey"], unique = true)])
 data class Trade(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val date: Long = LocalDate.now().toEpochDay(),
@@ -41,6 +43,7 @@ data class Trade(
     val mistakes: List<String> = emptyList(),
     val discipline: List<String> = emptyList(),
     val reviewed: Boolean = false,
+    @ColumnInfo(defaultValue = "''") val recordKey: String = java.util.UUID.randomUUID().toString().replace("-", ""),
 )
 
 @Entity(tableName = "daily_reviews")
