@@ -183,7 +183,7 @@ fun TradeEditor(original: Trade?, state: JournalState, busy: Boolean, saveError:
                     if(draft.professional?.expanded == true) ProfessionalFields(requireNotNull(draft.professional), draft.market, draft.symbol, draft.direction, draft.currency,
                         state.contractTemplates, busy, { draft = draft.copy(professional = it) }, onTemplate)
                     val r = current?.let(ProfessionalMath::r)
-                    Text("本笔 R：${ProfessionalMath.formatR(r)}", modifier = Modifier.testTag("entry-r"), color = r?.let(::pnlColor) ?: MaterialTheme.colorScheme.onSurface)
+                    Text("本笔 R：${ProfessionalMath.formatR(r)}", modifier = Modifier.testTag("entry-r"), color = r?.let { pnlColor(it) } ?: MaterialTheme.colorScheme.onSurface)
                     current?.let { t -> riskPreview?.takeIf { it.recordKey == t.recordKey && it.netPnl == t.netPnl && it.date == t.date && it.positionPercent == t.positionPercent }?.let { check ->
                         if(check.violations.isNotEmpty()) Text(check.violations.joinToString("；") { RiskEngine.labels.getValue(it) }, color = MaterialTheme.colorScheme.error, modifier = Modifier.testTag("entry-risk-warning"))
                         check.notChecked.forEach { Text(it, style = MaterialTheme.typography.bodySmall) }

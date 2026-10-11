@@ -17,20 +17,28 @@ object RiskEngine {
         val streak = if (Money.value(t).signum() >= 0) 0 else 1 + previous.asReversed().takeWhile { Money.value(it).signum() < 0 }.size
         val daily = trades.filter { it.recordKey != t.recordKey && it.currency == t.currency && it.date == t.date }
             .fold(Money.value(t)) { sum, v -> sum + Money.value(v) }
-        val violations = mutableListOf<String>(); val notChecked = mutableListOf<String>()
-        if (rules?.maxRiskPercent != null) {
-            if (risk == null || rules.accountEquity == null) notChecked += "单笔风险比例：缺少有效风险或账户权益"
-            else if (risk * BigDecimal("100") > rules.accountEquity.toBigDecimal() * rules.maxRiskPercent.toBigDecimal()) violations += "single_risk"
-        }
-        if (rules?.maxPositionPercent != null && t.positionPercent.toBigDecimal() > rules.maxPositionPercent.toBigDecimal()) violations += "position_limit"
-        val plan = t.professional?.plannedPositionPercent
-        if (plan != null && t.positionPercent.toBigDecimal() > plan.toBigDecimal()) violations += "plan_position"
-        if (rules?.lossStreakThreshold != null && streak >= rules.lossStreakThreshold) violations += "loss_streak"
-        if (rules?.dailyLossLimit != null && daily <= rules.dailyLossLimit.toBigDecimal().negate()) violations += "daily_loss"
-        if (risk == null) notChecked += "初始计划风险未提供或无效，R 未提供"
-        return RiskEvent(t.recordKey, at, t.date, t.currency, t.direction, t.netPnl, t.positionPercent,
-            risk?.let(ProfessionalMath::plain), plan, rules, streak, daily.setScale(2).toPlainString(), violations, notChecked)
+        val notChecked = mutableListOf<String>()
+        if(rules?.maxRiskPercent != null && (risk == null || rules.accountEquity == null)) notChecked += "单笔风险比例：缺少有效风险或账户权益"
+        if(risk == null) notChecked += "初始计划风险未提供或无效，R 未提供"
+        val event = RiskEvent(t.recordKey, at, t.date, t.currency, t.direction, t.netPnl, t.positionPercent,
+            risk?.let(ProfessionalMath::plain), t.professional?.plannedPositionPercent, rules, streak, daily.setScale(2).toPlainString(), emptyList(), notChecked)
+        return event.copy(violations = expectedViolations(event))
     }
+    fun evaluated(e: RiskEvent): Boolean = e.plannedPositionPercent != null || e.rules?.let { r ->
+        r.maxPositionPercent != null || r.lossStreakThreshold != null || r.dailyLossLimit != null ||
+            r.maxRiskPercent != null && r.accountEquity != null && e.initialRisk != null
+    } == true
+    fun expectedViolations(e: RiskEvent): List<String> {
+        val r = e.rules; val codes = mutableListOf<String>()
+        if(r?.maxRiskPercent != null && r.accountEquity != null && e.initialRisk != null &&
+            e.initialRisk.toBigDecimal() * BigDecimal("100") > r.accountEquity.toBigDecimal() * r.maxRiskPercent.toBigDecimal()) codes += "single_risk"
+        if(r?.maxPositionPercent != null && e.positionPercent.toBigDecimal() > r.maxPositionPercent.toBigDecimal()) codes += "position_limit"
+        if(e.plannedPositionPercent != null && e.positionPercent.toBigDecimal() > e.plannedPositionPercent.toBigDecimal()) codes += "plan_position"
+        if(r?.lossStreakThreshold != null && e.lossStreak >= r.lossStreakThreshold) codes += "loss_streak"
+        if(r?.dailyLossLimit != null && e.dailyNet.toBigDecimal() <= r.dailyLossLimit.toBigDecimal().negate()) codes += "daily_loss"
+        return codes
+    }
+
     fun fingerprint(event: RiskEvent): String = MessageDigest.getInstance("SHA-256")
         .digest(ProfessionalJson.event(event.copy(checkedAt = "")).toString().toByteArray(Charsets.UTF_8)).joinToString("") { "%02x".format(it) }
     fun financialFactsChanged(old: Trade?, t: Trade) = old == null ||

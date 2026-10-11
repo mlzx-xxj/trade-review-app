@@ -45,4 +45,10 @@ class RiskAnalyticsTest {
         val p=RiskAnalytics.report(list.reversed()); assertEquals(2,p.lossRuns); assertEquals(3,p.longestLoss)
         assertEquals(AdvancedAnalytics.performance(list).longestLosses,p.longestLoss)
     }
+    @Test fun missingRiskOrEquityDoesNotBecomeAnEvaluatedCompliantTrade() {
+        val trade=t(1,"-1.00",null)
+        val e=RiskEngine.check(trade,RiskRules(maxRiskPercent="1"),emptyList())
+        val report=RiskAnalytics.report(listOf(trade.copy(riskRecord=RiskRecord(listOf(e)))))
+        assertEquals(0,report.checked);assertTrue(report.violations.isEmpty());assertEquals("—",RiskAnalytics.percent(0,report.checked))
+    }
 }

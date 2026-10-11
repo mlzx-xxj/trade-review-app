@@ -57,7 +57,7 @@ fun LazyListScope.riskAnalyticsItems(report: RiskReport, currency: String, catal
 @Composable
 private fun RGroupCard(g: RGroup, title: String, currency: String, onClick: () -> Unit) {
     SectionCard(title) {
-        Text("平均 ${rText(g.performance.average)} · 累计 ${rText(g.performance.cumulative)}", color = g.performance.average?.let(::pnlColor) ?: MaterialTheme.colorScheme.onSurface)
+        Text("平均 ${rText(g.performance.average)} · 累计 ${rText(g.performance.cumulative)}", color = g.performance.average?.let { pnlColor(it) } ?: MaterialTheme.colorScheme.onSurface)
         Text("有效风险样本 ${g.performance.valid} / 全部 ${g.performance.total} 笔 · 净盈亏 ${Money.format(g.performance.allMoney.netPnl, true)} $currency")
         if(g.performance.valid in 1..19) Text("有效样本较少，结论可能不稳定。", style = MaterialTheme.typography.bodySmall)
         TextButton(onClick = onClick) { Text("查看交易明细") }

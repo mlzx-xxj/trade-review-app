@@ -97,6 +97,7 @@ object ProfessionalJson {
             require(e.plannedPositionPercent == null || ProfessionalMath.decimal(e.plannedPositionPercent)?.let { ProfessionalMath.plain(it) == e.plannedPositionPercent && it > java.math.BigDecimal.ZERO && it <= java.math.BigDecimal("100") } == true)
             e.rules?.let { ProfessionalMath.validateRule(it); require(it.currency == e.currency) }
             require(e.violations.distinct() == e.violations && e.violations.all { it in RiskEngine.labels })
+            require(e.violations == RiskEngine.expectedViolations(e)) { "违规标记与保存时的规则及金额快照不一致" }
             require(e.notChecked.size <= 10 && e.notChecked.all { it.length <= 100 && '\u0000' !in it })
         }
     }

@@ -11,3 +11,5 @@
 当前尚未得到本分支的 Android 编译、JVM、Lint 或模拟器结果，不能视为通过。最终提交含文档更新也必须完整 CI，不使用 skip ci。最终提交状态、完整结果、APK 与截图会在独立 PR 中记录。
 
 签名：main 构建日志实际未配置固定密钥，管理 API 403，保留 V0.3 pin；本轮不读写长期私钥。待本轮实际 APK 与 SIGNING.txt 核对后报告。计算与兼容口径见 V05-CALCULATIONS-AND-UPGRADES.md。
+
+首轮提交 243379b，[Actions 38182484262](https://github.com/mlzx-xxj/trade-review-app/actions/runs/38182484262)：Room KSP 执行，但主 Kotlin 编译失败，三处把 @Composable pnlColor 用作函数引用。改为可组合上下文的直接 lambda 调用；本轮 JVM/Lint/模拟器未执行，不发布 APK。另补强纪律分母及违规快照一致性校验，缺有效风险/权益不能计为守规。

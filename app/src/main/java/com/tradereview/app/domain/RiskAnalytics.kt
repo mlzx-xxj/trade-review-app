@@ -35,7 +35,7 @@ object RiskAnalytics {
         val instruments = trades.groupBy { it.market to it.symbol }.map { (key, rows) -> RGroup(key.second, performance(rows), key.first) }
             .sortedWith(compareByDescending<RGroup> { it.performance.average }.thenBy { it.key })
         val violations = trades.filter { it.riskRecord?.violations?.isNotEmpty() == true }
-        val checked = trades.count { t -> t.riskRecord?.events?.any { it.rules?.configured == true || it.plannedPositionPercent != null } == true }
+        val checked = trades.count { t -> t.riskRecord?.events?.any(RiskEngine::evaluated) == true }
         val planned = trades.filter { it.professional?.plannedPositionPercent != null }
         val exceeded = planned.filter { it.positionPercent.toBigDecimal() > it.professional!!.plannedPositionPercent!!.toBigDecimal() }
         var longest = 0; var streak = 0; var runs = 0
