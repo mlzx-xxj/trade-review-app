@@ -24,6 +24,7 @@ import java.time.format.DateTimeFormatter
 import kotlin.math.max
 import kotlin.math.min
 
+val LocalChoicesEnabled = staticCompositionLocalOf { true }
 val LocalCatalog = staticCompositionLocalOf { Catalog() }
 
 fun dayLabel(day: Long): String = LocalDate.ofEpochDay(day).format(DateTimeFormatter.ofPattern("yyyy年MM月dd日"))
@@ -44,7 +45,7 @@ fun SectionCard(title: String, subtitle: String? = null, content: @Composable Co
 @Composable
 fun ChoiceChips(options: List<Option>, selected: List<String>, onToggle: (String) -> Unit) {
     FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        options.forEach { option -> FilterChip(selected = option.id in selected, onClick = { onToggle(option.id) }, label = { Text(option.label) }) }
+        options.forEach { option -> FilterChip(enabled = LocalChoicesEnabled.current, selected = option.id in selected, onClick = { onToggle(option.id) }, label = { Text(option.label) }) }
     }
 }
 

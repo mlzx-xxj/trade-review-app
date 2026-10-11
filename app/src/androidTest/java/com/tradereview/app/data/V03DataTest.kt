@@ -77,12 +77,14 @@ class V03DataTest {
         dao.saveInstrument(Instrument("custom_backup_symbol", "stock", "新品种", "NP", 9, true, 22))
         dao.saveSettings(AppSettings(theme = "dark")); dao.saveDraft(EntryDraft(amount = "9.", strategy = tag.id))
         val repo = BackupRepository(db)
+        dao.insert(Trade(date = 20000, symbol = "原有记录", strategy = tag.id, netPnl = "8.00"))
+        dao.saveReview(DailyReview(date = 20000, planSaved = true, reviewSaved = true))
         val original = repo.export()
         val roundTrip = BackupCodec.decode(BackupCodec.encode(original))
         repo.restore(repo.preview(roundTrip), RestoreMode.REPLACE)
         assertEquals(original.copy(exportedAt = "x"), repo.export().copy(exportedAt = "x"))
-        val changed = roundTrip.copy(tags = roundTrip.tags.map { if(it.id == tag.id) it.copy(name = "故障标签") else it })
-        db.openHelper.writableDatabase.execSQL("CREATE TRIGGER fail_tag BEFORE INSERT ON tags WHEN NEW.name='故障标签' BEGIN SELECT RAISE(ABORT,'injected late table failure'); END")
+        val changed = roundTrip.copy(tags = roundTrip.tags.map { if(it.id == tag.id) it.copy(name = "变更名称") else it }, settings = AppSettings(theme = "light"), drafts = roundTrip.drafts.map { it.copy(note = "故障草稿") })
+        db.openHelper.writableDatabase.execSQL("CREATE TRIGGER fail_draft BEFORE INSERT ON entry_drafts WHEN NEW.note='故障草稿' BEGIN SELECT RAISE(ABORT,'injected late table failure'); END")
         try { repo.restore(repo.preview(changed), RestoreMode.REPLACE); fail("Expected SQL failure") }
         catch (_: android.database.sqlite.SQLiteException) { assertEquals(original.copy(exportedAt = "x"), repo.export().copy(exportedAt = "x")) }
     }

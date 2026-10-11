@@ -53,8 +53,8 @@ object CatalogSeeds {
         }
     }
     fun insert(db: SupportSQLiteDatabase) {
-        tags.forEach { db.execSQL("INSERT OR IGNORE INTO tags(kind,id,name,sortOrder,favorite,hidden,lastUsed) VALUES(?,?,?,?,?,?,?)", arrayOf(it.kind, it.id, it.name, it.sortOrder, 0, 0, 0)) }
-        instruments.forEach { db.execSQL("INSERT OR IGNORE INTO instruments(id,market,name,code,sortOrder,favorite,lastUsed) VALUES(?,?,?,?,?,?,?)", arrayOf(it.id, it.market, it.name, it.code, it.sortOrder, if(it.favorite) 1 else 0, 0)) }
+        tags.forEach { db.execSQL("INSERT OR IGNORE INTO tags(kind,id,name,sortOrder,favorite,hidden,lastUsed) VALUES(?,?,?,?,?,?,?)", arrayOf<Any>(it.kind, it.id, it.name, it.sortOrder, 0, 0, 0)) }
+        instruments.forEach { db.execSQL("INSERT OR IGNORE INTO instruments(id,market,name,code,sortOrder,favorite,lastUsed) VALUES(?,?,?,?,?,?,?)", arrayOf<Any>(it.id, it.market, it.name, it.code, it.sortOrder, if(it.favorite) 1 else 0, 0)) }
         db.execSQL("INSERT OR IGNORE INTO app_settings(id,lastMarket,theme) VALUES(1,'stock','system')")
     }
     val callback = object : RoomDatabase.Callback() { override fun onCreate(db: SupportSQLiteDatabase) { insert(db) } }

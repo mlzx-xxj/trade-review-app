@@ -16,7 +16,7 @@ import com.tradereview.app.data.*
 fun TagManagement(state: JournalState, busy: Boolean, model: TradeViewModel, modifier: Modifier = Modifier) {
     var kind by rememberSaveable { mutableStateOf("strategy") }
     var edit by remember { mutableStateOf<ManagedTag?>(null) }
-    LazyColumn(modifier.fillMaxSize().imePadding(), contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+    LazyColumn(modifier.fillMaxSize().imePadding().testTag("tag-list"), contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
         item { SectionCard("标签管理", "隐藏仅影响新选择，已有记录仍显示当前名称。ID 不随重命名改变。") {
             SingleChoice(TagKind.names.map { Option(it.key, it.value) }, kind) { kind = it }
             Button(enabled = !busy, onClick = { edit = ManagedTag(kind, "custom_${newKey()}", "", state.tags.count { it.kind == kind }) }) { Text("新增标签") }
@@ -45,7 +45,7 @@ fun InstrumentManagement(state: JournalState, busy: Boolean, model: TradeViewMod
     var market by rememberSaveable { mutableStateOf(state.settings.lastMarket) }
     var query by rememberSaveable { mutableStateOf("") }
     var add by remember { mutableStateOf(false) }
-    LazyColumn(modifier.fillMaxSize().imePadding(), contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+    LazyColumn(modifier.fillMaxSize().imePadding().testTag("symbol-list"), contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
         item { SectionCard("常用品种管理", "收藏与最近使用优先。排序影响同优先级品种；不会改变历史交易。") {
             SingleChoice(Presets.markets, market) { market = it }
             OutlinedTextField(query, { query = it }, label = { Text("搜索名称或代码") }, singleLine = true, modifier = Modifier.fillMaxWidth())

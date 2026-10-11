@@ -2,6 +2,8 @@ package com.tradereview.app.ui
 
 import android.content.Context
 import androidx.compose.ui.test.*
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.lifecycle.SavedStateHandle
 import androidx.room.Room
@@ -26,7 +28,7 @@ class FastEntryUiTest {
         compose.setContent { TradeReviewTheme { TradeReviewApp(model, backup) } }
         compose.waitUntil(10000) { !model.state.value.loading }
     }
-    @After fun close() { compose.setContent { }; db.close() }
+    @After fun close() { db.close() }
     private fun entry() { compose.onNodeWithContentDescription("新增交易").performClick() }
     private fun saved() { compose.waitUntil(10000) { !model.busy.value && compose.onAllNodesWithText("快速记录交易").fetchSemanticsNodes().isEmpty() } }
 
@@ -48,7 +50,7 @@ class FastEntryUiTest {
         compose.onNodeWithTag("entry-amount").performScrollTo().assertTextContains("123.45")
         compose.onNodeWithText("保存并继续").performClick()
         compose.waitUntil(10000) { !model.busy.value && model.state.value.trades.size == 1 }
-        compose.onNodeWithTag("entry-amount").assertTextContains("")
+        compose.onNodeWithTag("entry-amount").assert(SemanticsMatcher.expectValue(SemanticsProperties.EditableText, AnnotatedString("")))
         compose.onNodeWithText("保存交易").performClick(); compose.onNodeWithTag("entry-error").assertIsDisplayed()
         compose.onNodeWithText("亏损").performScrollTo().performClick()
         compose.onNodeWithTag("entry-amount").performTextInput("5")
@@ -67,20 +69,23 @@ class FastEntryUiTest {
     }
     @Test fun manageNewTagRenameHideAndFavoriteSymbolThroughSettings() {
         compose.onNodeWithContentDescription("设置与备份").performClick()
-        compose.onNodeWithText("管理自定义标签").performScrollTo().performClick()
+        compose.onNodeWithTag("settings-list").performScrollToNode(hasText("管理自定义标签"))
+        compose.onNodeWithText("管理自定义标签").performClick()
         compose.onNodeWithText("新增标签").performClick()
         compose.onNodeWithText("标签名称").performTextInput("快速策略")
         compose.onNodeWithText("保存标签").performClick()
         compose.waitUntil(10000) { model.state.value.tags.any { it.name == "快速策略" } }
         val id = model.state.value.tags.first { it.name == "快速策略" }.id
-        compose.onNodeWithTag("rename-$id").performScrollTo().performClick()
+        compose.onNodeWithTag("tag-list").performScrollToNode(hasTestTag("rename-$id"))
+        compose.onNodeWithTag("rename-$id").performClick()
         compose.onNodeWithText("标签名称").performTextClearance(); compose.onNodeWithText("标签名称").performTextInput("改名策略")
         compose.onNodeWithText("保存标签").performClick()
         compose.waitUntil(10000) { model.state.value.tags.any { it.id == id && it.name == "改名策略" } }
         compose.onNodeWithTag("hide-$id").performScrollTo().performClick()
         compose.waitUntil(10000) { model.state.value.tags.any { it.id == id && it.hidden } }
         compose.onNodeWithContentDescription("返回主页面").performClick()
-        compose.onNodeWithText("管理常用品种").performScrollTo().performClick()
+        compose.onNodeWithTag("settings-list").performScrollToNode(hasText("管理常用品种"))
+        compose.onNodeWithText("管理常用品种").performClick()
         compose.onNodeWithTag("favorite-symbol-preset_stock_0").performScrollTo().performClick()
         compose.waitUntil(10000) { model.state.value.instruments.any { it.id == "preset_stock_0" && !it.favorite } }
         compose.onNodeWithText("搜索名称或代码").performTextInput("NVDA")

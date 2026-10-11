@@ -14,8 +14,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.platform.LocalFocusManager
 import com.tradereview.app.data.*
 import com.tradereview.app.domain.FastEntry
 import com.google.gson.Gson
@@ -27,8 +27,6 @@ import androidx.compose.ui.window.DialogProperties
 import com.tradereview.app.data.Option
 import com.tradereview.app.data.Presets
 import com.tradereview.app.data.Trade
-import com.tradereview.app.domain.Analytics
-import com.tradereview.app.domain.Money
 import java.time.LocalDate
 import java.time.ZoneOffset
 
@@ -37,11 +35,11 @@ import java.time.ZoneOffset
 fun DateControl(date: Long, onDate: (Long) -> Unit, allowFuture: Boolean = false) {
     var show by rememberSaveable { mutableStateOf(false) }
     val today = LocalDate.now().toEpochDay()
-    OutlinedButton(onClick = { show = true }) { Text("日期：${dayLabel(date)}") }
+    OutlinedButton(enabled = LocalChoicesEnabled.current, onClick = { show = true }) { Text("日期：${dayLabel(date)}") }
     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        TextButton(onClick = { onDate(today) }) { Text("今天") }
-        TextButton(onClick = { onDate(today - 1) }) { Text("昨天") }
-        if (allowFuture) TextButton(onClick = { onDate(today + 1) }) { Text("明天") }
+        TextButton(enabled = LocalChoicesEnabled.current, onClick = { onDate(today) }) { Text("今天") }
+        TextButton(enabled = LocalChoicesEnabled.current, onClick = { onDate(today - 1) }) { Text("昨天") }
+        if (allowFuture) TextButton(enabled = LocalChoicesEnabled.current, onClick = { onDate(today + 1) }) { Text("明天") }
     }
     if (show) {
         val state = rememberDatePickerState(
@@ -84,12 +82,15 @@ fun TradeEditor(original: Trade?, state: JournalState, busy: Boolean, saveError:
     var chooseSymbol by remember { mutableStateOf(false) }
     val scroll = rememberScrollState()
     val catalog = LocalCatalog.current
+    val focus = LocalFocusManager.current
+    LaunchedEffect(busy) { if(busy) focus.clearFocus() }
     LaunchedEffect(draft) { onDraft(draft) }
     fun save(keepOpen: Boolean) {
         error = FastEntry.error(draft)
-        if (error == null) onSave(draft) {
+        val saving = draft
+        if (error == null) onSave(saving) {
             if (keepOpen) {
-                draft = EntryDraft.copyReusable(FastEntry.trade(draft)).copy(outcome = "gain")
+                draft = EntryDraft.copyReusable(FastEntry.trade(saving)).copy(outcome = "gain")
                 feedback = "交易已保存，可以继续记录下一笔"; error = null
             } else onDismiss()
         }
@@ -114,10 +115,11 @@ fun TradeEditor(original: Trade?, state: JournalState, busy: Boolean, saveError:
                     }
                 }
             }) { padding ->
+                CompositionLocalProvider(LocalChoicesEnabled provides !busy) {
                 Column(Modifier.padding(padding).fillMaxSize().verticalScroll(scroll).padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                     Text("已平仓交易 · 金额扣除手续费 · 未保存内容自动留为本地草稿", style = MaterialTheme.typography.bodySmall)
                     if (original == null && state.trades.isNotEmpty()) OutlinedButton(enabled = !busy, onClick = {
-                        draft = EntryDraft.copyReusable(state.trades.maxBy { it.id }); feedback = "已复制上一笔，盈亏及复盘状态已清空"; notify(feedback)
+                        draft = EntryDraft.copyReusable(state.trades.maxBy { it.id }); feedback = "已复制上一笔，盈亏及复盘状态已清空"; notify("已复制上一笔交易")
                     }, modifier = Modifier.fillMaxWidth()) { Text("复制上一笔交易") }
                     SectionCard("快速录入") {
                         DateControl(draft.date, { draft = draft.copy(date = it) })
@@ -137,7 +139,7 @@ fun TradeEditor(original: Trade?, state: JournalState, busy: Boolean, saveError:
                         SingleChoice(listOf(Option("gain", "盈利"), Option("loss", "亏损"), Option("flat", "持平")), draft.outcome) {
                             draft = draft.copy(outcome = it, amount = if(it == "flat") "" else draft.amount)
                         }
-                        if (draft.outcome != "flat") OutlinedTextField(draft.amount, { if(it.length <= 32) draft = draft.copy(amount = it) },
+                        if (draft.outcome != "flat") OutlinedTextField(enabled = !busy, value = draft.amount, onValueChange = { if(it.length <= 32) draft = draft.copy(amount = it) },
                             label = { Text("净盈亏金额（${draft.currency}）") }, singleLine = true,
                             supportingText = { Text("输入大于 0 的金额，持平请选择“持平”。") },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal), modifier = Modifier.fillMaxWidth().testTag("entry-amount"))
@@ -151,14 +153,15 @@ fun TradeEditor(original: Trade?, state: JournalState, busy: Boolean, saveError:
                     if (draft.details) SectionCard("详细选项") {
                         Text("结算币种"); SingleChoice(Presets.currencies, draft.currency) { draft = draft.copy(currency = it) }
                         Text("本笔仓位：${draft.positionPercent}%")
-                        Slider(draft.positionPercent.toFloat(), { draft = draft.copy(positionPercent = it.toInt()) }, valueRange = 1f..100f, steps = 98)
+                        Slider(enabled = !busy, value = draft.positionPercent.toFloat(), onValueChange = { draft = draft.copy(positionPercent = it.toInt()) }, valueRange = 1f..100f, steps = 98)
                         Text("交易情绪"); SingleChoice(catalog.options("emotion", listOf(draft.emotion)), draft.emotion) { draft = draft.copy(emotion = it) }
                         Text("常见错误 · 可多选"); ChoiceChips(catalog.options("mistake", draft.mistakes), draft.mistakes) { draft = draft.copy(mistakes = toggleTag(draft.mistakes, it)) }
                         Text("执行纪律 · 可多选"); ChoiceChips(catalog.options("discipline", draft.discipline), draft.discipline) { draft = draft.copy(discipline = toggleTag(draft.discipline, it)) }
-                        Row { Checkbox(draft.reviewed, { draft = draft.copy(reviewed = it) }); Text("本笔已完成复盘", Modifier.padding(top = 12.dp)) }
-                        OutlinedTextField(draft.note, { if(it.length <= 300) draft = draft.copy(note = it) }, label = { Text("简短补充备注（可选）") }, maxLines = 3, modifier = Modifier.fillMaxWidth())
+                        Row { Checkbox(enabled = !busy, checked = draft.reviewed, onCheckedChange = { draft = draft.copy(reviewed = it) }); Text("本笔已完成复盘", Modifier.padding(top = 12.dp)) }
+                        OutlinedTextField(enabled = !busy, value = draft.note, onValueChange = { if(it.length <= 300) draft = draft.copy(note = it) }, label = { Text("简短补充备注（可选）") }, maxLines = 3, modifier = Modifier.fillMaxWidth())
                     }
                     Spacer(Modifier.height(8.dp))
+                }
                 }
             }
         }

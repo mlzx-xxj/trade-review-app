@@ -1,6 +1,7 @@
 package com.tradereview.app.data
 
 import androidx.room.Room
+import com.tradereview.app.data.CatalogSeeds
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import android.content.Context

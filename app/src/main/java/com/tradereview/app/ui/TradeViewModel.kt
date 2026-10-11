@@ -6,11 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.tradereview.app.data.DailyReview
 import com.tradereview.app.data.Trade
 import com.tradereview.app.data.*
-import androidx.room.withTransaction
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import com.tradereview.app.domain.Analytics
-import com.tradereview.app.domain.Money
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -62,7 +58,7 @@ class TradeViewModel(private val database: TradeDatabase, private val savedState
                 onSuccess()
             } catch (error: Exception) {
                 if (error is CancellationException) throw error
-                _message.value = "保存失败，请检查手机存储空间后重试。"
+                _message.value = if(error is IllegalArgumentException && !error.message.isNullOrBlank()) "保存失败：${error.message}" else "保存失败，请检查手机存储空间后重试。"
             } finally {
                 _busy.value = false
             }
