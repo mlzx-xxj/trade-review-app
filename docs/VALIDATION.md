@@ -12,4 +12,6 @@
 
 ## GitHub Actions
 
-待实际运行后更新。首次云端任务负责生成完整 Gradle Wrapper、编译、运行测试并上传产物；这里不提前宣称成功。
+- 初次运行 #2（https://github.com/mlzx-xxj/trade-review-app/actions/runs/38105221389）实际失败在 SDK 初始化，原因是 setup-android 默认安装已下架的 `tools` 包；日志：`Failed to find package 'tools'`。尚未进入应用编译。
+- 已改为仅安装 `platform-tools`，同时使用独立 command-line tools；两项任务均修复，并更新 checkout/setup-java 至 Node 24 对应的 v5。
+- 后续编译及测试结果待实际运行后填写。
