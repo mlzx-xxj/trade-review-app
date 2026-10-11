@@ -26,6 +26,8 @@ fun SettingsPage(model: BackupViewModel, journalBusy: Boolean, modifier: Modifie
     val csv = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("text/csv")) { uri -> uri?.let(model::exportCsv) }
     val restore = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri -> uri?.let(model::readBackup) }
     LazyColumn(modifier.fillMaxSize(), contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+        if (busy) item { LinearProgressIndicator(Modifier.fillMaxWidth()); Text("正在处理，请等待完成") }
+        message?.let { item { SectionCard("处理结果") { Text(it, style = MaterialTheme.typography.bodyMedium) } } }
         item { SectionCard("数据安全", "数据保存在本机；文件由你选择位置，应用不联网上传。") {
             Text("JSON 包含全部币种交易、每日盘前计划、盘后复盘及所有关联标签。备份为明文，请选择你信任的位置。")
             Button(enabled = !locked && preview == null, onClick = { json.launch("交易复盘-${LocalDate.now()}.json") }, modifier = Modifier.fillMaxWidth()) { Text("保存完整 JSON 备份") }
@@ -54,8 +56,6 @@ fun SettingsPage(model: BackupViewModel, journalBusy: Boolean, modifier: Modifie
             Text("本地数据库版本 2 · JSON 备份格式版本 1")
             Text("升级安装需要相同应用标识及签名；应用不会自动下载或上传数据。", style = MaterialTheme.typography.bodySmall)
         } }
-        if (busy) item { LinearProgressIndicator(Modifier.fillMaxWidth()); Text("正在处理，请等待完成") }
-        message?.let { item { Text(it, style = MaterialTheme.typography.bodyMedium) } }
     }
     if (confirm && preview != null) AlertDialog(
         onDismissRequest = { if (!locked) confirm = false },

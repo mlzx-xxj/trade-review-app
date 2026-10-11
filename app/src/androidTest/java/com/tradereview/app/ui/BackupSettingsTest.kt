@@ -60,4 +60,15 @@ class BackupSettingsTest {
         compose.waitUntil(10000) { !model.busy.value }
         assertTrue(file.readText().contains("\"中文,品种\""))
     }
+    @Test fun invalidFileShowsVisibleErrorWithoutChangingExistingData() = runBlocking {
+        val trade = Trade(date = 20000, symbol = "保留原记录")
+        val id = db.trades().insert(trade)
+        file.writeText("{}")
+        compose.setContent { TradeReviewTheme { SettingsPage(model, false) } }
+        compose.runOnIdle { model.readBackup(Uri.fromFile(file)) }
+        compose.waitUntil(10000) { model.message.value != null && !model.busy.value }
+        compose.onNodeWithText(requireNotNull(model.message.value)).assertIsDisplayed()
+        assertNull(model.preview.value)
+        assertEquals(listOf(trade.copy(id = id)), db.trades().allTrades())
+    }
 }
