@@ -3,22 +3,23 @@ package com.tradereview.app.backup
 import androidx.room.withTransaction
 import com.tradereview.app.data.DailyReview
 import com.tradereview.app.data.Trade
-import com.tradereview.app.data.TradeDatabase
+import com.tradereview.app.data.*
 import java.time.Instant
 
 enum class RestoreMode { MERGE, REPLACE }
-data class DatabaseSnapshot(val trades: List<Trade>, val reviews: List<DailyReview>)
+data class DatabaseSnapshot(val trades: List<Trade>, val reviews: List<DailyReview>, val tags: List<ManagedTag>,
+    val instruments: List<Instrument>, val settings: AppSettings, val drafts: List<EntryDraft>)
 data class MergeSummary(val newTrades: Int, val repeatedTrades: Int, val conflictingTrades: Int,
     val newDays: Int, val addedPlans: Int, val addedReviews: Int, val conflictingPlans: Int, val conflictingReviews: Int)
 data class RestorePreview(val backup: BackupData, val before: DatabaseSnapshot, val summary: MergeSummary)
 
 class BackupRepository(private val database: TradeDatabase) {
     private val dao get() = database.trades()
-    private suspend fun snapshot() = DatabaseSnapshot(dao.allTrades(), dao.allReviews())
+    private suspend fun snapshot() = DatabaseSnapshot(dao.allTrades(), dao.allReviews(), dao.allTags(), dao.allInstruments(), dao.settings() ?: AppSettings(), dao.allDrafts())
 
     suspend fun export(): BackupData = database.withTransaction {
         val state = snapshot()
-        BackupData(Instant.now().toString(), state.trades, state.reviews)
+        BackupData(Instant.now().toString(), state.trades, state.reviews, state.tags, state.instruments, state.settings, state.drafts)
     }
 
     suspend fun preview(data: BackupData): RestorePreview {
@@ -48,9 +49,20 @@ class BackupRepository(private val database: TradeDatabase) {
             if (mode == RestoreMode.REPLACE) {
                 dao.clearTrades()
                 dao.clearReviews()
+                dao.clearDrafts(); dao.clearTags(); dao.clearInstruments(); dao.clearSettings()
+                preview.backup.tags.forEach { dao.saveTag(it) }
+                preview.backup.instruments.forEach { dao.saveInstrument(it) }
+                dao.saveSettings(preview.backup.settings)
                 preview.backup.trades.forEach { dao.insert(it) }
                 preview.backup.dailyReviews.forEach { dao.insertReview(it) }
+                preview.backup.drafts.forEach { dao.saveDraft(it) }
             } else {
+                val tagKeys = preview.before.tags.map { it.kind to it.id }.toSet()
+                preview.backup.tags.filter { (it.kind to it.id) !in tagKeys }.forEach { dao.saveTag(it) }
+                // Keep local names, favorite flags, ordering and settings on conflicts.
+                val instrumentIds = preview.before.instruments.map { it.id }.toSet()
+                val names = preview.before.instruments.map { it.market to it.name }.toSet()
+                preview.backup.instruments.filter { it.id !in instrumentIds && (it.market to it.name) !in names }.forEach { dao.saveInstrument(it) }
                 val keys = preview.before.trades.map { it.recordKey }.toSet()
                 // SQLite row IDs belong to each database. Cross-device identity uses recordKey.
                 preview.backup.trades.filter { it.recordKey !in keys }.forEach { dao.insert(it.copy(id = 0)) }
@@ -67,6 +79,12 @@ class BackupRepository(private val database: TradeDatabase) {
                             rating = incoming.rating, reviewSaved = true)
                         if (merged != existing) dao.saveReview(merged)
                     }
+                }
+                val draftKeys = preview.before.drafts.map { it.key }.toSet()
+                val restoredTrades = dao.allTrades().associateBy { it.recordKey }
+                preview.backup.drafts.filter { it.key !in draftKeys }.forEach { d ->
+                    if (d.key == "new") dao.saveDraft(d)
+                    else restoredTrades[d.recordKey]?.let { dao.saveDraft(d.copy(tradeId = it.id)) }
                 }
             }
         }

@@ -4,6 +4,8 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.staticCompositionLocalOf
+import com.tradereview.app.data.Catalog
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Path
@@ -21,6 +23,8 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import kotlin.math.max
 import kotlin.math.min
+
+val LocalCatalog = staticCompositionLocalOf { Catalog() }
 
 fun dayLabel(day: Long): String = LocalDate.ofEpochDay(day).format(DateTimeFormatter.ofPattern("yyyy年MM月dd日"))
 fun percent(value: Double) = String.format(java.util.Locale.CHINA, "%.1f%%", value)
@@ -60,6 +64,7 @@ fun Metric(label: String, value: String, modifier: Modifier = Modifier) {
 
 @Composable
 fun TradeCard(trade: Trade, onClick: () -> Unit) {
+    val catalog = LocalCatalog.current
     Card(onClick = onClick, modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
@@ -68,9 +73,9 @@ fun TradeCard(trade: Trade, onClick: () -> Unit) {
                     style = MaterialTheme.typography.titleMedium)
             }
             Text("${dayLabel(trade.date)} · ${trade.currency}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            Text("${Presets.label(Presets.markets, trade.market)} · ${Presets.label(Presets.directions, trade.direction)} · 仓位 ${trade.positionPercent}% · ${Presets.label(Presets.strategies, trade.strategy)}", style = MaterialTheme.typography.bodySmall)
-            Text(if (trade.reviewed) "已复盘 · ${Presets.label(Presets.emotions, trade.emotion)}" else "待复盘 · 点击补充错误与纪律", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary)
-            if (trade.mistakes.isNotEmpty()) Text(trade.mistakes.joinToString(" · ") { Presets.label(Presets.mistakes, it) }, style = MaterialTheme.typography.bodySmall, color = LossColor)
+            Text("${Presets.label(Presets.markets, trade.market)} · ${Presets.label(Presets.directions, trade.direction)} · 仓位 ${trade.positionPercent}% · ${catalog.label("strategy", trade.strategy)}", style = MaterialTheme.typography.bodySmall)
+            Text(if (trade.reviewed) "已复盘 · ${catalog.label("emotion", trade.emotion)}" else "待复盘 · 点击补充错误与纪律", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary)
+            if (trade.mistakes.isNotEmpty()) Text(trade.mistakes.joinToString(" · ") { catalog.label("mistake", it) }, style = MaterialTheme.typography.bodySmall, color = LossColor)
         }
     }
 }

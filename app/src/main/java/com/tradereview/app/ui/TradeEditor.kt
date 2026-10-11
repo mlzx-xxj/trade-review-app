@@ -11,6 +11,14 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.ui.platform.testTag
+import com.tradereview.app.data.*
+import com.tradereview.app.domain.FastEntry
+import com.google.gson.Gson
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -55,94 +63,128 @@ fun DateControl(date: Long, onDate: (Long) -> Unit, allowFuture: Boolean = false
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TradeEditor(original: Trade?, busy: Boolean, saveError: String?, onDismiss: () -> Unit, onSave: (Trade) -> Unit, onDelete: (Trade) -> Unit) {
-    val initial = original ?: Trade()
-    val key = initial.id
-    var date by rememberSaveable(key) { mutableLongStateOf(initial.date) }
-    var market by rememberSaveable(key) { mutableStateOf(initial.market) }
-    var symbol by rememberSaveable(key) { mutableStateOf(initial.symbol) }
-    var direction by rememberSaveable(key) { mutableStateOf(initial.direction) }
-    var currency by rememberSaveable(key) { mutableStateOf(initial.currency) }
-    var sign by rememberSaveable(key) { mutableStateOf(if (Money.value(initial).signum() < 0) "loss" else "gain") }
-    var amount by rememberSaveable(key) { mutableStateOf(if (original == null) "" else Money.value(initial).abs().toPlainString()) }
-    var position by rememberSaveable(key) { mutableFloatStateOf(initial.positionPercent.toFloat()) }
-    var strategy by rememberSaveable(key) { mutableStateOf(initial.strategy) }
-    var emotion by rememberSaveable(key) { mutableStateOf(initial.emotion) }
-    var mistakes by rememberSaveable(key) { mutableStateOf(initial.mistakes) }
-    var discipline by rememberSaveable(key) { mutableStateOf(initial.discipline) }
-    var reviewed by rememberSaveable(key) { mutableStateOf(initial.reviewed) }
-    var error by rememberSaveable { mutableStateOf<String?>(null) }
-    var confirmDelete by rememberSaveable { mutableStateOf(false) }
+fun TradeEditor(original: Trade?, state: JournalState, busy: Boolean, saveError: String?, onDismiss: () -> Unit,
+    onDraft: (EntryDraft) -> Unit, onSave: (EntryDraft, () -> Unit) -> Unit, onDelete: (Trade) -> Unit,
+    notify: (String) -> Unit) {
+    val draftKey = original?.recordKey ?: "new"
+    val restored = state.drafts.firstOrNull { it.key == draftKey }
+    val initial = remember(draftKey) {
+        restored ?: original?.let(EntryDraft::from) ?: run {
+            val market = state.settings.lastMarket
+            EntryDraft(market = market, symbol = orderedInstruments(state.instruments, market).firstOrNull()?.name ?: Presets.symbols(market).first(),
+                currency = when(market) { "crypto" -> "USDT"; "forex" -> "USD"; else -> "CNY" },
+                strategy = Catalog(state.tags).options("strategy").firstOrNull()?.id ?: "trend")
+        }
+    }
+    val saver = remember { Saver<EntryDraft, String>(save = { Gson().toJson(it) }, restore = { Gson().fromJson(it, EntryDraft::class.java) }) }
+    var draft by rememberSaveable(draftKey, stateSaver = saver) { mutableStateOf(initial) }
+    var error by remember { mutableStateOf<String?>(null) }
+    var feedback by remember { mutableStateOf(if (restored != null) "已恢复未保存草稿" else "") }
+    var confirmDelete by remember { mutableStateOf(false) }
+    var chooseSymbol by remember { mutableStateOf(false) }
+    val scroll = rememberScrollState()
+    val catalog = LocalCatalog.current
+    LaunchedEffect(draft) { onDraft(draft) }
+    fun save(keepOpen: Boolean) {
+        error = FastEntry.error(draft)
+        if (error == null) onSave(draft) {
+            if (keepOpen) {
+                draft = EntryDraft.copyReusable(FastEntry.trade(draft)).copy(outcome = "gain")
+                feedback = "交易已保存，可以继续记录下一笔"; error = null
+            } else onDismiss()
+        }
+    }
     Dialog(onDismissRequest = { if (!busy) onDismiss() }, properties = DialogProperties(usePlatformDefaultWidth = false, dismissOnBackPress = !busy)) {
         BackHandler(busy) { }
         Surface(Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-            Scaffold(
-                modifier = Modifier.imePadding(),
-                topBar = {
-                    TopAppBar(title = { Text(if (original == null) "记录一笔交易" else "编辑交易与复盘") },
-                        navigationIcon = { IconButton(enabled = !busy, onClick = onDismiss) { Icon(Icons.AutoMirrored.Filled.ArrowBack, "返回") } },
-                        actions = { if (original != null) IconButton(enabled = !busy, onClick = { confirmDelete = true }) { Icon(Icons.Default.Delete, "删除交易") } })
-                },
-                bottomBar = {
-                    Surface(shadowElevation = 4.dp) {
-                        Button(enabled = !busy, modifier = Modifier.fillMaxWidth().navigationBarsPadding().padding(16.dp), onClick = {
-                            val input = (if (sign == "loss") "-" else "") + amount.trim()
-                            val trade = initial.copy(date = date, market = market, symbol = symbol, direction = direction,
-                                currency = currency, netPnl = input, positionPercent = position.toInt(), strategy = strategy,
-                                emotion = emotion, mistakes = mistakes, discipline = discipline, reviewed = reviewed)
-                            error = if (Money.parse(amount)?.signum() == -1) "请输入正数金额，通过上方选项选择盈利或亏损" else Analytics.validate(trade)
-                            if (error == null) onSave(trade)
-                        }) { Text(if (busy) "正在保存…" else "保存交易") }
+            Scaffold(modifier = Modifier.imePadding(), topBar = {
+                TopAppBar(title = { Text(if (original == null) "快速记录交易" else "编辑交易与复盘") },
+                    navigationIcon = { IconButton(enabled = !busy, onClick = onDismiss) { Icon(Icons.AutoMirrored.Filled.ArrowBack, "返回") } },
+                    actions = { if (original != null) IconButton(enabled = !busy, onClick = { confirmDelete = true }) { Icon(Icons.Default.Delete, "删除交易") } })
+            }, bottomBar = {
+                Surface(shadowElevation = 4.dp) {
+                    Column(Modifier.navigationBarsPadding().padding(horizontal = 16.dp, vertical = 8.dp)) {
+                        error?.let { Text(it, color = MaterialTheme.colorScheme.error, modifier = Modifier.testTag("entry-error")) }
+                        saveError?.let { Text(it, color = MaterialTheme.colorScheme.error) }
+                        if (feedback.isNotEmpty()) Text(feedback, style = MaterialTheme.typography.labelMedium)
+                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Button(enabled = !busy, onClick = { save(false) }, modifier = Modifier.weight(1f).heightIn(min = 48.dp)) { Text(if(busy) "正在保存…" else "保存交易") }
+                            if (original == null) OutlinedButton(enabled = !busy, onClick = { save(true) }, modifier = Modifier.weight(1f).heightIn(min = 48.dp)) { Text("保存并继续") }
+                        }
                     }
-                },
-            ) { padding ->
-                Column(Modifier.padding(padding).fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                    SectionCard("交易信息", "记录已平仓交易，净盈亏请扣除手续费。") {
-                        DateControl(date, { date = it })
+                }
+            }) { padding ->
+                Column(Modifier.padding(padding).fillMaxSize().verticalScroll(scroll).padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Text("已平仓交易 · 金额扣除手续费 · 未保存内容自动留为本地草稿", style = MaterialTheme.typography.bodySmall)
+                    if (original == null && state.trades.isNotEmpty()) OutlinedButton(enabled = !busy, onClick = {
+                        draft = EntryDraft.copyReusable(state.trades.maxBy { it.id }); feedback = "已复制上一笔，盈亏及复盘状态已清空"; notify(feedback)
+                    }, modifier = Modifier.fillMaxWidth()) { Text("复制上一笔交易") }
+                    SectionCard("快速录入") {
+                        DateControl(draft.date, { draft = draft.copy(date = it) })
                         Text("市场")
-                        SingleChoice(Presets.markets, market) { value ->
-                            market = value
-                            symbol = Presets.symbols(value).first()
-                            currency = when (value) { "crypto" -> "USDT"; "forex" -> "USD"; else -> "CNY" }
+                        val markets = Presets.markets.sortedBy { if(it.id == state.settings.lastMarket) 0 else 1 }
+                        SingleChoice(markets, draft.market) { market -> draft = draft.copy(market = market,
+                            symbol = orderedInstruments(state.instruments, market).firstOrNull()?.name ?: Presets.symbols(market).first(),
+                            currency = when(market) { "crypto" -> "USDT"; "forex" -> "USD"; else -> "CNY" }) }
+                        Text("常用品种 · 最近使用优先")
+                        val instruments = orderedInstruments(state.instruments, draft.market)
+                        val common = (instruments.filter { it.lastUsed > 0 || it.favorite } + instruments).distinctBy { it.id }.take(6)
+                        val visible = common.map { Option(it.name, it.name) }.let { if (it.none { o -> o.id == draft.symbol }) listOf(Option(draft.symbol, draft.symbol)) + it else it }
+                        SingleChoice(visible, draft.symbol) { draft = draft.copy(symbol = it) }
+                        TextButton(enabled = !busy, onClick = { chooseSymbol = true }) { Text("搜索 / 更多品种") }
+                        SingleChoice(Presets.directions, draft.direction) { draft = draft.copy(direction = it) }
+                        Text("盈亏结果")
+                        SingleChoice(listOf(Option("gain", "盈利"), Option("loss", "亏损"), Option("flat", "持平")), draft.outcome) {
+                            draft = draft.copy(outcome = it, amount = if(it == "flat") "" else draft.amount)
                         }
-                        Text("常用品种")
-                        SingleChoice(Presets.symbols(market).map { Option(it, it) }, symbol) { symbol = it }
-                        OutlinedTextField(symbol, { if (it.length <= 30) symbol = it }, label = { Text("品种（可自定义）") }, singleLine = true, modifier = Modifier.fillMaxWidth())
-                        Text("方向")
-                        SingleChoice(Presets.directions, direction) { direction = it }
-                        Text("结算币种")
-                        SingleChoice(Presets.currencies, currency) { currency = it }
-                        SingleChoice(listOf(Option("gain", "盈利／持平"), Option("loss", "亏损")), sign) { sign = it }
-                        OutlinedTextField(amount, { amount = it }, label = { Text("净盈亏金额（$currency）") },
-                            supportingText = { Text("输入正数金额，亏损请选择上方“亏损”。") }, singleLine = true,
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal), modifier = Modifier.fillMaxWidth())
-                        Text("本笔仓位：${position.toInt()}%")
-                        Slider(value = position, onValueChange = { position = it }, valueRange = 1f..100f, steps = 98)
-                        Text("使用策略")
-                        SingleChoice(Presets.strategies, strategy) { strategy = it }
+                        if (draft.outcome != "flat") OutlinedTextField(draft.amount, { if(it.length <= 32) draft = draft.copy(amount = it) },
+                            label = { Text("净盈亏金额（${draft.currency}）") }, singleLine = true,
+                            supportingText = { Text("输入大于 0 的金额，持平请选择“持平”。") },
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal), modifier = Modifier.fillMaxWidth().testTag("entry-amount"))
+                        else Text("已明确选择持平：净盈亏 0.00 ${draft.currency}")
+                        Text("交易策略")
+                        SingleChoice(catalog.options("strategy", listOf(draft.strategy)), draft.strategy) { draft = draft.copy(strategy = it) }
                     }
-                    SectionCard("本笔复盘", "勾选适用项；没有错误时可留空。") {
-                        Text("交易时的情绪")
-                        SingleChoice(Presets.emotions, emotion) { emotion = it }
-                        Text("常见错误 · 可多选")
-                        ChoiceChips(Presets.mistakes, mistakes) { mistakes = toggleTag(mistakes, it) }
-                        Text("已执行的纪律 · 可多选")
-                        ChoiceChips(Presets.discipline, discipline) { discipline = toggleTag(discipline, it) }
-                        Row {
-                            Checkbox(checked = reviewed, onCheckedChange = { reviewed = it })
-                            Text("本笔已完成复盘", modifier = Modifier.padding(top = 12.dp))
-                        }
+                    OutlinedButton(enabled = !busy, onClick = { draft = draft.copy(details = !draft.details) }, modifier = Modifier.fillMaxWidth()) {
+                        Text(if (draft.details) "收起详细选项" else "展开详细选项（仓位 / 复盘）")
                     }
-                    if (error != null) Text(requireNotNull(error), color = MaterialTheme.colorScheme.error)
-                    if (saveError != null) Text(saveError, color = MaterialTheme.colorScheme.error)
+                    if (draft.details) SectionCard("详细选项") {
+                        Text("结算币种"); SingleChoice(Presets.currencies, draft.currency) { draft = draft.copy(currency = it) }
+                        Text("本笔仓位：${draft.positionPercent}%")
+                        Slider(draft.positionPercent.toFloat(), { draft = draft.copy(positionPercent = it.toInt()) }, valueRange = 1f..100f, steps = 98)
+                        Text("交易情绪"); SingleChoice(catalog.options("emotion", listOf(draft.emotion)), draft.emotion) { draft = draft.copy(emotion = it) }
+                        Text("常见错误 · 可多选"); ChoiceChips(catalog.options("mistake", draft.mistakes), draft.mistakes) { draft = draft.copy(mistakes = toggleTag(draft.mistakes, it)) }
+                        Text("执行纪律 · 可多选"); ChoiceChips(catalog.options("discipline", draft.discipline), draft.discipline) { draft = draft.copy(discipline = toggleTag(draft.discipline, it)) }
+                        Row { Checkbox(draft.reviewed, { draft = draft.copy(reviewed = it) }); Text("本笔已完成复盘", Modifier.padding(top = 12.dp)) }
+                        OutlinedTextField(draft.note, { if(it.length <= 300) draft = draft.copy(note = it) }, label = { Text("简短补充备注（可选）") }, maxLines = 3, modifier = Modifier.fillMaxWidth())
+                    }
+                    Spacer(Modifier.height(8.dp))
                 }
             }
         }
-        if (confirmDelete && original != null) {
-            AlertDialog(onDismissRequest = { if (!busy) confirmDelete = false }, title = { Text("删除这笔交易？") },
-                text = { Text("${original.symbol} · ${dayLabel(original.date)}\n删除后无法恢复。") },
-                confirmButton = { TextButton(enabled = !busy, onClick = { onDelete(original) }) { Text("删除") } },
-                dismissButton = { TextButton(enabled = !busy, onClick = { confirmDelete = false }) { Text("取消") } })
+        if (confirmDelete && original != null) AlertDialog(onDismissRequest = { if(!busy) confirmDelete = false }, title = { Text("删除这笔交易？") },
+            text = { Text("${original.symbol} · ${dayLabel(original.date)}\n删除后无法恢复。") },
+            confirmButton = { TextButton(enabled = !busy, onClick = { onDelete(original) }) { Text("删除") } },
+            dismissButton = { TextButton(enabled = !busy, onClick = { confirmDelete = false }) { Text("取消") } })
+        if (chooseSymbol) InstrumentPicker(state.instruments, draft.market, onDismiss = { chooseSymbol = false }) {
+            draft = draft.copy(symbol = it.name); chooseSymbol = false
         }
     }
+}
+
+@Composable
+fun InstrumentPicker(values: List<Instrument>, market: String, onDismiss: () -> Unit, onSelect: (Instrument) -> Unit) {
+    var query by rememberSaveable { mutableStateOf("") }
+    AlertDialog(onDismissRequest = onDismiss, title = { Text("选择品种") }, text = {
+        Column {
+            OutlinedTextField(query, { query = it }, label = { Text("搜索名称或代码") }, singleLine = true, modifier = Modifier.fillMaxWidth())
+            LazyColumn(Modifier.heightIn(max = 360.dp)) {
+                val matched = orderedInstruments(values, market, query)
+                if (matched.isEmpty()) item { Text("暂无结果，可到设置添加自定义品种") }
+                items(matched, key = { it.id }) { item -> TextButton(onClick = { onSelect(item) }, modifier = Modifier.fillMaxWidth()) {
+                    Text("${if(item.favorite) "★ " else ""}${item.name} · ${item.code}${if(item.lastUsed > 0) " · 最近" else ""}")
+                } }
+            }
+        }
+    }, confirmButton = { TextButton(onClick = onDismiss) { Text("关闭") } })
 }

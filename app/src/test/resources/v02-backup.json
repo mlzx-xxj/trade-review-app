@@ -1,0 +1,63 @@
+{
+  "format": "trade-review-backup",
+  "schemaVersion": 1,
+  "exportedAt": "2026-10-11T07:00:00Z",
+  "counts": {
+    "trades": 1,
+    "dailyReviews": 1,
+    "plans": 1,
+    "reviews": 1
+  },
+  "trades": [
+    {
+      "id": 7,
+      "recordKey": "0123456789abcdef0123456789abcdef",
+      "date": 20000,
+      "market": "futures",
+      "symbol": "旧备份黄金",
+      "direction": "short",
+      "currency": "CNY",
+      "netPnl": "-123.45",
+      "positionPercent": 25,
+      "strategy": "trend",
+      "emotion": "anxious",
+      "mistakes": [
+        "chase",
+        "oversize"
+      ],
+      "discipline": [
+        "respect_stop"
+      ],
+      "reviewed": true
+    }
+  ],
+  "dailyReviews": [
+    {
+      "date": 20000,
+      "outlook": "bullish",
+      "strategies": [
+        "trend",
+        "breakout"
+      ],
+      "preparations": [
+        "risk"
+      ],
+      "maxPosition": 25,
+      "planSaved": true,
+      "emotion": "anxious",
+      "discipline": [
+        "respect_stop"
+      ],
+      "mistakes": [
+        "chase"
+      ],
+      "lessons": [
+        "stop",
+        "rest"
+      ],
+      "rating": 4,
+      "reviewSaved": true
+    }
+  ],
+  "checksumSha256": "f2cb2f8d57a716e184b103f0bde396a04126f9d8648038ae6235a39ca2cc3fcd"
+}

@@ -23,7 +23,7 @@ class BackupSettingsTest {
     private lateinit var model: BackupViewModel
     private lateinit var file: File
     @Before fun open() {
-        db = Room.inMemoryDatabaseBuilder(context, TradeDatabase::class.java).build()
+        db = Room.inMemoryDatabaseBuilder(context, TradeDatabase::class.java).addCallback(CatalogSeeds.callback).build()
         model = BackupViewModel(db, context.contentResolver)
         file = File(context.cacheDir, "backup-ui-test.json")
     }

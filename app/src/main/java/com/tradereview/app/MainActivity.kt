@@ -1,6 +1,9 @@
 package com.tradereview.app
 
 import android.os.Bundle
+import androidx.compose.runtime.getValue
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -19,15 +22,16 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         val database = (application as TradeReviewApplication).database
         setContent {
-            TradeReviewTheme {
                 val model: TradeViewModel = viewModel(factory = viewModelFactory {
-                    initializer { TradeViewModel(database.trades(), createSavedStateHandle()) }
+                    initializer { TradeViewModel(database, createSavedStateHandle()) }
                 })
                 val backup: BackupViewModel = viewModel(factory = viewModelFactory {
                     initializer { BackupViewModel(database, application.contentResolver) }
                 })
-                TradeReviewApp(model, backup)
-            }
+                val state by model.state.collectAsStateWithLifecycle()
+                TradeReviewTheme(darkTheme = when (state.settings.theme) { "dark" -> true; "light" -> false; else -> isSystemInDarkTheme() }) {
+                    TradeReviewApp(model, backup)
+                }
         }
     }
 }

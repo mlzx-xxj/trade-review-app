@@ -31,13 +31,13 @@ class BackupCodecTest {
     }
     @Test fun rejectsUnsupportedVersionMissingUnknownAndIncorrectlyTypedFields() {
         val json = BackupCodec.encode(fixture())
-        reject(json.replace("\"schemaVersion\": 1", "\"schemaVersion\": 2"))
-        reject(json.replace("\"schemaVersion\": 1", "\"schemaVersion\": \"1\""))
-        reject(json.replace("\"schemaVersion\": 1,", ""))
-        reject(json.replace("\"schemaVersion\": 1", "\"schemaVersion\": 1, \"unknown\": 5"))
+        reject(json.replace("\"schemaVersion\": 2", "\"schemaVersion\": 3"))
+        reject(json.replace("\"schemaVersion\": 2", "\"schemaVersion\": \"1\""))
+        reject(json.replace("\"schemaVersion\": 2,", ""))
+        reject(json.replace("\"schemaVersion\": 2", "\"schemaVersion\": 2, \"unknown\": 5"))
         reject(json.replace("\"reviewed\": true", "\"reviewed\": \"true\""))
         reject(json.replace("\"positionPercent\": 10", "\"positionPercent\": 4294967306"))
-        reject(json.replace("\"schemaVersion\": 1", "\"schemaVersion\": 1e0"))
+        reject(json.replace("\"schemaVersion\": 2", "\"schemaVersion\": 2e0"))
     }
     @Test fun rejectsTruncatedWrongChecksumOrCountAndChangedPayload() {
         val json = BackupCodec.encode(fixture())
@@ -51,9 +51,9 @@ class BackupCodecTest {
     }
     @Test fun rejectsDuplicateJsonKeysLenientSyntaxNullAndDeepNesting() {
         val json = BackupCodec.encode(fixture())
-        reject(json.replace("\"schemaVersion\": 1", "\"schemaVersion\": 1, \"schemaVersion\": 1"))
-        reject(json.replace("\"schemaVersion\": 1", "'schemaVersion': 1"))
-        reject("/* comment */" + json); reject(json.replace("\"schemaVersion\": 1", "\"schemaVersion\": null"))
+        reject(json.replace("\"schemaVersion\": 2", "\"schemaVersion\": 2, \"schemaVersion\": 2"))
+        reject(json.replace("\"schemaVersion\": 2", "'schemaVersion': 1"))
+        reject("/* comment */" + json); reject(json.replace("\"schemaVersion\": 2", "\"schemaVersion\": null"))
         reject("[".repeat(20) + "0" + "]".repeat(20))
     }
     @Test fun rejectsInvalidOptionsDatesAmountsPositionsRatingsAndTags() {

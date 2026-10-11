@@ -29,16 +29,16 @@ class SigningGuardTest(unittest.TestCase):
         result, root, output = self.invoke('false')
         self.assertEqual(0, result.returncode, result.stderr)
         self.assertIn('upgrade_verified=false', output.read_text())
-        self.assertTrue((root / 'dist/TradeReview-v0.2-test.apk').exists())
-        self.assertFalse((root / 'dist/TradeReview-v0.2-upgrade.apk').exists())
-        self.assertIn('Do not uninstall', (root / 'dist/SIGNING.txt').read_text())
+        self.assertTrue((root / 'dist/TradeReview-v0.3-test.apk').exists())
+        self.assertFalse((root / 'dist/TradeReview-v0.3-stable.apk').exists())
+        self.assertIn('no fixed signing key configured', (root / 'dist/SIGNING.txt').read_text())
 
     def test_matching_existing_certificate_allows_only_upgrade_artifact(self):
         result, root, output = self.invoke('true')
         self.assertEqual(0, result.returncode, result.stderr)
         self.assertIn('upgrade_verified=true', output.read_text())
-        self.assertTrue((root / 'dist/TradeReview-v0.2-upgrade.apk').exists())
-        self.assertFalse((root / 'dist/TradeReview-v0.2-test.apk').exists())
+        self.assertTrue((root / 'dist/TradeReview-v0.3-stable.apk').exists())
+        self.assertFalse((root / 'dist/TradeReview-v0.3-test.apk').exists())
 
     def test_wrong_certificate_blocks_all_apk_publication(self):
         result, root, output = self.invoke('true', '0' * 64)
@@ -46,6 +46,11 @@ class SigningGuardTest(unittest.TestCase):
         self.assertIn('Upgrade publication refused', result.stderr)
         self.assertEqual([], list((root / 'dist').glob('*.apk')))
         self.assertFalse(output.exists())
+
+    def test_fixed_key_without_public_certificate_pin_blocks_publication(self):
+        result, root, output = self.invoke('true', '')
+        self.assertNotEqual(0, result.returncode)
+        self.assertEqual([], list((root / 'dist').glob('*.apk')))
 
 if __name__ == '__main__':
     unittest.main()

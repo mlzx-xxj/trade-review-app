@@ -16,7 +16,8 @@ import com.tradereview.app.backup.RestoreMode
 import java.time.LocalDate
 
 @Composable
-fun SettingsPage(model: BackupViewModel, journalBusy: Boolean, modifier: Modifier = Modifier) {
+fun SettingsPage(model: BackupViewModel, journalBusy: Boolean, modifier: Modifier = Modifier,
+    onTags: () -> Unit = {}, onSymbols: () -> Unit = {}, theme: String = "system", onTheme: (String) -> Unit = {}) {
     val busy by model.busy.collectAsStateWithLifecycle()
     val preview by model.preview.collectAsStateWithLifecycle()
     val message by model.message.collectAsStateWithLifecycle()
@@ -41,6 +42,8 @@ fun SettingsPage(model: BackupViewModel, journalBusy: Boolean, modifier: Modifie
             Text("导出时间：${p.backup.exportedAt}")
             Text("备份：${p.backup.trades.size} 笔交易 · ${p.backup.dailyReviews.size} 个日志日期")
             Text("盘前计划 ${p.backup.planCount} 份 · 盘后复盘 ${p.backup.reviewCount} 份（含全部标签）")
+            Text("格式版本 ${p.backup.sourceSchemaVersion} · 标签 ${p.backup.tags.size} 个 · 品种 ${p.backup.instruments.size} 个 · 草稿 ${p.backup.drafts.size} 份")
+            Text("合并将保留本地标签名称、收藏、排序与设置，补入新的稳定 ID 和草稿；覆盖替换全部数据。")
             Text("当前本地：${p.before.trades.size} 笔交易 · ${p.before.reviews.size} 个日志日期")
             Row { RadioButton(selected = mode == RestoreMode.MERGE.name, enabled = !locked, onClick = { mode = RestoreMode.MERGE.name }); Text("去重合并（保留本地冲突内容）", Modifier.padding(top = 12.dp)) }
             Text("新增 ${p.summary.newTrades} 笔交易；相同记录跳过 ${p.summary.repeatedTrades} 笔，交易冲突 ${p.summary.conflictingTrades} 笔。")
@@ -54,9 +57,15 @@ fun SettingsPage(model: BackupViewModel, journalBusy: Boolean, modifier: Modifie
             OutlinedButton(enabled = !locked && preview == null, onClick = { csv.launch("交易明细-${LocalDate.now()}.csv") }, modifier = Modifier.fillMaxWidth()) { Text("导出全部交易 CSV") }
             Text("UTF-8 中文，按币种保留金额，支持逗号、引号与换行。", style = MaterialTheme.typography.bodySmall)
         } }
+        item { SectionCard("偏好与管理") {
+            OutlinedButton(enabled = !locked && preview == null, onClick = onTags, modifier = Modifier.fillMaxWidth()) { Text("管理自定义标签") }
+            OutlinedButton(enabled = !locked && preview == null, onClick = onSymbols, modifier = Modifier.fillMaxWidth()) { Text("管理常用品种") }
+            Text("显示模式")
+            SingleChoice(listOf(com.tradereview.app.data.Option("system", "跟随系统"), com.tradereview.app.data.Option("light", "浅色"), com.tradereview.app.data.Option("dark", "深色")), theme) { if(!locked && preview == null) onTheme(it) }
+        } }
         item { SectionCard("应用信息") {
             Text("交易复盘 ${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})")
-            Text("本地数据库版本 2 · JSON 备份格式版本 1")
+            Text("本地数据库版本 3 · JSON 备份格式版本 2（兼容 V0.2）")
             Text("升级安装需要相同应用标识及签名；应用不会自动下载或上传数据。", style = MaterialTheme.typography.bodySmall)
         } }
     }
