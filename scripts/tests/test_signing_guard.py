@@ -6,16 +6,17 @@ import tempfile
 import unittest
 
 SCRIPT = Path(__file__).resolve().parents[1] / 'check-apk-signature.sh'
-CERT = '8272cb328cfdbc2e585ce88b71c1425f18abc5a57d6082bc69b8c305a154eb82'
+CERT = (SCRIPT.parent.parent / 'docs/V03-CERTIFICATE-SHA256.txt').read_text().strip()
 
 class SigningGuardTest(unittest.TestCase):
-    def invoke(self, configured, expected=CERT):
+    def invoke(self, configured, expected=CERT, actual=CERT, extra_signer=False):
         scratch = tempfile.TemporaryDirectory()
         self.addCleanup(scratch.cleanup)
         root = Path(scratch.name)
         tool = root / 'sdk/build-tools/35.0.0/apksigner'
         tool.parent.mkdir(parents=True)
-        tool.write_text('#!/bin/sh\nprintf "Signer #1 certificate SHA-256 digest: ' + CERT + '\\n"\n')
+        tool.write_text('#!/bin/sh\nprintf "Signer #1 certificate SHA-256 digest: ' + actual + '\\n"\n' +
+                        ('printf "Signer #2 certificate SHA-256 digest: ' + actual + '\\n"\n' if extra_signer else ''))
         tool.chmod(0o755)
         apk = root / 'test.apk'
         apk.write_bytes(b'test-fixture')
@@ -51,6 +52,19 @@ class SigningGuardTest(unittest.TestCase):
         result, root, output = self.invoke('true', '')
         self.assertNotEqual(0, result.returncode)
         self.assertEqual([], list((root / 'dist').glob('*.apk')))
+
+    def test_replacement_key_with_matching_variable_still_fails_committed_v03_pin(self):
+        result, root, output = self.invoke('true', '1' * 64, '1' * 64)
+        self.assertNotEqual(0, result.returncode)
+        self.assertIn('Upgrade publication refused', result.stderr)
+        self.assertEqual([], list((root / 'dist').glob('*.apk')))
+        self.assertFalse(output.exists())
+
+    def test_multiple_signers_are_rejected(self):
+        result, root, output = self.invoke('true', extra_signer=True)
+        self.assertNotEqual(0, result.returncode)
+        self.assertIn('Exactly one APK signer', result.stderr)
+        self.assertFalse(output.exists())
 
 if __name__ == '__main__':
     unittest.main()

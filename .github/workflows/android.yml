@@ -53,6 +53,7 @@ jobs:
       - name: Test signature publication guards without private keys
         run: |
           python3 scripts/tests/test_signing_guard.py
+          python3 scripts/tests/test_signing_config.py
           python3 scripts/tests/test_signed_payload.py
       - name: Configure fixed V0.3 signing key from Secrets when available
         id: signing
@@ -62,8 +63,8 @@ jobs:
           EXISTING_KEY_ALIAS: ${{ secrets.TRADE_REVIEW_KEY_ALIAS }}
           EXISTING_KEY_PASSWORD: ${{ secrets.TRADE_REVIEW_KEY_PASSWORD }}
         run: |
-          if [ -n "$EXISTING_KEY_BASE64" ]; then
-            test -n "$EXISTING_STORE_PASSWORD" && test -n "$EXISTING_KEY_ALIAS" && test -n "$EXISTING_KEY_PASSWORD" || { echo 'Signing Secrets incomplete'; exit 1; }
+          configured=$(python3 scripts/signing-config-state.py)
+          if [ "$configured" = true ]; then
             umask 077
             key_path="$RUNNER_TEMP/trade-review-existing.keystore"
             printf '%s' "$EXISTING_KEY_BASE64" | base64 --decode > "$key_path"
@@ -76,7 +77,7 @@ jobs:
             printf 'configured=false\n' >> "$GITHUB_OUTPUT"
           fi
       - name: Compile, run JVM tests and Android lint
-        run: ./gradlew --no-daemon --stacktrace :app:assembleDebug :app:assembleDebugAndroidTest :app:testDebugUnitTest :app:lintDebug
+        run: ./gradlew --no-daemon --no-build-cache --stacktrace :app:assembleDebug :app:assembleDebugAndroidTest :app:testDebugUnitTest :app:lintDebug
       - name: Verify fixed signer certificate pin or label APK as temporary test
         id: signature
         env:
@@ -180,7 +181,7 @@ jobs:
           emulator-boot-timeout: 300
           emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -no-metrics -partition-size 2048
           disable-animations: true
-          script: ./gradlew --no-daemon --stacktrace :app:connectedDebugAndroidTest
+          script: ./gradlew --no-daemon --no-build-cache --stacktrace :app:connectedDebugAndroidTest
       - name: Upload Android test reports
         if: always()
         uses: actions/upload-artifact@v4

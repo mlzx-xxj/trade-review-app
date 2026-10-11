@@ -35,7 +35,7 @@ JSON 是明文；摘要用于发现损坏，不能证明文件来源或加密。
 1. 下载本轮单独交付的私密签名资料，存放在可信设备并做两份离线备份；保留现有 keystore，**不要重新生成**。压缩包含密码与私钥编码，严禁提交 GitHub。不要依赖临时 runner、Gradle 缓存或 Secrets 作为唯一备份。
 2. 打开仓库 Settings → Secrets and variables → Actions → Secrets，添加 `TRADE_REVIEW_KEYSTORE_BASE64`（完整 keystore 的 Base64）、`TRADE_REVIEW_KEYSTORE_PASSWORD`、`TRADE_REVIEW_KEY_ALIAS`、`TRADE_REVIEW_KEY_PASSWORD`。建议用 GitHub CLI `gh secret set NAME --body-file /安全本地路径` 或交互粘贴到 GitHub 设置；不要把值写到代码、命令日志或聊天。
 3. 用本地 keytool 查看该 alias 的公开证书 SHA-256；在同页 Variables 添加 `TRADE_REVIEW_UPGRADE_CERT_SHA256`（64 位十六进制，可带冒号）。这里从 V0.3 起 pin 所选固定证书，不再默认绑定旧 V0.1 临时证书。
-4. 重新运行 Android CI。只有 Secrets 提供固定密钥且 apksigner 验证与 pin 完全匹配，才输出 `TradeReview-v0.3-stable.apk`。缺少 pin、不匹配或 Secrets 不全会失败，禁止稳定包发布。私钥临时文件在 always 步骤删除，从不上传。
+4. 重新运行 Android CI。四个 Secrets 全部为空才可使用临时包；任意部分配置都会失败。只有 Secrets 提供固定密钥且 APK 恰有一个 signer，同时匹配仓库变量和代码内已固定的 V0.3 证书，才输出 `TradeReview-v0.3-stable.apk`。即使将变量改为另一把密钥的证书，也不能绕过已有 V0.3 身份。缺少 pin、不匹配或 Secrets 不全会失败。私钥临时文件在 always 步骤删除，从不上传。
 5. 第一次安装固定签名 V0.3 需卸载不同签名的临时测试版，先保存新版 JSON（含新数据），安装后恢复。之后 V0.4/V0.5 保持相同 applicationId/私钥、递增 versionCode，并提供正式 Room Migration，就能满足 Android 覆盖升级条件。实际真机升级仍需设备验证；仅代码和模拟器测试不能声称已经真机保留数据升级成功。
 
 所有者可在可信电脑使用 GitHub CLI 登录有 Secrets/Variables 管理权限的账号，然后执行：
