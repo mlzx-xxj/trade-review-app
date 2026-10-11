@@ -8,18 +8,18 @@ import java.time.Instant
 
 enum class RestoreMode { MERGE, REPLACE }
 data class DatabaseSnapshot(val trades: List<Trade>, val reviews: List<DailyReview>, val tags: List<ManagedTag>,
-    val instruments: List<Instrument>, val settings: AppSettings, val drafts: List<EntryDraft>)
+    val instruments: List<Instrument>, val settings: AppSettings, val drafts: List<EntryDraft>, val savedFilters: List<SavedFilter> = emptyList())
 data class MergeSummary(val newTrades: Int, val repeatedTrades: Int, val conflictingTrades: Int,
     val newDays: Int, val addedPlans: Int, val addedReviews: Int, val conflictingPlans: Int, val conflictingReviews: Int)
 data class RestorePreview(val backup: BackupData, val before: DatabaseSnapshot, val summary: MergeSummary)
 
 class BackupRepository(private val database: TradeDatabase) {
     private val dao get() = database.trades()
-    private suspend fun snapshot() = DatabaseSnapshot(dao.allTrades(), dao.allReviews(), dao.allTags(), dao.allInstruments(), dao.settings() ?: AppSettings(), dao.allDrafts())
+    private suspend fun snapshot() = DatabaseSnapshot(dao.allTrades(), dao.allReviews(), dao.allTags(), dao.allInstruments(), dao.settings() ?: AppSettings(), dao.allDrafts(), dao.allFilters())
 
     suspend fun export(): BackupData = database.withTransaction {
         val state = snapshot()
-        BackupData(Instant.now().toString(), state.trades, state.reviews, state.tags, state.instruments, state.settings, state.drafts)
+        BackupData(Instant.now().toString(), state.trades, state.reviews, state.tags, state.instruments, state.settings, state.drafts, savedFilters = state.savedFilters)
     }
 
     suspend fun preview(data: BackupData): RestorePreview {
@@ -49,13 +49,14 @@ class BackupRepository(private val database: TradeDatabase) {
             if (mode == RestoreMode.REPLACE) {
                 dao.clearTrades()
                 dao.clearReviews()
-                dao.clearDrafts(); dao.clearTags(); dao.clearInstruments(); dao.clearSettings()
+                dao.clearDrafts(); dao.clearFilters(); dao.clearTags(); dao.clearInstruments(); dao.clearSettings()
                 preview.backup.tags.forEach { dao.saveTag(it) }
                 preview.backup.instruments.forEach { dao.saveInstrument(it) }
                 dao.saveSettings(preview.backup.settings)
                 preview.backup.trades.forEach { dao.insert(it) }
                 preview.backup.dailyReviews.forEach { dao.insertReview(it) }
                 preview.backup.drafts.forEach { dao.saveDraft(it) }
+                preview.backup.savedFilters.forEach { dao.saveFilter(it) }
             } else {
                 val tagKeys = preview.before.tags.map { it.kind to it.id }.toSet()
                 preview.backup.tags.filter { (it.kind to it.id) !in tagKeys }.forEach { dao.saveTag(it) }
@@ -86,6 +87,8 @@ class BackupRepository(private val database: TradeDatabase) {
                     if (d.key == "new") { if(d.recordKey !in restoredTrades) dao.saveDraft(d) }
                     else restoredTrades[d.recordKey]?.let { dao.saveDraft(d.copy(tradeId = it.id)) }
                 }
+                val filterIds = preview.before.savedFilters.map { it.id }.toSet()
+                preview.backup.savedFilters.filter { it.id !in filterIds }.forEach { dao.saveFilter(it) }
             }
         }
     }

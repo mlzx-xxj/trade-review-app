@@ -5,6 +5,9 @@ local.properties
 *.iml
 .idea/
 captures/
+ci-screenshots/
+ci-device-screenshots/
+ci-reports/
 *.apk
 *.aab
 *.jks

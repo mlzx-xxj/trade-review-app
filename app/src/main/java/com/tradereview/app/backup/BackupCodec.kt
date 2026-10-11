@@ -5,6 +5,7 @@ import com.google.gson.stream.JsonReader
 import com.google.gson.stream.JsonToken
 import com.tradereview.app.data.*
 import com.tradereview.app.domain.Money
+import com.tradereview.app.domain.FilterCodec
 import java.io.InputStream
 import java.io.ByteArrayOutputStream
 import java.io.StringReader
@@ -18,14 +19,15 @@ class BackupException(message: String) : IllegalArgumentException(message)
 
 data class BackupData(val exportedAt: String, val trades: List<Trade>, val dailyReviews: List<DailyReview>,
     val tags: List<ManagedTag> = CatalogSeeds.tags, val instruments: List<Instrument> = CatalogSeeds.instruments,
-    val settings: AppSettings = AppSettings(), val drafts: List<EntryDraft> = emptyList(), val sourceSchemaVersion: Int = 2) {
+    val settings: AppSettings = AppSettings(), val drafts: List<EntryDraft> = emptyList(), val sourceSchemaVersion: Int = 3,
+    val savedFilters: List<SavedFilter> = emptyList()) {
     val planCount get() = dailyReviews.count { it.planSaved }
     val reviewCount get() = dailyReviews.count { it.reviewSaved }
 }
 
 /** Schema version is the interchange format version, independent of Room's version. */
 object BackupCodec {
-    const val SCHEMA_VERSION = 2
+    const val SCHEMA_VERSION = 3
     const val MAX_BYTES = 16 * 1024 * 1024
     const val MAX_RECORDS = 10_000
     private val gson = GsonBuilder().disableHtmlEscaping().create()
@@ -73,25 +75,33 @@ object BackupCodec {
             val version = rawVersion.toInt()
             requireBackup(version in 1..SCHEMA_VERSION, "不支持此备份版本，请使用匹配版本的应用")
             if (version == 1) root.fields("format", "schemaVersion", "exportedAt", "counts", "trades", "dailyReviews", "checksumSha256")
-            else root.fields("format", "schemaVersion", "exportedAt", "counts", "trades", "dailyReviews", "tags", "instruments", "settings", "drafts", "checksumSha256")
+            else root.fields(*(listOf("format", "schemaVersion", "exportedAt", "counts", "trades", "dailyReviews", "tags", "instruments", "settings", "drafts", "checksumSha256") + if (version >= 3) listOf("savedFilters") else emptyList()).toTypedArray())
             requireBackup(root.string("format") == "trade-review-backup", "不是交易复盘备份文件")
             val data = BackupData(root.string("exportedAt"), root.array("trades").map { parseTrade(it.obj(), version) },
                 root.array("dailyReviews").map { parseReview(it.obj()) },
                 tags = if (version == 1) CatalogSeeds.tags else root.array("tags").map { parseTag(it.obj()) },
                 instruments = if (version == 1) CatalogSeeds.instruments else root.array("instruments").map { parseInstrument(it.obj()) },
-                settings = if (version == 1) AppSettings() else parseSettings(root.get("settings").obj()),
-                drafts = if (version == 1) emptyList() else root.array("drafts").map { parseDraft(it.obj()) }, sourceSchemaVersion = version)
+                settings = if (version == 1) AppSettings() else parseSettings(root.get("settings").obj(), version),
+                drafts = if (version == 1) emptyList() else root.array("drafts").map { parseDraft(it.obj()) }, sourceSchemaVersion = version,
+                savedFilters = if (version < 3) emptyList() else root.array("savedFilters").map { parseFilter(it.obj()) })
             validate(data)
             val counts = root.getAsJsonObject("counts") ?: throw BackupException("缺少数量校验")
             if (version == 1) counts.fields("trades", "dailyReviews", "plans", "reviews")
             else {
-                counts.fields("trades", "dailyReviews", "plans", "reviews", "tags", "instruments", "drafts")
+                counts.fields(*(listOf("trades", "dailyReviews", "plans", "reviews", "tags", "instruments", "drafts") + if (version >= 3) listOf("savedFilters") else emptyList()).toTypedArray())
                 requireBackup(counts.integer("tags") == data.tags.size.toLong() && counts.integer("instruments") == data.instruments.size.toLong() && counts.integer("drafts") == data.drafts.size.toLong(), "目录或草稿数量不一致")
+                if (version >= 3) requireBackup(counts.integer("savedFilters") == data.savedFilters.size.toLong(), "筛选方案数量不一致")
             }
             requireBackup(counts.integer("trades") == data.trades.size.toLong() &&
                 counts.integer("dailyReviews") == data.dailyReviews.size.toLong() &&
                 counts.integer("plans") == data.planCount.toLong() && counts.integer("reviews") == data.reviewCount.toLong(), "数量不一致，备份可能不完整")
-            requireBackup(root.string("checksumSha256") == digest(gson.toJson(payload(data, version))), "完整性校验失败，文件可能损坏或被修改")
+            val checksum = root.string("checksumSha256")
+            val canonical = digest(gson.toJson(payload(data, version)))
+            // V0.3 used reflection for catalog/draft objects: ART sorts declared fields,
+            // whereas the JVM follows declaration order. Accept only those two legacy
+            // layouts, after complete strict validation; schema 3 never uses reflection.
+            val legacyAndroid = version == 2 && checksum == digest(gson.toJson(payload(data, version, androidLegacy = true)))
+            requireBackup(checksum == canonical || legacyAndroid, "完整性校验失败，文件可能损坏或被修改")
             return data
         } catch (error: BackupException) { throw error }
         catch (_: Exception) { throw BackupException("JSON 格式或字段类型不正确，未恢复任何数据") }
@@ -117,8 +127,13 @@ object BackupCodec {
             choice(i.market, Presets.markets); name(i.name); name(i.code)
             requireBackup(i.sortOrder in 0..100000 && i.lastUsed in 0..4133980799999L, "品种排序或最近时间无效")
         }
-        requireBackup(data.settings.id == 1 && data.settings.theme in listOf("system", "light", "dark"), "应用设置无效")
+        requireBackup(data.settings.id == 1 && data.settings.theme in listOf("system", "light", "dark") && data.settings.pnlPalette in listOf("green_profit", "red_profit"), "应用设置无效")
         choice(data.settings.lastMarket, Presets.markets)
+        requireBackup(data.savedFilters.size <= 100 && data.savedFilters.map { it.id }.distinct().size == data.savedFilters.size, "筛选方案重复或超过 100 个上限")
+        data.savedFilters.forEach { value ->
+            try { validateSavedFilter(value, data.tags) }
+            catch (e: IllegalArgumentException) { throw BackupException(e.message ?: "筛选方案无效") }
+        }
         fun options(kind: String) = data.tags.filter { it.kind == kind }.map { Option(it.id, it.name) }
         data.trades.forEach { trade ->
             requireBackup(trade.id in 1 until Long.MAX_VALUE, "交易编号无效")
@@ -157,20 +172,45 @@ object BackupCodec {
     }
 
     // Fixed field order makes the checksum independent of whitespace or incoming object key order.
-    private fun payload(data: BackupData, version: Int = SCHEMA_VERSION) = JsonObject().apply {
+    private fun payload(data: BackupData, version: Int = SCHEMA_VERSION, androidLegacy: Boolean = false) = JsonObject().apply {
         addProperty("format", "trade-review-backup"); addProperty("schemaVersion", version)
         addProperty("exportedAt", data.exportedAt)
         add("counts", JsonObject().apply {
             addProperty("trades", data.trades.size); addProperty("dailyReviews", data.dailyReviews.size)
             addProperty("plans", data.planCount); addProperty("reviews", data.reviewCount)
             if (version >= 2) { addProperty("tags", data.tags.size); addProperty("instruments", data.instruments.size); addProperty("drafts", data.drafts.size) }
+            if (version >= 3) addProperty("savedFilters", data.savedFilters.size)
         })
         add("trades", JsonArray().apply { data.trades.forEach { add(tradeJson(it, version)) } })
         add("dailyReviews", JsonArray().apply { data.dailyReviews.forEach { add(reviewJson(it)) } })
         if (version >= 2) {
-            add("tags", gson.toJsonTree(data.tags)); add("instruments", gson.toJsonTree(data.instruments))
-            add("settings", gson.toJsonTree(data.settings)); add("drafts", gson.toJsonTree(data.drafts))
+            fun legacy(o: JsonObject): JsonObject = if (version == 2 && androidLegacy) JsonObject().apply { o.keySet().sorted().forEach { add(it, o[it]) } } else o
+            add("tags", JsonArray().apply { data.tags.forEach { add(legacy(tagObject(it))) } })
+            add("instruments", JsonArray().apply { data.instruments.forEach { add(legacy(instrumentObject(it))) } })
+            // Preserve the exact V0.3 canonical field set for old-format checksum verification.
+            add("settings", JsonObject().apply {
+                addProperty("id", data.settings.id); addProperty("lastMarket", data.settings.lastMarket); addProperty("theme", data.settings.theme)
+                if (version >= 3) addProperty("pnlPalette", data.settings.pnlPalette)
+            }); add("drafts", JsonArray().apply { data.drafts.forEach { add(legacy(draftObject(it))) } })
+            if (version >= 3) add("savedFilters", JsonArray().apply { data.savedFilters.forEach { f -> add(JsonObject().apply {
+                addProperty("id", f.id); addProperty("name", f.name); addProperty("currency", f.currency); add("criteria", FilterCodec.json(f.criteria))
+            }) } })
         }
+    }
+    private fun tagObject(t: ManagedTag) = JsonObject().apply {
+        addProperty("kind", t.kind); addProperty("id", t.id); addProperty("name", t.name); addProperty("sortOrder", t.sortOrder)
+        addProperty("favorite", t.favorite); addProperty("hidden", t.hidden); addProperty("lastUsed", t.lastUsed)
+    }
+    private fun instrumentObject(i: Instrument) = JsonObject().apply {
+        addProperty("id", i.id); addProperty("market", i.market); addProperty("name", i.name); addProperty("code", i.code)
+        addProperty("sortOrder", i.sortOrder); addProperty("favorite", i.favorite); addProperty("lastUsed", i.lastUsed)
+    }
+    private fun draftObject(d: EntryDraft) = JsonObject().apply {
+        addProperty("key", d.key); addProperty("recordKey", d.recordKey); addProperty("tradeId", d.tradeId); addProperty("date", d.date)
+        addProperty("market", d.market); addProperty("symbol", d.symbol); addProperty("direction", d.direction); addProperty("currency", d.currency)
+        addProperty("amount", d.amount); addProperty("outcome", d.outcome); addProperty("positionPercent", d.positionPercent)
+        addProperty("strategy", d.strategy); addProperty("emotion", d.emotion); add("mistakes", tagJson(d.mistakes)); add("discipline", tagJson(d.discipline))
+        addProperty("reviewed", d.reviewed); addProperty("note", d.note); addProperty("details", d.details)
     }
     private fun tradeJson(t: Trade, version: Int) = JsonObject().apply {
         addProperty("id", t.id); addProperty("recordKey", t.recordKey); addProperty("date", t.date)
@@ -209,9 +249,13 @@ object BackupCodec {
         o.fields("id", "market", "name", "code", "sortOrder", "favorite", "lastUsed")
         return Instrument(o.string("id"), o.string("market"), o.string("name"), o.string("code"), o.smallInt("sortOrder"), o.boolean("favorite"), o.integer("lastUsed"))
     }
-    private fun parseSettings(o: JsonObject): AppSettings {
-        o.fields("id", "lastMarket", "theme")
-        return AppSettings(o.smallInt("id"), o.string("lastMarket"), o.string("theme"))
+    private fun parseSettings(o: JsonObject, version: Int): AppSettings {
+        o.fields(*(listOf("id", "lastMarket", "theme") + if (version >= 3) listOf("pnlPalette") else emptyList()).toTypedArray())
+        return AppSettings(o.smallInt("id"), o.string("lastMarket"), o.string("theme"), if (version >= 3) o.string("pnlPalette") else "green_profit")
+    }
+    private fun parseFilter(o: JsonObject): SavedFilter {
+        o.fields("id", "name", "currency", "criteria")
+        return SavedFilter(o.string("id"), o.string("name"), o.string("currency"), FilterCodec.parse(o["criteria"].obj()))
     }
     private fun parseDraft(o: JsonObject): EntryDraft {
         o.fields("key", "recordKey", "tradeId", "date", "market", "symbol", "direction", "currency", "amount", "outcome", "positionPercent", "strategy", "emotion", "mistakes", "discipline", "reviewed", "note", "details")

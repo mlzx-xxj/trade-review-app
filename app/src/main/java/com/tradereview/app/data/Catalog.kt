@@ -1,6 +1,7 @@
 package com.tradereview.app.data
 
 import androidx.room.Entity
+import androidx.room.ColumnInfo
 import androidx.room.PrimaryKey
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
@@ -20,7 +21,8 @@ data class Instrument(@PrimaryKey val id: String, val market: String, val name: 
     val sortOrder: Int = 0, val favorite: Boolean = false, val lastUsed: Long = 0)
 
 @Entity(tableName = "app_settings")
-data class AppSettings(@PrimaryKey val id: Int = 1, val lastMarket: String = "stock", val theme: String = "system")
+data class AppSettings(@PrimaryKey val id: Int = 1, val lastMarket: String = "stock", val theme: String = "system",
+    @ColumnInfo(defaultValue = "'green_profit'") val pnlPalette: String = "green_profit")
 
 /** A partial form is stored separately: an empty amount never becomes a completed trade. */
 @Entity(tableName = "entry_drafts")

@@ -10,13 +10,16 @@ import androidx.compose.material.icons.filled.Assessment
 import androidx.compose.material.icons.filled.Checklist
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.LocalActivityResultRegistryOwner
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalConfiguration
@@ -27,25 +30,33 @@ import com.tradereview.app.data.Option
 import com.tradereview.app.data.Presets
 import com.tradereview.app.data.Trade
 import com.tradereview.app.data.Catalog
-import com.tradereview.app.domain.Analytics
 import com.tradereview.app.domain.Money
+import com.tradereview.app.domain.TradeFilter
+import com.tradereview.app.domain.AnalyticsState
 import java.time.LocalDate
 
 private data class Page(val title: String, val icon: ImageVector)
 private val pages = listOf(Page("首页", Icons.Default.Home), Page("交易记录", Icons.AutoMirrored.Filled.ReceiptLong),
-    Page("勾选复盘", Icons.Default.Checklist), Page("统计分析", Icons.Default.Assessment))
+    Page("勾选复盘", Icons.Default.Checklist), Page("统计分析", Icons.Default.Assessment), Page("交易日历", Icons.Default.CalendarMonth))
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TradeReviewApp(model: TradeViewModel, backup: BackupViewModel) {
     val state by model.state.collectAsStateWithLifecycle()
     val currency by model.currency.collectAsStateWithLifecycle()
+    val filter by model.filter.collectAsStateWithLifecycle()
+    val analytics by model.analytics.collectAsStateWithLifecycle()
     val busy by model.busy.collectAsStateWithLifecycle()
     val backupBusy by backup.busy.collectAsStateWithLifecycle()
     val message by model.message.collectAsStateWithLifecycle()
     var page by rememberSaveable { mutableIntStateOf(0) }
     var settings by rememberSaveable { mutableStateOf(false) }
     var management by rememberSaveable { mutableStateOf<String?>(null) }
+    var selectedDay by rememberSaveable { mutableStateOf<Long?>(null) }
+    var reviewDate by rememberSaveable { mutableLongStateOf(LocalDate.now().toEpochDay()) }
+    var reviewSection by rememberSaveable { mutableStateOf("plan") }
+    val pageState = rememberSaveableStateHolder()
+    BackHandler(enabled = selectedDay != null && !settings) { selectedDay = null }
     BackHandler(enabled = settings) { if (!backupBusy && !busy) { if(management != null) management = null else settings = false } }
     var editorId by rememberSaveable { mutableStateOf<Long?>(null) }
     val snack = remember { SnackbarHostState() }
@@ -60,17 +71,18 @@ fun TradeReviewApp(model: TradeViewModel, backup: BackupViewModel) {
     LaunchedEffect(message) {
         message?.let { snack.showSnackbar(it); model.clearMessage() }
     }
-    CompositionLocalProvider(LocalContext provides chineseContext, LocalConfiguration provides chineseConfiguration, LocalActivityResultRegistryOwner provides activityResultOwner, LocalCatalog provides Catalog(state.tags)) {
+    CompositionLocalProvider(LocalContext provides chineseContext, LocalConfiguration provides chineseConfiguration, LocalActivityResultRegistryOwner provides activityResultOwner, LocalCatalog provides Catalog(state.tags), LocalPnlColors provides paletteColors(state.settings.pnlPalette)) {
         Scaffold(containerColor = MaterialTheme.colorScheme.background,
-            topBar = { TopAppBar(title = { Text(when(management) { "tags" -> "标签管理"; "symbols" -> "常用品种"; else -> if(settings) "设置" else pages[page].title }) }, navigationIcon = {
-                if (settings) IconButton(enabled = !backupBusy && !busy, onClick = { if(management != null) management = null else settings = false }) { Icon(Icons.AutoMirrored.Filled.ArrowBack, "返回主页面") }
+            topBar = { TopAppBar(title = { Text(when(management) { "tags" -> "标签管理"; "symbols" -> "常用品种"; else -> if(settings) "设置" else if(selectedDay != null) "每日详情" else pages[page].title }) }, navigationIcon = {
+                if (settings || selectedDay != null) IconButton(enabled = !backupBusy && !busy, onClick = { if(settings) { if(management != null) management = null else settings = false } else selectedDay = null }) { Icon(Icons.AutoMirrored.Filled.ArrowBack, "返回主页面") }
             }, actions = {
                 if (!settings && (page == 0 || page == 1)) IconButton(enabled = !state.loading && state.error == null, onClick = { editorId = 0 }) { Icon(Icons.Default.Add, "新增交易") }
+                if (!settings && page != 4) IconButton(onClick = { selectedDay = null; page = 4 }) { Icon(Icons.Default.CalendarMonth, "打开交易日历") }
                 if (!settings) IconButton(onClick = { settings = true }) { Icon(Icons.Default.Settings, "设置与备份") }
             }) },
             bottomBar = { if (!settings) NavigationBar {
                 pages.forEachIndexed { index, item ->
-                    NavigationBarItem(selected = page == index, onClick = { page = index }, icon = { Icon(item.icon, item.title) }, label = { Text(item.title) })
+                    NavigationBarItem(selected = page == index, onClick = { selectedDay = null; page = index }, icon = { Icon(item.icon, item.title) }, label = { Text(if(index == 4) "日历" else item.title) })
                 }
             } },
             snackbarHost = { SnackbarHost(snack) },
@@ -79,20 +91,24 @@ fun TradeReviewApp(model: TradeViewModel, backup: BackupViewModel) {
                 when(management) {
                     "tags" -> TagManagement(state, busy, model, Modifier.padding(padding))
                     "symbols" -> InstrumentManagement(state, busy, model, Modifier.padding(padding))
-                    else -> SettingsPage(backup, busy, Modifier.padding(padding), onTags = { management = "tags" }, onSymbols = { management = "symbols" }, theme = state.settings.theme, onTheme = model::selectTheme)
+                    else -> SettingsPage(backup, busy, Modifier.padding(padding), onTags = { management = "tags" }, onSymbols = { management = "symbols" }, theme = state.settings.theme, onTheme = model::selectTheme,
+                        palette = state.settings.pnlPalette, onPalette = model::selectPalette)
                 }
-            } else if (state.loading) {
+            } else if (state.loading || (state.error == null && analytics.loading)) {
                 Box(Modifier.fillMaxSize().padding(padding), contentAlignment = androidx.compose.ui.Alignment.Center) { CircularProgressIndicator() }
             } else if (state.error != null) {
                 Text(requireNotNull(state.error), Modifier.padding(padding).padding(24.dp), color = MaterialTheme.colorScheme.error)
             } else {
-                when (page) {
-                    0 -> HomePage(state, currency, model::selectCurrency, Modifier.padding(padding),
-                        onAdd = { editorId = 0 }, onReview = { page = 2 }, onOpen = { editorId = it.id }, onDemo = model::addDemo, busy = busy)
-                    1 -> TradesPage(state.trades, currency, model::selectCurrency, Modifier.padding(padding), { editorId = 0 }, { editorId = it.id })
-                    2 -> DailyReviewPage(state.reviews, busy, model::savePlan, model::saveReview, Modifier.padding(padding))
-                    3 -> StatisticsPage(state.trades, currency, model::selectCurrency, Modifier.padding(padding))
-                }
+                if (selectedDay != null) DailyDetailsPage(requireNotNull(selectedDay), state, analytics.calendar[requireNotNull(selectedDay)].orEmpty(),
+                    onOpen = { editorId = it.id }, onJournal = { section -> pageState.removeState("page:2"); reviewDate = requireNotNull(selectedDay); reviewSection = section; selectedDay = null; page = 2 }, modifier = Modifier.padding(padding))
+                else pageState.SaveableStateProvider("page:$page") { when (page) {
+                    0 -> HomePage(state, analytics, currency, model::selectCurrency, Modifier.padding(padding),
+                        onAdd = { editorId = 0 }, onReview = { pageState.removeState("page:2"); reviewDate = LocalDate.now().toEpochDay(); reviewSection = "plan"; page = 2 }, onOpen = { editorId = it.id }, onDemo = model::addDemo, busy = busy, onCalendar = { page = 4 })
+                    1 -> TradesPage(state, analytics.filtered, currency, filter, model, busy, Modifier.padding(padding), { editorId = 0 }, { editorId = it.id })
+                    2 -> DailyReviewPage(state.reviews, busy, model::savePlan, model::saveReview, Modifier.padding(padding), reviewDate, reviewSection)
+                    3 -> StatisticsPage(state, analytics, currency, filter, model, busy, onDay = { selectedDay = it }, onDrill = { model.updateFilter(it); page = 1 }, modifier = Modifier.padding(padding))
+                    4 -> CalendarPage(state, analytics.calendar, currency, model::selectCurrency, { selectedDay = it }, Modifier.padding(padding))
+                } }
                 if (editorId != null) {
                     val original = state.trades.firstOrNull { it.id == editorId }
                     TradeEditor(original, state, busy, saveError = message?.takeIf { it.startsWith("保存失败") }, onDismiss = { editorId = null },
@@ -104,27 +120,29 @@ fun TradeReviewApp(model: TradeViewModel, backup: BackupViewModel) {
 }
 
 @Composable
-private fun HomePage(state: JournalState, currency: String, onCurrency: (String) -> Unit, modifier: Modifier,
-    onAdd: () -> Unit, onReview: () -> Unit, onOpen: (Trade) -> Unit, onDemo: () -> Unit, busy: Boolean) {
+private fun HomePage(state: JournalState, analytics: AnalyticsState, currency: String, onCurrency: (String) -> Unit, modifier: Modifier,
+    onAdd: () -> Unit, onReview: () -> Unit, onOpen: (Trade) -> Unit, onDemo: () -> Unit, busy: Boolean, onCalendar: () -> Unit) {
     val today = LocalDate.now().toEpochDay()
-    val stats = remember(state.trades, currency) { Analytics.calculate(state.trades, currency) }
-    val todayStats = Analytics.calculate(state.trades.filter { it.date == today }, currency)
+    val stats = analytics.home
+    val todayStats = analytics.today
     val todayReview = state.reviews.firstOrNull { it.date == today }
     LazyColumn(modifier.fillMaxSize(), contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         item {
             Text("让每一笔交易都有收获", style = MaterialTheme.typography.headlineSmall)
             Text(dayLabel(today), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
             Button(onClick = onAdd, modifier = Modifier.fillMaxWidth().padding(top = 12.dp).heightIn(min = 56.dp)) { Text(if(state.drafts.any { it.key == "new" }) "快捷记账 · 恢复草稿" else "快捷记账") }
+            OutlinedButton(onClick = onCalendar, modifier = Modifier.fillMaxWidth()) { Text("交易日历与热力图") }
         }
         item { SectionCard("账户概览", "所有金额按选定币种分别统计。") {
             SingleChoice(Presets.currencies, currency, onCurrency)
-            Metric("累计净盈亏 · $currency", Money.format(stats.netPnl, signed = true))
+            Text("累计净盈亏 · $currency", style = MaterialTheme.typography.labelMedium)
+            Text(Money.format(stats.netPnl, signed = true), color = pnlColor(stats.netPnl), style = MaterialTheme.typography.titleLarge)
             Row(Modifier.fillMaxWidth()) {
-                Metric("胜率", percent(stats.winRate), Modifier.weight(1f))
+                Metric("胜率", stats.winRate?.let(::percent) ?: "—", Modifier.weight(1f))
                 Metric("交易笔数", "${stats.count}", Modifier.weight(1f))
-                Metric("复盘完成", percent(stats.reviewRate), Modifier.weight(1f))
+                Metric("复盘完成", stats.reviewRate?.let(::percent) ?: "—", Modifier.weight(1f))
             }
-            Text("今日 ${todayStats.count} 笔 · 净盈亏 ${Money.format(todayStats.netPnl, true)} $currency", style = MaterialTheme.typography.bodyMedium)
+            Text("今日 ${todayStats.count} 笔 · 净盈亏 ${Money.format(todayStats.netPnl, true)} $currency", color = pnlColor(todayStats.netPnl), style = MaterialTheme.typography.bodyMedium)
         } }
         item { SectionCard("今天的交易节奏") {
             Text("盘前计划：${if (todayReview?.planSaved == true) "已保存" else "待制定"}    盘后复盘：${if (todayReview?.reviewSaved == true) "已保存" else "待复盘"}")
@@ -146,17 +164,10 @@ private fun HomePage(state: JournalState, currency: String, onCurrency: (String)
 }
 
 @Composable
-private fun TradesPage(trades: List<Trade>, currency: String, onCurrency: (String) -> Unit, modifier: Modifier, onAdd: () -> Unit, onOpen: (Trade) -> Unit) {
-    var market by rememberSaveable { mutableStateOf("all") }
-    var onlyPending by rememberSaveable { mutableStateOf(false) }
-    val filtered = trades.filter { it.currency == currency && (market == "all" || it.market == market) && (!onlyPending || !it.reviewed) }
-    LazyColumn(modifier.fillMaxSize(), contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        item { SectionCard("交易筛选") {
-            SingleChoice(Presets.currencies, currency, onCurrency)
-            SingleChoice(listOf(Option("all", "全部市场")) + Presets.markets, market) { market = it }
-            FilterChip(selected = onlyPending, onClick = { onlyPending = !onlyPending }, label = { Text("只看待复盘") })
-            Text("${filtered.size} 笔 · 点击卡片编辑、复盘或删除", style = MaterialTheme.typography.bodySmall)
-        } }
+private fun TradesPage(state: JournalState, filtered: List<Trade>, currency: String, filter: TradeFilter, model: TradeViewModel,
+    busy: Boolean, modifier: Modifier, onAdd: () -> Unit, onOpen: (Trade) -> Unit) {
+    LazyColumn(modifier.fillMaxSize().testTag("trades-list"), contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        item { FilterCard("交易筛选", state, currency, filter, filtered.size, model::selectCurrency, model::updateFilter, model::saveFilter, model::applyFilter, model::deleteFilter, busy) }
         if (filtered.isEmpty()) item { SectionCard("暂无符合条件的记录") {
             Text("可以切换市场或币种，也可以记录新的交易。")
             Button(onClick = onAdd) { Text("新增交易") }
@@ -166,9 +177,10 @@ private fun TradesPage(trades: List<Trade>, currency: String, onCurrency: (Strin
 }
 
 @Composable
-private fun DailyReviewPage(reviews: List<DailyReview>, busy: Boolean, onPlan: (DailyReview) -> Unit, onReview: (DailyReview) -> Unit, modifier: Modifier) {
-    var date by rememberSaveable { mutableLongStateOf(LocalDate.now().toEpochDay()) }
-    var section by rememberSaveable { mutableStateOf("plan") }
+private fun DailyReviewPage(reviews: List<DailyReview>, busy: Boolean, onPlan: (DailyReview) -> Unit, onReview: (DailyReview) -> Unit, modifier: Modifier,
+    initialDate: Long = LocalDate.now().toEpochDay(), initialSection: String = "plan") {
+    var date by rememberSaveable(initialDate) { mutableLongStateOf(initialDate) }
+    var section by rememberSaveable(initialSection, initialDate) { mutableStateOf(initialSection) }
     val existing = reviews.firstOrNull { it.date == date } ?: DailyReview(date = date)
     LazyColumn(modifier.fillMaxSize(), contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         item { SectionCard("每日交易日志", "计划和复盘按日期保存在本地，可查看历史记录。") {
@@ -235,48 +247,5 @@ private fun PostReviewForm(saved: DailyReview, busy: Boolean, onSave: (DailyRevi
             Text(if (busy) "正在保存…" else "保存盘后复盘")
         }
         Text("单笔交易的复盘与错误请在“交易记录”中补充，供统计分析使用。", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-    }
-}
-
-@Composable
-private fun StatisticsPage(trades: List<Trade>, currency: String, onCurrency: (String) -> Unit, modifier: Modifier) {
-    val catalog = LocalCatalog.current
-    var period by rememberSaveable { mutableStateOf("all") }
-    val today = LocalDate.now().toEpochDay()
-    val since = when (period) { "7" -> today - 6; "30" -> today - 29; else -> null }
-    val stats = remember(trades, currency, since) { Analytics.calculate(trades, currency, since) }
-    LazyColumn(modifier.fillMaxSize(), contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        item { SectionCard("分析范围") {
-            SingleChoice(Presets.currencies, currency, onCurrency)
-            SingleChoice(listOf(Option("all", "全部"), Option("7", "近7天"), Option("30", "近30天")), period) { period = it }
-        } }
-        item { SectionCard("交易表现", "胜率 = 盈利笔数 / 全部笔数，包含持平交易。") {
-            Row(Modifier.fillMaxWidth()) {
-                Metric("胜率", percent(stats.winRate), Modifier.weight(1f))
-                Metric("盈利 / 亏损", "${stats.wins} / ${stats.losses}", Modifier.weight(1f))
-            }
-            Metric("净盈亏 · $currency", Money.format(stats.netPnl, true))
-            Text("持平 ${stats.count - stats.wins - stats.losses} 笔 · 已复盘 ${stats.reviewed} / ${stats.count}", style = MaterialTheme.typography.bodySmall)
-        } }
-        item { SectionCard("盈亏曲线", "显示所选时间范围内的累计净盈亏。") { PnlChart(stats.curve, currency) } }
-        item { SectionCard("常见错误分布", "来自单笔交易的错误标签；一笔可出现多个错误。") {
-            if (stats.mistakes.isEmpty()) Text("暂无错误标签。复盘时可在交易详情中勾选。")
-            val maxCount = stats.mistakes.maxOfOrNull { it.second } ?: 1
-            stats.mistakes.forEach { (error, count) ->
-                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                    Text(catalog.label("mistake", error))
-                    Text("$count 笔")
-                }
-                LinearProgressIndicator(progress = { count.toFloat() / maxCount }, modifier = Modifier.fillMaxWidth())
-            }
-        } }
-        item { SectionCard("策略表现", "按净盈亏排序，每笔只归属一个策略。") {
-            if (stats.strategies.isEmpty()) Text("记录交易并选择策略后即可查看。")
-            stats.strategies.forEach { result ->
-                Text(catalog.label("strategy", result.strategy), style = MaterialTheme.typography.titleSmall)
-                Text("${result.count} 笔 · 胜率 ${percent(result.wins * 100.0 / result.count)} · 净盈亏 ${Money.format(result.netPnl, true)} $currency", style = MaterialTheme.typography.bodySmall)
-                HorizontalDivider()
-            }
-        } }
     }
 }

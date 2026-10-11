@@ -67,6 +67,11 @@ interface TradeDao {
     @Query("DELETE FROM instruments") suspend fun clearInstruments()
     @Query("DELETE FROM app_settings") suspend fun clearSettings()
     @Query("DELETE FROM entry_drafts") suspend fun clearDrafts()
+    @Query("SELECT * FROM saved_filters ORDER BY name, id") fun observeFilters(): Flow<List<SavedFilter>>
+    @Query("SELECT * FROM saved_filters ORDER BY name, id") suspend fun allFilters(): List<SavedFilter>
+    @Upsert suspend fun saveFilter(value: SavedFilter)
+    @Delete suspend fun deleteFilter(value: SavedFilter)
+    @Query("DELETE FROM saved_filters") suspend fun clearFilters()
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insertReview(review: DailyReview)
 }
@@ -92,8 +97,15 @@ val MIGRATION_2_3 = object : Migration(2, 3) {
     }
 }
 
-@Database(entities = [Trade::class, DailyReview::class, ManagedTag::class, Instrument::class, AppSettings::class, EntryDraft::class], version = 3, exportSchema = true)
-@TypeConverters(TagConverters::class)
+val MIGRATION_3_4 = object : Migration(3, 4) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL("ALTER TABLE app_settings ADD COLUMN pnlPalette TEXT NOT NULL DEFAULT 'green_profit'")
+        db.execSQL("CREATE TABLE IF NOT EXISTS saved_filters (id TEXT NOT NULL PRIMARY KEY, name TEXT NOT NULL, currency TEXT NOT NULL, criteria TEXT NOT NULL)")
+    }
+}
+
+@Database(entities = [Trade::class, DailyReview::class, ManagedTag::class, Instrument::class, AppSettings::class, EntryDraft::class, SavedFilter::class], version = 4, exportSchema = true)
+@TypeConverters(TagConverters::class, FilterConverters::class)
 abstract class TradeDatabase : RoomDatabase() {
     abstract fun trades(): TradeDao
 }
