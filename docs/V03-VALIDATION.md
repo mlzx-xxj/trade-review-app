@@ -23,7 +23,27 @@
 
 固定包 SHA-256 `4b7422e1f9c03f6cafb166014dd306265fcf10aee49959ce7284d1f62c6db995`，17,727,111 字节。普通 CI 临时包下载页：[38130145142](https://github.com/mlzx-xxj/trade-review-app/releases/tag/v03-debug-38130145142-1)，不作为未来升级身份。
 
-当前集成 Secrets API 403；所有者配置脚本已实际运行并在权限检查处退出，没有写任何 Secrets。Base 直接上传固定包的 uploads.github.com 接口返回 401；普通 API 与 git push 可用，未修改代理或绕过策略。因此补充官方仓库 blob→Actions 交付通路，仅传公开 APK、不提交 APK 文件、不传私钥。新增 4 项 payload 比较测试已在 Base 通过；新工作流的完整实际结果将在完成后追加，尚未把它记为通过。
+当前集成 Secrets API 403；所有者配置脚本已实际运行并在权限检查处退出，没有写任何 Secrets。Base 直接上传固定包的 uploads.github.com 接口返回 401；普通 API 与 git push 可用，未修改代理或绕过策略。因此补充官方仓库 blob→Actions 交付通路，仅传公开 APK、不提交 APK 文件、不传私钥。新增 4 项 payload 比较测试在 Base 和下述最终 Actions 均实际通过。
+
+## 最终固定签名交付
+
+[最终完整 Actions 38131169246](https://github.com/mlzx-xxj/trade-review-app/actions/runs/38131169246)，源码及工作流 **`fa38c1aef797e6705bd10a354a0c77792fef124f`**，build / device-tests / publish 全部 success。该提交用 `[skip ci]` 避免同时触发普通临时包 PR 构建，随后显式 workflow_dispatch 对此完整提交执行全部编译与测试，并非跳过验证。
+
+| 实际执行项 | 最终结果 |
+| --- | --- |
+| Debug APK / Android 测试 APK 编译 | 成功 |
+| JVM 测试 | 26 通过，0 失败/错误/跳过 |
+| 签名门禁 / 外部 APK 内容校验测试 | 4 + 4 通过 |
+| Android Lint | 0 错误，13 警告 |
+| Room / 数据 / SAF / Compose API 29 模拟器测试 | 28 通过，0 失败/错误/跳过 |
+| 正式固定 APK 校验 | Git blob 摘要、apksigner 证书 pin、全部应用 payload 与本次编译一致 |
+| APK 自动发布 | 成功，固定包及 SHA256SUMS.txt / SIGNING.txt |
+
+已下载最终 JVM/Lint/schema 报告（`11697994555`）、模拟器报告（`11698164436`）及固定 APK（`11698913439`），检查实际 XML 和文件摘要。v3 schema 与提交文件相同。最终模拟器仍是恢复 8、迁移 3、持久化 1、V0.3 数据 7、SAF/设置 3、快捷/管理 UI 4、导航/增改删 2。没有将编译、静态检查或模拟器结果写成真实手机测试。
+
+[手机浏览器下载页](https://github.com/mlzx-xxj/trade-review-app/releases/tag/v03-debug-38131169246-1)；选择 **TradeReview-v0.3-stable.apk**。仓库为私有，需登录有访问权限的 GitHub 账号。发布端资产 digest 为 `sha256:4b7422e1f9c03f6cafb166014dd306265fcf10aee49959ce7284d1f62c6db995`，与 Base 签名文件和下载的 Actions 产物完全相同。证书与上文长期私钥一致，签名来源/Secrets=false 写入 SIGNING.txt；未谎称 Secrets 已配置。
+
+最后仅补充本验证记录、计划的签名实际状态及私密文件忽略规则；Android 功能代码、测试、签名脚本和工作流没有再改动，以上完整 Actions 为最终代码验证依据。
 
 ## 剩余限制
 
