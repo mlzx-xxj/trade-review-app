@@ -24,14 +24,27 @@ JSON 是明文；摘要用于发现损坏，不能证明文件来源或加密。
 
 ## 签名实际状态与配置
 
-本轮未生成正式私钥，私钥不得提交 GitHub、PR、聊天或构建产物。默认 CI 临时 Debug 私钥仅生成在一次性 runner；未配置以下 Secrets 时，输出 `TradeReview-v0.3-test.apk`，它不建立未来的固定升级身份。`SIGNING.txt` 记录该次构建的真实证书。用户已明确允许手动卸载旧 V0.1/V0.2 测试版重新安装；卸载删除手机本地数据。V0.3 新数据应定期 JSON 备份。
+仓库所有者已明确授权生成 V0.3 起专用长期私钥；本轮已在仓库外生成 PKCS12 / RSA 3072 / SHA256withRSA，alias `trade-review-v03`，有效期 10000 天。公开证书 SHA-256 是 `30d5e88ac7f0ade3d8c5f10d7d894681e7953002377c85b5fa094ee7b71e071c`，见 [公开 pin](V03-CERTIFICATE-SHA256.txt)。私钥、密码及私密备份均在仓库之外，从未提交或上传 GitHub，不能在聊天中发送。必须由所有者下载私密资料到可信设备并离线备份，Codex 环境不能作为长期保管库。
+
+当前身份访问 Actions Secrets 的 public-key 接口实际返回 HTTP 403，配置脚本在写入前退出，**尚未配置任何固定签名 Secrets**。默认 PR CI 仍输出 `TradeReview-v0.3-test.apk`，它不建立未来固定升级身份。用户已明确允许手动卸载旧 V0.1/V0.2 测试版重新安装；卸载删除手机本地数据。V0.3 新数据应定期 JSON 备份。
+
+本轮使用 Google 官方独立 apksigner 在 Base 对已验证 APK 签名，实际 v2/v3 校验通过。Base 的 Release 上传域名另返回 HTTP 401，因此增加显式手动交付通路：将**公开 APK**暂存为未加入任何源提交的 Git blob，然后手动运行现有 Android CI 并填写 `signed_apk_blob_sha`。Actions 必须重新编译/测试，校验 Git blob 内容摘要、固定证书 pin，并逐项比较非签名 APK 内容与本次编译产物；任何不一致都拒绝发布。只传 APK，不传私钥；该通路不替代未来 Secrets 配置。普通 PR 自动运行不会采用外部 APK。最终运行与下载状态见 [实际验证记录](V03-VALIDATION.md)。
 
 需要仓库所有者完成以下操作；此文档不表示已经配置成功：
 
-1. 在可信本地设备准备/安全生成一份用于 V0.3 起长期使用的 keystore，离线备份私钥及密码；如果需要 Codex 代为生成，须单独授权。不要依赖临时 runner 或 Gradle 缓存保管密钥。
+1. 下载本轮单独交付的私密签名资料，存放在可信设备并做两份离线备份；保留现有 keystore，**不要重新生成**。压缩包含密码与私钥编码，严禁提交 GitHub。不要依赖临时 runner、Gradle 缓存或 Secrets 作为唯一备份。
 2. 打开仓库 Settings → Secrets and variables → Actions → Secrets，添加 `TRADE_REVIEW_KEYSTORE_BASE64`（完整 keystore 的 Base64）、`TRADE_REVIEW_KEYSTORE_PASSWORD`、`TRADE_REVIEW_KEY_ALIAS`、`TRADE_REVIEW_KEY_PASSWORD`。建议用 GitHub CLI `gh secret set NAME --body-file /安全本地路径` 或交互粘贴到 GitHub 设置；不要把值写到代码、命令日志或聊天。
 3. 用本地 keytool 查看该 alias 的公开证书 SHA-256；在同页 Variables 添加 `TRADE_REVIEW_UPGRADE_CERT_SHA256`（64 位十六进制，可带冒号）。这里从 V0.3 起 pin 所选固定证书，不再默认绑定旧 V0.1 临时证书。
 4. 重新运行 Android CI。只有 Secrets 提供固定密钥且 apksigner 验证与 pin 完全匹配，才输出 `TradeReview-v0.3-stable.apk`。缺少 pin、不匹配或 Secrets 不全会失败，禁止稳定包发布。私钥临时文件在 always 步骤删除，从不上传。
 5. 第一次安装固定签名 V0.3 需卸载不同签名的临时测试版，先保存新版 JSON（含新数据），安装后恢复。之后 V0.4/V0.5 保持相同 applicationId/私钥、递增 versionCode，并提供正式 Room Migration，就能满足 Android 覆盖升级条件。实际真机升级仍需设备验证；仅代码和模拟器测试不能声称已经真机保留数据升级成功。
+
+所有者可在可信电脑使用 GitHub CLI 登录有 Secrets/Variables 管理权限的账号，然后执行：
+
+```sh
+gh auth login
+bash scripts/configure-v03-signing.sh /你的私密路径/trade-review-v03
+```
+
+[配置脚本](../scripts/configure-v03-signing.sh) 使用 `--body-file` 读取资料、不回显私钥/密码；先检查权限，再写 pin 与凭据，最后启用 keystore Secret。若中途失败，修正权限后重新运行，并检查完整 CI，不把部分写入误认为配置成功。不要启用 `bash -x`。配置完成后手动运行 Android CI、不填外部 blob，确认 `SIGNING.txt` 的 `GitHubActionsSecretsConfigured` 或固定 Secrets 签名说明与本证书一致；此项在本轮尚未实际完成。
 
 这是 Debug APK 交付方案；不混同 Play 正式发布。配置正式 release 流程时复用受控签名身份并明确版本/密钥管理，不能重新随机生成身份覆盖已有安装。
