@@ -4,6 +4,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -19,13 +20,15 @@ fun SettingsPage(model: BackupViewModel, journalBusy: Boolean, modifier: Modifie
     val busy by model.busy.collectAsStateWithLifecycle()
     val preview by model.preview.collectAsStateWithLifecycle()
     val message by model.message.collectAsStateWithLifecycle()
+    val listState = rememberLazyListState()
+    LaunchedEffect(message) { if (message != null) listState.scrollToItem(0) }
     var mode by rememberSaveable { mutableStateOf(RestoreMode.MERGE.name) }
     var confirm by remember(preview) { mutableStateOf(false) }
     val locked = busy || journalBusy
     val json = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("application/json")) { uri -> uri?.let(model::exportJson) }
     val csv = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("text/csv")) { uri -> uri?.let(model::exportCsv) }
     val restore = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri -> uri?.let(model::readBackup) }
-    LazyColumn(modifier.fillMaxSize(), contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+    LazyColumn(modifier.fillMaxSize(), state = listState, contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         if (busy) item { LinearProgressIndicator(Modifier.fillMaxWidth()); Text("正在处理，请等待完成") }
         message?.let { item { SectionCard("处理结果") { Text(it, style = MaterialTheme.typography.bodyMedium) } } }
         item { SectionCard("数据安全", "数据保存在本机；文件由你选择位置，应用不联网上传。") {
