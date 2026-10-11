@@ -95,7 +95,7 @@ object BackupCodec {
             day(trade.date)
             requireBackup(trade.date <= today, "交易日期不能晚于今天")
             requireBackup(trade.symbol.isNotBlank() && trade.symbol.length <= 30 && '\u0000' !in trade.symbol, "品种名称无效")
-            requireBackup(Money.parse(trade.netPnl) != null, "交易金额无效")
+            requireBackup(Money.parse(trade.netPnl)?.toPlainString() == trade.netPnl, "交易金额无效，需使用规范的两位小数文本")
             requireBackup(trade.positionPercent in 1..100, "交易仓位无效")
             choice(trade.market, Presets.markets); choice(trade.direction, Presets.directions)
             choice(trade.currency, Presets.currencies); choice(trade.strategy, Presets.strategies)

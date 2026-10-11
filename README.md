@@ -1,4 +1,4 @@
-# 交易复盘 · Android 离线 MVP
+# 交易复盘 · Android 离线 App（V0.2）
 
 原生 Kotlin + Jetpack Compose + Room。中文卡片界面，Android 8.0 及以上可用。所有交易保存在手机本地，应用没有联网权限、登录或分析 SDK，关闭系统云备份及设备迁移。
 
@@ -14,11 +14,11 @@
 ## 手机下载
 
 1. 用安卓浏览器登录有此私有仓库访问权的 GitHub 账号。
-2. 打开 [Releases](https://github.com/mlzx-xxj/trade-review-app/releases)，选择最新的“交易复盘 Debug”预发布。
-3. 展开 **Assets**，直接下载 `TradeReview-debug.apk`，按手机提示允许浏览器安装应用。
+2. 打开 [Releases](https://github.com/mlzx-xxj/trade-review-app/releases)，选择 V0.2 预发布，先阅读签名与安装限制。
+3. 展开 **Assets**，新测试设备下载 `TradeReview-v0.2-test.apk`；只有找到匹配旧私钥并通过证书校验时才提供 `TradeReview-v0.2-upgrade.apk`。按手机提示允许浏览器安装应用。
 4. 或在 [Actions](https://github.com/mlzx-xxj/trade-review-app/actions/workflows/android.yml) 成功运行底部的 **Artifacts** 下载 APK ZIP 并解压。Actions 产物保留 30 天，Release 附件保留直到删除。
 
-Debug APK 为试用包。卸载会删除全部本地记录，MVP 暂无导出备份。CI 缓存调试签名保证通常可覆盖更新；缓存被清除后签名可能变化，此时覆盖安装会被 Android 拒绝。应用发布及正式签名不在本 MVP 范围内。
+Debug APK 为试用包。V0.2 支持完整 JSON 备份，但已安装的 V0.1 没有此功能。旧构建的调试密钥未正确缓存，且两个旧 APK 证书不同；缺少对应旧私钥时不能覆盖升级。**请勿为安装测试包卸载已安装 V0.1，卸载会删除全部本地记录。**正式签名密钥需另行授权，本轮没有生成或更换。
 
 ## 技术版本
 
@@ -42,15 +42,14 @@ Debug APK 为试用包。卸载会删除全部本地记录，MVP 暂无导出备
 ./gradlew :app:connectedDebugAndroidTest  # 需要连接手机或模拟器
 ```
 
-无 SDK 的 Base 环境继续编辑源码，由 GitHub Actions 提供 JDK 和 SDK，不安装 Android Studio。CI 在缺少 Wrapper JAR 时通过官方 Gradle 生成完整 Wrapper并设置官方发行包 SHA-256，随后验证 JAR。源码分支 `codex/**` 成功编译后自动提交生成的 Wrapper 和 Room v1 schema，后续构建使用仓库中的完整 Wrapper。每次运行上传 Wrapper、APK、测试和 Lint 报告；源码分支推送或手动运行还会创建带 APK 的预发布。
+无 SDK 的 Base 环境继续编辑源码，由 GitHub Actions 提供 JDK 和 SDK，不安装 Android Studio。CI 在缺少 Wrapper JAR 时通过官方 Gradle 生成完整 Wrapper并设置官方发行包 SHA-256，随后验证 JAR。仓库已包含完整 Wrapper 与 Room v1/v2 schemas；新的 schema 随代码变更提交，CI 同时生成并上传以核对。每次运行上传 Wrapper、APK、测试和 Lint 报告；全部验证任务成功后才创建带 APK 的预发布；测试包和证书匹配的升级包有不同的名称及明确标识。
 
-- `push` 至 main 或 codex 分支：编译 Debug APK、JVM 单元测试、Android Lint、上传产物和创建预发布。
-- `pull_request`：上述验证加 Android API 29 模拟器上的 Room 持久化与 Compose 导航测试。
-- `workflow_dispatch`：手动执行完整验证并上传可下载 APK。
+- `push` 至 main、`pull_request`、`workflow_dispatch` 均执行 Debug / 测试 APK 编译、JVM 单元测试、Android Lint、API 29 模拟器测试并上传报告。
+- 同仓库来源的完整验证成功后发布 APK；外部 fork 的 PR 不接收 Secrets，也不发布 Release。
 
-工作流合并至 main 后即可在 Actions 界面手动执行；合并前源码分支推送已经会自动构建并提供预发布 APK。测试 APK 编译也在前置构建中执行，编译错误会在启动模拟器前被发现。
+工作流合并至 main 后即可在 Actions 界面手动执行；合并前新 PR 已运行完整验证；功能分支不重复触发相同的 push 构建。测试 APK 编译也在前置构建中执行，编译错误会在启动模拟器前被发现。
 
-JUnit 覆盖精确金额、输入限制、币种隔离、持平/空样本、按日排序曲线、策略与错误计数。Android 测试覆盖 Room 重开后读回、修改/删除、每日计划与复盘合并、四页导航，以及通过界面新增/修改/删除交易。测试结果以 Actions 的实际运行和 [验证记录](docs/VALIDATION.md) 为准。
+JUnit 覆盖精确金额、输入限制、币种隔离、持平/空样本、按日排序曲线、策略与错误计数。Android 测试覆盖 Room 重开后读回、修改/删除、每日计划与复盘合并、四页导航，以及通过界面新增/修改/删除交易。V0.2 另测 JSON 往返与非法拒绝、CSV 中文转义、稳定标识合并、实际 SQL 故障回滚、Room v1→v2 迁移和设置页二次确认。测试结果以 Actions 的实际运行、[MVP 验证记录](docs/VALIDATION.md) 和 [V0.2 验证记录](docs/V02-VALIDATION.md) 为准。
 
 [项目结构与阶段计划](docs/PLAN.md)
 

@@ -25,7 +25,7 @@ JSON 是明文。应用没有 INTERNET 权限，也不索取广泛存储权限�
 
 根字段：`format=trade-review-backup`、`schemaVersion=1`、`exportedAt`（ISO-8601 Instant）、`counts`、`trades`、`dailyReviews`、`checksumSha256`。备份格式版本与 Room 表版本独立。金额为十进制字符串，日期为 LocalDate epochDay；标签为固定选项 ID。未知版本不猜测、不自动转换。
 
-严格 UTF-8 / JSON，拒绝空值、缺失或未知字段、重复 JSON 键、错误字段类型、重复交易 row ID / recordKey、重复日志日期、未知或重复标签、错误数量和摘要。日期 1900–2100 年；交易及已完成盘后复盘不能在未来；盘前计划可在未来。仓位 1–100%，评分 1–5，品种 1–30 字符，金额最多 12 位整数和 2 位小数。最多 16 MiB，每张表最多 10000 条，限制嵌套和单字段长度。
+严格 UTF-8 / JSON，拒绝空值、缺失或未知字段、重复 JSON 键、错误字段类型、重复交易 row ID / recordKey、重复日志日期、未知或重复标签、错误数量和摘要。日期 1900–2100 年；交易及已完成盘后复盘不能在未来；盘前计划可在未来。仓位 1–100%，评分 1–5，品种 1–30 字符，金额为规范的两位小数文本，最多 12 位整数。最多 16 MiB，每张表最多 10000 条，限制嵌套和单字段长度。
 
 摘要覆盖固定顺序重新编码的全部字段（不含摘要自身），防止误损坏、截断或修改造成悄然恢复；它不是加密或身份认证。JSON 重新排版或改变对象键顺序不影响校验。超过限制时明确失败，禁止导出一个不可恢复的截断备份。
 
@@ -44,7 +44,7 @@ CSV 每个字段加双引号，内部引号加倍，记录使用 CRLF；中文�
 
 `MIGRATION_1_2` 追加 `recordKey TEXT NOT NULL DEFAULT ''`，为每条旧交易一次性写入 `lower(hex(randomblob(16)))`，创建唯一索引。原 ID、交易字段、每日计划与复盘表保持原样。以后编辑/备份/合并始终保留同一 recordKey。应用注册此 Migration；没有 destructive fallback。
 
-正式设备测试使用提交的 v1 schema 创建数据库，执行 `MigrationTestHelper.runMigrationsAndValidate`，验证全部旧字段、标签、完成标记、两条交易的唯一标识及再次打开后的标识稳定性；另测空库升级。生成的 v2 schema 作为报告上传，设备任务下载为测试资产，并提交入库。
+正式设备测试使用提交的 v1 schema 创建数据库，执行 `MigrationTestHelper.runMigrationsAndValidate`，验证全部旧字段、标签、完成标记、两条交易的唯一标识及再次打开后的标识稳定性；另测空库升级。生成的 v2 schema 作为报告上传，设备任务下载为测试资产，并随本轮代码提交入库。
 
 ## 签名与版本
 

@@ -2,7 +2,7 @@ name: Android CI
 
 on:
   push:
-    branches: [main, 'codex/**']
+    branches: [main]
   pull_request:
   workflow_dispatch:
 
@@ -45,6 +45,8 @@ jobs:
         run: bash scripts/generate-wrapper.sh
       - name: Validate official wrapper
         uses: gradle/actions/wrapper-validation@v4
+      - name: Test signature publication guards without private keys
+        run: python3 scripts/tests/test_signing_guard.py
       - name: Configure existing signing key from Secrets when available
         id: signing
         env:
@@ -104,16 +106,6 @@ jobs:
             app/build/test-results/
             app/schemas/
           retention-days: 30
-      - name: Commit generated wrapper and Room schema to the source branch
-        if: github.event_name == 'push' && startsWith(github.ref_name, 'codex/')
-        run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add gradlew gradlew.bat gradle/wrapper/ app/schemas/
-          if ! git diff --cached --quiet; then
-            git commit -m 'build: add verified Gradle wrapper and Room schema'
-            git push origin "HEAD:${GITHUB_REF_NAME}"
-          fi
 
   device-tests:
     name: Room persistence and Compose navigation

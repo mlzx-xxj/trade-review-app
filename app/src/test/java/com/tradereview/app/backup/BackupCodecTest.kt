@@ -60,7 +60,7 @@ class BackupCodecTest {
         val data = fixture(); val t = data.trades.first(); val r = data.dailyReviews.first()
         listOf(t.copy(market = "unknown"), t.copy(currency = "EUR"), t.copy(direction = "bad"), t.copy(strategy = "bad"),
             t.copy(emotion = "bad"), t.copy(symbol = ""), t.copy(symbol = "a".repeat(31)), t.copy(positionPercent = 0),
-            t.copy(positionPercent = 101), t.copy(netPnl = "1.001"), t.copy(netPnl = "NaN"), t.copy(netPnl = "1e2"),
+            t.copy(positionPercent = 101), t.copy(netPnl = "1.001"), t.copy(netPnl = "NaN"), t.copy(netPnl = "1e2"), t.copy(netPnl = " 1.00 "),
             t.copy(date = Long.MAX_VALUE), t.copy(date = LocalDate.now().plusDays(1).toEpochDay()), t.copy(id = 0),
             t.copy(recordKey = "bad"), t.copy(mistakes = listOf("chase", "chase")), t.copy(discipline = listOf("bad")))
             .forEach { invalid -> rejectsData(data.copy(trades = listOf(invalid))) }
