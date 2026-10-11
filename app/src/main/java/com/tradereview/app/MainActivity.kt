@@ -11,6 +11,7 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.tradereview.app.ui.TradeReviewApp
 import com.tradereview.app.ui.TradeReviewTheme
 import com.tradereview.app.ui.TradeViewModel
+import com.tradereview.app.ui.BackupViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,7 +23,10 @@ class MainActivity : ComponentActivity() {
                 val model: TradeViewModel = viewModel(factory = viewModelFactory {
                     initializer { TradeViewModel(database.trades(), createSavedStateHandle()) }
                 })
-                TradeReviewApp(model)
+                val backup: BackupViewModel = viewModel(factory = viewModelFactory {
+                    initializer { BackupViewModel(database, application.contentResolver) }
+                })
+                TradeReviewApp(model, backup)
             }
         }
     }

@@ -9,6 +9,9 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Assessment
 import androidx.compose.material.icons.filled.Checklist
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.activity.compose.BackHandler
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -32,12 +35,15 @@ private val pages = listOf(Page("首页", Icons.Default.Home), Page("交易记�
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TradeReviewApp(model: TradeViewModel) {
+fun TradeReviewApp(model: TradeViewModel, backup: BackupViewModel) {
     val state by model.state.collectAsStateWithLifecycle()
     val currency by model.currency.collectAsStateWithLifecycle()
     val busy by model.busy.collectAsStateWithLifecycle()
+    val backupBusy by backup.busy.collectAsStateWithLifecycle()
     val message by model.message.collectAsStateWithLifecycle()
     var page by rememberSaveable { mutableIntStateOf(0) }
+    var settings by rememberSaveable { mutableStateOf(false) }
+    BackHandler(enabled = settings) { if (!backupBusy) settings = false }
     var editorId by rememberSaveable { mutableStateOf<Long?>(null) }
     val snack = remember { SnackbarHostState() }
     // Material components (including the calendar) use Chinese even on an English phone.
@@ -52,17 +58,22 @@ fun TradeReviewApp(model: TradeViewModel) {
     }
     CompositionLocalProvider(LocalContext provides chineseContext, LocalConfiguration provides chineseConfiguration) {
         Scaffold(containerColor = MaterialTheme.colorScheme.background,
-            topBar = { TopAppBar(title = { Text(pages[page].title) }, actions = {
-                if (page == 0 || page == 1) IconButton(enabled = !state.loading && state.error == null, onClick = { editorId = 0 }) { Icon(Icons.Default.Add, "新增交易") }
+            topBar = { TopAppBar(title = { Text(if (settings) "设置" else pages[page].title) }, navigationIcon = {
+                if (settings) IconButton(enabled = !backupBusy, onClick = { settings = false }) { Icon(Icons.AutoMirrored.Filled.ArrowBack, "返回主页面") }
+            }, actions = {
+                if (!settings && (page == 0 || page == 1)) IconButton(enabled = !state.loading && state.error == null, onClick = { editorId = 0 }) { Icon(Icons.Default.Add, "新增交易") }
+                if (!settings) IconButton(onClick = { settings = true }) { Icon(Icons.Default.Settings, "设置与备份") }
             }) },
-            bottomBar = { NavigationBar {
+            bottomBar = { if (!settings) NavigationBar {
                 pages.forEachIndexed { index, item ->
                     NavigationBarItem(selected = page == index, onClick = { page = index }, icon = { Icon(item.icon, item.title) }, label = { Text(item.title) })
                 }
             } },
             snackbarHost = { SnackbarHost(snack) },
         ) { padding ->
-            if (state.loading) {
+            if (settings) {
+                SettingsPage(backup, busy, Modifier.padding(padding))
+            } else if (state.loading) {
                 Box(Modifier.fillMaxSize().padding(padding), contentAlignment = androidx.compose.ui.Alignment.Center) { CircularProgressIndicator() }
             } else if (state.error != null) {
                 Text(requireNotNull(state.error), Modifier.padding(padding).padding(24.dp), color = MaterialTheme.colorScheme.error)

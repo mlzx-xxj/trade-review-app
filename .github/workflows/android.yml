@@ -45,24 +45,42 @@ jobs:
         run: bash scripts/generate-wrapper.sh
       - name: Validate official wrapper
         uses: gradle/actions/wrapper-validation@v4
-      - name: Restore debug signing key for consistent updates
-        uses: actions/cache@v4
-        with:
-          path: ~/.android/debug.keystore
-          key: trade-review-debug-keystore-v1
+      - name: Configure existing signing key from Secrets when available
+        id: signing
+        env:
+          EXISTING_KEY_BASE64: ${{ secrets.TRADE_REVIEW_KEYSTORE_BASE64 }}
+          EXISTING_STORE_PASSWORD: ${{ secrets.TRADE_REVIEW_KEYSTORE_PASSWORD || 'android' }}
+          EXISTING_KEY_ALIAS: ${{ secrets.TRADE_REVIEW_KEY_ALIAS || 'androiddebugkey' }}
+          EXISTING_KEY_PASSWORD: ${{ secrets.TRADE_REVIEW_KEY_PASSWORD || 'android' }}
+        run: |
+          if [ -n "$EXISTING_KEY_BASE64" ]; then
+            umask 077
+            key_path="$RUNNER_TEMP/trade-review-existing.keystore"
+            printf '%s' "$EXISTING_KEY_BASE64" | base64 --decode > "$key_path"
+            printf 'TRADE_REVIEW_KEYSTORE_PATH=%s\n' "$key_path" >> "$GITHUB_ENV"
+            printf 'TRADE_REVIEW_KEYSTORE_PASSWORD=%s\n' "$EXISTING_STORE_PASSWORD" >> "$GITHUB_ENV"
+            printf 'TRADE_REVIEW_KEY_ALIAS=%s\n' "$EXISTING_KEY_ALIAS" >> "$GITHUB_ENV"
+            printf 'TRADE_REVIEW_KEY_PASSWORD=%s\n' "$EXISTING_KEY_PASSWORD" >> "$GITHUB_ENV"
+            printf 'configured=true\n' >> "$GITHUB_OUTPUT"
+          else
+            printf 'configured=false\n' >> "$GITHUB_OUTPUT"
+          fi
       - name: Compile, run JVM tests and Android lint
         run: ./gradlew --no-daemon --stacktrace :app:assembleDebug :app:assembleDebugAndroidTest :app:testDebugUnitTest :app:lintDebug
-      - name: Prepare downloadable APK and checksum
-        run: |
-          mkdir -p dist
-          cp app/build/outputs/apk/debug/app-debug.apk dist/TradeReview-debug.apk
-          cd dist
-          sha256sum TradeReview-debug.apk > SHA256SUMS.txt
+      - name: Verify selected V0.1 signer or label APK as test only
+        id: signature
+        env:
+          TRADE_REVIEW_EXISTING_KEY_CONFIGURED: ${{ steps.signing.outputs.configured }}
+          TRADE_REVIEW_UPGRADE_CERT_SHA256: ${{ vars.TRADE_REVIEW_UPGRADE_CERT_SHA256 }}
+        run: bash scripts/check-apk-signature.sh app/build/outputs/apk/debug/app-debug.apk
+      - name: Remove temporary existing key
+        if: always()
+        run: rm -f "$RUNNER_TEMP/trade-review-existing.keystore"
       - name: Upload debug APK
         id: apk
         uses: actions/upload-artifact@v4
         with:
-          name: TradeReview-debug-${{ github.run_number }}
+          name: TradeReview-v0.2-${{ github.run_number }}
           path: dist/
           if-no-files-found: error
           retention-days: 30
@@ -96,22 +114,9 @@ jobs:
             git commit -m 'build: add verified Gradle wrapper and Room schema'
             git push origin "HEAD:${GITHUB_REF_NAME}"
           fi
-      - name: Publish APK for mobile browser download
-        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          tag="debug-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
-          gh release create "$tag" dist/TradeReview-debug.apk dist/SHA256SUMS.txt \
-            --repo "$GITHUB_REPOSITORY" --target "$(git rev-parse HEAD)" \
-            --title "交易复盘 Debug · 构建 ${GITHUB_RUN_NUMBER}" --prerelease \
-            --notes '原生 Android 离线 MVP。用安卓浏览器登录此仓库的 GitHub 账号，打开 Assets 下载 TradeReview-debug.apk。调试版仅供试用；所有交易保存在手机本地，卸载会删除数据。此 APK 已完成 JVM 测试及 Lint；模拟器结果请查看同次 Actions 运行。'
-          release_url="https://github.com/${GITHUB_REPOSITORY}/releases/tag/${tag}"
-          printf '### Android Debug APK\n\n[手机浏览器直接下载 APK](%s)\n\n[Actions APK 产物](%s)\n\n模拟器测试请查看本次运行的另一项任务。\n' "$release_url" '${{ steps.apk.outputs.artifact-url }}' >> "$GITHUB_STEP_SUMMARY"
 
   device-tests:
     name: Room persistence and Compose navigation
-    if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     needs: build
     timeout-minutes: 30
@@ -139,6 +144,13 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: gradle-wrapper
+      - name: Download generated Room schemas from build job
+        uses: actions/download-artifact@v4
+        with:
+          name: verification-reports
+          path: ci-reports
+      - name: Install generated schemas as migration test assets
+        run: cp -R ci-reports/schemas/. app/schemas/
       - name: Enable KVM
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
@@ -164,3 +176,32 @@ jobs:
             app/build/reports/androidTests/
             app/build/outputs/androidTest-results/
           retention-days: 30
+
+  publish:
+    name: Publish verified test APK or matching-signature upgrade APK
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    needs: [build, device-tests]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/download-artifact@v4
+        with:
+          name: TradeReview-v0.2-${{ github.run_number }}
+          path: dist
+      - name: Publish after all verification jobs pass
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tag="v02-debug-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          if [ -f dist/TradeReview-v0.2-upgrade.apk ]; then
+            title="交易复盘 V0.2 · 旧证书一致的 Debug 升级包"
+            notes="Debug 编译、单元测试、Lint、Room 迁移/恢复和 Compose 模拟器测试均通过。已核对所选 V0.1 证书；安装前确认 SIGNING.txt 与已安装版本一致。密钥仅来自 Actions Secrets。"
+          else
+            title="交易复盘 V0.2 · 仅供新设备测试，不能升级 V0.1"
+            notes="Debug 编译、单元测试、Lint、Room 迁移/恢复和 Compose 模拟器测试均通过。旧 V0.1 私钥未配置：此测试 APK 不能覆盖升级现有 V0.1。请勿为安装此包卸载已有应用，以免删除本地交易。覆盖升级包发布已阻止。"
+          fi
+          printf '%s\n' "$notes" > "$RUNNER_TEMP/release-notes.txt"
+          gh release create "$tag" dist/*.apk dist/SHA256SUMS.txt dist/SIGNING.txt --repo "$GITHUB_REPOSITORY" --target "${{ github.event.pull_request.head.sha || github.sha }}" --title "$title" --prerelease --notes-file "$RUNNER_TEMP/release-notes.txt"
+          printf '[APK 与真实验证结果](https://github.com/%s/releases/tag/%s)\n' "$GITHUB_REPOSITORY" "$tag" >> "$GITHUB_STEP_SUMMARY"

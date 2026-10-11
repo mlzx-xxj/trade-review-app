@@ -10,6 +10,8 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
 import androidx.room.Upsert
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import kotlinx.coroutines.flow.Flow
 
 class TagConverters {
@@ -39,9 +41,26 @@ interface TradeDao {
     suspend fun findReview(date: Long): DailyReview?
 
     @Upsert suspend fun saveReview(review: DailyReview)
+
+    @Query("SELECT * FROM trades ORDER BY date DESC, id DESC")
+    suspend fun allTrades(): List<Trade>
+    @Query("SELECT * FROM daily_reviews ORDER BY date DESC")
+    suspend fun allReviews(): List<DailyReview>
+    @Query("DELETE FROM trades") suspend fun clearTrades()
+    @Query("DELETE FROM daily_reviews") suspend fun clearReviews()
+    @Insert(onConflict = OnConflictStrategy.ABORT)
+    suspend fun insertReview(review: DailyReview)
 }
 
-@Database(entities = [Trade::class, DailyReview::class], version = 1, exportSchema = true)
+val MIGRATION_1_2 = object : Migration(1, 2) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL("ALTER TABLE trades ADD COLUMN recordKey TEXT NOT NULL DEFAULT ''")
+        db.execSQL("UPDATE trades SET recordKey = lower(hex(randomblob(16)))")
+        db.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS index_trades_recordKey ON trades(recordKey)")
+    }
+}
+
+@Database(entities = [Trade::class, DailyReview::class], version = 2, exportSchema = true)
 @TypeConverters(TagConverters::class)
 abstract class TradeDatabase : RoomDatabase() {
     abstract fun trades(): TradeDao
