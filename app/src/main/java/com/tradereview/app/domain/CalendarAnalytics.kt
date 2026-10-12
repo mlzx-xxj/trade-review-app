@@ -32,7 +32,11 @@ data class AnalysisReport(val performance: Performance = Performance(), val dail
     val ratings: List<RatingPoint> = emptyList())
 data class AnalyticsState(val loading: Boolean = true, val filtered: List<Trade> = emptyList(), val report: AnalysisReport = AnalysisReport(),
     val calendar: Map<Long, List<DailyPnl>> = emptyMap(), val home: Performance = Performance(), val today: Performance = Performance(),
-    val risk: RiskReport = RiskReport())
+    val risk: RiskReport = RiskReport(),val source:AnalysisScope?=null)
+/** Derived results must match the displayed ledger/filter and the current local facts. */
+data class AnalysisScope(val trades:List<Trade>,val reviews:List<DailyReview>,val currency:String,val filter:TradeFilter,val today:LocalDate) {
+    fun matches(t:List<Trade>,r:List<DailyReview>,c:String,f:TradeFilter)=currency==c && filter==f && trades==t && reviews==r
+}
 
 object TradingCalendar {
     /** Null cells are padding; all real dates are LocalDate epoch days, never UTC millis. */
@@ -52,7 +56,10 @@ object TradingCalendar {
 object AdvancedAnalytics {
     fun performance(trades: List<Trade>): Performance {
         require(trades.map { it.currency }.distinct().size <= 1) { "不同币种不能混合统计" }
-        val ordered = trades.sortedWith(compareBy<Trade> { it.date }.thenBy { it.id }.thenBy { it.recordKey })
+        return performanceOrdered(trades.sortedWith(compareBy<Trade> { it.date }.thenBy { it.id }.thenBy { it.recordKey }))
+    }
+    private fun performanceOrdered(trades:List<Trade>):Performance {
+        val ordered=trades
         var wins = 0; var losses = 0; var reviewed = 0
         var winsTotal = BigDecimal.ZERO; var lossesTotal = BigDecimal.ZERO
         var winning = 0; var losing = 0; var maxWinning = 0; var maxLosing = 0
@@ -77,31 +84,36 @@ object AdvancedAnalytics {
     fun report(trades: List<Trade>, reviews: List<DailyReview>, filter: TradeFilter, today: LocalDate): AnalysisReport {
         // This entry point takes ONE already-filtered currency. Mixing currencies is rejected.
         require(trades.map { it.currency }.distinct().size <= 1) { "不同币种不能混合统计" }
+        val chronological=trades.sortedWith(compareBy<Trade>{it.date}.thenBy{it.id}.thenBy{it.recordKey})
         fun amount(group: List<Trade>) = group.fold(BigDecimal.ZERO) { sum, t -> sum + Money.value(t) }
         val daily = trades.groupBy { it.date }.toSortedMap().map { (date, group) -> AmountPoint(date, amount(group), group.size) }
         var cumulative = BigDecimal.ZERO
         val curve = daily.map { cumulative += it.amount; CurvePoint(it.date, cumulative) }
         val weekly = trades.groupBy { LocalDate.ofEpochDay(it.date).with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY)).toEpochDay() }
             .toSortedMap().map { (date, group) -> AmountPoint(date, amount(group), group.size) }
-        fun groups(key: (Trade) -> String) = trades.groupBy(key).map { (id, group) -> GroupResult(id, performance(group)) }
+        fun groups(key: (Trade) -> String) = chronological.groupBy(key).map { (id, group) -> GroupResult(id, performanceOrdered(group)) }
             .sortedWith(compareByDescending<GroupResult> { it.performance.netPnl }.thenBy { it.key })
         fun tags(key: (Trade) -> List<String>): List<GroupResult> {
             val grouped = linkedMapOf<String, MutableList<Trade>>()
-            trades.forEach { t -> key(t).distinct().forEach { id -> grouped.getOrPut(id) { mutableListOf() }.add(t) } }
-            return grouped.map { (id, group) -> GroupResult(id, performance(group)) }
+            chronological.forEach { t -> key(t).distinct().forEach { id -> grouped.getOrPut(id) { mutableListOf() }.add(t) } }
+            return grouped.map { (id, group) -> GroupResult(id, performanceOrdered(group)) }
                 .sortedWith(compareByDescending<GroupResult> { it.performance.count }.thenBy { it.key })
         }
         val dates = trades.map { it.date }.toSet(); val range = filter.bounds(today)
         val ratings = reviews.filter { it.reviewSaved && (range == null || it.date in range) && (!filter.hasTradeConditions || it.date in dates) }
             .sortedBy { it.date }.map { RatingPoint(it.date, it.rating) }
-        return AnalysisReport(performance(trades), daily, weekly, curve, groups { it.strategy },
-            trades.groupBy { it.market to it.symbol }.map { (key, group) -> GroupResult(key.second, performance(group), key.first) },
+        val instrumentGroups=chronological.groupBy{it.market to it.symbol}
+        val instruments=trades.map{it.market to it.symbol}.distinct().map{key->GroupResult(key.second,performanceOrdered(instrumentGroups.getValue(key)),key.first)}
+        return AnalysisReport(performanceOrdered(chronological), daily, weekly, curve, groups { it.strategy },
+            instruments,
             groups { it.market }, groups { it.direction }, tags { it.mistakes }, tags { it.discipline }, groups { it.emotion },
             groups { if (it.mistakes.isEmpty()) "without" else "with" }, ratings)
     }
     fun calculate(trades: List<Trade>, reviews: List<DailyReview>, currency: String, filter: TradeFilter, today: LocalDate = LocalDate.now()): AnalyticsState {
         val filtered = TradeFilters.apply(trades, currency, filter, today)
         val home = trades.filter { it.currency == currency }
-        return AnalyticsState(false, filtered, report(filtered, reviews, filter, today), TradingCalendar.daily(trades), performance(home), performance(home.filter { it.date == today.toEpochDay() }), RiskAnalytics.report(filtered))
+        val report=report(filtered,reviews,filter,today)
+        val homePerformance=if(!filter.active)report.performance else performance(home)
+        return AnalyticsState(false, filtered, report, TradingCalendar.daily(trades), homePerformance, performance(home.filter { it.date == today.toEpochDay() }), RiskAnalytics.report(filtered),AnalysisScope(trades.toList(),reviews.toList(),currency,filter,today))
     }
 }

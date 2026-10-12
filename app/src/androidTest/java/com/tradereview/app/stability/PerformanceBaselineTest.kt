@@ -49,12 +49,16 @@ class PerformanceBaselineTest {
             for(count in listOf(1000,5000,10000)) {
                 val values=rows(count)
                 val streakRows=rows(count,true)
+                assertEquals(com.tradereview.app.stability.baseline.LegacyAdvancedAnalytics.calculate(values,emptyList(),"CNY",TradeFilter(),today),AdvancedAnalytics.calculate(values,emptyList(),"CNY",TradeFilter(),today).copy(source=null))
                 measure("analytics-$count"){assertEquals(count/3+(if(count%3>0)1 else 0),AdvancedAnalytics.calculate(values,emptyList(),"CNY",TradeFilter(),today).home.count)}
+                measure("analytics-reference-v07-$count"){assertEquals(count/3+(if(count%3>0)1 else 0),com.tradereview.app.stability.baseline.LegacyAdvancedAnalytics.calculate(values,emptyList(),"CNY",TradeFilter(),today).home.count)}
                 measure("calendar-$count"){val daily=TradingCalendar.daily(values);assertEquals(count,daily.values.flatten().sumOf{it.count});repeat(12){TradingCalendar.monthCells(YearMonth.from(today).minusMonths(it.toLong()))}}
                 measure("week-report-$count"){assertNotNull(ReviewReports.calculate(values,emptyList(),ReviewPeriod.at("week",today),today.toEpochDay()))}
                 measure("month-report-$count"){assertNotNull(ReviewReports.calculate(values,emptyList(),ReviewPeriod.at("month",today),today.toEpochDay()))}
                 measure("insights-$count"){SmartInsights.calculate(values,emptyList(),emptyList(),SmartSettings(minimumSamples=3),CatalogSeeds.tags,today.toEpochDay())}
                 measure("loss-run-insights-$count"){assertTrue(SmartInsights.calculate(streakRows,emptyList(),emptyList(),SmartSettings(minimumSamples=3),CatalogSeeds.tags,today.toEpochDay()).any{it.id=="loss-frequency:CNY"})}
+                assertEquals(com.tradereview.app.stability.baseline.LegacySmartInsights.calculate(streakRows,emptyList(),emptyList(),SmartSettings(minimumSamples=3),CatalogSeeds.tags,today.toEpochDay()),SmartInsights.calculate(streakRows,emptyList(),emptyList(),SmartSettings(minimumSamples=3),CatalogSeeds.tags,today.toEpochDay()))
+                measure("loss-run-reference-v07-$count"){assertTrue(com.tradereview.app.stability.baseline.LegacySmartInsights.calculate(streakRows,emptyList(),emptyList(),SmartSettings(minimumSamples=3),CatalogSeeds.tags,today.toEpochDay()).any{it.id=="loss-frequency:CNY"})}
                 db.withTransaction{db.trades().clearTrades();values.forEach{db.trades().insert(it)}}
                 measure("room-list-$count"){runBlocking{assertEquals(count,db.trades().allTrades().size)}}
                 val data=BackupRepository(db).export(full=true)
@@ -75,7 +79,9 @@ class PerformanceBaselineTest {
             val image=store.importImage(context.contentResolver,TestImageProvider.uri("ocr.png"),"a".repeat(32),"analysis","合成 OCR 图片",EvidenceSettings(),0)
             val values=List(10){image.copy(id=newKey(),recordKey=(it+1).toString(16).padStart(32,'0'),sortOrder=0).also{a->store.publish(store.file(image),a)}}
             measure("thumbnail-reference-v07-10"){values.forEach{a->
-                val source=store.file(a);store.verify(source,a,decode=false)
+                val source=store.file(a);EvidenceLimits.validate(a);require(source.isFile && source.canRead() && source.length()==a.byteCount)
+                val digest=java.security.MessageDigest.getInstance("SHA-256");source.inputStream().use{input->val buffer=ByteArray(8192);while(true){val n=input.read(buffer);if(n<0)break;digest.update(buffer,0,n)}}
+                require(digest.digest().joinToString(""){"%02x".format(it)}==a.sha256)
                 var sample=1;while(maxOf(a.width,a.height)/sample>256)sample*=2
                 requireNotNull(android.graphics.BitmapFactory.decodeFile(source.path,android.graphics.BitmapFactory.Options().apply{inSampleSize=sample})).recycle()
             }}
@@ -84,5 +90,23 @@ class PerformanceBaselineTest {
             metrics["physicalImages"]=values.size;metrics["originalImageBytes"]=image.byteCount
             write("images")
         }finally{root.deleteRecursively()}
+    }
+    @Test fun existingAttachmentIndexAvoidsFullMetadataMaterialization()=runBlocking {
+        val db=Room.inMemoryDatabaseBuilder(context,TradeDatabase::class.java).addCallback(CatalogSeeds.callback).build()
+        try {
+            val trades=rows(1000);db.withTransaction{trades.forEach{db.trades().insert(it)}}
+            for(count in listOf(1000,5000,10000)){
+                db.withTransaction{db.trades().clearAttachments();repeat(count){i->db.trades().saveAttachment(Attachment(id=(i+1).toString(16).padStart(32,'0'),recordKey=trades[i/10].recordKey,sha256="a".repeat(64),byteCount=1,width=1,height=1))}}
+                val key=trades[count/10-1].recordKey
+                assertEquals(db.trades().allAttachments().filter{it.recordKey==key},db.trades().attachmentsForTrade(key))
+                measure("attachment-reference-scan-$count"){runBlocking{assertEquals(10,db.trades().allAttachments().filter{it.recordKey==key}.size)}}
+                measure("attachment-indexed-lookup-$count"){runBlocking{assertEquals(10,db.trades().attachmentsForTrade(key).size)}}
+                assertEquals(count,db.trades().attachmentCount());assertEquals(10,db.trades().attachmentCountForTrade(key))
+                val plan=db.openHelper.readableDatabase.query("EXPLAIN QUERY PLAN SELECT * FROM attachments WHERE recordKey=?",arrayOf(key)).use{cursor->buildString{while(cursor.moveToNext())append(cursor.getString(3))}}
+                assertTrue(plan,plan.contains("index_attachments_recordKey"))
+            }
+            metrics["fixtureScope"]="SQL metadata only, no image files; actual photo decoding/file-integrity tested separately"
+            write("attachment-queries")
+        }finally{db.close()}
     }
 }

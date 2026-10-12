@@ -83,6 +83,10 @@ interface TradeDao {
     @Query("DELETE FROM contract_templates") suspend fun clearTemplates()
     @Query("SELECT * FROM attachments ORDER BY recordKey, sortOrder, createdAt, id") fun observeAttachments(): Flow<List<Attachment>>
     @Query("SELECT * FROM attachments ORDER BY recordKey, sortOrder, createdAt, id") suspend fun allAttachments(): List<Attachment>
+    @Query("SELECT * FROM attachments WHERE recordKey=:key ORDER BY sortOrder,createdAt,id") suspend fun attachmentsForTrade(key:String):List<Attachment>
+    @Query("SELECT count(*) FROM attachments") suspend fun attachmentCount():Int
+    @Query("SELECT count(*) FROM attachments WHERE recordKey=:key") suspend fun attachmentCountForTrade(key:String):Int
+    @Query("SELECT * FROM attachments WHERE id=:id") suspend fun findAttachment(id:String):Attachment?
     @Upsert suspend fun saveAttachment(value: Attachment)
     @Delete suspend fun deleteAttachment(value: Attachment)
     @Query("DELETE FROM attachments") suspend fun clearAttachments()

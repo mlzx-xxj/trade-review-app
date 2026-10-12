@@ -18,6 +18,8 @@ android {
     }
     buildFeatures { compose = true; buildConfig = true }
     sourceSets["androidTest"].assets.srcDir("$projectDir/schemas")
+    sourceSets["androidTest"].java.srcDir("src/testShared/kotlin")
+    sourceSets["test"].java.srcDir("src/testShared/kotlin")
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17

@@ -85,7 +85,7 @@ class ActivityCompatibilityTest {
     }
     @Test fun realThousandFiveThousandTenThousandListsAndCalendarRemainInteractive(){
         val result=linkedMapOf<String,Any>("api" to Build.VERSION.SDK_INT,"definition" to "test-framework end-to-end scroll-to-index and idle, not frame-jank/phone latency")
-        compose.onNodeWithContentDescription("交易记录").performClick()
+        compose.onNodeWithTag("main-page-1").performClick()
         for(count in listOf(1000,5000,10000)) {
             val trades=List(count){Trade(recordKey=newKey(),date=LocalDate.now().toEpochDay()-it%365,netPnl=if(it%3==0)"-25.35"else "100.10")}
             try {
@@ -104,7 +104,7 @@ class ActivityCompatibilityTest {
                 val start=SystemClock.elapsedRealtimeNanos();compose.onNodeWithContentDescription("打开交易日历").performClick()
                 compose.onNodeWithTag("calendar-next").performClick();compose.onNodeWithTag("calendar-previous").performClick()
                 result["calendar-switch-$count-ms"]=(SystemClock.elapsedRealtimeNanos()-start)/1_000_000.0
-                compose.onNodeWithContentDescription("交易记录").performClick()
+                compose.onNodeWithTag("main-page-1").performClick()
             }finally{runBlocking{db.withTransaction{trades.forEach{t->db.trades().findTradeByKey(t.recordKey)?.let{db.trades().delete(it)}}}}}
         }
         V08Metrics.write("activity-api${Build.VERSION.SDK_INT}.json",GsonBuilder().setPrettyPrinting().create().toJson(result))

@@ -15,13 +15,14 @@ class AttachmentImageCache(private val store:AttachmentStore,val maximumBytes:In
     init{require(maximumBytes in 64*1024..16*1024*1024)}
     private val loader=Mutex()
     private val generation=AtomicInteger()
+    private val memoryLock=Any()
     private val hits=AtomicLong()
     private val misses=AtomicLong()
     private val cache=object:LruCache<String,Bitmap>(maximumBytes){override fun sizeOf(key:String,value:Bitmap)=value.allocationByteCount}
     val bytes get()=cache.size()
     val hitCount get()=hits.get()
     val missCount get()=misses.get()
-    fun clear(){generation.incrementAndGet();cache.evictAll()}
+    fun clear(){synchronized(memoryLock){generation.incrementAndGet();cache.evictAll()}}
     suspend fun load(value:Attachment,edge:Int):Bitmap=withContext(Dispatchers.IO){loader.withLock {
         require(edge in 64..2048)
         val file=store.file(value)
@@ -30,7 +31,7 @@ class AttachmentImageCache(private val store:AttachmentStore,val maximumBytes:In
         val key="${value.id}:${value.sha256}:${value.width}:${value.height}:$edge"
         cache.get(key)?.takeUnless{it.isRecycled}?.let{hits.incrementAndGet();return@withLock it}
         val current=generation.get();val bitmap=store.bitmap(value,edge);misses.incrementAndGet()
-        if(edge<=512 && bitmap.allocationByteCount<=maximumBytes && current==generation.get())cache.put(key,bitmap)
+        synchronized(memoryLock){if(edge<=512 && bitmap.allocationByteCount<=maximumBytes && current==generation.get())cache.put(key,bitmap)}
         bitmap
     }}
 }

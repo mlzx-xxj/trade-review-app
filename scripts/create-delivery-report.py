@@ -19,17 +19,17 @@ def junit(root, fragment):
 def main():
     p=argparse.ArgumentParser();p.add_argument("--reports",required=True);p.add_argument("--screenshots",required=True);p.add_argument("--dist",required=True);p.add_argument("--run-url",required=True)
     a=p.parse_args();root=Path(a.reports);dist=Path(a.dist)
-    counts={"jvm":junit(root/"build","/test-results/")};assert counts["jvm"]["tests"]>=133
+    counts={"jvm":junit(root/"build","/test-results/")};assert counts["jvm"]["tests"]>=144
     lint=list((root/"build").rglob("lint-results-debug.xml"));assert len(lint)==1
     issues=ET.parse(lint[0]).getroot().findall("issue");counts["lint"]=dict(Counter(i.get("severity") for i in issues));assert not any(counts["lint"].get(k,0) for k in ["Error","Fatal"])
     metrics={}
     for api in [29,35]:
         directory=root/"devices"/f"android-test-reports-api{api}"
-        counts[f"api{api}"]=junit(directory,"/androidTest-results/");assert counts[f"api{api}"]["tests"]>=81
+        counts[f"api{api}"]=junit(directory,"/androidTest-results/");assert counts[f"api{api}"]["tests"]>=94
         images=Path(a.screenshots)/f"v08-emulator-screenshots-api{api}"
         names={f.name for f in images.rglob("*.png")}
         for prefix in [f"{i:02}-" for i in range(1,27)]:assert any(n.startswith(prefix) for n in names),f"Missing API {api} screenshot {prefix}"
-        for filename in [f"performance-api{api}.json",f"images-api{api}.json",f"activity-api{api}.json",f"ocr-evaluation-api{api}.json",f"process-probes-api{api}.json"]:
+        for filename in [f"performance-api{api}.json",f"images-api{api}.json",f"activity-api{api}.json",f"ocr-evaluation-api{api}.json",f"process-probes-api{api}.json",f"attachment-queries-api{api}.json"]:
             paths=list(directory.rglob(filename));assert paths,filename
             contents=[json.loads(f.read_text()) for f in paths];assert all(c==contents[0] for c in contents)
             metrics[filename]=contents[0]

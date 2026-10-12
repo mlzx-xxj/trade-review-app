@@ -51,7 +51,9 @@ fun TradeReviewApp(model: TradeViewModel, backup: BackupViewModel, ocrModel: Ocr
     val state by model.state.collectAsStateWithLifecycle()
     val currency by model.currency.collectAsStateWithLifecycle()
     val filter by model.filter.collectAsStateWithLifecycle()
-    val analytics by model.analytics.collectAsStateWithLifecycle()
+    val calculated by model.analytics.collectAsStateWithLifecycle()
+    // Room/worker flows update independently. Never label an old CNY report as a newly selected USD ledger.
+    val analytics=if(calculated.source?.matches(state.trades,state.reviews,currency,filter)==true)calculated else AnalyticsState()
     val journalBusy by model.busy.collectAsStateWithLifecycle()
     val backupBusy by backup.busy.collectAsStateWithLifecycle()
     val busy = journalBusy || backupBusy
@@ -96,7 +98,7 @@ fun TradeReviewApp(model: TradeViewModel, backup: BackupViewModel, ocrModel: Ocr
             }) },
             bottomBar = { if (!settings && reports==null) NavigationBar {
                 pages.forEachIndexed { index, item ->
-                    NavigationBarItem(selected = page == index, onClick = { selectedDay = null; page = index }, icon = { Icon(item.icon, item.title) }, label = { Text(if(index == 4) "日历" else item.title) })
+                    NavigationBarItem(modifier=Modifier.testTag("main-page-$index"),selected = page == index, onClick = { selectedDay = null; page = index }, icon = { Icon(item.icon, item.title) }, label = { Text(if(index == 4) "日历" else item.title) })
                 }
             } },
             snackbarHost = { SnackbarHost(snack) },

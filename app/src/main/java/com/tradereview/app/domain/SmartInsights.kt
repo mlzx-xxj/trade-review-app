@@ -68,8 +68,14 @@ object SmartInsights {
                     if(rows.size>=min && ratio(losses,rows.size)!!>=BigDecimal("60"))add("emotion:$emotion:${currency.id}","emotion",60,"${catalog.label("emotion",emotion)}标签与亏损较多同时出现 · ${currency.id}",rows,co.filter { it.emotion==emotion },
                         "$losses/${rows.size} 笔亏损（${pct(losses,rows.size)}），同期同币种全部亏损 ${pct(cn.count { Money.value(it).signum()<0 },cn.size)}（${cn.size} 笔）。","情绪组亏损数 / 情绪组交易数；至少 60%，不代表情绪造成亏损。","核对情绪、市场条件与风险执行，避免仅凭相关性下结论。")
                 }
-                val ordered=cn.sortedWith(compareBy<Trade> { it.date }.thenBy { it.id });var run=mutableListOf<Trade>();var longest=listOf<Trade>()
-                ordered.forEach { t->if(Money.value(t).signum()<0) { run.add(t);if(run.size>longest.size)longest=run.toList() }else run=mutableListOf() }
+                val ordered=cn.sortedWith(compareBy<Trade> { it.date }.thenBy { it.id })
+                var runStart=0;var runLength=0;var bestStart=0;var bestLength=0
+                ordered.forEachIndexed { index,t->
+                    if(Money.value(t).signum()<0){if(runLength==0)runStart=index;runLength++;if(runLength>bestLength){bestStart=runStart;bestLength=runLength}}
+                    else runLength=0
+                }
+                // Keep the original first-tie/flat-reset ordering, without copying every growing prefix.
+                val longest=if(bestLength==0)emptyList()else ordered.subList(bestStart,bestStart+bestLength)
                 if(longest.size>=3) {
                     val s=longest.first().date;val e=longest.last().date;val inside=cn.filter { it.date in s..e };val outside=cn.filter { it.date !in s..e }
                     val days=(e-s+1).toInt();val otherDays=(end-start+1-days).toInt()
