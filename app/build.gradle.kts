@@ -12,8 +12,8 @@ android {
         applicationId = "com.tradereview.app"
         minSdk = 26
         targetSdk = 35
-        versionCode = 6
-        versionName = "0.6.0"
+        versionCode = 7
+        versionName = "0.7.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildFeatures { compose = true; buildConfig = true }
@@ -55,6 +55,8 @@ dependencies {
     implementation("androidx.room:room-runtime:2.7.2")
     implementation("androidx.room:room-ktx:2.7.2")
     implementation("com.google.code.gson:gson:2.12.1")
+    // Bundled Chinese + Latin recognizer. No Play Services model download dependency.
+    implementation("com.google.mlkit:text-recognition-chinese:16.0.1")
     ksp("androidx.room:room-compiler:2.7.2")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")

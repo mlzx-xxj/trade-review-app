@@ -41,7 +41,13 @@ private val pages = listOf(Page("首页", Icons.Default.Home), Page("交易记�
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TradeReviewApp(model: TradeViewModel, backup: BackupViewModel) {
+fun TradeReviewApp(model: TradeViewModel, backup: BackupViewModel, ocrModel: OcrViewModel? = null) {
+    val applicationContext=LocalContext.current.applicationContext
+    val ocr=ocrModel ?: androidx.lifecycle.viewmodel.compose.viewModel<OcrViewModel>(factory=object:androidx.lifecycle.ViewModelProvider.Factory {
+        @Suppress("UNCHECKED_CAST") override fun <T:androidx.lifecycle.ViewModel> create(modelClass:Class<T>):T=OcrViewModel(applicationContext) as T
+    })
+    var ocrShown by rememberSaveable { mutableStateOf(false) }
+    var preflightDate by rememberSaveable { mutableLongStateOf(LocalDate.now().toEpochDay()) }
     val state by model.state.collectAsStateWithLifecycle()
     val currency by model.currency.collectAsStateWithLifecycle()
     val filter by model.filter.collectAsStateWithLifecycle()
@@ -65,7 +71,7 @@ fun TradeReviewApp(model: TradeViewModel, backup: BackupViewModel) {
     var reportReturn by rememberSaveable { mutableStateOf("week") }
     var reportKeys by rememberSaveable { mutableStateOf<List<String>?>(null) }
     var reportTitle by rememberSaveable { mutableStateOf("报告交易明细") }
-    fun backReport() { if(reportKeys!=null)reportKeys=null else if(reports=="goals")reports=reportReturn else reports=null }
+    fun backReport() { if(reportKeys!=null)reportKeys=null else if(reports=="goals")reports=reportReturn else if(reports=="preflight" && reportReturn=="insights")reports="insights" else reports=null }
     BackHandler(enabled=reports!=null && !settings && editorId==null && evidenceKey==null) { backReport() }
     val snack = remember { SnackbarHostState() }
     // Material components (including the calendar) use Chinese even on an English phone.
@@ -81,7 +87,7 @@ fun TradeReviewApp(model: TradeViewModel, backup: BackupViewModel) {
     }
     CompositionLocalProvider(LocalContext provides chineseContext, LocalConfiguration provides chineseConfiguration, LocalActivityResultRegistryOwner provides activityResultOwner, LocalCatalog provides Catalog(state.tags), LocalPnlColors provides paletteColors(state.settings.pnlPalette)) {
         Scaffold(containerColor = MaterialTheme.colorScheme.background,
-            topBar = { TopAppBar(title = { Text(when(management) { "tags" -> "标签管理"; "symbols" -> "常用品种"; "risk" -> "风险规则与合约模板"; "goals" -> "纪律改善目标"; else -> if(settings) "设置" else if(reports!=null) { if(reportKeys!=null)reportTitle else when(reports){"week"->"每周复盘";"month"->"每月复盘";else->"纪律改善目标"} } else if(selectedDay != null) "每日详情" else pages[page].title }) }, navigationIcon = {
+            topBar = { TopAppBar(title = { Text(when(management) { "tags" -> "标签管理"; "symbols" -> "常用品种"; "risk" -> "风险规则与合约模板"; "goals" -> "纪律改善目标"; else -> if(settings) "设置" else if(reports!=null) { if(reportKeys!=null)reportTitle else when(reports){"week"->"每周复盘";"month"->"每月复盘";"insights"->"智能洞察";"preflight"->"盘前纪律检查";else->"纪律改善目标"} } else if(selectedDay != null) "每日详情" else pages[page].title }) }, navigationIcon = {
                 if (settings || selectedDay != null || reports!=null) IconButton(enabled = !backupBusy && !busy, onClick = { if(settings) { if(management != null) management = null else settings = false } else if(reports!=null)backReport() else selectedDay = null }) { Icon(Icons.AutoMirrored.Filled.ArrowBack, "返回主页面") }
             }, actions = {
                 if (!settings && reports==null && (page == 0 || page == 1)) IconButton(enabled = !state.loading && state.error == null, onClick = { editorId = 0 }) { Icon(Icons.Default.Add, "新增交易") }
@@ -102,7 +108,7 @@ fun TradeReviewApp(model: TradeViewModel, backup: BackupViewModel) {
                     "risk" -> RiskSettingsPage(state, model, busy, Modifier.padding(padding))
                     "goals" -> ReviewGoalsPage(state,model,busy,Modifier.padding(padding))
                     else -> SettingsPage(backup, busy, Modifier.padding(padding), onTags = { management = "tags" }, onSymbols = { management = "symbols" }, theme = state.settings.theme, onTheme = model::selectTheme,
-                        palette = state.settings.pnlPalette, onPalette = model::selectPalette, onRisk = { management = "risk" },imageLimit=state.evidenceSettings.maxInputMiB,onImageLimit=model::imageLimit,onGoals={management="goals"})
+                        palette = state.settings.pnlPalette, onPalette = model::selectPalette, onRisk = { management = "risk" },imageLimit=state.evidenceSettings.maxInputMiB,onImageLimit=model::imageLimit,onGoals={management="goals"},onSmart={settings=false;reports="insights"})
                 }
             } else if (state.loading || (state.error == null && analytics.loading)) {
                 Box(Modifier.fillMaxSize().padding(padding), contentAlignment = androidx.compose.ui.Alignment.Center) { CircularProgressIndicator() }
@@ -117,7 +123,9 @@ fun TradeReviewApp(model: TradeViewModel, backup: BackupViewModel) {
                         if(rows.isEmpty())item { Text("此项暂无交易记录。") }
                         items(rows,key={it.recordKey}) { t -> TradeCard(t){editorId=t.id} }
                     } else pageState.SaveableStateProvider("reports:$reports") {
-                        if(reports=="goals")ReviewGoalsPage(state,model,busy,Modifier.padding(padding))
+                        if(reports=="insights")SmartReviewPage(state,model,busy,onTrades={rows,title->reportKeys=rows.map { it.recordKey };reportTitle=title},onPreflight={reportReturn="insights";reports="preflight";preflightDate=LocalDate.now().toEpochDay()},modifier=Modifier.padding(padding))
+                        else if(reports=="preflight")PreflightPage(preflightDate,state,model,busy,{preflightDate=it},onTrades={rows,title->reportKeys=rows.map { it.recordKey };reportTitle=title},modifier=Modifier.padding(padding))
+                        else if(reports=="goals")ReviewGoalsPage(state,model,busy,Modifier.padding(padding))
                         else ReviewReportPage(requireNotNull(reports),state,currency,model::selectCurrency,{reports=it},
                             onGoals={reportReturn=requireNotNull(reports);reports="goals"},onTrades={rows,title->reportKeys=rows.map { it.recordKey };reportTitle=title},modifier=Modifier.padding(padding))
                     }
@@ -125,9 +133,9 @@ fun TradeReviewApp(model: TradeViewModel, backup: BackupViewModel) {
                     onOpen = { editorId = it.id }, onJournal = { section -> pageState.removeState("page:2"); reviewDate = requireNotNull(selectedDay); reviewSection = section; selectedDay = null; page = 2 }, modifier = Modifier.padding(padding))
                 else pageState.SaveableStateProvider("page:$page") { when (page) {
                     0 -> HomePage(state, analytics, currency, model::selectCurrency, Modifier.padding(padding),
-                        onAdd = { editorId = 0 }, onReview = { pageState.removeState("page:2"); reviewDate = LocalDate.now().toEpochDay(); reviewSection = "plan"; page = 2 }, onOpen = { editorId = it.id }, onDemo = model::addDemo, busy = busy, onCalendar = { page = 4 })
+                        onAdd = { editorId = 0 }, onReview = { pageState.removeState("page:2"); reviewDate = LocalDate.now().toEpochDay(); reviewSection = "plan"; page = 2 }, onOpen = { editorId = it.id }, onDemo = model::addDemo, busy = busy, onCalendar = { page = 4 },onSmart={reports="insights"},onOcr={ocrShown=true})
                     1 -> TradesPage(state, analytics.filtered, currency, filter, model, busy, Modifier.padding(padding), { editorId = 0 }, { editorId = it.id })
-                    2 -> DailyReviewPage(state.reviews, busy, model::savePlan, model::saveReview, Modifier.padding(padding), reviewDate, reviewSection)
+                    2 -> DailyReviewPage(state.reviews, busy, model::savePlan, model::saveReview, Modifier.padding(padding), reviewDate, reviewSection,onPreflight={date->preflightDate=date;reportReturn="plan";reports="preflight"})
                     3 -> StatisticsPage(state, analytics, currency, filter, model, busy, onDay = { selectedDay = it }, onDrill = { model.updateFilter(it); page = 1 }, modifier = Modifier.padding(padding),onReports={reports=it;reportReturn="week"})
                     4 -> CalendarPage(state, analytics.calendar, currency, model::selectCurrency, { selectedDay = it }, Modifier.padding(padding))
                 } }
@@ -135,17 +143,18 @@ fun TradeReviewApp(model: TradeViewModel, backup: BackupViewModel) {
                     val original = state.trades.firstOrNull { it.id == editorId }
                     TradeEditor(original, state, busy, saveError = message?.takeIf { it.startsWith("保存失败") }, onDismiss = { editorId = null },
                         onDraft = model::persistDraft, onSave = { draft, approved, done -> model.saveEntry(draft, done, approved) }, onDelete = { model.deleteTrade(it) { editorId = null } }, notify = model::notify, onTemplate = model::saveTemplate,
-                        evidenceStore=model.evidenceStore,onEvidence={t->editorId=null;evidenceKey=t.recordKey})
+                        evidenceStore=model.evidenceStore,onEvidence={t->editorId=null;evidenceKey=t.recordKey},onOcr={ocrShown=true})
                 }
-                evidenceKey?.let { key -> EvidencePage(key,state,model,busy) { evidenceKey=null;editorId=state.trades.firstOrNull { it.recordKey==key }?.id } }
+                evidenceKey?.let { key -> EvidencePage(key,state,model,busy,onOcr={a->ocrShown=true;ocr.read(android.net.Uri.EMPTY,state.evidenceSettings,a,model.evidenceStore)}) { evidenceKey=null;editorId=state.trades.firstOrNull { it.recordKey==key }?.id } }
             }
+            if(ocrShown)OcrPage(ocr,state,model){ocrShown=false}
         }
     }
 }
 
 @Composable
 private fun HomePage(state: JournalState, analytics: AnalyticsState, currency: String, onCurrency: (String) -> Unit, modifier: Modifier,
-    onAdd: () -> Unit, onReview: () -> Unit, onOpen: (Trade) -> Unit, onDemo: () -> Unit, busy: Boolean, onCalendar: () -> Unit) {
+    onAdd: () -> Unit, onReview: () -> Unit, onOpen: (Trade) -> Unit, onDemo: () -> Unit, busy: Boolean, onCalendar: () -> Unit,onSmart:()->Unit,onOcr:()->Unit) {
     val today = LocalDate.now().toEpochDay()
     val stats = analytics.home
     val todayStats = analytics.today
@@ -156,6 +165,8 @@ private fun HomePage(state: JournalState, analytics: AnalyticsState, currency: S
             Text(dayLabel(today), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
             Button(onClick = onAdd, modifier = Modifier.fillMaxWidth().padding(top = 12.dp).heightIn(min = 56.dp)) { Text(if(state.drafts.any { it.key == "new" }) "快捷记账 · 恢复草稿" else "快捷记账") }
             OutlinedButton(onClick = onCalendar, modifier = Modifier.fillMaxWidth()) { Text("交易日历与热力图") }
+            OutlinedButton(onClick=onSmart,modifier=Modifier.fillMaxWidth().testTag("open-smart-insights")){Text("智能洞察与盘前提醒")}
+            TextButton(onClick=onOcr,modifier=Modifier.fillMaxWidth().testTag("open-ocr")){Text("从截图识别交易")}
         }
         item { SectionCard("账户概览", "所有金额按选定币种分别统计。") {
             SingleChoice(Presets.currencies, currency, onCurrency)
@@ -202,7 +213,7 @@ private fun TradesPage(state: JournalState, filtered: List<Trade>, currency: Str
 
 @Composable
 private fun DailyReviewPage(reviews: List<DailyReview>, busy: Boolean, onPlan: (DailyReview) -> Unit, onReview: (DailyReview) -> Unit, modifier: Modifier,
-    initialDate: Long = LocalDate.now().toEpochDay(), initialSection: String = "plan") {
+    initialDate: Long = LocalDate.now().toEpochDay(), initialSection: String = "plan",onPreflight:(Long)->Unit = {}) {
     var date by rememberSaveable(initialDate) { mutableLongStateOf(initialDate) }
     var section by rememberSaveable(initialSection, initialDate) { mutableStateOf(initialSection) }
     val existing = reviews.firstOrNull { it.date == date } ?: DailyReview(date = date)
@@ -213,7 +224,7 @@ private fun DailyReviewPage(reviews: List<DailyReview>, busy: Boolean, onPlan: (
             Text("盘前：${if (existing.planSaved) "已保存" else "待制定"} · 盘后：${if (existing.reviewSaved) "已保存" else "待复盘"}", style = MaterialTheme.typography.bodySmall)
         } }
         item {
-            if (section == "plan") PlanForm(existing, busy, onPlan)
+            if (section == "plan") Column { OutlinedButton(onClick={onPreflight(date)},modifier=Modifier.fillMaxWidth()){Text("盘前纪律检查清单")};PlanForm(existing, busy, onPlan) }
             else PostReviewForm(existing, busy, onReview)
         }
     }

@@ -15,13 +15,13 @@ class V05BackupTest {
         assertEquals(3,data.trades.single().riskRecord!!.violations.size); assertEquals(1,data.riskRules.size); assertEquals(1,data.contractTemplates.size)
         val output = BackupCodec.encode(data)
         assertNotEquals(JsonParser.parseString(json).asJsonObject["checksumSha256"],JsonParser.parseString(output).asJsonObject["checksumSha256"])
-        assertEquals(data.copy(sourceSchemaVersion=5),BackupCodec.decode(output))
+        assertEquals(data.copy(sourceSchemaVersion=BackupCodec.SCHEMA_VERSION),BackupCodec.decode(output))
     }
     @Test fun allLegacyFormatsUpgradeWithUnknownProfessionalFieldsAndUnchangedAmountsAndKeys() {
         listOf("v02-backup.json","v03-backup.json","v03-android-backup.json","v04-backup.json").forEach { name ->
             val old = BackupCodec.decode(fixture(name)); assertTrue(old.trades.all { it.professional == null && it.riskRecord == null })
             assertTrue(old.riskRules.isEmpty()); assertTrue(old.contractTemplates.isEmpty())
-            val newer = BackupCodec.decode(BackupCodec.encode(old));assertEquals(old.copy(sourceSchemaVersion=5),newer)
+            val newer = BackupCodec.decode(BackupCodec.encode(old));assertEquals(old.copy(sourceSchemaVersion=BackupCodec.SCHEMA_VERSION),newer)
             assertEquals(old.trades.map { it.netPnl to it.recordKey },newer.trades.map { it.netPnl to it.recordKey })
         }
     }

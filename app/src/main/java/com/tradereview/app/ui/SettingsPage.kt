@@ -20,7 +20,7 @@ import java.time.LocalDate
 fun SettingsPage(model: BackupViewModel, journalBusy: Boolean, modifier: Modifier = Modifier,
     onTags: () -> Unit = {}, onSymbols: () -> Unit = {}, theme: String = "system", onTheme: (String) -> Unit = {},
     palette: String = "green_profit", onPalette: (String) -> Unit = {}, onRisk: () -> Unit = {},
-    imageLimit: Int = 10,onImageLimit: (Int)->Unit = {},onGoals: ()->Unit = {}) {
+    imageLimit: Int = 10,onImageLimit: (Int)->Unit = {},onGoals: ()->Unit = {},onSmart:()->Unit = {}) {
     val busy by model.busy.collectAsStateWithLifecycle()
     val preview by model.preview.collectAsStateWithLifecycle()
     val message by model.message.collectAsStateWithLifecycle()
@@ -50,6 +50,7 @@ fun SettingsPage(model: BackupViewModel, journalBusy: Boolean, modifier: Modifie
             Text("格式版本 ${p.backup.sourceSchemaVersion} · 标签 ${p.backup.tags.size} 个 · 品种 ${p.backup.instruments.size} 个 · 草稿 ${p.backup.drafts.size} 份")
             Text("常用筛选 ${p.backup.savedFilters.size} 份 · 盈亏配色 ${if(p.backup.settings.pnlPalette == "red_profit") "红盈绿亏" else "绿盈红亏"}")
             Text("专业记录 ${p.backup.trades.count { it.professional != null }} 笔 · 风险规则 ${p.backup.riskRules.size} 个币种 · 合约模板 ${p.backup.contractTemplates.size} 份")
+            Text("智能配置 1 份 · 个人盘前项目 ${p.backup.preflightItems.size} · 检查历史 ${p.backup.preflightChecks.size} · OCR 草稿 ${p.backup.ocrDrafts.size}")
             Text("改善目标 ${p.backup.goals.size} 个 · 截图 ${p.backup.attachments.size} 张 · 原图上限 ${p.backup.evidenceSettings.maxInputMiB} MiB")
             Text(if(p.backup.backupScope=="with-attachment-files") "备份范围：完整 ZIP，全部截图已校验" else "备份范围：仅结构化数据，不含图片；覆盖将清理本机截图。",color=MaterialTheme.colorScheme.primary,modifier=Modifier.testTag("backup-scope"))
             Text("当前本机截图 ${p.before.attachments.size} 张 · 目标 ${p.before.goals.size} 个；冲突交易的截图保留本地，不拼接不一致证据。")
@@ -72,6 +73,7 @@ fun SettingsPage(model: BackupViewModel, journalBusy: Boolean, modifier: Modifie
             OutlinedButton(enabled = !locked && preview == null, onClick = onTags, modifier = Modifier.fillMaxWidth()) { Text("管理自定义标签") }
             OutlinedButton(enabled = !locked && preview == null, onClick = onSymbols, modifier = Modifier.fillMaxWidth()) { Text("管理常用品种") }
             OutlinedButton(enabled = !locked && preview == null, onClick = onRisk, modifier = Modifier.fillMaxWidth()) { Text("风险规则与合约模板") }
+            OutlinedButton(enabled=!locked && preview==null,onClick=onSmart,modifier=Modifier.fillMaxWidth()){Text("智能洞察与规则设置")}
             OutlinedButton(enabled = !locked && preview == null, onClick = onGoals, modifier = Modifier.fillMaxWidth()) { Text("纪律改善目标") }
             Text("原图大小上限 · 私有压缩图最长边 2048，单张最多 4 MiB，每笔最多 10 张")
             SingleChoice(listOf(5,10,20).map { com.tradereview.app.data.Option(it.toString(),"$it MiB") },imageLimit.toString()) { if(!locked && preview==null)onImageLimit(it.toInt()) }

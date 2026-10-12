@@ -94,6 +94,23 @@ interface TradeDao {
     @Query("SELECT * FROM evidence_settings WHERE id=1") suspend fun evidenceSettings(): EvidenceSettings?
     @Upsert suspend fun saveEvidenceSettings(value: EvidenceSettings)
     @Query("DELETE FROM evidence_settings") suspend fun clearEvidenceSettings()
+    @Query("SELECT * FROM smart_settings WHERE id=1") fun observeSmartSettings(): Flow<SmartSettings?>
+    @Query("SELECT * FROM smart_settings WHERE id=1") suspend fun smartSettings(): SmartSettings?
+    @Upsert suspend fun saveSmartSettings(value: SmartSettings)
+    @Query("DELETE FROM smart_settings") suspend fun clearSmartSettings()
+    @Query("SELECT * FROM preflight_items ORDER BY id") fun observePreflightItems(): Flow<List<PreflightItem>>
+    @Query("SELECT * FROM preflight_items ORDER BY id") suspend fun allPreflightItems(): List<PreflightItem>
+    @Upsert suspend fun savePreflightItem(value: PreflightItem)
+    @Query("DELETE FROM preflight_items") suspend fun clearPreflightItems()
+    @Query("SELECT * FROM preflight_checks ORDER BY date, itemKey") fun observePreflightChecks(): Flow<List<PreflightCheck>>
+    @Query("SELECT * FROM preflight_checks ORDER BY date, itemKey") suspend fun allPreflightChecks(): List<PreflightCheck>
+    @Upsert suspend fun savePreflightCheck(value: PreflightCheck)
+    @Query("DELETE FROM preflight_checks") suspend fun clearPreflightChecks()
+    @Query("SELECT * FROM ocr_drafts ORDER BY createdDay DESC, id") fun observeOcrDrafts(): Flow<List<OcrDraft>>
+    @Query("SELECT * FROM ocr_drafts ORDER BY createdDay DESC, id") suspend fun allOcrDrafts(): List<OcrDraft>
+    @Upsert suspend fun saveOcrDraft(value: OcrDraft)
+    @Delete suspend fun deleteOcrDraft(value: OcrDraft)
+    @Query("DELETE FROM ocr_drafts") suspend fun clearOcrDrafts()
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insertReview(review: DailyReview)
 }
@@ -145,7 +162,15 @@ val MIGRATION_5_6 = object : Migration(5, 6) {
     }
 }
 
-@Database(entities = [Trade::class, DailyReview::class, ManagedTag::class, Instrument::class, AppSettings::class, EntryDraft::class, SavedFilter::class, RiskRules::class, ContractTemplate::class, Attachment::class, ReviewGoal::class, EvidenceSettings::class], version = 6, exportSchema = true)
+val MIGRATION_6_7 = object : Migration(6,7) {
+    override fun migrate(db:SupportSQLiteDatabase) {
+        db.execSQL("CREATE TABLE IF NOT EXISTS smart_settings (id INTEGER NOT NULL PRIMARY KEY, enabledCategories TEXT NOT NULL, minimumSamples INTEGER NOT NULL, lookbackDays INTEGER NOT NULL, automaticReminders INTEGER NOT NULL)")
+        db.execSQL("CREATE TABLE IF NOT EXISTS preflight_items (id TEXT NOT NULL PRIMARY KEY, text TEXT NOT NULL, archived INTEGER NOT NULL)")
+        db.execSQL("CREATE TABLE IF NOT EXISTS preflight_checks (date INTEGER NOT NULL, itemKey TEXT NOT NULL, label TEXT NOT NULL, checked INTEGER NOT NULL, sourceType TEXT NOT NULL, sourceRefs TEXT NOT NULL, PRIMARY KEY(date,itemKey))")
+        db.execSQL("CREATE TABLE IF NOT EXISTS ocr_drafts (id TEXT NOT NULL PRIMARY KEY, fields TEXT NOT NULL, blocked INTEGER NOT NULL, closedEvidence INTEGER NOT NULL, createdDay INTEGER NOT NULL)")
+    }
+}
+@Database(entities = [Trade::class, DailyReview::class, ManagedTag::class, Instrument::class, AppSettings::class, EntryDraft::class, SavedFilter::class, RiskRules::class, ContractTemplate::class, Attachment::class, ReviewGoal::class, EvidenceSettings::class, SmartSettings::class, PreflightItem::class, PreflightCheck::class, OcrDraft::class], version = 7, exportSchema = true)
 @TypeConverters(TagConverters::class, FilterConverters::class, ProfessionalConverters::class)
 abstract class TradeDatabase : RoomDatabase() {
     abstract fun trades(): TradeDao

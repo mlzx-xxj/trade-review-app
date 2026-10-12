@@ -10,6 +10,7 @@ import com.tradereview.app.domain.ProfessionalMath
 import com.tradereview.app.domain.ProfessionalJson
 import com.tradereview.app.domain.EvidenceJson
 import com.tradereview.app.domain.ReviewGoals
+import com.tradereview.app.domain.SmartJson
 import com.tradereview.app.evidence.EvidenceLimits
 import java.io.InputStream
 import java.io.ByteArrayOutputStream
@@ -24,18 +25,19 @@ class BackupException(message: String) : IllegalArgumentException(message)
 
 data class BackupData(val exportedAt: String, val trades: List<Trade>, val dailyReviews: List<DailyReview>,
     val tags: List<ManagedTag> = CatalogSeeds.tags, val instruments: List<Instrument> = CatalogSeeds.instruments,
-    val settings: AppSettings = AppSettings(), val drafts: List<EntryDraft> = emptyList(), val sourceSchemaVersion: Int = 5,
+    val settings: AppSettings = AppSettings(), val drafts: List<EntryDraft> = emptyList(), val sourceSchemaVersion: Int = 6,
     val savedFilters: List<SavedFilter> = emptyList(), val riskRules: List<RiskRules> = emptyList(),
     val contractTemplates: List<ContractTemplate> = emptyList(), val attachments: List<Attachment> = emptyList(),
     val goals: List<ReviewGoal> = emptyList(), val evidenceSettings: EvidenceSettings = EvidenceSettings(),
-    val backupScope: String = "structured-data-only") {
+    val backupScope: String = "structured-data-only", val smartSettings: SmartSettings = SmartSettings(),
+    val preflightItems: List<PreflightItem> = emptyList(), val preflightChecks: List<PreflightCheck> = emptyList(), val ocrDrafts: List<OcrDraft> = emptyList()) {
     val planCount get() = dailyReviews.count { it.planSaved }
     val reviewCount get() = dailyReviews.count { it.reviewSaved }
 }
 
 /** Schema version is the interchange format version, independent of Room's version. */
 object BackupCodec {
-    const val SCHEMA_VERSION = 5
+    const val SCHEMA_VERSION = 6
     const val MAX_BYTES = 16 * 1024 * 1024
     const val MAX_RECORDS = 10_000
     private val gson = GsonBuilder().serializeNulls().disableHtmlEscaping().create()
@@ -90,7 +92,7 @@ object BackupCodec {
             val version = rawVersion.toInt()
             requireBackup(version in 1..SCHEMA_VERSION, "不支持此备份版本，请使用匹配版本的应用")
             if (version == 1) root.fields("format", "schemaVersion", "exportedAt", "counts", "trades", "dailyReviews", "checksumSha256")
-            else root.fields(*(listOf("format", "schemaVersion", "exportedAt", "counts", "trades", "dailyReviews", "tags", "instruments", "settings", "drafts", "checksumSha256") + (if (version >= 3) listOf("savedFilters") else emptyList()) + (if (version >= 4) listOf("riskRules", "contractTemplates") else emptyList()) + (if(version>=5)listOf("backupScope","attachments","goals","evidenceSettings")else emptyList())).toTypedArray())
+            else root.fields(*(listOf("format", "schemaVersion", "exportedAt", "counts", "trades", "dailyReviews", "tags", "instruments", "settings", "drafts", "checksumSha256") + (if (version >= 3) listOf("savedFilters") else emptyList()) + (if (version >= 4) listOf("riskRules", "contractTemplates") else emptyList()) + (if(version>=5)listOf("backupScope","attachments","goals","evidenceSettings")else emptyList()) + (if(version>=6)listOf("smartSettings","preflightItems","preflightChecks","ocrDrafts")else emptyList())).toTypedArray())
             requireBackup(root.string("format") == "trade-review-backup", "不是交易复盘备份文件")
             val data = BackupData(root.string("exportedAt"), root.array("trades").map { parseTrade(it.obj(), version) },
                 root.array("dailyReviews").map { parseReview(it.obj()) },
@@ -104,15 +106,20 @@ object BackupCodec {
                 attachments=if(version<5)emptyList()else root.array("attachments").map(EvidenceJson::attachment),
                 goals=if(version<5)emptyList()else root.array("goals").map(EvidenceJson::goal),
                 evidenceSettings=if(version<5)EvidenceSettings()else EvidenceJson.settings(root["evidenceSettings"]),
-                backupScope=if(version<5)"structured-data-only"else root.string("backupScope"))
+                backupScope=if(version<5)"structured-data-only"else root.string("backupScope"),
+                smartSettings=if(version<6)SmartSettings()else SmartJson.settings(root["smartSettings"]),
+                preflightItems=if(version<6)emptyList()else root.array("preflightItems").map(SmartJson::item),
+                preflightChecks=if(version<6)emptyList()else root.array("preflightChecks").map(SmartJson::check),
+                ocrDrafts=if(version<6)emptyList()else root.array("ocrDrafts").map(SmartJson::draft))
             validate(data)
             val counts = root.getAsJsonObject("counts") ?: throw BackupException("缺少数量校验")
             if (version == 1) counts.fields("trades", "dailyReviews", "plans", "reviews")
             else {
-                counts.fields(*(listOf("trades", "dailyReviews", "plans", "reviews", "tags", "instruments", "drafts") + (if (version >= 3) listOf("savedFilters") else emptyList()) + (if (version >= 4) listOf("riskRules", "contractTemplates") else emptyList()) + (if(version>=5)listOf("attachments","goals")else emptyList())).toTypedArray())
+                counts.fields(*(listOf("trades", "dailyReviews", "plans", "reviews", "tags", "instruments", "drafts") + (if (version >= 3) listOf("savedFilters") else emptyList()) + (if (version >= 4) listOf("riskRules", "contractTemplates") else emptyList()) + (if(version>=5)listOf("attachments","goals")else emptyList()) + (if(version>=6)listOf("preflightItems","preflightChecks","ocrDrafts")else emptyList())).toTypedArray())
                 requireBackup(counts.integer("tags") == data.tags.size.toLong() && counts.integer("instruments") == data.instruments.size.toLong() && counts.integer("drafts") == data.drafts.size.toLong(), "目录或草稿数量不一致")
                 if (version >= 3) requireBackup(counts.integer("savedFilters") == data.savedFilters.size.toLong(), "筛选方案数量不一致")
                 if(version >= 4) requireBackup(counts.integer("riskRules") == data.riskRules.size.toLong() && counts.integer("contractTemplates") == data.contractTemplates.size.toLong(), "风险规则或模板数量不一致")
+                if(version>=6)requireBackup(counts.integer("preflightItems")==data.preflightItems.size.toLong() && counts.integer("preflightChecks")==data.preflightChecks.size.toLong() && counts.integer("ocrDrafts")==data.ocrDrafts.size.toLong(),"盘前清单或 OCR 草稿数量不一致")
                 if(version>=5)requireBackup(counts.integer("attachments")==data.attachments.size.toLong() && counts.integer("goals")==data.goals.size.toLong(),"截图或目标数量不一致")
             }
             requireBackup(counts.integer("trades") == data.trades.size.toLong() &&
@@ -170,6 +177,11 @@ object BackupCodec {
         requireBackup(data.attachments.groupBy { it.recordKey }.values.all { it.size<=10 },"每笔交易最多 10 张截图")
         requireBackup(data.goals.size<=500 && data.goals.map { it.id }.distinct().size==data.goals.size,"目标重复或超过 500 个上限")
         data.goals.forEach { ReviewGoals.validate(it,data.tags,today) }
+        SmartJson.validate(data.smartSettings)
+        requireBackup(data.preflightItems.size<=100 && data.preflightItems.map { it.id }.distinct().size==data.preflightItems.size,"盘前项目重复或超限")
+        requireBackup(data.preflightChecks.size<=MAX_RECORDS && data.preflightChecks.map { it.date to it.itemKey }.distinct().size==data.preflightChecks.size,"盘前检查重复或超限")
+        requireBackup(data.ocrDrafts.size<=100 && data.ocrDrafts.map { it.id }.distinct().size==data.ocrDrafts.size,"OCR 草稿重复或超限")
+        data.preflightItems.forEach(SmartJson::validate);data.preflightChecks.forEach(SmartJson::validate);data.ocrDrafts.forEach(SmartJson::validate)
         fun options(kind: String) = data.tags.filter { it.kind == kind }.map { Option(it.id, it.name) }
         data.trades.forEach { trade ->
             requireBackup(trade.id in 1 until Long.MAX_VALUE, "交易编号无效")
@@ -225,6 +237,7 @@ object BackupCodec {
             if (version >= 3) addProperty("savedFilters", data.savedFilters.size)
             if(version >= 4) { addProperty("riskRules", data.riskRules.size); addProperty("contractTemplates", data.contractTemplates.size) }
             if(version>=5) { addProperty("attachments",data.attachments.size);addProperty("goals",data.goals.size) }
+            if(version>=6) { addProperty("preflightItems",data.preflightItems.size);addProperty("preflightChecks",data.preflightChecks.size);addProperty("ocrDrafts",data.ocrDrafts.size) }
         })
         add("trades", JsonArray().apply { data.trades.forEach { add(tradeJson(it, version)) } })
         add("dailyReviews", JsonArray().apply { data.dailyReviews.forEach { add(reviewJson(it)) } })
@@ -248,6 +261,12 @@ object BackupCodec {
                 add("attachments",JsonArray().apply { data.attachments.forEach { add(EvidenceJson.json(it)) } })
                 add("goals",JsonArray().apply { data.goals.forEach { add(EvidenceJson.json(it)) } })
                 add("evidenceSettings",EvidenceJson.json(data.evidenceSettings))
+            }
+            if(version>=6) {
+                add("smartSettings",SmartJson.json(data.smartSettings))
+                add("preflightItems",JsonArray().apply { data.preflightItems.forEach { add(SmartJson.json(it)) } })
+                add("preflightChecks",JsonArray().apply { data.preflightChecks.forEach { add(SmartJson.json(it)) } })
+                add("ocrDrafts",JsonArray().apply { data.ocrDrafts.forEach { add(SmartJson.json(it)) } })
             }
         }
     }

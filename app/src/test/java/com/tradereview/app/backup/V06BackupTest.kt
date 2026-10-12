@@ -16,7 +16,7 @@ class V06BackupTest {
     @Test fun allFourOldVersionsKeepFinancialFactsAndHaveNoImaginaryAttachments() {
         listOf("v02-backup.json","v03-backup.json","v03-android-backup.json","v04-backup.json","v05-backup.json").forEach { name ->
             val old=javaClass.getResourceAsStream("/$name")!!.use(BackupCodec::read);val upgraded=BackupCodec.decode(BackupCodec.encode(old))
-            assertEquals(old.copy(sourceSchemaVersion=5),upgraded);assertTrue(upgraded.attachments.isEmpty());assertTrue(upgraded.goals.isEmpty());assertEquals("structured-data-only",upgraded.backupScope)
+            assertEquals(old.copy(sourceSchemaVersion=BackupCodec.SCHEMA_VERSION),upgraded);assertTrue(upgraded.attachments.isEmpty());assertTrue(upgraded.goals.isEmpty());assertEquals("structured-data-only",upgraded.backupScope)
             assertEquals(old.trades.map { it.netPnl to it.recordKey },upgraded.trades.map { it.netPnl to it.recordKey })
         }
     }
