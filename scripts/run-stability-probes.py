@@ -7,14 +7,47 @@ import shlex
 import sqlite3
 import subprocess
 import time
+from xml.etree import ElementTree as ET
 
 APP = "com.tradereview.app"
 KEY = "00000000000000000000000000000808"
 ROOT = Path("ci-stability")
 
 
-def adb(*args, check=True, binary=False):
-    return subprocess.run(["adb", *args], check=check, capture_output=True, text=not binary)
+def adb(*args, check=True, binary=False, timeout=30):
+    return subprocess.run(["adb", *args], check=check, capture_output=True, text=not binary, timeout=timeout)
+
+
+def wait_for_home():
+    """am start -W measures launch, not Compose/DB readiness or UIAutomator idle."""
+    deadline = time.monotonic() + 45
+    attempts = []
+    try:
+        while time.monotonic() < deadline:
+            # Do not reuse a stale hierarchy from a previous attempt/start.
+            adb("shell", "rm", "-f", "/sdcard/v08-stability-window.xml")
+            result = adb("shell", "uiautomator", "dump", "/sdcard/v08-stability-window.xml", check=False)
+            attempts.append(result.stdout + result.stderr)
+            xml = adb("exec-out", "cat", "/sdcard/v08-stability-window.xml", check=False).stdout
+            try:
+                root = ET.fromstring(xml)
+            except ET.ParseError:
+                attempts.append("No valid hierarchy yet: " + xml)
+                time.sleep(.3)
+                continue
+            (ROOT / "actual-main-window.xml").write_text(xml)
+            assert "isn't responding" not in xml and "not responding" not in xml, "System/app ANR dialog; refusing to dismiss it"
+            nodes = [n for n in root.iter("node") if n.get("package") == APP]
+            if any(n.get("text") == "首页" or n.get("content-desc") == "首页" for n in nodes) and any(n.get("text", "").startswith("快捷记账") for n in nodes):
+                return
+            attempts.append("Valid hierarchy, app home not ready yet")
+            time.sleep(.3)
+        raise AssertionError("Home not visible after launch/font change; see window-dump-attempts.txt")
+    finally:
+        (ROOT / "window-dump-attempts.txt").write_text("\n".join(attempts))
+        image = adb("exec-out", "screencap", "-p", binary=True).stdout
+        assert image.startswith(b"\x89PNG")
+        (ROOT / "26-v08-process-restart-font.png").write_bytes(image)
 
 
 def snapshot(name):
@@ -65,7 +98,7 @@ def main():
         assert "Success" in result.stdout, "Disposable emulator fixture install failed"
     seed = adb("shell", "am", "instrument", "-w", "-r", "-e", "class",
                "com.tradereview.app.stability.ActivityCompatibilityTest#actualActivityDraftSurvivesRecreationAndBackgroundResume",
-               APP + ".test/androidx.test.runner.AndroidJUnitRunner")
+               APP + ".test/androidx.test.runner.AndroidJUnitRunner", timeout=120)
     (ROOT / "fixture-instrumentation.txt").write_text(seed.stdout + seed.stderr)
     assert "OK (1 test)" in seed.stdout and "FAILURES" not in seed.stdout, "Actual Activity fixture regression failed"
     adb("shell", "am", "force-stop", APP)
@@ -88,14 +121,7 @@ def main():
         assert before == snapshot("after-" + str(index)), "Committed facts changed after process termination"
     adb("shell", "settings", "put", "system", "font_scale", "1.3")
     try:
-        start();adb("shell", "uiautomator", "dump", "/sdcard/v08-stability-window.xml")
-        xml = adb("exec-out", "cat", "/sdcard/v08-stability-window.xml").stdout
-        (ROOT / "actual-main-window.xml").write_text(xml)
-        assert "isn't responding" not in xml and "not responding" not in xml
-        assert "首页" in xml
-        image = adb("exec-out", "screencap", "-p", binary=True).stdout
-        assert image.startswith(b"\x89PNG")
-        (ROOT / "26-v08-process-restart-font.png").write_bytes(image)
+        start();wait_for_home()
     finally:adb("shell", "settings", "put", "system", "font_scale", "1.0")
     (ROOT / "launch-times.txt").write_text("\n".join(logs))
     report = {"api": api, "processRestarts": 3, "allSixteenTablesUnchanged": len(before) == 16, "attachmentShaVerified": True,

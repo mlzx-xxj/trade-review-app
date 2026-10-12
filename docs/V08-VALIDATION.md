@@ -39,3 +39,9 @@ API35 原有品种搜索用例成功；另两项失败的实际截图出现系�
 最终工作流说明修订后的2196f26，[Actions 38247091659](https://github.com/mlzx-xxj/trade-review-app/actions/runs/38247091659)：构建144 JVM、26门禁、Lint0错误17警告成功，KSP7一致，实际APK56,041,946 bytes；Base官方apksigner独立v2验证及元数据/SHA匹配，仍为临时身份。API35原始XML94项、2失败、0错误/跳过：键盘测试在Dialog中错误读取Activity.currentFocus而取得null，改为实际输入触点＋系统IME可见窗口检查；原盘前项目新增用例在IME弹出后点击未保存，保留新增/勾选/归档/历史原断言，明确执行已有键盘Done再点击添加并断言按钮可用。API29尚未完成时提交修复，不宣称其成功。
 
 进程探针改为独立收集：即使Native失败也在一次性模拟器运行并保留证据，退出仍保留原Native失败，不能把探针成功变成绿色CI。完整最新HEAD必须再次验证。旧同版本安装准备只是UTP清理后的合成事实播种，不是同固定身份旧版升级。
+
+ac5c9a2，[Actions 38249990754](https://github.com/mlzx-xxj/trade-review-app/actions/runs/38249990754)：构建144 JVM、26门禁、Lint0错误17警告；API29/35原始XML均94项、0失败/错误/跳过，真实Dialog软键盘保存和全部原回归通过。API35整体成功，手动夹具1项及三次强制停止/重启验证十六表与截图SHA，真实23/26截图可读；其77个标注字段为74正确/2漏/1错、额外0。Base官方apksigner再次独立验签、摘要/元数据一致，仍为临时身份。
+
+API29的三次进程事实核对完成，最终窗口检查失败，整个运行未发布：actual-main-window.xml实际是cat No such file诊断，UIAutomator尚未写出层级且adb退出0，不能把它当有效窗口/首页缺失。修复限时45秒等待有效XML及App自身首页和快捷记账内容，逐次记录stdout/stderr、拒绝旧文件、保留失败PNG、不自动消除ANR，所有原判定保留并加强。补充3项假adb的诊断/加载/ANR门禁单元测试本地通过（不代表设备通过），和原26项一同进入完整CI。进程/同版本夹具准备不等于固定身份安装升级；新的实际完整运行以PR与Release自动报告为准。
+
+设备job的always条件曾使过期运行无法正常取消，改为!cancelled：独立编译成功后即使签名失败仍可运行设备回归，同时允许过期运行退出。此前失败运行经GitHubforce-cancel释放调度位置，原日志保留，取消运行不算通过。

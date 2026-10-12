@@ -59,6 +59,7 @@ jobs:
           python3 scripts/tests/test_signed_payload.py
           python3 scripts/tests/test_device_delivery.py
           python3 scripts/tests/test_publication.py
+          python3 scripts/tests/test_stability_probes.py
       - name: Compile, run JVM tests and Android lint
         id: compilation
         run: ./gradlew --no-daemon --no-build-cache --stacktrace :app:assembleDebug :app:assembleDebugAndroidTest :app:testDebugUnitTest :app:lintDebug
