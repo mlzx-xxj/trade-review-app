@@ -27,6 +27,9 @@ object OcrTradeParser {
         val dated=text.split(Regex("(?im)(?=^\\h*(?:交易日期|成交日期|日期|Trade date|Date)\\h*[:：=])")).filter { it.contains(Regex("(?im)^\\h*(?:交易日期|成交日期|日期|Trade date|Date)\\h*[:：=]")) }
         val blocks=if(explicit.size>1)explicit else if(dated.size>1)dated else text.split(Regex("\\n\\s*\\n")).filter { it.contains(Regex("(?i)已实现|realized|已平仓|closed")) }.takeIf { it.size>1 } ?: listOf(text)
         require(blocks.size<=20) { "一张截图最多辅助处理 20 条，请分开选择" }
+        val unsafe=Regex("(?i)委托|持仓|浮动盈亏|未实现|挂单|\\borders?\\b|\\bpositions?\\b|\\bunrealized\\b|K线|candlestick")
+        val firstRecord=Regex("(?im)^\\h*(?:(?:交易|Trade)\\h*(?:编号|#)?\\h*\\d+|(?:交易日期|成交日期|日期|Trade date|Date)\\h*[:：=])").find(text)?.range?.first ?: 0
+        val unsafeHeader=unsafe.containsMatchIn(text.take(firstRecord))
         return blocks.map { block ->
             val fields=linkedMapOf<String,String>();val conflicts=mutableSetOf<String>();val problems=mutableListOf<String>()
             for((key,alias) in aliases) {
@@ -35,7 +38,7 @@ object OcrTradeParser {
                 if(valid.size==1 && values.all { normalize(key,it)!=null })fields[key]=valid.single()
                 else if(values.isNotEmpty()) { conflicts+=key;problems+="${labels[key]}冲突或格式无效，需人工核对" }
             }
-            val blocked=Regex("(?i)委托|持仓|浮动盈亏|未实现|挂单|\\borders?\\b|\\bpositions?\\b|\\bunrealized\\b|K线|candlestick").containsMatchIn(block)
+            val blocked=unsafeHeader || unsafe.containsMatchIn(block)
             val closed=Regex("(?i)已平仓|已实现(?:净)?盈亏|\\brealized(?: net)? P&L\\b|\\bclosed trade\\b").containsMatchIn(block)
             if(blocked)problems+="含委托、持仓、浮动或行情信息，只能保存待核实草稿"
             if(!closed)problems+="未发现明确的已平仓或已实现依据，只能保存草稿"

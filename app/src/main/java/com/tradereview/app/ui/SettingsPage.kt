@@ -77,6 +77,8 @@ fun SettingsPage(model: BackupViewModel, journalBusy: Boolean, modifier: Modifie
             OutlinedButton(enabled = !locked && preview == null, onClick = onGoals, modifier = Modifier.fillMaxWidth()) { Text("纪律改善目标") }
             Text("原图大小上限 · 私有压缩图最长边 2048，单张最多 4 MiB，每笔最多 10 张")
             SingleChoice(listOf(5,10,20).map { com.tradereview.app.data.Option(it.toString(),"$it MiB") },imageLimit.toString()) { if(!locked && preview==null)onImageLimit(it.toInt()) }
+        } }
+        item { SectionCard("显示与盈亏配色") {
             Text("显示模式")
             SingleChoice(listOf(com.tradereview.app.data.Option("system", "跟随系统"), com.tradereview.app.data.Option("light", "浅色"), com.tradereview.app.data.Option("dark", "深色")), theme) { if(!locked && preview == null) onTheme(it) }
             Text("盈亏配色 · 日历、金额卡片与图表同步")
@@ -84,7 +86,7 @@ fun SettingsPage(model: BackupViewModel, journalBusy: Boolean, modifier: Modifie
         } }
         item { SectionCard("应用信息") {
             Text("交易复盘 ${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})")
-            Text("本地数据库版本 6 · JSON 格式 5 / 完整 ZIP 格式 1（兼容 V0.2–V0.5 JSON）")
+            Text("本地数据库版本 7 · JSON 格式 6 / 完整 ZIP 格式 1（兼容 V0.2–V0.6 JSON）")
             Text("升级安装需要相同应用标识及签名；应用不会自动下载或上传数据。", style = MaterialTheme.typography.bodySmall)
         } }
     }

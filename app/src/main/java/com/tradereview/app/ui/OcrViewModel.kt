@@ -2,7 +2,7 @@ package com.tradereview.app.ui
 
 import android.content.Context
 import android.net.Uri
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.tradereview.app.data.*
 import com.tradereview.app.domain.*
@@ -15,9 +15,10 @@ import java.io.File
 
 data class OcrSession(val candidates:List<OcrCandidate> = emptyList(),val raw:String="",val image:Attachment?=null,
     val store:AttachmentStore?=null,val busy:Boolean=false,val error:String?=null,val draftId:String?=null,val sessionId:String=newKey())
-class OcrViewModel(private val context:Context,private val recognizer:OfflineRecognizer=BundledOcr()):ViewModel() {
+class OcrViewModel(context:Context,private val recognizer:OfflineRecognizer=BundledOcr()):AndroidViewModel(context.applicationContext as android.app.Application) {
+    private val appContext get() = getApplication<android.app.Application>()
     val state=MutableStateFlow(OcrSession())
-    private val sessionRoot=File(context.cacheDir,"ocr-${newKey()}")
+    private val sessionRoot=File(appContext.cacheDir,"ocr-${newKey()}")
     private var job:Job?=null;private var generation=0
     fun read(uri:Uri,settings:EvidenceSettings,source:Attachment?=null,sourceStore:AttachmentStore?=null) {
         val old=state.value.store;val g=++generation;job?.cancel();state.value=OcrSession(busy=true)
@@ -30,7 +31,7 @@ class OcrViewModel(private val context:Context,private val recognizer:OfflineRec
                     if(source!=null) EvidenceLock.mutex.withLock {
                         val origin=requireNotNull(sourceStore);origin.verify(origin.file(source),source)
                         val copy=source.copy(id=newKey(),recordKey=newKey());store!!.publish(origin.file(source),copy);copy
-                    } else store!!.importImage(context.contentResolver,uri,newKey(),"analysis","OCR 临时图",settings,0)
+                    } else store!!.importImage(appContext.contentResolver,uri,newKey(),"analysis","OCR 临时图",settings,0)
                 }
                 val bitmap=withContext(Dispatchers.IO){store!!.bitmap(image,2048)}
                 val raw=try { withContext(Dispatchers.Default){recognizer.recognize(bitmap)} }finally { bitmap.recycle() }

@@ -64,8 +64,15 @@ class SmartReviewUiTest {
         val c=ocr.state.value.candidates.single();println("SYNTHETIC_UI_OCR="+ocr.state.value.raw.replace('\n',';'))
         assertTrue(c.fields.toString(),OcrTradeParser.canCreate(c,c.fields.keys,true));assertEquals(1,pickerCount)
         compose.onNodeWithTag("ocr-create").assertIsNotEnabled();capture("19-ocr-recognition")
+        compose.onNodeWithTag("ocr-thumbnail").performScrollTo().performClick();compose.onNodeWithTag("evidence-viewer-count").assertTextEquals("截图大图 1 / 1");compose.onNodeWithContentDescription("关闭大图").performClick()
         compose.onNodeWithTag("ocr-list").performScrollToNode(hasTestTag("ocr-select-0"));compose.onNodeWithTag("ocr-select-0").performClick()
-        c.fields.keys.forEach { key->compose.onNodeWithTag("ocr-list").performScrollToNode(hasTestTag("ocr-verify-$key"));compose.onNodeWithTag("ocr-verify-$key").performScrollTo().performClick() }
+        // Real OCR may leave the contract label unknown. Simulate checking the enlarged synthetic
+        // source and entering that fact; never make the production parser guess the contract.
+        if(c.fields["contractCode"]!="rb2701") {
+            compose.onNodeWithTag("ocr-list").performScrollToNode(hasTestTag("ocr-field-contractCode"))
+            compose.onNodeWithTag("ocr-field-contractCode").performTextReplacement("rb2701");compose.onNodeWithTag("ocr-field-contractCode").performImeAction()
+        }
+        (c.fields.keys+"contractCode").forEach { key->compose.onNodeWithTag("ocr-list").performScrollToNode(hasTestTag("ocr-verify-$key"));compose.onNodeWithTag("ocr-verify-$key").performScrollTo().performClick() }
         compose.onNodeWithTag("ocr-list").performScrollToNode(hasTestTag("ocr-confirm-closed"));compose.onNodeWithTag("ocr-confirm-closed").performScrollTo().performClick()
         compose.onNodeWithTag("ocr-keep-image").performScrollTo().performClick();compose.onNodeWithTag("ocr-create").assertIsEnabled();capture("20-ocr-confirmation")
         compose.onNodeWithTag("ocr-create").performClick();compose.waitUntil(15000){model.state.value.trades.size==7 && !model.busy.value}

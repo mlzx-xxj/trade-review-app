@@ -140,9 +140,9 @@ class TradeViewModel(private val database: TradeDatabase, private val savedState
     } }
     fun deleteOcrDraft(value:OcrDraft)=write("OCR 草稿已删除") { dao.deleteOcrDraft(value) }
     fun saveOcr(candidate:OcrCandidate,verified:Set<String>,closedConfirmed:Boolean,strategy:String,position:Int,key:String,
-        session:OcrSession,keepImage:Boolean,approvedDuplicates:Set<String>,approvedRisk:String?,onSuccess:()->Unit)=write("已核实交易已创建",onSuccess) {
+        session:OcrSession,keepImage:Boolean,approvedDuplicates:Set<String>,approvedRisk:String?,emotion:String="calm",onSuccess:()->Unit)=write("已核实交易已创建",onSuccess) {
         require(OcrTradeParser.canCreate(candidate,verified,closedConfirmed)) { "所有识别字段和已平仓净盈亏需逐项核实；委托/持仓只能存草稿" }
-        val draft=OcrTradeParser.draft(candidate,strategy,position,key).copy(key=key)
+        val draft=OcrTradeParser.draft(candidate,strategy,position,key).copy(key=key,emotion=emotion)
         com.tradereview.app.evidence.EvidenceLock.mutex.lock()
         try { withContext(Dispatchers.IO) {
             val image=if(keepImage) {

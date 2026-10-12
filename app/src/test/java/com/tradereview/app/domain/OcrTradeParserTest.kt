@@ -32,6 +32,7 @@ class OcrTradeParserTest {
         val list=OcrTradeParser.parse("交易 1\n$text\n交易 2\n${text.replace("CNY","USD").replace("-25.35","99.00")}")
         assertEquals(2,list.size);assertEquals("CNY",list[0].fields["currency"]);assertEquals("USD",list[1].fields["currency"])
         assertEquals(2,OcrTradeParser.parse(text+"\n"+text).size)
+        assertTrue(OcrTradeParser.parse("持仓截图\n"+text+"\n"+text).all { it.blocked })
     }
     @Test fun ordersPositionsFloatingUnrealizedAndCandlesNeverAutoCreate() {
         for(marker in listOf("委托","持仓","浮动盈亏","未实现","挂单","Orders","Positions","Unrealized","K线","candlestick")) {

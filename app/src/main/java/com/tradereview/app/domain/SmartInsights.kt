@@ -65,7 +65,7 @@ object SmartInsights {
             }
             if(cn.size>=min) {
                 cn.groupBy { it.emotion }.forEach { (emotion,rows)->val losses=rows.count { Money.value(it).signum()<0 }
-                    if(rows.size>=min && ratio(losses,rows.size)!!>=BigDecimal("60"))add("emotion:$emotion:${currency.id}","emotion",60,"${catalog.label("emotion",emotion)}与亏损较多同时出现 · ${currency.id}",rows,co.filter { it.emotion==emotion },
+                    if(rows.size>=min && ratio(losses,rows.size)!!>=BigDecimal("60"))add("emotion:$emotion:${currency.id}","emotion",60,"${catalog.label("emotion",emotion)}标签与亏损较多同时出现 · ${currency.id}",rows,co.filter { it.emotion==emotion },
                         "$losses/${rows.size} 笔亏损（${pct(losses,rows.size)}），同期同币种全部亏损 ${pct(cn.count { Money.value(it).signum()<0 },cn.size)}（${cn.size} 笔）。","情绪组亏损数 / 情绪组交易数；至少 60%，不代表情绪造成亏损。","核对情绪、市场条件与风险执行，避免仅凭相关性下结论。")
                 }
                 val ordered=cn.sortedWith(compareBy<Trade> { it.date }.thenBy { it.id });var run=mutableListOf<Trade>();var longest=listOf<Trade>()

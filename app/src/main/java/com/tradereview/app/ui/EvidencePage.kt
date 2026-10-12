@@ -124,7 +124,7 @@ fun EvidencePage(key: String,state: JournalState,model: TradeViewModel,busy: Boo
 }
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun EvidenceViewer(values: List<Attachment>,initial: Int,store: AttachmentStore?,onDismiss: ()->Unit) {
+internal fun EvidenceViewer(values: List<Attachment>,initial: Int,store: AttachmentStore?,onDismiss: ()->Unit) {
     val pager=rememberPagerState(initialPage=initial,pageCount={values.size});val scope=rememberCoroutineScope()
     LocalFullScreenDialog(onDismiss) { Scaffold(topBar={TopAppBar(title={Text("截图大图 ${pager.currentPage+1} / ${values.size}",modifier=Modifier.testTag("evidence-viewer-count"))},navigationIcon={IconButton(onClick=onDismiss){Icon(Icons.AutoMirrored.Filled.ArrowBack,"关闭大图")}}) }) { padding ->
         Column(Modifier.fillMaxSize().padding(padding).padding(12.dp),verticalArrangement=Arrangement.spacedBy(12.dp)) {
