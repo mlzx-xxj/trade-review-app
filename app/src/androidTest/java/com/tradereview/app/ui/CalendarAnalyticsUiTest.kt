@@ -116,12 +116,15 @@ class CalendarAnalyticsUiTest {
         compose.onNodeWithTag("filter-preset-name").performTextInput("股票盈利")
         compose.onNodeWithText("保存方案").performClick()
         compose.waitUntil(10000) { model.state.value.savedFilters.size == 1 && !model.busy.value }
+        // Transient save feedback overlays the bottom of content; wait before another physical tap.
+        compose.waitUntil(10000) { model.message.value == null }
         nav("统计分析")
         compose.onNodeWithTag("statistics-list").performScrollToNode(hasTestTag("statistics-trade-count"))
         compose.onNodeWithTag("statistics-trade-count").assertTextEquals("总交易 2 笔")
         compose.onNodeWithTag("statistics-list").performScrollToNode(hasTestTag("clear-filters")); compose.onNodeWithTag("clear-filters").performClick()
         compose.waitUntil(10000) { model.analytics.value.filtered.size == 4 }
         val id = model.state.value.savedFilters.single().id
+        compose.onNodeWithTag("statistics-list").performScrollToNode(hasTestTag("preset-$id"))
         compose.onNodeWithTag("preset-$id").performScrollTo().performClick()
         compose.waitUntil(10000) { model.analytics.value.filtered.size == 2 }
         nav("交易记录"); compose.onNodeWithTag("filtered-count").assertTextEquals("匹配 2 笔 · CNY")

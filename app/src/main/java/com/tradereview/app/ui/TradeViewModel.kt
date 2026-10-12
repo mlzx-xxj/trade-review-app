@@ -8,6 +8,7 @@ import com.tradereview.app.data.DailyReview
 import com.tradereview.app.data.Trade
 import com.tradereview.app.data.*
 import com.tradereview.app.domain.*
+import com.tradereview.app.evidence.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.Job
@@ -32,15 +33,19 @@ data class JournalState(
     val savedFilters: List<SavedFilter> = emptyList(),
     val riskRules: List<RiskRules> = emptyList(),
     val contractTemplates: List<ContractTemplate> = emptyList(),
+    val attachments: List<Attachment> = emptyList(),
+    val goals: List<ReviewGoal> = emptyList(),
+    val evidenceSettings: EvidenceSettings = EvidenceSettings(),
     val loading: Boolean = true,
     val error: String? = null,
 )
 
 private data class AnalysisInput(val trades: List<Trade>, val reviews: List<DailyReview>, val loading: Boolean, val error: String?, val currency: String, val filter: TradeFilter)
 
-class TradeViewModel(private val database: TradeDatabase, private val savedState: SavedStateHandle) : ViewModel() {
+class TradeViewModel(private val database: TradeDatabase, private val savedState: SavedStateHandle, val evidenceStore: AttachmentStore? = null) : ViewModel() {
     private val dao = database.trades()
     private val entries = EntryRepository(database)
+    private val images = evidenceStore?.let { AttachmentRepository(database,it) }
     val currency = savedState.getStateFlow("currency", "CNY")
     fun selectCurrency(value: String) { savedState["currency"] = value }
     private val _filter = MutableStateFlow(runCatching { FilterCodec.decode(savedState.get<String>("filter") ?: FilterCodec.encode(TradeFilter())) }.getOrDefault(TradeFilter()))
@@ -55,7 +60,8 @@ class TradeViewModel(private val database: TradeDatabase, private val savedState
         JournalState(tags = tags, instruments = instruments, settings = settings ?: AppSettings(), drafts = drafts, loading = false)
     }
     private val riskSettings = combine(dao.observeRiskRules(), dao.observeTemplates()) { rules, templates -> rules to templates }
-    val state = combine(journal, catalog, dao.observeFilters(), riskSettings) { (trades, reviews), catalog, filters, risk -> catalog.copy(trades = trades, reviews = reviews, savedFilters = filters, riskRules = risk.first, contractTemplates = risk.second) }
+    private val evidence = combine(dao.observeAttachments(),dao.observeGoals(),dao.observeEvidenceSettings()) { a,g,s -> Triple(a,g,s ?: EvidenceSettings()) }
+    val state = combine(journal, catalog, dao.observeFilters(), riskSettings,evidence) { (trades, reviews), catalog, filters, risk,e -> catalog.copy(trades = trades, reviews = reviews, savedFilters = filters, riskRules = risk.first, contractTemplates = risk.second,attachments=e.first,goals=e.second,evidenceSettings=e.third) }
         .catch { error ->
             if (error is CancellationException) throw error
             emit(JournalState(loading = false, error = "本地数据库读取失败，请重启应用后重试。"))
@@ -108,7 +114,23 @@ class TradeViewModel(private val database: TradeDatabase, private val savedState
         draftMutex.lock()
         try { entries.save(draft, approvedRisk) } finally { draftMutex.unlock() }
     }
-    fun deleteTrade(trade: Trade, onSuccess: () -> Unit) = write("交易已删除", onSuccess) { entries.delete(trade) }
+    fun deleteTrade(trade: Trade, onSuccess: () -> Unit) = write("交易及截图已删除", onSuccess) { if(images!=null)images.deleteTrade(trade)else entries.delete(trade) }
+    fun importAttachment(resolver: android.content.ContentResolver,uri: android.net.Uri,key: String,kind: String,caption: String) = write("截图已复制到本机并去除位置元数据") {
+        requireNotNull(images) { "私有图片存储未初始化" }.importImage(resolver,uri,key,kind,caption)
+    }
+    fun deleteAttachment(value: Attachment) = write("截图附件已删除") { requireNotNull(images).delete(value) }
+    fun updateCaption(value: Attachment,caption: String) = write("截图说明已保存") { requireNotNull(images).caption(value,caption) }
+    fun imageLimit(value: Int) = write("图片大小上限已保存") { val s=EvidenceSettings(maxInputMiB=value);EvidenceLimits.settings(s);dao.saveEvidenceSettings(s) }
+    fun saveGoal(value: ReviewGoal,onSuccess: ()->Unit = {}) = write("改善目标已保存",onSuccess) { database.withTransaction {
+        val goals=dao.allGoals();require(goals.size<500 || goals.any { it.id==value.id }) { "最多 500 个目标" }
+        ReviewGoals.validate(value,dao.allTags());require(goals.none { it.id==value.id }) { "已保存目标规则保持稳定，请创建新目标" };dao.saveGoal(value)
+    } }
+    fun archiveGoal(value: ReviewGoal) = write("目标已归档，历史保留") { database.withTransaction {
+        require(dao.allGoals().any { it==value } && value.archivedDay==null) { "目标已变化，请刷新" }
+        dao.saveGoal(value.copy(archivedDay=java.time.LocalDate.now().toEpochDay()))
+    } }
+
+    init { if(images!=null)viewModelScope.launch { runCatching { images.startupCleanup() }.onFailure { _message.value="无引用图片清理未完成，下次启动会重试" } } }
     fun saveTag(tag: ManagedTag) = write("标签已保存") { entries.saveTag(tag) }
     fun moveTag(tag: ManagedTag, delta: Int) = write("标签排序已更新") { entries.moveTag(tag, delta) }
     fun saveInstrument(value: Instrument) = write("品种已保存") { entries.saveInstrument(value) }

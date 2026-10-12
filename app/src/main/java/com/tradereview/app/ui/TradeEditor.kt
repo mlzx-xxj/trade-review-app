@@ -71,7 +71,8 @@ private data class RiskPreview(val trade: Trade, val rules: List<RiskRules>, val
 @Composable
 fun TradeEditor(original: Trade?, state: JournalState, busy: Boolean, saveError: String?, onDismiss: () -> Unit,
     onDraft: (EntryDraft) -> Unit, onSave: (EntryDraft, String?, () -> Unit) -> Unit, onDelete: (Trade) -> Unit,
-    notify: (String) -> Unit, onTemplate: (ContractTemplate) -> Unit = {}) {
+    notify: (String) -> Unit, onTemplate: (ContractTemplate) -> Unit = {},
+    evidenceStore: com.tradereview.app.evidence.AttachmentStore? = null,onEvidence: (Trade)->Unit = {}) {
     val draftKey = original?.recordKey ?: "new"
     val restored = state.drafts.firstOrNull { it.key == draftKey }
     val initial = remember(draftKey) {
@@ -201,6 +202,11 @@ fun TradeEditor(original: Trade?, state: JournalState, busy: Boolean, saveError:
                         check.notChecked.forEach { Text(it, style = MaterialTheme.typography.bodySmall) }
                     } }
                     original?.riskRecord?.takeIf { it.events.isNotEmpty() }?.let { record -> Text("历史纪律检查 ${record.events.size} 次；曾触发：${record.violations.joinToString("、") { RiskEngine.labels.getValue(it) }.ifEmpty { "无违规" }}。修改规则不删除历史检查。", style = MaterialTheme.typography.bodySmall) }
+                    if(original!=null)SectionCard("截图与证据") {
+                        val images=state.attachments.filter { it.recordKey==original.recordKey }
+                        EvidenceThumbnails(images,evidenceStore){onEvidence(original)}
+                        OutlinedButton(enabled=!busy,onClick={onEvidence(original)},modifier=Modifier.fillMaxWidth().testTag("open-trade-evidence")){Text("管理截图与证据（${images.size}/10）")}
+                    } else Text("截图需先保存本笔交易，再打开交易详情添加。",style=MaterialTheme.typography.bodySmall)
                     Spacer(Modifier.height(8.dp))
                 }
                 }

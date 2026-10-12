@@ -8,6 +8,9 @@ import com.tradereview.app.domain.Money
 import com.tradereview.app.domain.FilterCodec
 import com.tradereview.app.domain.ProfessionalMath
 import com.tradereview.app.domain.ProfessionalJson
+import com.tradereview.app.domain.EvidenceJson
+import com.tradereview.app.domain.ReviewGoals
+import com.tradereview.app.evidence.EvidenceLimits
 import java.io.InputStream
 import java.io.ByteArrayOutputStream
 import java.io.StringReader
@@ -21,22 +24,31 @@ class BackupException(message: String) : IllegalArgumentException(message)
 
 data class BackupData(val exportedAt: String, val trades: List<Trade>, val dailyReviews: List<DailyReview>,
     val tags: List<ManagedTag> = CatalogSeeds.tags, val instruments: List<Instrument> = CatalogSeeds.instruments,
-    val settings: AppSettings = AppSettings(), val drafts: List<EntryDraft> = emptyList(), val sourceSchemaVersion: Int = 4,
+    val settings: AppSettings = AppSettings(), val drafts: List<EntryDraft> = emptyList(), val sourceSchemaVersion: Int = 5,
     val savedFilters: List<SavedFilter> = emptyList(), val riskRules: List<RiskRules> = emptyList(),
-    val contractTemplates: List<ContractTemplate> = emptyList()) {
+    val contractTemplates: List<ContractTemplate> = emptyList(), val attachments: List<Attachment> = emptyList(),
+    val goals: List<ReviewGoal> = emptyList(), val evidenceSettings: EvidenceSettings = EvidenceSettings(),
+    val backupScope: String = "structured-data-only") {
     val planCount get() = dailyReviews.count { it.planSaved }
     val reviewCount get() = dailyReviews.count { it.reviewSaved }
 }
 
 /** Schema version is the interchange format version, independent of Room's version. */
 object BackupCodec {
-    const val SCHEMA_VERSION = 4
+    const val SCHEMA_VERSION = 5
     const val MAX_BYTES = 16 * 1024 * 1024
     const val MAX_RECORDS = 10_000
     private val gson = GsonBuilder().serializeNulls().disableHtmlEscaping().create()
     private val pretty = GsonBuilder().serializeNulls().disableHtmlEscaping().setPrettyPrinting().create()
     private val firstDay = LocalDate.of(1900, 1, 1).toEpochDay()
     private val lastDay = LocalDate.of(2100, 12, 31).toEpochDay()
+
+    fun strictObject(text: String): JsonObject = JsonReader(StringReader(text)).use { reader ->
+        reader.strictness = Strictness.STRICT
+        val value = readNode(reader, 0)
+        requireBackup(reader.peek() == JsonToken.END_DOCUMENT, "JSON 后有多余内容")
+        value.obj()
+    }
 
     fun read(input: InputStream): BackupData {
         val buffer = ByteArray(8192)
@@ -78,7 +90,7 @@ object BackupCodec {
             val version = rawVersion.toInt()
             requireBackup(version in 1..SCHEMA_VERSION, "不支持此备份版本，请使用匹配版本的应用")
             if (version == 1) root.fields("format", "schemaVersion", "exportedAt", "counts", "trades", "dailyReviews", "checksumSha256")
-            else root.fields(*(listOf("format", "schemaVersion", "exportedAt", "counts", "trades", "dailyReviews", "tags", "instruments", "settings", "drafts", "checksumSha256") + (if (version >= 3) listOf("savedFilters") else emptyList()) + (if (version >= 4) listOf("riskRules", "contractTemplates") else emptyList())).toTypedArray())
+            else root.fields(*(listOf("format", "schemaVersion", "exportedAt", "counts", "trades", "dailyReviews", "tags", "instruments", "settings", "drafts", "checksumSha256") + (if (version >= 3) listOf("savedFilters") else emptyList()) + (if (version >= 4) listOf("riskRules", "contractTemplates") else emptyList()) + (if(version>=5)listOf("backupScope","attachments","goals","evidenceSettings")else emptyList())).toTypedArray())
             requireBackup(root.string("format") == "trade-review-backup", "不是交易复盘备份文件")
             val data = BackupData(root.string("exportedAt"), root.array("trades").map { parseTrade(it.obj(), version) },
                 root.array("dailyReviews").map { parseReview(it.obj()) },
@@ -88,15 +100,20 @@ object BackupCodec {
                 drafts = if (version == 1) emptyList() else root.array("drafts").map { parseDraft(it.obj(), version) }, sourceSchemaVersion = version,
                 savedFilters = if (version < 3) emptyList() else root.array("savedFilters").map { parseFilter(it.obj()) },
                 riskRules = if(version < 4) emptyList() else root.array("riskRules").map(ProfessionalJson::parseRule),
-                contractTemplates = if(version < 4) emptyList() else root.array("contractTemplates").map(ProfessionalJson::parseTemplate))
+                contractTemplates = if(version < 4) emptyList() else root.array("contractTemplates").map(ProfessionalJson::parseTemplate),
+                attachments=if(version<5)emptyList()else root.array("attachments").map(EvidenceJson::attachment),
+                goals=if(version<5)emptyList()else root.array("goals").map(EvidenceJson::goal),
+                evidenceSettings=if(version<5)EvidenceSettings()else EvidenceJson.settings(root["evidenceSettings"]),
+                backupScope=if(version<5)"structured-data-only"else root.string("backupScope"))
             validate(data)
             val counts = root.getAsJsonObject("counts") ?: throw BackupException("缺少数量校验")
             if (version == 1) counts.fields("trades", "dailyReviews", "plans", "reviews")
             else {
-                counts.fields(*(listOf("trades", "dailyReviews", "plans", "reviews", "tags", "instruments", "drafts") + (if (version >= 3) listOf("savedFilters") else emptyList()) + (if (version >= 4) listOf("riskRules", "contractTemplates") else emptyList())).toTypedArray())
+                counts.fields(*(listOf("trades", "dailyReviews", "plans", "reviews", "tags", "instruments", "drafts") + (if (version >= 3) listOf("savedFilters") else emptyList()) + (if (version >= 4) listOf("riskRules", "contractTemplates") else emptyList()) + (if(version>=5)listOf("attachments","goals")else emptyList())).toTypedArray())
                 requireBackup(counts.integer("tags") == data.tags.size.toLong() && counts.integer("instruments") == data.instruments.size.toLong() && counts.integer("drafts") == data.drafts.size.toLong(), "目录或草稿数量不一致")
                 if (version >= 3) requireBackup(counts.integer("savedFilters") == data.savedFilters.size.toLong(), "筛选方案数量不一致")
                 if(version >= 4) requireBackup(counts.integer("riskRules") == data.riskRules.size.toLong() && counts.integer("contractTemplates") == data.contractTemplates.size.toLong(), "风险规则或模板数量不一致")
+                if(version>=5)requireBackup(counts.integer("attachments")==data.attachments.size.toLong() && counts.integer("goals")==data.goals.size.toLong(),"截图或目标数量不一致")
             }
             requireBackup(counts.integer("trades") == data.trades.size.toLong() &&
                 counts.integer("dailyReviews") == data.dailyReviews.size.toLong() &&
@@ -144,6 +161,15 @@ object BackupCodec {
         data.riskRules.forEach(ProfessionalMath::validateRule)
         requireBackup(data.contractTemplates.size <= 500 && data.contractTemplates.map { it.id }.distinct().size == data.contractTemplates.size, "合约模板重复或过多")
         data.contractTemplates.forEach(ProfessionalMath::validateTemplate)
+        requireBackup(data.backupScope in listOf("structured-data-only","with-attachment-files"),"备份范围无效")
+        requireBackup(data.backupScope=="with-attachment-files" || data.attachments.isEmpty(),"仅数据 JSON 不能包含缺少文件的截图引用")
+        EvidenceLimits.settings(data.evidenceSettings)
+        requireBackup(data.attachments.size<=EvidenceLimits.MAX_IMAGES && data.attachments.map { it.id }.distinct().size==data.attachments.size,"附件重复或超过 10000 张上限")
+        val tradeKeys=data.trades.map { it.recordKey }.toSet()
+        data.attachments.forEach { a -> EvidenceLimits.validate(a);requireBackup(a.recordKey in tradeKeys,"截图没有关联交易") }
+        requireBackup(data.attachments.groupBy { it.recordKey }.values.all { it.size<=10 },"每笔交易最多 10 张截图")
+        requireBackup(data.goals.size<=500 && data.goals.map { it.id }.distinct().size==data.goals.size,"目标重复或超过 500 个上限")
+        data.goals.forEach { ReviewGoals.validate(it,data.tags,today) }
         fun options(kind: String) = data.tags.filter { it.kind == kind }.map { Option(it.id, it.name) }
         data.trades.forEach { trade ->
             requireBackup(trade.id in 1 until Long.MAX_VALUE, "交易编号无效")
@@ -191,12 +217,14 @@ object BackupCodec {
     private fun payload(data: BackupData, version: Int = SCHEMA_VERSION, androidLegacy: Boolean = false) = JsonObject().apply {
         addProperty("format", "trade-review-backup"); addProperty("schemaVersion", version)
         addProperty("exportedAt", data.exportedAt)
+        if(version>=5)addProperty("backupScope",data.backupScope)
         add("counts", JsonObject().apply {
             addProperty("trades", data.trades.size); addProperty("dailyReviews", data.dailyReviews.size)
             addProperty("plans", data.planCount); addProperty("reviews", data.reviewCount)
             if (version >= 2) { addProperty("tags", data.tags.size); addProperty("instruments", data.instruments.size); addProperty("drafts", data.drafts.size) }
             if (version >= 3) addProperty("savedFilters", data.savedFilters.size)
             if(version >= 4) { addProperty("riskRules", data.riskRules.size); addProperty("contractTemplates", data.contractTemplates.size) }
+            if(version>=5) { addProperty("attachments",data.attachments.size);addProperty("goals",data.goals.size) }
         })
         add("trades", JsonArray().apply { data.trades.forEach { add(tradeJson(it, version)) } })
         add("dailyReviews", JsonArray().apply { data.dailyReviews.forEach { add(reviewJson(it)) } })
@@ -215,6 +243,11 @@ object BackupCodec {
             if(version >= 4) {
                 add("riskRules", JsonArray().apply { data.riskRules.forEach { add(ProfessionalJson.rule(it)) } })
                 add("contractTemplates", JsonArray().apply { data.contractTemplates.forEach { add(ProfessionalJson.template(it)) } })
+            }
+            if(version>=5) {
+                add("attachments",JsonArray().apply { data.attachments.forEach { add(EvidenceJson.json(it)) } })
+                add("goals",JsonArray().apply { data.goals.forEach { add(EvidenceJson.json(it)) } })
+                add("evidenceSettings",EvidenceJson.json(data.evidenceSettings))
             }
         }
     }

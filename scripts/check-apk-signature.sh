@@ -20,15 +20,15 @@ if [[ "$configured" == true ]]; then
     exit 1
   fi
 fi
-printf 'versionName=0.5.0\nversionCode=5\napplicationId=com.tradereview.app\nsourceCommit=%s\ncertificateSha256=%s\nGitHubActionsSecretsConfigured=%s\n' "${GITHUB_SHA:-unknown}" "$actual_cert" "$configured" > dist/SIGNING.txt
+printf 'versionName=0.6.0\nversionCode=6\napplicationId=com.tradereview.app\nsourceCommit=%s\ncertificateSha256=%s\nGitHubActionsSecretsConfigured=%s\n' "${GITHUB_SHA:-unknown}" "$actual_cert" "$configured" > dist/SIGNING.txt
 if [[ "$configured" == true ]]; then
   printf 'upgrade_verified=true\n' >> "${GITHUB_OUTPUT:?}"
-  cp "$apk_path" dist/TradeReview-v0.5-stable.apk
+  cp "$apk_path" dist/TradeReview-v0.6-stable.apk
   printf 'signingOrigin=GitHub Actions Secrets\nFixed V0.3 signer verified against both repository variable and committed V0.3 certificate pin. Future upgrades require this same private key and a larger versionCode. Old differently signed test versions need a manual uninstall first.\n' >> dist/SIGNING.txt
 else
   printf 'upgrade_verified=false\n' >> "${GITHUB_OUTPUT:?}"
-  cp "$apk_path" dist/TradeReview-v0.5-test.apk
-  printf 'signingOrigin=temporary runner Debug key\nTEST ONLY: no fixed signing key configured. This temporary key does not establish a sustainable V0.5 upgrade identity. With your permission, old test versions may be manually uninstalled before a fresh install; uninstall deletes local data. Future data should be backed up before switching to a stable signer.\n' >> dist/SIGNING.txt
+  cp "$apk_path" dist/TradeReview-v0.6-test.apk
+  printf 'signingOrigin=temporary runner Debug key\nTEST ONLY: no fixed signing key configured. This temporary key does not establish a sustainable V0.6 upgrade identity. With your permission, old test versions may be manually uninstalled before a fresh install; uninstall deletes local data. Future data should be backed up before switching to a stable signer.\n' >> dist/SIGNING.txt
   printf '%s\n' '::warning::Fixed V0.3 key not configured. Temporary test APK only; long-term in-place upgrades are not guaranteed.'
 fi
 (cd dist && sha256sum ./*.apk > SHA256SUMS.txt)

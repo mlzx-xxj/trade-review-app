@@ -21,12 +21,13 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         val database = (application as TradeReviewApplication).database
+        val evidence = (application as TradeReviewApplication).evidenceStore
         setContent {
                 val model: TradeViewModel = viewModel(factory = viewModelFactory {
-                    initializer { TradeViewModel(database, createSavedStateHandle()) }
+                    initializer { TradeViewModel(database, createSavedStateHandle(),evidence) }
                 })
                 val backup: BackupViewModel = viewModel(factory = viewModelFactory {
-                    initializer { BackupViewModel(database, application.contentResolver) }
+                    initializer { BackupViewModel(database, application.contentResolver,evidence) }
                 })
                 val state by model.state.collectAsStateWithLifecycle()
                 TradeReviewTheme(darkTheme = when (state.settings.theme) { "dark" -> true; "light" -> false; else -> isSystemInDarkTheme() }) {
