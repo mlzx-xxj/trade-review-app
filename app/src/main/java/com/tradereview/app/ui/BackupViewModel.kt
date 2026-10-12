@@ -55,7 +55,7 @@ class BackupViewModel(database: TradeDatabase, private val resolver: ContentReso
         val checked=exportChecked(uri,"zip"){output->service.export(output)}
         _message.value="完整 ZIP 已保存，包含交易、业务设置及全部截图。${verificationLabel(checked)}"
     }
-    private fun verificationLabel(result:Readback)=if(result==Readback.VERIFIED)"已重新读取并通过 SHA-256 完整性校验。" else "文件已写出；所选提供器无法回读，尚未验证完整性，请手动打开确认。"
+    private fun verificationLabel(result:Readback)=if(result==Readback.VERIFIED)"已重新读取并通过 SHA-256 完整性校验。" else "文件已写出；所选保存位置无法回读，尚未验证完整性，请手动打开确认。"
     private suspend fun exportChecked(uri:Uri,kind:String,write:suspend(java.io.OutputStream)->Unit):Readback {
         val output=resolver.openOutputStream(uri,"wt") ?: throw java.io.IOException("无法打开目标文件")
         val digest=ExportDigest(output)

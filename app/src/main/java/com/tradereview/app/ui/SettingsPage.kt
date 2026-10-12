@@ -27,7 +27,12 @@ fun SettingsPage(model: BackupViewModel, journalBusy: Boolean, modifier: Modifie
     val operations by (model.experience?.state ?: remember{ kotlinx.coroutines.flow.MutableStateFlow(com.tradereview.app.device.ExperienceState()) }).collectAsStateWithLifecycle()
     fun time(millis:Long)=if(millis<=0)"尚无记录"else java.time.Instant.ofEpochMilli(millis).atZone(java.time.ZoneId.systemDefault()).format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
     val listState = rememberLazyListState()
-    LaunchedEffect(message) { if (message != null) listState.scrollToItem(0) }
+    LaunchedEffect(message, preview, busy) {
+        if (!busy) {
+            if (message != null) listState.scrollToItem(0)
+            else if (preview != null) listState.scrollToItem(1)
+        }
+    }
     var mode by rememberSaveable { mutableStateOf(RestoreMode.MERGE.name) }
     var confirm by remember(preview) { mutableStateOf(false) }
     val locked = busy || journalBusy

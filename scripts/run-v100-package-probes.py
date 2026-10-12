@@ -59,10 +59,11 @@ def main():
     window(package,"快捷记账","rc-home")
     adb("shell","am","force-stop",package);start(package);window(package,"快捷记账","rc-restart");capture("34-v100-rc-home-restart")
     report=dict(api=api,rcActualApkSha=data["apkSha256"],rcPackage=package,rcNonDebuggable=True,rcInstalled=True,rcFirstGuideSkipped=True,rcRestartKeptGuideCompletion=True,
-        fixedReleaseInstall="not-executed-no-fixed-key",sameOriginalSignerUpgrade="not-executed-no-old-fixed-apk",realPhone="not-executed")
+        fixedReleaseInstall="not-executed-no-fixed-key",sameOriginalSignerUpgrade="not-executed-no-fixed-key",realPhone="not-executed")
     fixed=folder/"TradeReview-v1.0-fixed-candidate.apk"
     if fixed.exists():
         new=identity.inspect(fixed,a.aapt,a.apksigner);identity.require_identity(new,"release")
+        report["sameOriginalSignerUpgrade"]="not-executed-no-old-fixed-apk-supplied"
         # Prior Main regression data are all synthetic, and already reported. Discard ONLY here on qemu.
         adb("uninstall","com.tradereview.app",check=False)
         adb("uninstall","com.tradereview.app.test",check=False)

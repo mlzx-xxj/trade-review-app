@@ -17,6 +17,8 @@
 
 第二轮 [Actions 38311222575](https://github.com/mlzx-xxj/trade-review-app/actions/runs/38311222575)，源提交 `e20b76516366619def966747f831d2c779002eae`：三种编译/JVM/Lint 再次通过。API35 实际完成103项、0跳过，100通过/3失败；新增5项备份数据测试均通过，Provider崩溃消除。3项 UI 失败是对尚未组成的 LazyColumn 子节点直接 performScrollTo：home-plan、home-post-review、show-help。加入列表定位并从 LazyColumn performScrollToNode 搜索滚动；保留原保存/恢复/历史数据断言，月报切换先滚回控制项再点击。
 
+恢复预览验证完成后优先滚到数量/范围/冲突说明；出错优先滚到结果提示。新增 UI 链同样从列表搜索恢复确认按钮。实际同证书升级未执行原因记录为原固定密钥未配置，不能误写为旧包不存在。
+
 ## 正在执行
 
 API29/35 全回归、新手引导/备份故障/完整操作链、实际交付 RC 安装及重启、截图和发布验证正在执行；结果完成后补充。最终提交必须另有完整绿色 CI，见 PR Checks，不使用 skip ci。

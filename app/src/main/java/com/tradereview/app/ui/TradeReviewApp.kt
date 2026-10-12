@@ -60,7 +60,7 @@ fun TradeReviewApp(model: TradeViewModel, backup: BackupViewModel, ocrModel: Ocr
     val experienceError by (experience?.error ?: remember{ kotlinx.coroutines.flow.MutableStateFlow<String?>(null) }).collectAsStateWithLifecycle()
     var helpShown by rememberSaveable{mutableStateOf(false)}
     val experienceScope=rememberCoroutineScope()
-    fun finishGuide(){helpShown=false;experience?.let {store->experienceScope.launch{try{withContext(Dispatchers.IO){store.finishOnboarding()}}catch(e:Exception){model.notify("引导状态保存失败，请检查手机空间")}}}}
+    fun finishGuide(){helpShown=false;experience?.let {store->experienceScope.launch{try{withContext(Dispatchers.IO){store.finishOnboarding()}}catch(e:Exception){if(e is kotlinx.coroutines.CancellationException)throw e;model.notify("引导状态保存失败，请检查手机空间")}}}}
     val currency by model.currency.collectAsStateWithLifecycle()
     val filter by model.filter.collectAsStateWithLifecycle()
     val calculated by model.analytics.collectAsStateWithLifecycle()
@@ -195,7 +195,7 @@ private fun HomePage(state: JournalState, analytics: AnalyticsState, currency: S
                 Metric("已复盘",if(todayStats.count==0)"—"else "${todayStats.reviewed} / ${todayStats.count}",Modifier.weight(1f))
             }
             val todayRows=state.trades.filter{it.date==today && it.currency==currency}
-            Text("风险快照 ${todayRows.count{it.riskRecord!=null}} 笔 · 含违规 ${todayRows.count{it.riskRecord?.violations?.isNotEmpty()==true}} 笔；无快照不视为遵守纪律。",style=MaterialTheme.typography.bodySmall)
+            Text("有风险检查记录 ${todayRows.count{it.riskRecord!=null}} 笔 · 含违规 ${todayRows.count{it.riskRecord?.violations?.isNotEmpty()==true}} 笔；无检查记录不视为遵守纪律。",style=MaterialTheme.typography.bodySmall)
         } }
         item { SectionCard("今天的复盘", "计划、复盘和执行评分按日期保存，不区分币种。") {
             Text("盘前计划：${if (todayReview?.planSaved == true) "已保存" else "待制定"} · 盘后复盘：${if (todayReview?.reviewSaved == true) "已保存" else "待复盘"}")
