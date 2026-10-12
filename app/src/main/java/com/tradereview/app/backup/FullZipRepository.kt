@@ -19,12 +19,16 @@ class FullZipRepository(private val db: TradeDatabase,private val store: Attachm
             target.inputStream().use { copyBounded(it,output,FullZipArchive.MAX_ZIP_BYTES) };output.flush()
         } finally { target.delete() }
     } }
-    suspend fun read(input: InputStream): FullZipPreview = withContext(Dispatchers.IO) { EvidenceLock.mutex.withLock {
+    suspend fun read(input: InputStream): FullZipPreview {
+        var owned:ParsedZip?=null
+        try{return withContext(Dispatchers.IO) { EvidenceLock.mutex.withLock {
         store.ensureSpace(1024*1024)
         val archive=FullZipArchive.read(input,store.work)
+        owned=archive
         try { archive.data.attachments.forEach { store.verify(archive.image(it),it) };FullZipPreview(archive,data.preview(archive.data)) }
         catch(e: Exception) { archive.close();throw e }
-    } }
+        } }}catch(e:Exception){withContext(kotlinx.coroutines.NonCancellable+Dispatchers.IO){owned?.close()};throw e}
+    }
     suspend fun refresh(old: FullZipPreview) = old.copy(preview=data.preview(old.archive.data))
     suspend fun restore(pending: FullZipPreview,mode: RestoreMode) = withContext(Dispatchers.IO) { EvidenceLock.mutex.withLock {
         try {

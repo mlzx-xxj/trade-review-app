@@ -1,0 +1,74 @@
+{
+  "attachment-reference-scan-1000": {
+    "samplesMs": [
+      5.116782,
+      5.278785,
+      5.227168
+    ],
+    "medianMs": 5.227168,
+    "minimumMs": 5.116782,
+    "maximumMs": 5.278785
+  },
+  "attachment-indexed-lookup-1000": {
+    "samplesMs": [
+      0.418151,
+      0.384448,
+      0.437557
+    ],
+    "medianMs": 0.418151,
+    "minimumMs": 0.384448,
+    "maximumMs": 0.437557
+  },
+  "attachment-reference-scan-5000": {
+    "samplesMs": [
+      39.39604,
+      79.159608,
+      23.98039
+    ],
+    "medianMs": 39.39604,
+    "minimumMs": 23.98039,
+    "maximumMs": 79.159608
+  },
+  "attachment-indexed-lookup-5000": {
+    "samplesMs": [
+      0.41812,
+      0.376283,
+      0.436625
+    ],
+    "medianMs": 0.41812,
+    "minimumMs": 0.376283,
+    "maximumMs": 0.436625
+  },
+  "attachment-reference-scan-10000": {
+    "samplesMs": [
+      49.206305,
+      48.233699,
+      64.989058
+    ],
+    "medianMs": 49.206305,
+    "minimumMs": 48.233699,
+    "maximumMs": 64.989058
+  },
+  "attachment-indexed-lookup-10000": {
+    "samplesMs": [
+      0.382975,
+      0.371513,
+      0.446954
+    ],
+    "medianMs": 0.382975,
+    "minimumMs": 0.371513,
+    "maximumMs": 0.446954
+  },
+  "fixtureScope": "SQL metadata only, no image files; actual photo decoding/file-integrity tested separately",
+  "environment": {
+    "api": 35,
+    "model": "Android SDK built for x86_64",
+    "abis": [
+      "x86_64"
+    ],
+    "warmups": 1,
+    "samples": 3,
+    "datasetDate": "2026-01-31",
+    "measurement": "elapsed wall time; disposable CI emulator, not phone"
+  }
+}

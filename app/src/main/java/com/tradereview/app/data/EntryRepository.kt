@@ -35,7 +35,11 @@ class EntryRepository(private val database: TradeDatabase) {
         dao.saveSettings((dao.settings() ?: AppSettings()).copy(lastMarket = trade.market))
         dao.deleteDraft(draft.key)
     }
-    suspend fun delete(trade: Trade) = database.withTransaction { dao.delete(trade); dao.deleteDraft(trade.recordKey) }
+    suspend fun delete(trade: Trade) = database.withTransaction {
+        // SQLite IDs may be reused by a restore. A prior confirmation is only for that stable fact.
+        require(dao.findTrade(trade.id) == trade) { "交易在删除确认后已变化，请重新打开记录并确认" }
+        dao.delete(trade); dao.deleteDraft(trade.recordKey)
+    }
     suspend fun saveDraft(draft: EntryDraft) = database.withTransaction {
         // A delayed UI write must not resurrect a saved/deleted transaction's draft.
         if (draft.key == "new" && dao.findTradeByKey(draft.recordKey) != null) return@withTransaction

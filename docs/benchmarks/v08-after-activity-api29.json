@@ -1,0 +1,34 @@
+{
+  "api": 29,
+  "definition": "test-framework end-to-end scroll-to-index and idle, not frame-jank/phone latency",
+  "list-1000": {
+    "samplesMs": [
+      317.70864,
+      341.91615,
+      315.08419
+    ],
+    "medianMs": 317.70864,
+    "actualRecords": 1002
+  },
+  "calendar-switch-1000-ms": 672.07313,
+  "list-5000": {
+    "samplesMs": [
+      239.64368,
+      277.96645,
+      264.99793
+    ],
+    "medianMs": 264.99793,
+    "actualRecords": 5002
+  },
+  "calendar-switch-5000-ms": 448.97172,
+  "list-10000": {
+    "samplesMs": [
+      207.91713,
+      246.2313,
+      297.33185
+    ],
+    "medianMs": 246.2313,
+    "actualRecords": 10002
+  },
+  "calendar-switch-10000-ms": 395.57884
+}

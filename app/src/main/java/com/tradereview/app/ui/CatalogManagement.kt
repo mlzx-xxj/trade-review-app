@@ -45,11 +45,16 @@ fun InstrumentManagement(state: JournalState, busy: Boolean, model: TradeViewMod
     var market by rememberSaveable { mutableStateOf(state.settings.lastMarket) }
     var query by rememberSaveable { mutableStateOf("") }
     var add by remember { mutableStateOf(false) }
+    val keyboard=androidx.compose.ui.platform.LocalSoftwareKeyboardController.current
+    val focus=androidx.compose.ui.platform.LocalFocusManager.current
     LazyColumn(modifier.fillMaxSize().imePadding().testTag("symbol-list"), contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 112.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        item { SectionCard("常用品种管理", "收藏与最近使用优先。排序影响同优先级品种；不会改变历史交易。") {
-            SingleChoice(Presets.markets, market) { market = it }
-            OutlinedTextField(query, { query = it }, label = { Text("搜索名称或代码") }, singleLine = true, modifier = Modifier.fillMaxWidth())
-            Button(enabled = !busy, onClick = { add = true }) { Text("添加自定义品种") }
+        item { SectionCard("常用品种管理", if(query.isBlank())"收藏与最近使用优先。排序影响同优先级品种；不会改变历史交易。"else "${Presets.label(Presets.markets,market)} · 本机搜索") {
+            if(query.isBlank())SingleChoice(Presets.markets, market) { market = it }
+            OutlinedTextField(query, { query = it }, label = { Text("搜索名称或代码") }, singleLine = true, modifier = Modifier.fillMaxWidth().testTag("symbol-search"),
+                keyboardOptions=androidx.compose.foundation.text.KeyboardOptions(imeAction=androidx.compose.ui.text.input.ImeAction.Search),
+                keyboardActions=androidx.compose.foundation.text.KeyboardActions(onSearch={keyboard?.hide();focus.clearFocus()}),
+                trailingIcon={if(query.isNotBlank())TextButton(onClick={query="";keyboard?.hide();focus.clearFocus()}){Text("清除")}})
+            if(query.isBlank())Button(enabled = !busy, onClick = { add = true }) { Text("添加自定义品种") }
         } }
         val all = state.instruments.filter { it.market == market }.sortedWith(compareBy<Instrument> { it.sortOrder }.thenBy { it.id })
         val matched = all.filter { query.isBlank() || it.name.contains(query, true) || it.code.contains(query, true) }

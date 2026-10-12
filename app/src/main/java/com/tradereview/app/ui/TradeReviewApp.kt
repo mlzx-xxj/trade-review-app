@@ -4,13 +4,13 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ReceiptLong
+import com.tradereview.app.ui.icons.ReceiptLong
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Assessment
-import androidx.compose.material.icons.filled.Checklist
+import com.tradereview.app.ui.icons.Assessment
+import com.tradereview.app.ui.icons.Checklist
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.CalendarMonth
+import com.tradereview.app.ui.icons.CalendarMonth
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.LocalActivityResultRegistryOwner
@@ -51,7 +51,9 @@ fun TradeReviewApp(model: TradeViewModel, backup: BackupViewModel, ocrModel: Ocr
     val state by model.state.collectAsStateWithLifecycle()
     val currency by model.currency.collectAsStateWithLifecycle()
     val filter by model.filter.collectAsStateWithLifecycle()
-    val analytics by model.analytics.collectAsStateWithLifecycle()
+    val calculated by model.analytics.collectAsStateWithLifecycle()
+    // Room/worker flows update independently. Never label an old CNY report as a newly selected USD ledger.
+    val analytics=if(calculated.source?.matches(state.trades,state.reviews,currency,filter)==true)calculated else AnalyticsState()
     val journalBusy by model.busy.collectAsStateWithLifecycle()
     val backupBusy by backup.busy.collectAsStateWithLifecycle()
     val busy = journalBusy || backupBusy
@@ -96,7 +98,7 @@ fun TradeReviewApp(model: TradeViewModel, backup: BackupViewModel, ocrModel: Ocr
             }) },
             bottomBar = { if (!settings && reports==null) NavigationBar {
                 pages.forEachIndexed { index, item ->
-                    NavigationBarItem(selected = page == index, onClick = { selectedDay = null; page = index }, icon = { Icon(item.icon, item.title) }, label = { Text(if(index == 4) "日历" else item.title) })
+                    NavigationBarItem(modifier=Modifier.testTag("main-page-$index"),selected = page == index, onClick = { selectedDay = null; page = index }, icon = { Icon(item.icon, item.title) }, label = { Text(if(index == 4) "日历" else item.title) })
                 }
             } },
             snackbarHost = { SnackbarHost(snack) },

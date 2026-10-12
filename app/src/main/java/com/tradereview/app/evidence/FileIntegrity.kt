@@ -23,7 +23,13 @@ object EvidenceLimits {
 fun sha256(input: InputStream): String {
     val hash = MessageDigest.getInstance("SHA-256"); val buffer = ByteArray(8192)
     while(true) { val count = input.read(buffer); if(count < 0) break; hash.update(buffer,0,count) }
-    return hash.digest().joinToString("") { "%02x".format(it) }
+    return digestHex(hash.digest())
+}
+/** Equivalent lower-case, zero-padded SHA text without constructing 32 Formatters per file. */
+fun digestHex(bytes:ByteArray):String {
+    val digits="0123456789abcdef";val chars=CharArray(bytes.size*2)
+    bytes.forEachIndexed{index,byte->val value=byte.toInt() and 255;chars[index*2]=digits[value ushr 4];chars[index*2+1]=digits[value and 15]}
+    return String(chars)
 }
 fun sha256(file: File) = file.inputStream().use(::sha256)
 fun copyBounded(input: InputStream, output: OutputStream, maximum: Long): Long {

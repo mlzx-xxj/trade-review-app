@@ -1,0 +1,39 @@
+{
+  "thumbnail-reference-v07-10": {
+    "samplesMs": [
+      16.28148,
+      15.94937,
+      15.52416
+    ],
+    "medianMs": 15.94937,
+    "minimumMs": 15.52416,
+    "maximumMs": 16.28148
+  },
+  "thumbnail-10-revisits": {
+    "samplesMs": [
+      6.1387,
+      5.342,
+      8.19972
+    ],
+    "medianMs": 6.1387,
+    "minimumMs": 5.342,
+    "maximumMs": 8.19972
+  },
+  "thumbnailCacheBytes": 1152000,
+  "thumbnailCacheLimitBytes": 8388608,
+  "thumbnailCacheHits": 30,
+  "physicalImages": 10,
+  "originalImageBytes": 84348,
+  "environment": {
+    "api": 29,
+    "model": "Android SDK built for x86_64",
+    "abis": [
+      "x86_64",
+      "x86"
+    ],
+    "warmups": 1,
+    "samples": 3,
+    "datasetDate": "2026-01-31",
+    "measurement": "elapsed wall time; disposable CI emulator, not phone"
+  }
+}

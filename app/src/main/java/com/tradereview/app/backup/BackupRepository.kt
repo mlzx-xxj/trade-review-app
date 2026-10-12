@@ -10,6 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.ensureActive
 
 enum class RestoreMode { MERGE, REPLACE }
 data class DatabaseSnapshot(val trades: List<Trade>, val reviews: List<DailyReview>, val tags: List<ManagedTag>,
@@ -63,12 +64,15 @@ class BackupRepository(private val database: TradeDatabase, private val store: A
         return preview.backup.attachments.filter { it.id !in ids && it.recordKey in coherent }
     }
     internal suspend fun restoreLocked(preview: RestorePreview, mode: RestoreMode) {
+        val restoreContext=kotlinx.coroutines.currentCoroutineContext()
+        restoreContext.ensureActive()
         BackupCodec.validate(preview.backup)
         val incoming=incomingAttachments(preview,mode)
         val finalAttachments=if(mode==RestoreMode.REPLACE)incoming else preview.before.attachments+incoming
         require(finalAttachments.size<=EvidenceLimits.MAX_IMAGES && finalAttachments.groupBy { it.recordKey }.values.all { it.size<=10 }) { "合并后图片超过上限，未恢复；可核对后选择覆盖" }
         if(finalAttachments.isNotEmpty())requireNotNull(store) { "含截图备份必须通过完整 ZIP 恢复" }.verifyAll(finalAttachments)
         database.withTransaction {
+            restoreContext.ensureActive()
             if (snapshot() != preview.before) throw BackupException("本地数据在预览后已变化，请重新预览再确认")
             if (mode == RestoreMode.REPLACE) {
                 dao.clearSmartSettings();dao.clearPreflightItems();dao.clearPreflightChecks();dao.clearOcrDrafts()
@@ -131,12 +135,18 @@ class BackupRepository(private val database: TradeDatabase, private val store: A
                 val goals=preview.backup.goals.filter { it.id !in goalIds }
                 require(preview.before.goals.size+goals.size<=500) { "合并后目标超过 500 个上限" }
                 goals.forEach { dao.saveGoal(it) }
-                val items=preview.backup.preflightItems.filter { i->preview.before.preflightItems.none { it.id==i.id } }
-                val checks=preview.backup.preflightChecks.filter { c->preview.before.preflightChecks.none { it.date==c.date && it.itemKey==c.itemKey } }
-                val drafts=preview.backup.ocrDrafts.filter { d->preview.before.ocrDrafts.none { it.id==d.id } }
+                val itemIds=preview.before.preflightItems.map{it.id}.toSet()
+                val checkKeys=preview.before.preflightChecks.map{it.date to it.itemKey}.toSet()
+                val draftIds=preview.before.ocrDrafts.map{it.id}.toSet()
+                val items=preview.backup.preflightItems.filter { it.id !in itemIds }
+                val checks=preview.backup.preflightChecks.filter { (it.date to it.itemKey) !in checkKeys }
+                val drafts=preview.backup.ocrDrafts.filter { it.id !in draftIds }
                 require(preview.before.preflightItems.size+items.size<=100 && preview.before.preflightChecks.size+checks.size<=10000 && preview.before.ocrDrafts.size+drafts.size<=100) { "合并后的智能清单或草稿超限" }
                 items.forEach { dao.savePreflightItem(it) };checks.forEach { dao.savePreflightCheck(it) };drafts.forEach { dao.saveOcrDraft(it) }
             }
+            // Room can execute synchronous DAO calls without another suspension. Check the caller
+            // explicitly before commit, so cancellation during a blocked SQLite call rolls back.
+            restoreContext.ensureActive()
         }
     }
 

@@ -62,14 +62,14 @@ def main():
     for old_apk in output.glob("*.apk"):
         if old_apk != candidate:
             old_apk.unlink()
-    apk = output / "TradeReview-v0.7-stable.apk"
+    apk = output / "TradeReview-v0.8-stable.apk"
     candidate.replace(apk)
     digest = hashlib.sha256(signed).hexdigest()
     (output / "SHA256SUMS.txt").write_text(f"{digest}  {apk.name}\n")
     (output / "SIGNING.txt").write_text(
-        f"versionName=0.7.0\nversionCode=7\napplicationId=com.tradereview.app\n"
+        f"versionName=0.8.0\nversionCode=8\napplicationId=com.tradereview.app\n"
         f"sourceCommit={args.source_commit}\ncertificateSha256={expected}\napkSha256={digest}\n"
-        "signingOrigin=explicitly authorized V0.3 long-term key; signed with official standalone apksigner in Base\n"
+        "upgradeVerified=true\nsigningOrigin=owner-supplied public fixed-signed APK; private signer location is not observable\n"
         f"GitHubActionsSecretsConfigured={args.secrets_configured}\n"
         "Actions verified the actual signer against the committed pin and compared every application payload entry with its own freshly compiled APK.\n"
         "Secrets administration is still required for automatic future builds. Preserve this private key, retain applicationId and increment versionCode for updates.\n"

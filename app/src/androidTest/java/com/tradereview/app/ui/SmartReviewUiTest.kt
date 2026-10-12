@@ -74,9 +74,11 @@ class SmartReviewUiTest {
         }
         (c.fields.keys+"contractCode").forEach { key->compose.onNodeWithTag("ocr-list").performScrollToNode(hasTestTag("ocr-verify-$key"));compose.onNodeWithTag("ocr-verify-$key").performScrollTo().performClick() }
         compose.onNodeWithTag("ocr-list").performScrollToNode(hasTestTag("ocr-confirm-closed"));compose.onNodeWithTag("ocr-confirm-closed").performScrollTo().performClick()
-        compose.onNodeWithTag("ocr-keep-image").performScrollTo().performClick();compose.onNodeWithTag("ocr-create").assertIsEnabled();capture("20-ocr-confirmation")
+        compose.onNodeWithTag("ocr-keep-image").performScrollTo().performClick();compose.onNodeWithTag("ocr-keep-image").assertIsOn();compose.onNodeWithTag("ocr-create").assertIsEnabled();capture("20-ocr-confirmation")
         compose.onNodeWithTag("ocr-create").performClick();compose.waitUntil(15000){model.state.value.trades.size==7 && !model.busy.value}
         val t=model.state.value.trades.first { it.netPnl=="-25.35" };assertEquals("futures",t.market);assertEquals("short",t.direction);assertEquals("rb2701",t.professional!!.contractCode)
+        runBlocking{assertEquals(1,db.trades().allAttachments().count{it.recordKey==t.recordKey})}
+        compose.waitUntil(15000){model.state.value.attachments.any{it.recordKey==t.recordKey}}
         assertEquals(1,model.state.value.attachments.count { it.recordKey==t.recordKey });assertEquals("12.",model.state.value.drafts.single().amount)
         compose.onNodeWithTag("ocr-create").assertIsNotEnabled();compose.onNodeWithContentDescription("取消截图识别").performClick()
     }
@@ -90,7 +92,8 @@ class SmartReviewUiTest {
         compose.waitUntil(15000){model.state.value.preflightChecks.any { it.itemKey=="auto:mistake:chase" && it.checked }}
         compose.onNodeWithTag("preflight-list").performScrollToNode(hasTestTag("check-auto:goal:${model.state.value.goals.single().id}"));capture("22-preflight-checklist")
         compose.onNodeWithTag("preflight-list").performScrollToNode(hasTestTag("preflight-new-text"));compose.onNodeWithTag("preflight-new-text").performTextInput("核对最大计划风险")
-        compose.onNodeWithTag("preflight-add").performScrollTo().performClick();compose.waitUntil(15000){model.state.value.preflightItems.size==1 && !model.busy.value}
+        compose.onNodeWithTag("preflight-new-text").assertTextContains("核对最大计划风险").performImeAction()
+        compose.onNodeWithTag("preflight-add").performScrollTo().assertIsEnabled().performClick();compose.waitUntil(15000){model.state.value.preflightItems.size==1 && !model.busy.value}
         val item=model.state.value.preflightItems.single();compose.onNodeWithTag("preflight-list").performScrollToNode(hasTestTag("check-manual:${item.id}"));compose.onNodeWithTag("check-manual:${item.id}").performScrollTo().performClick()
         compose.waitUntil(15000){model.state.value.preflightChecks.size==2 && !model.busy.value};compose.waitUntil(15000){model.message.value==null}
         compose.onNodeWithTag("preflight-list").performScrollToNode(hasText("归档：核对最大计划风险"));compose.onNodeWithText("归档：核对最大计划风险").performClick()

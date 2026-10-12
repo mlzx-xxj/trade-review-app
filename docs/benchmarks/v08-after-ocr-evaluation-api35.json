@@ -1,0 +1,265 @@
+{
+  "api": 35,
+  "samples": [
+    {
+      "sample": "mixed-clear",
+      "expectedCandidates": 1,
+      "actualCandidates": 1,
+      "expectedFields": 11,
+      "correctFields": 11,
+      "missingFields": 0,
+      "wrongFields": 0,
+      "extraFields": 0,
+      "unsafeReadyCandidates": 0,
+      "recognizedFields": [
+        {
+          "date": "2024-02-29",
+          "market": "futures",
+          "symbol": "螺纹钢",
+          "contractCode": "rb2701",
+          "direction": "short",
+          "currency": "CNY",
+          "entryPrice": "3500.25",
+          "exitPrice": "3490.125",
+          "quantity": "2.5",
+          "fees": "3.25",
+          "realizedPnl": "-25.35"
+        }
+      ],
+      "elapsedMs": 5649.051242,
+      "sourceWidthAfterNormalization": 1280,
+      "sourceHeightAfterNormalization": 1440
+    },
+    {
+      "sample": "english-clear",
+      "expectedCandidates": 1,
+      "actualCandidates": 1,
+      "expectedFields": 11,
+      "correctFields": 11,
+      "missingFields": 0,
+      "wrongFields": 0,
+      "extraFields": 0,
+      "unsafeReadyCandidates": 0,
+      "recognizedFields": [
+        {
+          "date": "2024-02-29",
+          "market": "futures",
+          "symbol": "RB",
+          "contractCode": "rb2701",
+          "direction": "short",
+          "currency": "USD",
+          "entryPrice": "3500.25",
+          "exitPrice": "3490.125",
+          "quantity": "2.5",
+          "fees": "3.25",
+          "realizedPnl": "-25.35"
+        }
+      ],
+      "elapsedMs": 6004.861687,
+      "sourceWidthAfterNormalization": 1280,
+      "sourceHeightAfterNormalization": 1440
+    },
+    {
+      "sample": "mixed-half-resolution",
+      "expectedCandidates": 1,
+      "actualCandidates": 1,
+      "expectedFields": 11,
+      "correctFields": 10,
+      "missingFields": 0,
+      "wrongFields": 1,
+      "extraFields": 0,
+      "unsafeReadyCandidates": 0,
+      "recognizedFields": [
+        {
+          "date": "2024-02-29",
+          "market": "futures",
+          "symbol": "螺纹钢",
+          "contractCode": "b2701",
+          "direction": "short",
+          "currency": "CNY",
+          "entryPrice": "3500.25",
+          "exitPrice": "3490.125",
+          "quantity": "2.5",
+          "fees": "3.25",
+          "realizedPnl": "-25.35"
+        }
+      ],
+      "elapsedMs": 5171.008556,
+      "sourceWidthAfterNormalization": 640,
+      "sourceHeightAfterNormalization": 720
+    },
+    {
+      "sample": "mixed-blurred",
+      "expectedCandidates": 1,
+      "actualCandidates": 1,
+      "expectedFields": 11,
+      "correctFields": 10,
+      "missingFields": 1,
+      "wrongFields": 0,
+      "extraFields": 0,
+      "unsafeReadyCandidates": 0,
+      "recognizedFields": [
+        {
+          "market": "futures",
+          "symbol": "螺纹钢",
+          "contractCode": "rb2701",
+          "direction": "short",
+          "currency": "CNY",
+          "entryPrice": "3500.25",
+          "exitPrice": "3490.125",
+          "quantity": "2.5",
+          "fees": "3.25",
+          "realizedPnl": "-25.35"
+        }
+      ],
+      "elapsedMs": 5486.529066,
+      "sourceWidthAfterNormalization": 1280,
+      "sourceHeightAfterNormalization": 1440
+    },
+    {
+      "sample": "mixed-exif-rotation",
+      "expectedCandidates": 1,
+      "actualCandidates": 1,
+      "expectedFields": 11,
+      "correctFields": 10,
+      "missingFields": 1,
+      "wrongFields": 0,
+      "extraFields": 0,
+      "unsafeReadyCandidates": 0,
+      "recognizedFields": [
+        {
+          "date": "2024-02-29",
+          "market": "futures",
+          "symbol": "螺纹钢",
+          "direction": "short",
+          "currency": "CNY",
+          "entryPrice": "3500.25",
+          "exitPrice": "3490.125",
+          "quantity": "2.5",
+          "fees": "3.25",
+          "realizedPnl": "-25.35"
+        }
+      ],
+      "elapsedMs": 5578.113405,
+      "sourceWidthAfterNormalization": 1280,
+      "sourceHeightAfterNormalization": 1440
+    },
+    {
+      "sample": "two-closed-trades",
+      "expectedCandidates": 2,
+      "actualCandidates": 2,
+      "expectedFields": 22,
+      "correctFields": 22,
+      "missingFields": 0,
+      "wrongFields": 0,
+      "extraFields": 0,
+      "unsafeReadyCandidates": 0,
+      "recognizedFields": [
+        {
+          "date": "2024-02-29",
+          "market": "futures",
+          "symbol": "RB",
+          "contractCode": "rb2701",
+          "direction": "short",
+          "currency": "USD",
+          "entryPrice": "3500.25",
+          "exitPrice": "3490.125",
+          "quantity": "2.5",
+          "fees": "3.25",
+          "realizedPnl": "-25.35"
+        },
+        {
+          "date": "2024-02-28",
+          "market": "futures",
+          "symbol": "RB",
+          "contractCode": "rb2701",
+          "direction": "short",
+          "currency": "USD",
+          "entryPrice": "3500.25",
+          "exitPrice": "3490.125",
+          "quantity": "2.5",
+          "fees": "3.25",
+          "realizedPnl": "100.10"
+        }
+      ],
+      "elapsedMs": 9290.889201,
+      "sourceWidthAfterNormalization": 640,
+      "sourceHeightAfterNormalization": 1250
+    },
+    {
+      "sample": "order-record",
+      "expectedCandidates": 0,
+      "actualCandidates": 1,
+      "expectedFields": 0,
+      "correctFields": 0,
+      "missingFields": 0,
+      "wrongFields": 0,
+      "extraFields": 0,
+      "unsafeReadyCandidates": 0,
+      "recognizedFields": [
+        {
+          "date": "2024-02-29",
+          "market": "futures",
+          "symbol": "RB",
+          "contractCode": "rb2701",
+          "direction": "short",
+          "currency": "USD",
+          "entryPrice": "3500.25",
+          "exitPrice": "3490.125",
+          "quantity": "2.5",
+          "fees": "3.25",
+          "realizedPnl": "-25.35"
+        }
+      ],
+      "elapsedMs": 6517.304691,
+      "sourceWidthAfterNormalization": 1280,
+      "sourceHeightAfterNormalization": 1440
+    },
+    {
+      "sample": "position-floating",
+      "expectedCandidates": 0,
+      "actualCandidates": 1,
+      "expectedFields": 0,
+      "correctFields": 0,
+      "missingFields": 0,
+      "wrongFields": 0,
+      "extraFields": 0,
+      "unsafeReadyCandidates": 0,
+      "recognizedFields": [
+        {
+          "date": "2024-02-29",
+          "market": "futures",
+          "symbol": "RB",
+          "contractCode": "rb2701",
+          "direction": "short",
+          "currency": "USD",
+          "entryPrice": "3500.25",
+          "exitPrice": "3490.125",
+          "quantity": "2.5",
+          "fees": "3.25"
+        }
+      ],
+      "elapsedMs": 6574.648393,
+      "sourceWidthAfterNormalization": 1280,
+      "sourceHeightAfterNormalization": 1440
+    },
+    {
+      "sample": "chart-only",
+      "expectedCandidates": 0,
+      "actualCandidates": 1,
+      "expectedFields": 0,
+      "correctFields": 0,
+      "missingFields": 0,
+      "wrongFields": 0,
+      "extraFields": 0,
+      "unsafeReadyCandidates": 0,
+      "recognizedFields": [
+        {}
+      ],
+      "elapsedMs": 3418.132473,
+      "sourceWidthAfterNormalization": 1280,
+      "sourceHeightAfterNormalization": 1440
+    }
+  ],
+  "definition": "exact normalized fields / labeled fields; missing separately; wrong and extra are false fields; unsafe eligibility assumes confirmation but no trade is saved; synthetic corpus only"
+}

@@ -23,6 +23,8 @@ jobs:
     name: Debug APK, unit tests and lint
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    outputs:
+      validation_ready: ${{ steps.compilation.outcome == 'success' }}
     permissions:
       contents: write
     steps:
@@ -56,6 +58,33 @@ jobs:
           python3 scripts/tests/test_signing_config.py
           python3 scripts/tests/test_signed_payload.py
           python3 scripts/tests/test_device_delivery.py
+          python3 scripts/tests/test_publication.py
+          python3 scripts/tests/test_stability_probes.py
+      - name: Compile, run JVM tests and Android lint
+        id: compilation
+        run: ./gradlew --no-daemon --no-build-cache --stacktrace :app:assembleDebug :app:assembleDebugAndroidTest :app:testDebugUnitTest :app:lintDebug
+      - name: Verify compiled APK identity, bundled OCR models, V0.8 version and offline permissions
+        run: |
+          apk_path=app/build/outputs/apk/debug/app-debug.apk
+          aapt_path="$ANDROID_HOME/build-tools/35.0.0/aapt"
+          badging=$("$aapt_path" dump badging "$apk_path")
+          apk_identity=${badging%%$'\n'*}
+          printf '%s\n' "$apk_identity"
+          [[ "$apk_identity" == *"package: name='com.tradereview.app' versionCode='8' versionName='0.8.0'"* ]] || exit 1
+          permissions=$("$aapt_path" dump permissions "$apk_path")
+          if [[ "$permissions" == *"android.permission.INTERNET"* || "$permissions" == *"android.permission.READ_EXTERNAL_STORAGE"* || "$permissions" == *"android.permission.WRITE_EXTERNAL_STORAGE"* || "$permissions" == *"android.permission.READ_MEDIA_"* || "$permissions" == *"android.permission.MANAGE_EXTERNAL_STORAGE"* ]]; then
+            printf 'Offline APK unexpectedly requests INTERNET; publication refused\n' >&2
+            exit 1
+          fi
+          python3 - "$apk_path" <<'PYMODEL'
+          import sys, zipfile
+          with zipfile.ZipFile(sys.argv[1]) as apk:
+              names=apk.namelist()
+              for script in ("Hani_ctc", "Latn_ctc"):
+                  assert any(script in n and n.endswith("conv_model.fb") for n in names), "Bundled OCR model missing: " + script
+          PYMODEL
+          mkdir -p dist
+          printf '%s\n%s\n' "$apk_identity" "$permissions" > dist/APK-IDENTITY.txt
       - name: Configure fixed V0.3 signing key from Secrets when available
         id: signing
         env:
@@ -77,30 +106,10 @@ jobs:
           else
             printf 'configured=false\n' >> "$GITHUB_OUTPUT"
           fi
-      - name: Compile, run JVM tests and Android lint
-        run: ./gradlew --no-daemon --no-build-cache --stacktrace :app:assembleDebug :app:assembleDebugAndroidTest :app:testDebugUnitTest :app:lintDebug
-      - name: Verify compiled APK identity, bundled OCR models, V0.7 version and offline permissions
+      - name: Sign compiled payload with existing key only after independent validation
+        if: steps.signing.outputs.configured == 'true'
         run: |
-          apk_path=app/build/outputs/apk/debug/app-debug.apk
-          aapt_path="$ANDROID_HOME/build-tools/35.0.0/aapt"
-          badging=$("$aapt_path" dump badging "$apk_path")
-          apk_identity=${badging%%$'\n'*}
-          printf '%s\n' "$apk_identity"
-          [[ "$apk_identity" == *"package: name='com.tradereview.app' versionCode='7' versionName='0.7.0'"* ]] || exit 1
-          permissions=$("$aapt_path" dump permissions "$apk_path")
-          if [[ "$permissions" == *"android.permission.INTERNET"* || "$permissions" == *"android.permission.READ_EXTERNAL_STORAGE"* || "$permissions" == *"android.permission.WRITE_EXTERNAL_STORAGE"* || "$permissions" == *"android.permission.READ_MEDIA_"* || "$permissions" == *"android.permission.MANAGE_EXTERNAL_STORAGE"* ]]; then
-            printf 'Offline APK unexpectedly requests INTERNET; publication refused\n' >&2
-            exit 1
-          fi
-          python3 - "$apk_path" <<'PYMODEL'
-          import sys, zipfile
-          with zipfile.ZipFile(sys.argv[1]) as apk:
-              names=apk.namelist()
-              for script in ("Hani_ctc", "Latn_ctc"):
-                  assert any(script in n and n.endswith("conv_model.fb") for n in names), "Bundled OCR model missing: " + script
-          PYMODEL
-          mkdir -p dist
-          printf '%s\n%s\n' "$apk_identity" "$permissions" > dist/APK-IDENTITY.txt
+          "$ANDROID_HOME/build-tools/35.0.0/apksigner" sign --ks "$TRADE_REVIEW_KEYSTORE_PATH" --ks-key-alias "$TRADE_REVIEW_KEY_ALIAS" --ks-pass env:TRADE_REVIEW_KEYSTORE_PASSWORD --key-pass env:TRADE_REVIEW_KEY_PASSWORD app/build/outputs/apk/debug/app-debug.apk
       - name: Verify fixed signer certificate pin or label APK as temporary test
         id: signature
         env:
@@ -128,7 +137,7 @@ jobs:
         id: apk
         uses: actions/upload-artifact@v4
         with:
-          name: TradeReview-v0.7-${{ github.run_number }}
+          name: TradeReview-v0.8-${{ github.run_number }}
           path: dist/
           if-no-files-found: error
           retention-days: 30
@@ -225,10 +234,22 @@ jobs:
           retention-days: 30
 
   device-tests:
-    name: Room upgrades, v1–v7 upgrades, offline OCR, insights, preflight, evidence, ZIP, reports, goals, risk, R and Compose UI
+    name: API ${{ matrix.api }} · Room, OCR, data, UI and performance
     runs-on: ubuntu-latest
     needs: build
-    timeout-minutes: 30
+    # Run after a signing failure, but allow obsolete runs to be cancelled.
+    if: ${{ !cancelled() && needs.build.outputs.validation_ready == 'true' }}
+    env:
+      V08_STABILITY_PROBES: 'true'
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - api: 29
+            target: google_apis
+          - api: 35
+            target: default
+    timeout-minutes: 35
     steps:
       - name: Reserve disk space for the disposable emulator
         run: |
@@ -269,18 +290,19 @@ jobs:
       - name: Run Android instrumentation tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 29
+          api-level: ${{ matrix.api }}
+          target: ${{ matrix.target }}
           arch: x86_64
           profile: pixel_2
           emulator-boot-timeout: 300
-          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -no-metrics -partition-size 2048
+          emulator-options: -no-window -gpu swiftshader_indirect -feature -Vulkan -memory 3072 -cores 2 -no-snapshot -noaudio -no-boot-anim -no-metrics -partition-size 2048
           disable-animations: true
           script: bash scripts/run-device-tests.sh
       - name: Upload real emulator screenshots from synthetic UI fixtures
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: v07-emulator-screenshots
+          name: v08-emulator-screenshots-api${{ matrix.api }}
           path: ci-screenshots/
           if-no-files-found: error
           retention-days: 30
@@ -288,16 +310,18 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: android-test-reports
+          name: android-test-reports-api${{ matrix.api }}
           path: |
             app/build/reports/androidTests/
             app/build/outputs/androidTest-results/
             app/build/outputs/androidTest-additional-output/
             ci-screenshots/
+            ci-metrics/
+            ci-stability/
           retention-days: 30
 
   publish:
-    name: Publish verified V0.7 APK with explicit signing status
+    name: Publish verified V0.8 APK with explicit signing status
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     needs: [build, device-tests]
     runs-on: ubuntu-latest
@@ -305,29 +329,49 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v5
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools
+          log-accepted-android-sdk-licenses: false
+      - run: sdkmanager 'build-tools;35.0.0'
       - uses: actions/download-artifact@v4
         with:
-          name: TradeReview-v0.7-${{ github.run_number }}
+          name: TradeReview-v0.8-${{ github.run_number }}
           path: dist
       - name: Download verified emulator screenshots
         uses: actions/download-artifact@v4
         with:
-          name: v07-emulator-screenshots
+          pattern: v08-emulator-screenshots-api*
           path: screenshots
       - name: Package synthetic UI screenshots
-        run: zip -r dist/TradeReview-v0.7-emulator-screenshots.zip screenshots
+        run: zip -r dist/TradeReview-v0.8-emulator-screenshots.zip screenshots
+      - name: Download actual build reports
+        uses: actions/download-artifact@v4
+        with:
+          name: verification-reports
+          path: verified-reports/build
+      - name: Download actual API 29 and 35 reports
+        uses: actions/download-artifact@v4
+        with:
+          pattern: android-test-reports-api*
+          path: verified-reports/devices
+      - name: Independently verify final APK signer, original identity, SHA and source
+        run: python3 scripts/verify-publication.py --directory dist --apksigner "$ANDROID_HOME/build-tools/35.0.0/apksigner" --aapt "$ANDROID_HOME/build-tools/35.0.0/aapt" --source-commit "$GITHUB_SHA"
+      - name: Generate delivery report from actual XML and synthetic metrics
+        run: python3 scripts/create-delivery-report.py --reports verified-reports --screenshots screenshots --dist dist --run-url "https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
       - name: Publish after all verification jobs pass
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          tag="v07-debug-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
-          if [ -f dist/TradeReview-v0.7-stable.apk ]; then
-            title="交易复盘 V0.7 · 固定签名 Debug 包"
-            notes="Debug 编译、JVM 单元测试、Lint、Room 迁移/事务恢复、快速录入/标签/品种/草稿、日历/筛选/分币种统计、图片/完整 ZIP/周月报告/改善目标及 Compose 模拟器测试均通过。固定签名已验证证书 pin，真实签名来源和 Secrets 配置状态见 SIGNING.txt；若 Secrets 尚未配置，仓库所有者仍需完成配置才能自动签署未来更新。后续必须使用相同私钥和更大 versionCode。旧测试版不同签名时需手动卸载。模拟器测试不是手机实测。"
+          tag="v08-debug-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          if [ -f dist/TradeReview-v0.8-stable.apk ]; then
+            title="交易复盘 V0.8 · 固定签名 Debug 包"
+            notes="V0.8.0 / versionCode 8 / com.tradereview.app。Debug 编译、JVM 单元测试、Lint、API 29/35 完整模拟器回归与实际进程重启探针均通过；具体测试、性能及合成 OCR 结果见 CI-RESULTS.txt、PERFORMANCE-AND-OCR.json。固定签名已验证原 V0.3 证书 pin，实际证书、来源、升级分类见 SIGNING.txt、PUBLICATION-CHECK.txt；若 Secrets 尚未配置，所有者仍需配置原密钥才能自动签署未来更新。后续保持相同私钥及递增 versionCode。不同证书不能覆盖安装；先保存可读的完整 ZIP（包含截图），由所有者决定迁移方式。备份是明文。模拟器不是手机实测，原固定身份旧版安装升级及厂家兼容尚未验证。"
           else
-            title="交易复盘 V0.7 · 临时签名测试包"
-            notes="Debug 编译、JVM 单元测试、Lint、Room 迁移/事务恢复、快速录入/标签/品种/草稿、日历/筛选/分币种统计、图片/完整 ZIP/周月报告/改善目标及 Compose 模拟器测试均通过。固定签名 Secrets 未配置，此包不保证未来长期覆盖升级。此临时包不能覆盖安装固定签名 V0.3；请先 JSON 备份，确认后自行处理不同签名的旧版安装，卸载会清空本地数据。V0.7 数据请定期备份。模拟器测试不是手机实测。"
+            title="交易复盘 V0.8 · 临时签名测试包"
+            notes="V0.8.0 / versionCode 8 / com.tradereview.app。Debug 编译、JVM 单元测试、Lint、API 29/35 完整模拟器回归与实际进程重启探针均通过；具体测试、性能及合成 OCR 结果见 CI-RESULTS.txt、PERFORMANCE-AND-OCR.json。固定签名未配置成功，此包明确为临时测试身份，不保证长期覆盖升级、不能覆盖原 V0.3 固定身份；实际证书、SHA-256 和来源见 SIGNING.txt、SHA256SUMS.txt、PUBLICATION-CHECK.txt。先保存可读的完整 ZIP（包含截图），由所有者决定不同签名的安装迁移；卸载会清空本机数据。仅 JSON 不含图片。备份是明文。模拟器不是手机实测，真正固定签名旧版升级、厂家兼容和 API36 尚未验证。"
           fi
           printf '%s\n' "$notes" > "$RUNNER_TEMP/release-notes.txt"
-          gh release create "$tag" dist/*.apk dist/SHA256SUMS.txt dist/SIGNING.txt dist/APK-IDENTITY.txt dist/TradeReview-v0.7-emulator-screenshots.zip --repo "$GITHUB_REPOSITORY" --target "${{ github.event.pull_request.head.sha || github.sha }}" --title "$title" --prerelease --notes-file "$RUNNER_TEMP/release-notes.txt"
+          cat dist/CI-RESULTS.txt >> "$RUNNER_TEMP/release-notes.txt"
+          gh release create "$tag" dist/*.apk dist/SHA256SUMS.txt dist/SIGNING.txt dist/APK-IDENTITY.txt dist/PUBLICATION-CHECK.txt dist/CI-RESULTS.txt dist/PERFORMANCE-AND-OCR.json dist/TradeReview-v0.8-emulator-screenshots.zip --repo "$GITHUB_REPOSITORY" --target "${{ github.event.pull_request.head.sha || github.sha }}" --title "$title" --prerelease --notes-file "$RUNNER_TEMP/release-notes.txt"
           printf '[APK 与真实验证结果](https://github.com/%s/releases/tag/%s)\n' "$GITHUB_REPOSITORY" "$tag" >> "$GITHUB_STEP_SUMMARY"
