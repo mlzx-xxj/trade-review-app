@@ -236,7 +236,8 @@ jobs:
     name: API ${{ matrix.api }} · Room, OCR, data, UI and performance
     runs-on: ubuntu-latest
     needs: build
-    if: always() && needs.build.outputs.validation_ready == 'true'
+    # Run after a signing failure, but allow obsolete runs to be cancelled.
+    if: ${{ !cancelled() && needs.build.outputs.validation_ready == 'true' }}
     env:
       V08_STABILITY_PROBES: 'true'
     strategy:
