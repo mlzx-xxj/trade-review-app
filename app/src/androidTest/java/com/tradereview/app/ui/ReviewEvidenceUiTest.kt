@@ -91,7 +91,10 @@ class ReviewEvidenceUiTest {
         compose.onNodeWithContentDescription("关闭大图").performClick()
         compose.onNodeWithTag("delete-evidence-${a.id}").performScrollTo().performClick();compose.onNodeWithText("确认删除附件").performClick()
         compose.waitUntil(15000){model.state.value.attachments.size==1 && !model.busy.value};assertFalse(store.file(a).exists())
-        compose.onNodeWithContentDescription("返回交易详情").performClick();val remaining=model.state.value.attachments.single();compose.onNodeWithTag("evidence-thumb-${remaining.id}").performScrollTo().assertIsDisplayed()
+        compose.onNodeWithContentDescription("返回交易详情").performClick();val remaining=model.state.value.attachments.single()
+        compose.onNodeWithTag("open-trade-evidence").performScrollTo()
+        // The clickable thumbnail column merges children for accessibility; its image tag is unmerged.
+        compose.onNodeWithTag("evidence-thumb-${remaining.id}",useUnmergedTree=true).performScrollTo().assertIsDisplayed()
         runBlocking { assertEquals("400.00",db.trades().findTradeByKey(remaining.recordKey)!!.netPnl) }
     }
     @Test fun weeklyMonthlyReportsUseAllCurrenciesAllowHistoryAndDrillIntoRealTrades() {
@@ -120,11 +123,13 @@ class ReviewEvidenceUiTest {
         compose.onNodeWithTag("goals-list").performScrollToNode(hasTestTag("new-review-goal"));compose.onNodeWithTag("new-review-goal").performClick()
         compose.onNodeWithText("文字改善目标").performScrollTo().performClick();compose.onNodeWithTag("goal-title").performScrollTo().performTextInput("人工核对交易理由")
         compose.onNodeWithTag("save-review-goal").assertIsDisplayed().performClick();compose.waitUntil(15000){model.state.value.goals.size==2 && !model.busy.value};hideKeyboard()
+        compose.waitUntil(15000){model.message.value==null && !model.busy.value}
         val text=model.state.value.goals.first { it.kind=="text" };compose.onNodeWithTag("goals-list").performScrollToNode(hasTestTag("goal-progress-${text.id}"));compose.onNodeWithTag("goal-progress-${text.id}").assertTextEquals("实际 不可自动计算 · 文字目标")
+        compose.onNodeWithTag("goals-list").performScrollToNode(hasTestTag("goal-history-${ratio.id}"));compose.onNodeWithTag("goal-history-${ratio.id}").performScrollTo().assertIsDisplayed();capture("17-review-goals")
         compose.onNodeWithTag("goals-list").performScrollToNode(hasTestTag("archive-goal-${ratio.id}"));compose.onNodeWithTag("archive-goal-${ratio.id}").performScrollTo().performClick();compose.onNodeWithText("确认归档").performClick()
         compose.waitUntil(15000){model.state.value.goals.first { it.id==ratio.id }.archivedDay!=null && !model.busy.value}
         compose.onNodeWithTag("goals-list").performScrollToNode(hasText("已归档"));compose.onNodeWithText("已归档").performClick()
-        compose.onNodeWithTag("goals-list").performScrollToNode(hasTestTag("goal-history-${ratio.id}"));compose.onNodeWithTag("goal-history-${ratio.id}").performScrollTo().assertIsDisplayed();capture("17-review-goals")
+        compose.onNodeWithTag("goals-list").performScrollToNode(hasTestTag("goal-history-${ratio.id}"));compose.onNodeWithTag("goal-history-${ratio.id}").performScrollTo().assertIsDisplayed()
         runBlocking { assertEquals(before,db.trades().allTrades());assertEquals(2,db.trades().allGoals().size) }
     }
     @Test fun fullZipPreviewNeedsSecondConsentAndJsonScopeNeverClaimsImageBackup()=runBlocking {
