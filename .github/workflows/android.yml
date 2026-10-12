@@ -23,6 +23,8 @@ jobs:
     name: Debug APK, unit tests and lint
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    outputs:
+      validation_ready: ${{ steps.compilation.outcome == 'success' }}
     permissions:
       contents: write
     steps:
@@ -56,28 +58,9 @@ jobs:
           python3 scripts/tests/test_signing_config.py
           python3 scripts/tests/test_signed_payload.py
           python3 scripts/tests/test_device_delivery.py
-      - name: Configure fixed V0.3 signing key from Secrets when available
-        id: signing
-        env:
-          EXISTING_KEY_BASE64: ${{ secrets.TRADE_REVIEW_KEYSTORE_BASE64 }}
-          EXISTING_STORE_PASSWORD: ${{ secrets.TRADE_REVIEW_KEYSTORE_PASSWORD }}
-          EXISTING_KEY_ALIAS: ${{ secrets.TRADE_REVIEW_KEY_ALIAS }}
-          EXISTING_KEY_PASSWORD: ${{ secrets.TRADE_REVIEW_KEY_PASSWORD }}
-        run: |
-          configured=$(python3 scripts/signing-config-state.py)
-          if [ "$configured" = true ]; then
-            umask 077
-            key_path="$RUNNER_TEMP/trade-review-existing.keystore"
-            printf '%s' "$EXISTING_KEY_BASE64" | base64 --decode > "$key_path"
-            printf 'TRADE_REVIEW_KEYSTORE_PATH=%s\n' "$key_path" >> "$GITHUB_ENV"
-            printf 'TRADE_REVIEW_KEYSTORE_PASSWORD=%s\n' "$EXISTING_STORE_PASSWORD" >> "$GITHUB_ENV"
-            printf 'TRADE_REVIEW_KEY_ALIAS=%s\n' "$EXISTING_KEY_ALIAS" >> "$GITHUB_ENV"
-            printf 'TRADE_REVIEW_KEY_PASSWORD=%s\n' "$EXISTING_KEY_PASSWORD" >> "$GITHUB_ENV"
-            printf 'configured=true\n' >> "$GITHUB_OUTPUT"
-          else
-            printf 'configured=false\n' >> "$GITHUB_OUTPUT"
-          fi
+          python3 scripts/tests/test_publication.py
       - name: Compile, run JVM tests and Android lint
+        id: compilation
         run: ./gradlew --no-daemon --no-build-cache --stacktrace :app:assembleDebug :app:assembleDebugAndroidTest :app:testDebugUnitTest :app:lintDebug
       - name: Verify compiled APK identity, bundled OCR models, V0.8 version and offline permissions
         run: |
@@ -101,6 +84,31 @@ jobs:
           PYMODEL
           mkdir -p dist
           printf '%s\n%s\n' "$apk_identity" "$permissions" > dist/APK-IDENTITY.txt
+      - name: Configure fixed V0.3 signing key from Secrets when available
+        id: signing
+        env:
+          EXISTING_KEY_BASE64: ${{ secrets.TRADE_REVIEW_KEYSTORE_BASE64 }}
+          EXISTING_STORE_PASSWORD: ${{ secrets.TRADE_REVIEW_KEYSTORE_PASSWORD }}
+          EXISTING_KEY_ALIAS: ${{ secrets.TRADE_REVIEW_KEY_ALIAS }}
+          EXISTING_KEY_PASSWORD: ${{ secrets.TRADE_REVIEW_KEY_PASSWORD }}
+        run: |
+          configured=$(python3 scripts/signing-config-state.py)
+          if [ "$configured" = true ]; then
+            umask 077
+            key_path="$RUNNER_TEMP/trade-review-existing.keystore"
+            printf '%s' "$EXISTING_KEY_BASE64" | base64 --decode > "$key_path"
+            printf 'TRADE_REVIEW_KEYSTORE_PATH=%s\n' "$key_path" >> "$GITHUB_ENV"
+            printf 'TRADE_REVIEW_KEYSTORE_PASSWORD=%s\n' "$EXISTING_STORE_PASSWORD" >> "$GITHUB_ENV"
+            printf 'TRADE_REVIEW_KEY_ALIAS=%s\n' "$EXISTING_KEY_ALIAS" >> "$GITHUB_ENV"
+            printf 'TRADE_REVIEW_KEY_PASSWORD=%s\n' "$EXISTING_KEY_PASSWORD" >> "$GITHUB_ENV"
+            printf 'configured=true\n' >> "$GITHUB_OUTPUT"
+          else
+            printf 'configured=false\n' >> "$GITHUB_OUTPUT"
+          fi
+      - name: Sign compiled payload with existing key only after independent validation
+        if: steps.signing.outputs.configured == 'true'
+        run: |
+          "$ANDROID_HOME/build-tools/35.0.0/apksigner" sign --ks "$TRADE_REVIEW_KEYSTORE_PATH" --ks-key-alias "$TRADE_REVIEW_KEY_ALIAS" --ks-pass env:TRADE_REVIEW_KEYSTORE_PASSWORD --key-pass env:TRADE_REVIEW_KEY_PASSWORD app/build/outputs/apk/debug/app-debug.apk
       - name: Verify fixed signer certificate pin or label APK as temporary test
         id: signature
         env:
@@ -228,10 +236,17 @@ jobs:
     name: API ${{ matrix.api }} · Room, OCR, data, UI and performance
     runs-on: ubuntu-latest
     needs: build
+    if: always() && needs.build.outputs.validation_ready == 'true'
+    env:
+      V08_STABILITY_PROBES: 'true'
     strategy:
       fail-fast: false
       matrix:
-        api: [29, 35]
+        include:
+          - api: 29
+            target: google_apis
+          - api: 35
+            target: default
     timeout-minutes: 35
     steps:
       - name: Reserve disk space for the disposable emulator
@@ -274,10 +289,11 @@ jobs:
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: ${{ matrix.api }}
+          target: ${{ matrix.target }}
           arch: x86_64
           profile: pixel_2
           emulator-boot-timeout: 300
-          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -no-metrics -partition-size 2048
+          emulator-options: -no-window -gpu swiftshader_indirect -feature -Vulkan -memory 3072 -cores 2 -no-snapshot -noaudio -no-boot-anim -no-metrics -partition-size 2048
           disable-animations: true
           script: bash scripts/run-device-tests.sh
       - name: Upload real emulator screenshots from synthetic UI fixtures
@@ -299,6 +315,7 @@ jobs:
             app/build/outputs/androidTest-additional-output/
             ci-screenshots/
             ci-metrics/
+            ci-stability/
           retention-days: 30
 
   publish:
@@ -310,6 +327,11 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v5
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools
+          log-accepted-android-sdk-licenses: false
+      - run: sdkmanager 'build-tools;35.0.0'
       - uses: actions/download-artifact@v4
         with:
           name: TradeReview-v0.8-${{ github.run_number }}
@@ -321,6 +343,20 @@ jobs:
           path: screenshots
       - name: Package synthetic UI screenshots
         run: zip -r dist/TradeReview-v0.8-emulator-screenshots.zip screenshots
+      - name: Download actual build reports
+        uses: actions/download-artifact@v4
+        with:
+          name: verification-reports
+          path: verified-reports/build
+      - name: Download actual API 29 and 35 reports
+        uses: actions/download-artifact@v4
+        with:
+          pattern: android-test-reports-api*
+          path: verified-reports/devices
+      - name: Independently verify final APK signer, original identity, SHA and source
+        run: python3 scripts/verify-publication.py --directory dist --apksigner "$ANDROID_HOME/build-tools/35.0.0/apksigner" --aapt "$ANDROID_HOME/build-tools/35.0.0/aapt" --source-commit "$GITHUB_SHA"
+      - name: Generate delivery report from actual XML and synthetic metrics
+        run: python3 scripts/create-delivery-report.py --reports verified-reports --screenshots screenshots --dist dist --run-url "https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
       - name: Publish after all verification jobs pass
         env:
           GH_TOKEN: ${{ github.token }}
@@ -334,5 +370,6 @@ jobs:
             notes="Debug 编译、JVM 单元测试、Lint、Room 迁移/事务恢复、快速录入/标签/品种/草稿、日历/筛选/分币种统计、图片/完整 ZIP/周月报告/改善目标及 Compose 模拟器测试均通过。固定签名 Secrets 未配置，此包不保证未来长期覆盖升级。此临时包不能覆盖安装固定签名 V0.3；请先 JSON 备份，确认后自行处理不同签名的旧版安装，卸载会清空本地数据。V0.8 数据请定期备份。模拟器测试不是手机实测。"
           fi
           printf '%s\n' "$notes" > "$RUNNER_TEMP/release-notes.txt"
-          gh release create "$tag" dist/*.apk dist/SHA256SUMS.txt dist/SIGNING.txt dist/APK-IDENTITY.txt dist/TradeReview-v0.8-emulator-screenshots.zip --repo "$GITHUB_REPOSITORY" --target "${{ github.event.pull_request.head.sha || github.sha }}" --title "$title" --prerelease --notes-file "$RUNNER_TEMP/release-notes.txt"
+          cat dist/CI-RESULTS.txt >> "$RUNNER_TEMP/release-notes.txt"
+          gh release create "$tag" dist/*.apk dist/SHA256SUMS.txt dist/SIGNING.txt dist/APK-IDENTITY.txt dist/PUBLICATION-CHECK.txt dist/CI-RESULTS.txt dist/PERFORMANCE-AND-OCR.json dist/TradeReview-v0.8-emulator-screenshots.zip --repo "$GITHUB_REPOSITORY" --target "${{ github.event.pull_request.head.sha || github.sha }}" --title "$title" --prerelease --notes-file "$RUNNER_TEMP/release-notes.txt"
           printf '[APK 与真实验证结果](https://github.com/%s/releases/tag/%s)\n' "$GITHUB_REPOSITORY" "$tag" >> "$GITHUB_STEP_SUMMARY"

@@ -35,7 +35,7 @@ class OcrViewModel(context:Context,private val recognizer:OfflineRecognizer=Bund
                 }
                 val bitmap=withContext(Dispatchers.IO){store!!.bitmap(image,2048)}
                 val raw=try { withContext(Dispatchers.Default){recognizer.recognize(bitmap)} }finally { bitmap.recycle() }
-                val parsed=withContext(Dispatchers.Default){OcrTradeParser.parse(raw)}
+                val parsed=withContext(Dispatchers.Default){if(raw.isBlank())emptyList()else OcrTradeParser.parse(raw)}
                 if(g==generation)state.value=OcrSession(parsed,raw,image,store,error=if(raw.isBlank())"未识别到清晰文字，请选择成交明细截图"else null)
                 else withContext(Dispatchers.IO){store!!.root.deleteRecursively()}
             } catch(e:Exception) {
@@ -43,6 +43,7 @@ class OcrViewModel(context:Context,private val recognizer:OfflineRecognizer=Bund
                 if(e is CancellationException)throw e
                 if(g==generation)state.value=OcrSession(error="识别失败：${if(e is IllegalArgumentException)e.message else "图片损坏、权限失效或 OCR 无法处理；历史交易未修改"}")
             } catch(_:OutOfMemoryError) { if(g==generation)state.value=OcrSession(error="图片内存不足，请选择较小截图");withContext(NonCancellable+Dispatchers.IO){store?.root?.deleteRecursively()} }
+            catch(_:LinkageError) { if(g==generation)state.value=OcrSession(error="本机 OCR 引擎无法启动，可继续使用快捷录入；历史交易未修改");withContext(NonCancellable+Dispatchers.IO){store?.root?.deleteRecursively()} }
         }
     }
     fun restore(draft:OcrDraft) { clear();state.value=OcrSession(candidates=listOf(OcrCandidate(SmartJson.fields(draft.fields),blocked=draft.blocked,closedEvidence=draft.closedEvidence)),draftId=draft.id) }

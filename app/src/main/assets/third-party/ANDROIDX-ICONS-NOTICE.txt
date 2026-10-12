@@ -1,0 +1,6 @@
+Four Material vector geometries retained from AndroidX material-icons-extended 1.7.8, Copyright 2025 The Android Open Source Project, Apache License 2.0.
+Source: https://dl.google.com/dl/android/maven2/androidx/compose/material/material-icons-extended/1.7.8/material-icons-extended-1.7.8-sources.jar
+Retained icons: AutoMirrored.Filled.ReceiptLong, Filled.Assessment, Filled.Checklist, Filled.CalendarMonth.
+Changes: local Kotlin namespace and standard ImageVector helper wiring; original geometry and auto-mirroring retained.
+Source archive SHA-256: 77b7e782a519a3e074fc91e09d59334ac1b815edd87d2e89c0c9ca7c95678e93
+See ANDROIDX-ICONS-LICENSE.txt.

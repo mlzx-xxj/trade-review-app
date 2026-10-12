@@ -16,6 +16,9 @@ object EvidenceLock { val mutex = Mutex() }
 class AttachmentStore(val root: File, private val availableBytes: () -> Long = { root.usableSpace }) {
     init { require(root.exists() || root.mkdirs()) { "无法创建私有图片目录" } }
     val work get() = File(root,".work").apply { require(exists() || mkdirs()) }
+    private val imageCacheDelegate=lazy { AttachmentImageCache(this) }
+    val imageCache by imageCacheDelegate
+    fun clearImageCache(){if(imageCacheDelegate.isInitialized())imageCacheDelegate.value.clear()}
     @Volatile var cleanupPending = false
         private set
     fun ensureSpace(bytes: Long) {
@@ -99,7 +102,10 @@ class AttachmentStore(val root: File, private val availableBytes: () -> Long = {
         finally { input.delete();output.delete() }
     }
     fun bitmap(a: Attachment, edge: Int): Bitmap {
+        require(edge in 64..EvidenceLimits.MAX_EDGE)
         val source=file(a);verify(source,a,decode=false)
+        val bounds=BitmapFactory.Options().apply{inJustDecodeBounds=true};BitmapFactory.decodeFile(source.path,bounds)
+        require(bounds.outMimeType=="image/jpeg" && bounds.outWidth==a.width && bounds.outHeight==a.height) { "图片尺寸或类型与记录不一致" }
         var sample=1;while(maxOf(a.width,a.height)/sample>edge)sample*=2
         return BitmapFactory.decodeFile(source.path,BitmapFactory.Options().apply { inSampleSize=sample }) ?: throw EvidenceException("图片损坏，无法显示")
     }

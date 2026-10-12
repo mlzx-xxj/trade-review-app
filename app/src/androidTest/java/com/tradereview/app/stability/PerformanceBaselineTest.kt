@@ -30,7 +30,7 @@ class PerformanceBaselineTest {
         date=today.toEpochDay()-(if(lossRun) i%7 else i%365),market=if(i%2==0)"futures"else "stock",symbol=if(i%2==0)"螺纹钢"else "沪深300",
         currency=if(lossRun)"CNY"else listOf("CNY","USD","USDT")[i%3],netPnl=if(lossRun)"-10.01"else when(i%5){0->"-25.35";1->"0.00";else->"100.10"},
         strategy=if(i%2==0)"trend"else "breakout",mistakes=if(i%4==0)listOf("chase")else emptyList(),reviewed=i%2==0,
-        professional=if(i%2==0)ProfessionalTrade(riskMode="amount",manualRisk="200",planStatus=if(i%4==0)"in"else "out")else null)}
+        professional=if(i%2==0)ProfessionalTrade(riskMode="amount",manualRisk="200.00",planStatus=if(i%4==0)"in"else "out")else null)}
     private fun measure(name:String,block:()->Unit){
         block()
         val samples=List(3){val start=SystemClock.elapsedRealtimeNanos();block();(SystemClock.elapsedRealtimeNanos()-start)/1_000_000.0}
@@ -74,7 +74,13 @@ class PerformanceBaselineTest {
         try {
             val image=store.importImage(context.contentResolver,TestImageProvider.uri("ocr.png"),"a".repeat(32),"analysis","合成 OCR 图片",EvidenceSettings(),0)
             val values=List(10){image.copy(id=newKey(),recordKey=(it+1).toString(16).padStart(32,'0'),sortOrder=0).also{a->store.publish(store.file(image),a)}}
-            measure("thumbnail-10-revisits"){values.forEach{store.bitmap(it,256).recycle()}}
+            measure("thumbnail-reference-v07-10"){values.forEach{a->
+                val source=store.file(a);store.verify(source,a,decode=false)
+                var sample=1;while(maxOf(a.width,a.height)/sample>256)sample*=2
+                requireNotNull(android.graphics.BitmapFactory.decodeFile(source.path,android.graphics.BitmapFactory.Options().apply{inSampleSize=sample})).recycle()
+            }}
+            measure("thumbnail-10-revisits"){runBlocking{values.forEach{store.imageCache.load(it,256)}}}
+            metrics["thumbnailCacheBytes"]=store.imageCache.bytes;metrics["thumbnailCacheLimitBytes"]=store.imageCache.maximumBytes;metrics["thumbnailCacheHits"]=store.imageCache.hitCount
             metrics["physicalImages"]=values.size;metrics["originalImageBytes"]=image.byteCount
             write("images")
         }finally{root.deleteRecursively()}

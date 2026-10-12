@@ -54,13 +54,13 @@ private data class EvidenceImage(val bitmap: android.graphics.Bitmap?,val error:
 fun LocalEvidenceImage(attachment: Attachment,store: AttachmentStore?,modifier: Modifier,edge: Int = 256) {
     val result by produceState<EvidenceImage?>(null,attachment.id,attachment.sha256,store,edge) {
         value=withContext(Dispatchers.IO) {
-            try { EvidenceImage(requireNotNull(store).bitmap(attachment,edge),null) }
+            try { EvidenceImage(requireNotNull(store).imageCache.load(attachment,edge),null) }
             catch(_: Exception) { EvidenceImage(null,"文件缺失或图片损坏") }
             catch(_: OutOfMemoryError) { EvidenceImage(null,"图片内存不足") }
         }
     }
     val bitmap=result?.bitmap
-    DisposableEffect(bitmap) { onDispose { bitmap?.recycle() } }
+    // Cached/native render references may outlive this composition; Android releases pixels safely.
     Box(modifier,contentAlignment=Alignment.Center) {
         if(bitmap!=null) Image(bitmap.asImageBitmap(),attachment.caption.ifBlank { Presets.label(EvidenceOptions.kinds,attachment.kind) },Modifier.fillMaxSize(),contentScale=ContentScale.Fit)
         else if(result==null) CircularProgressIndicator(Modifier.size(24.dp))

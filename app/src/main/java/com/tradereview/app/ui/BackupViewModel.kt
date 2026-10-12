@@ -22,6 +22,7 @@ class BackupViewModel(database: TradeDatabase, private val resolver: ContentReso
     private val repository = BackupRepository(database,store)
     private val zip = store?.let { FullZipRepository(database,it) }
     private var pendingZip: FullZipPreview? = null
+    private var operationJob:kotlinx.coroutines.Job?=null
     private val _preview = MutableStateFlow<RestorePreview?>(null)
     val preview = _preview.asStateFlow()
     private val _busy = MutableStateFlow(false)
@@ -33,7 +34,7 @@ class BackupViewModel(database: TradeDatabase, private val resolver: ContentReso
         if (_busy.value) return
         _busy.value = true
         _message.value = null
-        viewModelScope.launch {
+        operationJob=viewModelScope.launch {
             try { withContext(Dispatchers.IO) { action() } }
             catch (e: Exception) {
                 if (e is CancellationException) throw e
@@ -101,5 +102,12 @@ class BackupViewModel(database: TradeDatabase, private val resolver: ContentReso
             _message.value = if (mode == RestoreMode.REPLACE) "覆盖恢复完成" else "去重合并完成，冲突内容保留本地版本"
         }
     }
-    override fun onCleared() { pendingZip?.let { BackupCleanup.scope.launch { it.archive.close() } };super.onCleared() }
+    override fun onCleared() {
+        val active=operationJob
+        active?.cancel()
+        // Do not delete a staged archive while an in-flight IO/rollback is still using it.
+        BackupCleanup.scope.launch {active?.join();com.tradereview.app.evidence.EvidenceLock.mutex.lock()
+            try{pendingZip?.archive?.close();pendingZip=null}finally{com.tradereview.app.evidence.EvidenceLock.mutex.unlock()}}
+        super.onCleared()
+    }
 }

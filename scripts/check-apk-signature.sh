@@ -24,11 +24,11 @@ printf 'versionName=0.8.0\nversionCode=8\napplicationId=com.tradereview.app\nsou
 if [[ "$configured" == true ]]; then
   printf 'upgrade_verified=true\n' >> "${GITHUB_OUTPUT:?}"
   cp "$apk_path" dist/TradeReview-v0.8-stable.apk
-  printf 'signingOrigin=GitHub Actions Secrets\nFixed V0.3 signer verified against both repository variable and committed V0.3 certificate pin. Future upgrades require this same private key and a larger versionCode. Old differently signed test versions need a manual uninstall first.\n' >> dist/SIGNING.txt
+  printf 'upgradeVerified=true\nsigningOrigin=GitHub Actions Secrets\nFixed V0.3 signer verified against both repository variable and committed V0.3 certificate pin. Future upgrades require this same private key and a larger versionCode. Back up local data before changing installation identity; no uninstall or phone data deletion is performed by CI.\n' >> dist/SIGNING.txt
 else
   printf 'upgrade_verified=false\n' >> "${GITHUB_OUTPUT:?}"
   cp "$apk_path" dist/TradeReview-v0.8-test.apk
-  printf 'signingOrigin=temporary runner Debug key\nTEST ONLY: no fixed signing key configured. This temporary key does not establish a sustainable V0.8 upgrade identity. With your permission, old test versions may be manually uninstalled before a fresh install; uninstall deletes local data. Future data should be backed up before switching to a stable signer.\n' >> dist/SIGNING.txt
+  printf 'upgradeVerified=false\nsigningOrigin=temporary runner Debug key\nTEST ONLY: no fixed signing key configured. This temporary key does not establish a sustainable V0.8 upgrade identity. Back up local data before changing installation identity; no uninstall or phone data deletion is performed by CI.\n' >> dist/SIGNING.txt
   printf '%s\n' '::warning::Fixed V0.3 key not configured. Temporary test APK only; long-term in-place upgrades are not guaranteed.'
 fi
 (cd dist && sha256sum ./*.apk > SHA256SUMS.txt)
