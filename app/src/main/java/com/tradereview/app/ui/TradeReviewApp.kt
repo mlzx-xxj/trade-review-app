@@ -22,6 +22,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -88,6 +91,7 @@ fun TradeReviewApp(model: TradeViewModel, backup: BackupViewModel, ocrModel: Ocr
     fun backReport() { if(reportKeys!=null)reportKeys=null else if(reports=="goals")reports=reportReturn else if(reports=="preflight" && reportReturn=="insights")reports="insights" else reports=null }
     BackHandler(enabled=reports!=null && !settings && editorId==null && evidenceKey==null) { backReport() }
     val snack = remember { SnackbarHostState() }
+    var feedbackHeightPx by remember { mutableIntStateOf(0) }
     // Material components (including the calendar) use Chinese even on an English phone.
     val activityResultOwner = requireNotNull(LocalActivityResultRegistryOwner.current) { "ActivityResult owner is required for local file access" }
     val context = LocalContext.current
@@ -114,21 +118,26 @@ fun TradeReviewApp(model: TradeViewModel, backup: BackupViewModel, ocrModel: Ocr
                     NavigationBarItem(modifier=Modifier.testTag("main-page-$index"),selected = page == index, onClick = { selectedDay = null; page = index }, icon = { Icon(item.icon, item.title) }, label = { Text(item.label,maxLines=1) })
                 }
             } },
-            snackbarHost = { SnackbarHost(snack) },
+            snackbarHost = { SnackbarHost(snack,Modifier.onSizeChanged { feedbackHeightPx=it.height }) },
         ) { padding ->
+            // Floating feedback must not intercept the last form action on a small screen.
+            val direction=LocalLayoutDirection.current
+            val feedbackInset=with(LocalDensity.current){feedbackHeightPx.toDp()} + if(feedbackHeightPx>0)8.dp else 0.dp
+            val pagePadding=PaddingValues(start=padding.calculateStartPadding(direction),top=padding.calculateTopPadding(),
+                end=padding.calculateEndPadding(direction),bottom=padding.calculateBottomPadding()+feedbackInset)
             if (settings) {
                 when(management) {
-                    "tags" -> TagManagement(state, busy, model, Modifier.padding(padding))
-                    "symbols" -> InstrumentManagement(state, busy, model, Modifier.padding(padding))
-                    "risk" -> RiskSettingsPage(state, model, busy, Modifier.padding(padding))
-                    "goals" -> ReviewGoalsPage(state,model,busy,Modifier.padding(padding))
-                    else -> SettingsPage(backup, busy, Modifier.padding(padding), onTags = { management = "tags" }, onSymbols = { management = "symbols" }, theme = state.settings.theme, onTheme = model::selectTheme,
+                    "tags" -> TagManagement(state, busy, model, Modifier.padding(pagePadding))
+                    "symbols" -> InstrumentManagement(state, busy, model, Modifier.padding(pagePadding))
+                    "risk" -> RiskSettingsPage(state, model, busy, Modifier.padding(pagePadding))
+                    "goals" -> ReviewGoalsPage(state,model,busy,Modifier.padding(pagePadding))
+                    else -> SettingsPage(backup, busy, Modifier.padding(pagePadding), onTags = { management = "tags" }, onSymbols = { management = "symbols" }, theme = state.settings.theme, onTheme = model::selectTheme,
                         palette = state.settings.pnlPalette, onPalette = model::selectPalette, onRisk = { management = "risk" },imageLimit=state.evidenceSettings.maxInputMiB,onImageLimit=model::imageLimit,onGoals={management="goals"},onSmart={settings=false;reports="insights"},onHelp={helpShown=true})
                 }
             } else if (state.loading || (state.error == null && analytics.loading)) {
                 Box(Modifier.fillMaxSize().padding(padding), contentAlignment = androidx.compose.ui.Alignment.Center) { CircularProgressIndicator() }
             } else if (state.error != null) {
-                Text(requireNotNull(state.error), Modifier.padding(padding).padding(24.dp), color = MaterialTheme.colorScheme.error)
+                Text(requireNotNull(state.error), Modifier.padding(pagePadding).padding(24.dp), color = MaterialTheme.colorScheme.error)
             } else {
                 if(reports!=null) {
                     if(reportKeys!=null)LazyColumn(Modifier.fillMaxSize().padding(padding).testTag("report-trades-list"),contentPadding=PaddingValues(16.dp),verticalArrangement=Arrangement.spacedBy(12.dp)) {
@@ -138,21 +147,21 @@ fun TradeReviewApp(model: TradeViewModel, backup: BackupViewModel, ocrModel: Ocr
                         if(rows.isEmpty())item { Text("此项暂无交易记录。") }
                         items(rows,key={it.recordKey}) { t -> TradeCard(t){editorId=t.id} }
                     } else pageState.SaveableStateProvider("reports:$reports") {
-                        if(reports=="insights")SmartReviewPage(state,model,busy,onTrades={rows,title->reportKeys=rows.map { it.recordKey };reportTitle=title},onPreflight={reportReturn="insights";reports="preflight";preflightDate=LocalDate.now().toEpochDay()},modifier=Modifier.padding(padding))
-                        else if(reports=="preflight")PreflightPage(preflightDate,state,model,busy,{preflightDate=it},onTrades={rows,title->reportKeys=rows.map { it.recordKey };reportTitle=title},modifier=Modifier.padding(padding))
-                        else if(reports=="goals")ReviewGoalsPage(state,model,busy,Modifier.padding(padding))
+                        if(reports=="insights")SmartReviewPage(state,model,busy,onTrades={rows,title->reportKeys=rows.map { it.recordKey };reportTitle=title},onPreflight={reportReturn="insights";reports="preflight";preflightDate=LocalDate.now().toEpochDay()},modifier=Modifier.padding(pagePadding))
+                        else if(reports=="preflight")PreflightPage(preflightDate,state,model,busy,{preflightDate=it},onTrades={rows,title->reportKeys=rows.map { it.recordKey };reportTitle=title},modifier=Modifier.padding(pagePadding))
+                        else if(reports=="goals")ReviewGoalsPage(state,model,busy,Modifier.padding(pagePadding))
                         else ReviewReportPage(requireNotNull(reports),state,currency,model::selectCurrency,{reports=it},
-                            onGoals={reportReturn=requireNotNull(reports);reports="goals"},onTrades={rows,title->reportKeys=rows.map { it.recordKey };reportTitle=title},modifier=Modifier.padding(padding))
+                            onGoals={reportReturn=requireNotNull(reports);reports="goals"},onTrades={rows,title->reportKeys=rows.map { it.recordKey };reportTitle=title},modifier=Modifier.padding(pagePadding))
                     }
                 } else if (selectedDay != null) DailyDetailsPage(requireNotNull(selectedDay), state, analytics.calendar[requireNotNull(selectedDay)].orEmpty(),
-                    onOpen = { editorId = it.id }, onJournal = { section -> pageState.removeState("page:2"); reviewDate = requireNotNull(selectedDay); reviewSection = section; selectedDay = null; page = 2 }, modifier = Modifier.padding(padding))
+                    onOpen = { editorId = it.id }, onJournal = { section -> pageState.removeState("page:2"); reviewDate = requireNotNull(selectedDay); reviewSection = section; selectedDay = null; page = 2 }, modifier = Modifier.padding(pagePadding))
                 else pageState.SaveableStateProvider("page:$page") { when (page) {
-                    0 -> HomePage(state, analytics, currency, model::selectCurrency, Modifier.padding(padding),
+                    0 -> HomePage(state, analytics, currency, model::selectCurrency, Modifier.padding(pagePadding),
                         onAdd = { editorId = 0 }, onReview = { section->pageState.removeState("page:2"); reviewDate = LocalDate.now().toEpochDay(); reviewSection = section; page = 2 }, onOpen = { editorId = it.id }, onDemo = model::addDemo, busy = busy, onCalendar = { page = 4 },onSmart={reports="insights"},onOcr={ocrShown=true},experience=experienceState,onBackup={settings=true},onSnooze={backup.snoozeBackup(7)})
-                    1 -> TradesPage(state, analytics.filtered, currency, filter, model, busy, Modifier.padding(padding), { editorId = 0 }, { editorId = it.id })
-                    2 -> DailyReviewPage(state.reviews, busy, model::savePlan, model::saveReview, Modifier.padding(padding), reviewDate, reviewSection,onPreflight={date->preflightDate=date;reportReturn="plan";reports="preflight"})
-                    3 -> StatisticsPage(state, analytics, currency, filter, model, busy, onDay = { selectedDay = it }, onDrill = { model.updateFilter(it); page = 1 }, modifier = Modifier.padding(padding),onReports={reports=it;reportReturn="week"})
-                    4 -> CalendarPage(state, analytics.calendar, currency, model::selectCurrency, { selectedDay = it }, Modifier.padding(padding))
+                    1 -> TradesPage(state, analytics.filtered, currency, filter, model, busy, Modifier.padding(pagePadding), { editorId = 0 }, { editorId = it.id })
+                    2 -> DailyReviewPage(state.reviews, busy, model::savePlan, model::saveReview, Modifier.padding(pagePadding), reviewDate, reviewSection,onPreflight={date->preflightDate=date;reportReturn="plan";reports="preflight"})
+                    3 -> StatisticsPage(state, analytics, currency, filter, model, busy, onDay = { selectedDay = it }, onDrill = { model.updateFilter(it); page = 1 }, modifier = Modifier.padding(pagePadding),onReports={reports=it;reportReturn="week"})
+                    4 -> CalendarPage(state, analytics.calendar, currency, model::selectCurrency, { selectedDay = it }, Modifier.padding(pagePadding))
                 } }
                 if (editorId != null) {
                     val original = state.trades.firstOrNull { it.id == editorId }
