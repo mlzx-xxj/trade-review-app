@@ -19,7 +19,8 @@ import java.time.LocalDate
 @Composable
 fun SettingsPage(model: BackupViewModel, journalBusy: Boolean, modifier: Modifier = Modifier,
     onTags: () -> Unit = {}, onSymbols: () -> Unit = {}, theme: String = "system", onTheme: (String) -> Unit = {},
-    palette: String = "green_profit", onPalette: (String) -> Unit = {}, onRisk: () -> Unit = {}) {
+    palette: String = "green_profit", onPalette: (String) -> Unit = {}, onRisk: () -> Unit = {},
+    imageLimit: Int = 10,onImageLimit: (Int)->Unit = {},onGoals: ()->Unit = {}) {
     val busy by model.busy.collectAsStateWithLifecycle()
     val preview by model.preview.collectAsStateWithLifecycle()
     val message by model.message.collectAsStateWithLifecycle()
@@ -30,14 +31,16 @@ fun SettingsPage(model: BackupViewModel, journalBusy: Boolean, modifier: Modifie
     val locked = busy || journalBusy
     val json = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("application/json")) { uri -> uri?.let(model::exportJson) }
     val csv = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("text/csv")) { uri -> uri?.let(model::exportCsv) }
+    val zip = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("application/zip")) { uri -> uri?.let(model::exportZip) }
     val restore = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri -> uri?.let(model::readBackup) }
     LazyColumn(modifier.fillMaxSize().testTag("settings-list"), state = listState, contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         if (busy) item { LinearProgressIndicator(Modifier.fillMaxWidth()); Text("正在处理，请等待完成") }
         message?.let { item { SectionCard("处理结果") { Text(it, style = MaterialTheme.typography.bodyMedium) } } }
         item { SectionCard("数据安全", "数据保存在本机；文件由你选择位置，应用不联网上传。") {
-            Text("JSON 包含全部币种交易、每日日志、标签、品种、草稿、常用筛选、专业交易、风险规则、合约模板和配色偏好。备份为明文，请选择你信任的位置。")
-            Button(enabled = !locked && preview == null, onClick = { json.launch("交易复盘-${LocalDate.now()}.json") }, modifier = Modifier.fillMaxWidth()) { Text("保存完整 JSON 备份") }
-            OutlinedButton(enabled = !locked, onClick = { restore.launch(arrayOf("application/json", "text/plain", "application/octet-stream")) }, modifier = Modifier.fillMaxWidth()) { Text("选择 JSON 备份恢复") }
+            Text("完整 ZIP 包含全部结构化数据、设置、目标及截图文件和校验清单。JSON 仅包含结构化数据与目标，不含图片。两种备份均为明文，请选择你信任的位置。")
+            Button(enabled = !locked && preview == null, onClick = { zip.launch("交易复盘-完整-${LocalDate.now()}.zip") }, modifier = Modifier.fillMaxWidth()) { Text("保存完整 ZIP 备份（含截图）") }
+            OutlinedButton(enabled = !locked && preview == null, onClick = { json.launch("交易复盘-数据-${LocalDate.now()}.json") }, modifier = Modifier.fillMaxWidth()) { Text("保存 JSON 备份（不含图片）") }
+            OutlinedButton(enabled = !locked, onClick = { restore.launch(arrayOf("application/zip","application/json", "text/plain", "application/octet-stream")) }, modifier = Modifier.fillMaxWidth()) { Text("选择 ZIP / JSON 备份恢复") }
             Text("卸载会删除本机数据。建议定期备份；系统文件选择器也可能提供你自行配置的云盘。", style = MaterialTheme.typography.bodySmall)
         } }
         preview?.let { p -> item { SectionCard("恢复预览", "文件已校验，尚未修改本地数据。") {
@@ -47,6 +50,9 @@ fun SettingsPage(model: BackupViewModel, journalBusy: Boolean, modifier: Modifie
             Text("格式版本 ${p.backup.sourceSchemaVersion} · 标签 ${p.backup.tags.size} 个 · 品种 ${p.backup.instruments.size} 个 · 草稿 ${p.backup.drafts.size} 份")
             Text("常用筛选 ${p.backup.savedFilters.size} 份 · 盈亏配色 ${if(p.backup.settings.pnlPalette == "red_profit") "红盈绿亏" else "绿盈红亏"}")
             Text("专业记录 ${p.backup.trades.count { it.professional != null }} 笔 · 风险规则 ${p.backup.riskRules.size} 个币种 · 合约模板 ${p.backup.contractTemplates.size} 份")
+            Text("改善目标 ${p.backup.goals.size} 个 · 截图 ${p.backup.attachments.size} 张 · 原图上限 ${p.backup.evidenceSettings.maxInputMiB} MiB")
+            Text(if(p.backup.backupScope=="with-attachment-files") "备份范围：完整 ZIP，全部截图已校验" else "备份范围：仅结构化数据，不含图片；覆盖将清理本机截图。",color=MaterialTheme.colorScheme.primary,modifier=Modifier.testTag("backup-scope"))
+            Text("当前本机截图 ${p.before.attachments.size} 张 · 目标 ${p.before.goals.size} 个；冲突交易的截图保留本地，不拼接不一致证据。")
             Text("冲突交易保留本地专业信息及纪律快照；覆盖会完整替换。")
             Text("合并将保留本地标签名称、收藏、排序与设置，补入新的稳定 ID 和草稿；覆盖替换全部数据。")
             Text("当前本地：${p.before.trades.size} 笔交易 · ${p.before.reviews.size} 个日志日期")
@@ -66,6 +72,9 @@ fun SettingsPage(model: BackupViewModel, journalBusy: Boolean, modifier: Modifie
             OutlinedButton(enabled = !locked && preview == null, onClick = onTags, modifier = Modifier.fillMaxWidth()) { Text("管理自定义标签") }
             OutlinedButton(enabled = !locked && preview == null, onClick = onSymbols, modifier = Modifier.fillMaxWidth()) { Text("管理常用品种") }
             OutlinedButton(enabled = !locked && preview == null, onClick = onRisk, modifier = Modifier.fillMaxWidth()) { Text("风险规则与合约模板") }
+            OutlinedButton(enabled = !locked && preview == null, onClick = onGoals, modifier = Modifier.fillMaxWidth()) { Text("纪律改善目标") }
+            Text("原图大小上限 · 私有压缩图最长边 2048，单张最多 4 MiB，每笔最多 10 张")
+            SingleChoice(listOf(5,10,20).map { com.tradereview.app.data.Option(it.toString(),"$it MiB") },imageLimit.toString()) { if(!locked && preview==null)onImageLimit(it.toInt()) }
             Text("显示模式")
             SingleChoice(listOf(com.tradereview.app.data.Option("system", "跟随系统"), com.tradereview.app.data.Option("light", "浅色"), com.tradereview.app.data.Option("dark", "深色")), theme) { if(!locked && preview == null) onTheme(it) }
             Text("盈亏配色 · 日历、金额卡片与图表同步")
@@ -73,14 +82,14 @@ fun SettingsPage(model: BackupViewModel, journalBusy: Boolean, modifier: Modifie
         } }
         item { SectionCard("应用信息") {
             Text("交易复盘 ${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})")
-            Text("本地数据库版本 5 · JSON 备份格式版本 4（兼容 V0.2–V0.4）")
+            Text("本地数据库版本 6 · JSON 格式 5 / 完整 ZIP 格式 1（兼容 V0.2–V0.5 JSON）")
             Text("升级安装需要相同应用标识及签名；应用不会自动下载或上传数据。", style = MaterialTheme.typography.bodySmall)
         } }
     }
     if (confirm && preview != null) AlertDialog(
         onDismissRequest = { if (!locked) confirm = false },
         title = { Text(if (mode == RestoreMode.REPLACE.name) "确认覆盖全部本地数据？" else "确认去重合并？") },
-        text = { Text(if (mode == RestoreMode.REPLACE.name) "将用备份中的 ${preview!!.backup.trades.size} 笔交易及 ${preview!!.backup.dailyReviews.size} 个日志日期替换本地全部记录。此操作不能在应用内撤销。" else "将补入预览中的新记录与缺少的计划／复盘，重复记录跳过，冲突保留本地内容。失败会回滚整个恢复。") },
+        text = { Text(if (mode == RestoreMode.REPLACE.name) "将用备份中的 ${preview!!.backup.trades.size} 笔交易、${preview!!.backup.dailyReviews.size} 个日志日期、${preview!!.backup.attachments.size} 张截图和 ${preview!!.backup.goals.size} 个目标替换本地全部记录。${if(preview!!.backup.backupScope=="structured-data-only") "此 JSON 不含图片，覆盖会清理本机所有截图。" else "图片校验通过后才提交数据。"}此操作不能在应用内撤销。" else "将补入新记录、计划／复盘和目标。重复记录跳过，冲突交易及其截图保留本地，图片超过每笔上限会拒绝合并。失败不会留下半恢复数据。") },
         confirmButton = { TextButton(enabled = !locked, onClick = { confirm = false; model.confirmRestore(RestoreMode.valueOf(mode)) }) { Text("确认恢复") } },
         dismissButton = { TextButton(enabled = !locked, onClick = { confirm = false }) { Text("返回预览") } },
     )

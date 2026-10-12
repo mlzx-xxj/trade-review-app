@@ -81,6 +81,19 @@ interface TradeDao {
     @Upsert suspend fun saveTemplate(value: ContractTemplate)
     @Delete suspend fun deleteTemplate(value: ContractTemplate)
     @Query("DELETE FROM contract_templates") suspend fun clearTemplates()
+    @Query("SELECT * FROM attachments ORDER BY recordKey, sortOrder, createdAt, id") fun observeAttachments(): Flow<List<Attachment>>
+    @Query("SELECT * FROM attachments ORDER BY recordKey, sortOrder, createdAt, id") suspend fun allAttachments(): List<Attachment>
+    @Upsert suspend fun saveAttachment(value: Attachment)
+    @Delete suspend fun deleteAttachment(value: Attachment)
+    @Query("DELETE FROM attachments") suspend fun clearAttachments()
+    @Query("SELECT * FROM review_goals ORDER BY startDate DESC, id") fun observeGoals(): Flow<List<ReviewGoal>>
+    @Query("SELECT * FROM review_goals ORDER BY startDate DESC, id") suspend fun allGoals(): List<ReviewGoal>
+    @Upsert suspend fun saveGoal(value: ReviewGoal)
+    @Query("DELETE FROM review_goals") suspend fun clearGoals()
+    @Query("SELECT * FROM evidence_settings WHERE id=1") fun observeEvidenceSettings(): Flow<EvidenceSettings?>
+    @Query("SELECT * FROM evidence_settings WHERE id=1") suspend fun evidenceSettings(): EvidenceSettings?
+    @Upsert suspend fun saveEvidenceSettings(value: EvidenceSettings)
+    @Query("DELETE FROM evidence_settings") suspend fun clearEvidenceSettings()
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insertReview(review: DailyReview)
 }
@@ -123,7 +136,16 @@ val MIGRATION_4_5 = object : Migration(4, 5) {
     }
 }
 
-@Database(entities = [Trade::class, DailyReview::class, ManagedTag::class, Instrument::class, AppSettings::class, EntryDraft::class, SavedFilter::class, RiskRules::class, ContractTemplate::class], version = 5, exportSchema = true)
+val MIGRATION_5_6 = object : Migration(5, 6) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL("CREATE TABLE IF NOT EXISTS attachments (id TEXT NOT NULL PRIMARY KEY, recordKey TEXT NOT NULL, kind TEXT NOT NULL, caption TEXT NOT NULL, sha256 TEXT NOT NULL, byteCount INTEGER NOT NULL, width INTEGER NOT NULL, height INTEGER NOT NULL, createdAt INTEGER NOT NULL, sortOrder INTEGER NOT NULL, FOREIGN KEY(recordKey) REFERENCES trades(recordKey) ON UPDATE NO ACTION ON DELETE CASCADE)")
+        db.execSQL("CREATE INDEX IF NOT EXISTS index_attachments_recordKey ON attachments(recordKey)")
+        db.execSQL("CREATE TABLE IF NOT EXISTS review_goals (id TEXT NOT NULL PRIMARY KEY, title TEXT NOT NULL, kind TEXT NOT NULL, period TEXT NOT NULL, startDate INTEGER NOT NULL, threshold TEXT, mistakeId TEXT, archivedDay INTEGER)")
+        db.execSQL("CREATE TABLE IF NOT EXISTS evidence_settings (id INTEGER NOT NULL PRIMARY KEY, maxInputMiB INTEGER NOT NULL)")
+    }
+}
+
+@Database(entities = [Trade::class, DailyReview::class, ManagedTag::class, Instrument::class, AppSettings::class, EntryDraft::class, SavedFilter::class, RiskRules::class, ContractTemplate::class, Attachment::class, ReviewGoal::class, EvidenceSettings::class], version = 6, exportSchema = true)
 @TypeConverters(TagConverters::class, FilterConverters::class, ProfessionalConverters::class)
 abstract class TradeDatabase : RoomDatabase() {
     abstract fun trades(): TradeDao

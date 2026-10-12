@@ -1,0 +1,11 @@
+# V0.6 实际验证记录
+
+基础 main 87f0b7d（PR #5 已合并），独立分支 codex/v06-review-reports。Base 无 Android SDK，未运行本地 Android 编译、手机测试，也未安装 Android Studio 或新建环境。
+
+本地实际执行：签名门禁 6、配置完整性 3、签名 payload 4、模拟器交付 3，共 16 项通过。该结果只验证发布脚本，不代替 Android 编译/JVM/模拟器。
+
+已添加报告日期/跨年/闰月、分币种/有效 R/未知纪律、目标分母/精度/归档/文字目标、ZIP 路径/重复/超限/摘要，以及原格式兼容和新增数据往返测试。AndroidTest 新增真实 ContentResolver 图片/EXIF/损坏/权限/容量/删除、ZIP 十二表与文件协调回滚、v5→v6 与完整旧链，以及截图/报告/目标/备份界面。未执行结果不标为通过，后续以 Actions 原始 XML 更新。
+
+工作流重新执行 Debug/测试 APK、JVM、Lint 和 connectedDebugAndroidTest，显式 --no-build-cache；发布只在全部任务成功且原 13 张与新增 5 张截图齐全后进行，保留失败退出码。最终提交包含文档也须完整 CI，无 skip ci。
+
+签名以实际 APK 与 SIGNING.txt 为准。前置 main 的真实日志仍为 Fixed V0.3 key not configured；保留原 pin，本轮不读取、生成或替换长期私钥。测试环境/数据/限制说明见 V06-DATA-AND-REPORTS.md。

@@ -46,8 +46,9 @@ fun TradeReviewApp(model: TradeViewModel, backup: BackupViewModel) {
     val currency by model.currency.collectAsStateWithLifecycle()
     val filter by model.filter.collectAsStateWithLifecycle()
     val analytics by model.analytics.collectAsStateWithLifecycle()
-    val busy by model.busy.collectAsStateWithLifecycle()
+    val journalBusy by model.busy.collectAsStateWithLifecycle()
     val backupBusy by backup.busy.collectAsStateWithLifecycle()
+    val busy = journalBusy || backupBusy
     val message by model.message.collectAsStateWithLifecycle()
     var page by rememberSaveable { mutableIntStateOf(0) }
     var settings by rememberSaveable { mutableStateOf(false) }
@@ -59,6 +60,13 @@ fun TradeReviewApp(model: TradeViewModel, backup: BackupViewModel) {
     BackHandler(enabled = selectedDay != null && !settings) { selectedDay = null }
     BackHandler(enabled = settings) { if (!backupBusy && !busy) { if(management != null) management = null else settings = false } }
     var editorId by rememberSaveable { mutableStateOf<Long?>(null) }
+    var evidenceKey by rememberSaveable { mutableStateOf<String?>(null) }
+    var reports by rememberSaveable { mutableStateOf<String?>(null) }
+    var reportReturn by rememberSaveable { mutableStateOf("week") }
+    var reportKeys by rememberSaveable { mutableStateOf<List<String>?>(null) }
+    var reportTitle by rememberSaveable { mutableStateOf("报告交易明细") }
+    fun backReport() { if(reportKeys!=null)reportKeys=null else if(reports=="goals")reports=reportReturn else reports=null }
+    BackHandler(enabled=reports!=null && !settings && editorId==null && evidenceKey==null) { backReport() }
     val snack = remember { SnackbarHostState() }
     // Material components (including the calendar) use Chinese even on an English phone.
     val activityResultOwner = requireNotNull(LocalActivityResultRegistryOwner.current) { "ActivityResult owner is required for local file access" }
@@ -73,14 +81,14 @@ fun TradeReviewApp(model: TradeViewModel, backup: BackupViewModel) {
     }
     CompositionLocalProvider(LocalContext provides chineseContext, LocalConfiguration provides chineseConfiguration, LocalActivityResultRegistryOwner provides activityResultOwner, LocalCatalog provides Catalog(state.tags), LocalPnlColors provides paletteColors(state.settings.pnlPalette)) {
         Scaffold(containerColor = MaterialTheme.colorScheme.background,
-            topBar = { TopAppBar(title = { Text(when(management) { "tags" -> "标签管理"; "symbols" -> "常用品种"; "risk" -> "风险规则与合约模板"; else -> if(settings) "设置" else if(selectedDay != null) "每日详情" else pages[page].title }) }, navigationIcon = {
-                if (settings || selectedDay != null) IconButton(enabled = !backupBusy && !busy, onClick = { if(settings) { if(management != null) management = null else settings = false } else selectedDay = null }) { Icon(Icons.AutoMirrored.Filled.ArrowBack, "返回主页面") }
+            topBar = { TopAppBar(title = { Text(when(management) { "tags" -> "标签管理"; "symbols" -> "常用品种"; "risk" -> "风险规则与合约模板"; "goals" -> "纪律改善目标"; else -> if(settings) "设置" else if(reports!=null) { if(reportKeys!=null)reportTitle else when(reports){"week"->"每周复盘";"month"->"每月复盘";else->"纪律改善目标"} } else if(selectedDay != null) "每日详情" else pages[page].title }) }, navigationIcon = {
+                if (settings || selectedDay != null || reports!=null) IconButton(enabled = !backupBusy && !busy, onClick = { if(settings) { if(management != null) management = null else settings = false } else if(reports!=null)backReport() else selectedDay = null }) { Icon(Icons.AutoMirrored.Filled.ArrowBack, "返回主页面") }
             }, actions = {
-                if (!settings && (page == 0 || page == 1)) IconButton(enabled = !state.loading && state.error == null, onClick = { editorId = 0 }) { Icon(Icons.Default.Add, "新增交易") }
-                if (!settings && page != 4) IconButton(onClick = { selectedDay = null; page = 4 }) { Icon(Icons.Default.CalendarMonth, "打开交易日历") }
-                if (!settings) IconButton(onClick = { settings = true }) { Icon(Icons.Default.Settings, "设置与备份") }
+                if (!settings && reports==null && (page == 0 || page == 1)) IconButton(enabled = !state.loading && state.error == null, onClick = { editorId = 0 }) { Icon(Icons.Default.Add, "新增交易") }
+                if (!settings && reports==null && page != 4) IconButton(onClick = { selectedDay = null; page = 4 }) { Icon(Icons.Default.CalendarMonth, "打开交易日历") }
+                if (!settings && reports==null) IconButton(onClick = { settings = true }) { Icon(Icons.Default.Settings, "设置与备份") }
             }) },
-            bottomBar = { if (!settings) NavigationBar {
+            bottomBar = { if (!settings && reports==null) NavigationBar {
                 pages.forEachIndexed { index, item ->
                     NavigationBarItem(selected = page == index, onClick = { selectedDay = null; page = index }, icon = { Icon(item.icon, item.title) }, label = { Text(if(index == 4) "日历" else item.title) })
                 }
@@ -92,29 +100,44 @@ fun TradeReviewApp(model: TradeViewModel, backup: BackupViewModel) {
                     "tags" -> TagManagement(state, busy, model, Modifier.padding(padding))
                     "symbols" -> InstrumentManagement(state, busy, model, Modifier.padding(padding))
                     "risk" -> RiskSettingsPage(state, model, busy, Modifier.padding(padding))
+                    "goals" -> ReviewGoalsPage(state,model,busy,Modifier.padding(padding))
                     else -> SettingsPage(backup, busy, Modifier.padding(padding), onTags = { management = "tags" }, onSymbols = { management = "symbols" }, theme = state.settings.theme, onTheme = model::selectTheme,
-                        palette = state.settings.pnlPalette, onPalette = model::selectPalette, onRisk = { management = "risk" })
+                        palette = state.settings.pnlPalette, onPalette = model::selectPalette, onRisk = { management = "risk" },imageLimit=state.evidenceSettings.maxInputMiB,onImageLimit=model::imageLimit,onGoals={management="goals"})
                 }
             } else if (state.loading || (state.error == null && analytics.loading)) {
                 Box(Modifier.fillMaxSize().padding(padding), contentAlignment = androidx.compose.ui.Alignment.Center) { CircularProgressIndicator() }
             } else if (state.error != null) {
                 Text(requireNotNull(state.error), Modifier.padding(padding).padding(24.dp), color = MaterialTheme.colorScheme.error)
             } else {
-                if (selectedDay != null) DailyDetailsPage(requireNotNull(selectedDay), state, analytics.calendar[requireNotNull(selectedDay)].orEmpty(),
+                if(reports!=null) {
+                    if(reportKeys!=null)LazyColumn(Modifier.fillMaxSize().padding(padding).testTag("report-trades-list"),contentPadding=PaddingValues(16.dp),verticalArrangement=Arrangement.spacedBy(12.dp)) {
+                        val keys=reportKeys.orEmpty().toHashSet()
+                        val rows=state.trades.filter { it.recordKey in keys }
+                        item { Text("${rows.size} 笔真实交易；各笔标明币种，不混合金额。") }
+                        if(rows.isEmpty())item { Text("此项暂无交易记录。") }
+                        items(rows,key={it.recordKey}) { t -> TradeCard(t){editorId=t.id} }
+                    } else pageState.SaveableStateProvider("reports:$reports") {
+                        if(reports=="goals")ReviewGoalsPage(state,model,busy,Modifier.padding(padding))
+                        else ReviewReportPage(requireNotNull(reports),state,currency,model::selectCurrency,{reports=it},
+                            onGoals={reportReturn=requireNotNull(reports);reports="goals"},onTrades={rows,title->reportKeys=rows.map { it.recordKey };reportTitle=title},modifier=Modifier.padding(padding))
+                    }
+                } else if (selectedDay != null) DailyDetailsPage(requireNotNull(selectedDay), state, analytics.calendar[requireNotNull(selectedDay)].orEmpty(),
                     onOpen = { editorId = it.id }, onJournal = { section -> pageState.removeState("page:2"); reviewDate = requireNotNull(selectedDay); reviewSection = section; selectedDay = null; page = 2 }, modifier = Modifier.padding(padding))
                 else pageState.SaveableStateProvider("page:$page") { when (page) {
                     0 -> HomePage(state, analytics, currency, model::selectCurrency, Modifier.padding(padding),
                         onAdd = { editorId = 0 }, onReview = { pageState.removeState("page:2"); reviewDate = LocalDate.now().toEpochDay(); reviewSection = "plan"; page = 2 }, onOpen = { editorId = it.id }, onDemo = model::addDemo, busy = busy, onCalendar = { page = 4 })
                     1 -> TradesPage(state, analytics.filtered, currency, filter, model, busy, Modifier.padding(padding), { editorId = 0 }, { editorId = it.id })
                     2 -> DailyReviewPage(state.reviews, busy, model::savePlan, model::saveReview, Modifier.padding(padding), reviewDate, reviewSection)
-                    3 -> StatisticsPage(state, analytics, currency, filter, model, busy, onDay = { selectedDay = it }, onDrill = { model.updateFilter(it); page = 1 }, modifier = Modifier.padding(padding))
+                    3 -> StatisticsPage(state, analytics, currency, filter, model, busy, onDay = { selectedDay = it }, onDrill = { model.updateFilter(it); page = 1 }, modifier = Modifier.padding(padding),onReports={reports=it;reportReturn="week"})
                     4 -> CalendarPage(state, analytics.calendar, currency, model::selectCurrency, { selectedDay = it }, Modifier.padding(padding))
                 } }
                 if (editorId != null) {
                     val original = state.trades.firstOrNull { it.id == editorId }
                     TradeEditor(original, state, busy, saveError = message?.takeIf { it.startsWith("保存失败") }, onDismiss = { editorId = null },
-                        onDraft = model::persistDraft, onSave = { draft, approved, done -> model.saveEntry(draft, done, approved) }, onDelete = { model.deleteTrade(it) { editorId = null } }, notify = model::notify, onTemplate = model::saveTemplate)
+                        onDraft = model::persistDraft, onSave = { draft, approved, done -> model.saveEntry(draft, done, approved) }, onDelete = { model.deleteTrade(it) { editorId = null } }, notify = model::notify, onTemplate = model::saveTemplate,
+                        evidenceStore=model.evidenceStore,onEvidence={t->editorId=null;evidenceKey=t.recordKey})
                 }
+                evidenceKey?.let { key -> EvidencePage(key,state,model,busy) { evidenceKey=null;editorId=state.trades.firstOrNull { it.recordKey==key }?.id } }
             }
         }
     }
