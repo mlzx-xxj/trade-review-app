@@ -14,7 +14,7 @@ import kotlinx.coroutines.sync.withLock
 import java.io.File
 
 data class OcrSession(val candidates:List<OcrCandidate> = emptyList(),val raw:String="",val image:Attachment?=null,
-    val store:AttachmentStore?=null,val busy:Boolean=false,val error:String?=null,val draftId:String?=null)
+    val store:AttachmentStore?=null,val busy:Boolean=false,val error:String?=null,val draftId:String?=null,val sessionId:String=newKey())
 class OcrViewModel(private val context:Context,private val recognizer:OfflineRecognizer=BundledOcr()):ViewModel() {
     val state=MutableStateFlow(OcrSession())
     private val sessionRoot=File(context.cacheDir,"ocr-${newKey()}")

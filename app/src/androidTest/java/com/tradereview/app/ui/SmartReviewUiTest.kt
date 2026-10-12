@@ -107,7 +107,7 @@ class SmartReviewUiTest {
         c.fields.keys.forEach{key->compose.onNodeWithTag("ocr-list").performScrollToNode(hasTestTag("ocr-verify-$key"));compose.onNodeWithTag("ocr-verify-$key").performScrollTo().performClick()}
         compose.onNodeWithTag("ocr-list").performScrollToNode(hasTestTag("ocr-confirm-closed"));compose.onNodeWithTag("ocr-confirm-closed").performScrollTo().performClick()
         compose.onNodeWithTag("ocr-create").performClick();compose.onNodeWithText("发现疑似重复交易").assertIsDisplayed();assertEquals(6,model.state.value.trades.size)
-        compose.onNodeWithText("已查看，仍新增此真实交易").performClick();compose.onNodeWithTag("ocr-create").performClick()
+        compose.onNodeWithText("已查看，仍新增此真实交易").performClick()
         compose.waitUntil(15000){model.state.value.trades.size==7 && !model.busy.value}
         runBlocking{assertEquals(t,db.trades().findTradeByKey(t.recordKey))}
     }

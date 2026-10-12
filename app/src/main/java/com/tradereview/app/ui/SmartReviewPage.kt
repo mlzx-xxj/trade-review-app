@@ -21,6 +21,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.LocalFocusManager
 
 private data class InsightSnapshot(val state:JournalState,val period:ReviewPeriod?,val rows:List<Insight>)
+private data class PreflightSnapshot(val date:Long,val state:JournalState,val rows:List<PreflightReminder>)
 @Composable
 private fun calculatedInsights(state:JournalState,period:ReviewPeriod?=null):List<Insight>? {
     val snapshot by produceState<InsightSnapshot?>(null,state.trades,state.reviews,state.goals,state.tags,state.smartSettings,period) {
@@ -80,9 +81,10 @@ fun SmartReviewPage(state:JournalState,model:TradeViewModel,busy:Boolean,onTrade
 }
 @Composable
 fun PreflightPage(date:Long,state:JournalState,model:TradeViewModel,busy:Boolean,onDate:(Long)->Unit,onTrades:(List<Trade>,String)->Unit,modifier:Modifier=Modifier) {
-    val reminders by produceState<List<PreflightReminder>?>(null,date,state.trades,state.reviews,state.goals,state.riskRules,state.smartSettings,state.tags) {
-        value=withContext(Dispatchers.Default){PreflightRules.reminders(date,state.trades,state.reviews,state.goals,state.riskRules,state.smartSettings,state.tags)}
+    val reminderSnapshot by produceState<PreflightSnapshot?>(null,date,state.trades,state.reviews,state.goals,state.riskRules,state.smartSettings,state.tags) {
+        value=withContext(Dispatchers.Default){PreflightSnapshot(date,state,PreflightRules.reminders(date,state.trades,state.reviews,state.goals,state.riskRules,state.smartSettings,state.tags))}
     }
+    val reminders=reminderSnapshot?.takeIf { it.date==date && it.state.trades===state.trades && it.state.reviews===state.reviews && it.state.goals===state.goals && it.state.riskRules===state.riskRules && it.state.tags===state.tags && it.state.smartSettings==state.smartSettings }?.rows
     var newText by rememberSaveable { mutableStateOf("") };var error by remember { mutableStateOf<String?>(null) }
     val keyboard=LocalSoftwareKeyboardController.current;val focus=LocalFocusManager.current
     val manual=state.preflightItems.filter { !it.archived }.map { PreflightReminder("manual:${it.id}",it.text,emptyList()) }

@@ -93,7 +93,7 @@ object FullZipArchive {
             require(manifestItems.map { it.path }.distinct().size==manifestItems.size && manifestItems.map { it.path }.toSet()+"manifest.json"==seen) { "ZIP 文件与清单不一致" }
             manifestItems.forEach { item -> val f=File(dir,item.path);require(f.length()==item.bytes && sha256(f)==item.sha256) { "ZIP 文件 SHA-256 校验失败" } }
             val data=File(dir,"data.json").inputStream().use(BackupCodec::read)
-            require(data.sourceSchemaVersion==5 && data.backupScope=="with-attachment-files" && data.exportedAt==text(root,"exportedAt")) { "完整 ZIP 的数据版本或范围不正确" }
+            require(data.sourceSchemaVersion in 5..BackupCodec.SCHEMA_VERSION && data.backupScope=="with-attachment-files" && data.exportedAt==text(root,"exportedAt")) { "完整 ZIP 的数据版本或范围不正确" }
             require(images.associate { it.path to (it.bytes to it.sha256) }==data.attachments.associate { "images/${attachmentFileName(it)}" to (it.byteCount to it.sha256) }) { "截图元数据与校验清单不一致" }
             archive.delete();return ParsedZip(dir,data)
         } catch(e: Exception) { dir.deleteRecursively();if(e is BackupException)throw e

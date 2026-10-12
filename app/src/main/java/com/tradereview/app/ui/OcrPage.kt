@@ -23,37 +23,46 @@ import com.tradereview.app.domain.*
 import java.time.LocalDate
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.ui.text.input.ImeAction
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+
+private data class OcrRiskPreview(val draft:EntryDraft,val rules:List<RiskRules>,val history:List<Trade>,val event:RiskEvent)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OcrPage(ocr:OcrViewModel,state:JournalState,model:TradeViewModel,onDismiss:()->Unit) {
     val session by ocr.state.collectAsStateWithLifecycle();val busy by model.busy.collectAsStateWithLifecycle();val feedback by model.message.collectAsStateWithLifecycle()
     val picker=rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()){uri->if(uri!=null)ocr.read(uri,state.evidenceSettings)}
-    var selected by remember(session.candidates) { mutableStateOf<Set<Int>>(emptySet()) };var index by remember(session.candidates){mutableIntStateOf(0)}
-    var saved by remember(session.candidates){mutableStateOf<Set<Int>>(emptySet())}
-    var changed by remember(session.candidates){mutableStateOf<Map<Int,OcrCandidate>>(emptyMap())}
-    var confirmations by remember(session.candidates){mutableStateOf<Map<Int,Set<String>>>(emptyMap())}
-    var closed by remember(session.candidates){mutableStateOf<Set<Int>>(emptySet())}
-    var keys by remember(session.candidates){mutableStateOf<Map<Int,String>>(emptyMap())}
-    var keepImage by remember(session.image){mutableStateOf(false)};var rawVisible by remember(session.raw){mutableStateOf(false)}
+    var selected by remember(session.sessionId) { mutableStateOf<Set<Int>>(emptySet()) };var index by remember(session.sessionId){mutableIntStateOf(0)}
+    var saved by remember(session.sessionId){mutableStateOf<Set<Int>>(emptySet())}
+    var changed by remember(session.sessionId){mutableStateOf<Map<Int,OcrCandidate>>(emptyMap())}
+    var confirmations by remember(session.sessionId){mutableStateOf<Map<Int,Set<String>>>(emptyMap())}
+    var closed by remember(session.sessionId){mutableStateOf<Set<Int>>(emptySet())}
+    val keys=remember(session.sessionId){session.candidates.indices.associateWith { newKey() }}
+    var draftIds by remember(session.sessionId){mutableStateOf<Map<Int,String>>(session.draftId?.let { mapOf(0 to it) } ?: emptyMap())}
+    var keepImage by remember(session.sessionId){mutableStateOf(false)};var rawVisible by remember(session.sessionId){mutableStateOf(false)}
     var strategy by remember { mutableStateOf("trend") };var position by remember { mutableIntStateOf(10) }
-    var duplicateDialog by remember { mutableStateOf<List<Trade>?>(null) };var approvedDuplicates by remember { mutableStateOf<Set<String>>(emptySet()) }
-    var riskDialog by remember { mutableStateOf<RiskEvent?>(null) };var approvedRisk by remember { mutableStateOf<String?>(null) }
-    var error by remember { mutableStateOf<String?>(null) }
+    var duplicateDialog by remember(session.sessionId,index) { mutableStateOf<List<Trade>?>(null) };var approvedDuplicates by remember(session.sessionId,index) { mutableStateOf<Set<String>>(emptySet()) }
+    var riskDialog by remember(session.sessionId,index) { mutableStateOf<RiskEvent?>(null) };var approvedRisk by remember(session.sessionId,index) { mutableStateOf<String?>(null) }
+    var error by remember(session.sessionId,index) { mutableStateOf<String?>(null) }
     val candidate=session.candidates.getOrNull(index)?.let { changed[index] ?: it };val verified=confirmations[index].orEmpty()
     val valid=candidate?.let { index in selected && index !in saved && OcrTradeParser.canCreate(it,verified,index in closed) }==true
+    val currentDraft=candidate?.let { OcrTradeParser.draft(it,strategy,position,keys.getValue(index)) }
+    val riskResult by produceState<OcrRiskPreview?>(null,currentDraft,state.riskRules,state.trades) {
+        value=withContext(Dispatchers.Default) { currentDraft?.let { d->runCatching { val t=FastEntry.trade(d);OcrRiskPreview(d,state.riskRules,state.trades,RiskEngine.check(t,state.riskRules.firstOrNull { it.currency==t.currency },state.trades)) }.getOrNull() } }
+    }
+    val riskPreview=riskResult?.takeIf { it.draft==currentDraft && it.rules===state.riskRules && it.history===state.trades }
     fun resetApproval(){approvedDuplicates=emptySet();approvedRisk=null;error=null}
     fun update(key:String,value:String) { val c=candidate ?: return;changed=changed+(index to c.copy(fields=if(value.isBlank())c.fields-key else c.fields+(key to value),conflicts=c.conflicts-key));confirmations=confirmations+(index to (verified-key));closed=closed-index;resetApproval() }
     fun save() {
         val c=candidate ?: return
         val duplicates=OcrTradeParser.duplicates(c,state.trades)
         if(duplicates.any { it.recordKey !in approvedDuplicates }) { duplicateDialog=duplicates;return }
-        val key=keys[index] ?: newKey().also { keys=keys+(index to it) }
-        val draft=OcrTradeParser.draft(c,strategy,position,key);val trade=runCatching { FastEntry.trade(draft) }.getOrElse { error=it.message;return }
-        val check=RiskEngine.check(trade,state.riskRules.firstOrNull { it.currency==trade.currency },state.trades)
+        val key=keys.getValue(index)
+        val check=riskPreview?.event ?: run { error="请核对字段，或等待本地风险检查完成";return }
         if(check.violations.isNotEmpty() && approvedRisk!=RiskEngine.fingerprint(check)){riskDialog=check;return}
         val savingIndex=index
-        model.saveOcr(c,verified,index in closed,strategy,position,key,session,keepImage,approvedDuplicates,approvedRisk) { saved=saved+savingIndex;selected=selected-savingIndex;error=null;approvedDuplicates=emptySet();approvedRisk=null }
+        model.saveOcr(c,verified,index in closed,strategy,position,key,session.copy(draftId=draftIds[index]),keepImage,approvedDuplicates,approvedRisk) { saved=saved+savingIndex;selected=selected-savingIndex;error=null;approvedDuplicates=emptySet();approvedRisk=null }
     }
     LocalFullScreenDialog({if(!busy){ocr.clear();onDismiss()}}) {
         val focus=LocalFocusManager.current;val keyboard=LocalSoftwareKeyboardController.current
@@ -61,8 +70,8 @@ fun OcrPage(ocr:OcrViewModel,state:JournalState,model:TradeViewModel,onDismiss:(
             bottomBar={Surface(shadowElevation=4.dp) { Column(Modifier.fillMaxWidth().padding(12.dp)) {
                 error?.let { Text(it,color=MaterialTheme.colorScheme.error) }
                 if(candidate!=null) {
-                    Button(enabled=valid && !busy && !session.busy,onClick={focus.clearFocus();keyboard?.hide();save()},modifier=Modifier.fillMaxWidth().heightIn(min=48.dp).testTag("ocr-create")){Text(if(index in saved)"该候选已保存"else "确认并创建交易")}
-                    TextButton(enabled=!busy,onClick={model.ocrDraft(requireNotNull(candidate),session.draftId){};keyboard?.hide();focus.clearFocus()},modifier=Modifier.testTag("ocr-save-draft")){Text("保存待核实草稿")}
+                    Button(enabled=valid && riskPreview!=null && !busy && !session.busy,onClick={focus.clearFocus();keyboard?.hide();save()},modifier=Modifier.fillMaxWidth().heightIn(min=48.dp).testTag("ocr-create")){Text(if(index in saved)"该候选已保存"else "确认并创建交易")}
+                    TextButton(enabled=!busy && index !in saved,onClick={val id=draftIds[index] ?: newKey().also { draftIds=draftIds+(index to it) };model.ocrDraft(requireNotNull(candidate),id){};keyboard?.hide();focus.clearFocus()},modifier=Modifier.testTag("ocr-save-draft")){Text("保存待核实草稿")}
                 }
             } } }) { padding -> LazyColumn(Modifier.fillMaxSize().padding(padding).testTag("ocr-list"),contentPadding=PaddingValues(16.dp),verticalArrangement=Arrangement.spacedBy(12.dp)) {
                 item { SectionCard("离线 OCR 辅助录入","识别字段可能错误；只有核实的已平仓成交才能保存，盈亏必须确认为最终净已实现值。") {
@@ -82,6 +91,7 @@ fun OcrPage(ocr:OcrViewModel,state:JournalState,model:TradeViewModel,onDismiss:(
                     item { SectionCard("第 ${index+1} 条待确认字段") {
                         candidate.problems.forEach { Text(it,color=MaterialTheme.colorScheme.error) }
                         if(candidate.blocked || !candidate.closedEvidence)Text("该截图缺少可靠已平仓依据，仅允许保存草稿。补齐事实后可通过原快捷记账录入。",color=MaterialTheme.colorScheme.error)
+                        if(valid && currentDraft!=null)FastEntry.error(currentDraft)?.let { Text(it,color=MaterialTheme.colorScheme.error) }
                         Text("逐项勾选代表已与真实成交核对；编辑后会清除对应确认。")
                     } }
                     items(OcrTradeParser.labels.entries.toList(),key={it.key}) { (key,label)->
@@ -116,7 +126,7 @@ fun OcrPage(ocr:OcrViewModel,state:JournalState,model:TradeViewModel,onDismiss:(
     duplicateDialog?.let { rows->AlertDialog(onDismissRequest={duplicateDialog=null},title={Text("发现疑似重复交易")},text={Column {
         Text("同日期、市场、品种、方向、币种及净盈亏的 ${rows.size} 条记录；请查看后决定是否仍新增，不自动合并。")
         rows.take(5).forEach { TradeCard(it){} };if(rows.size>5)Text("其余 ${rows.size-5} 条请在交易记录中核对。")
-    }},confirmButton={TextButton(onClick={approvedDuplicates=rows.map { it.recordKey }.toSet();duplicateDialog=null}){Text("已查看，仍新增此真实交易")}},dismissButton={TextButton(onClick={duplicateDialog=null}){Text("返回核对")}}) }
+    }},confirmButton={TextButton(onClick={approvedDuplicates=rows.map { it.recordKey }.toSet();duplicateDialog=null;save()}){Text("已查看，仍新增此真实交易")}},dismissButton={TextButton(onClick={duplicateDialog=null}){Text("返回核对")}}) }
     riskDialog?.let { event->AlertDialog(onDismissRequest={riskDialog=null},title={Text("风险纪律提醒")},text={Text(event.violations.joinToString("\n"){RiskEngine.labels[it] ?: it})},
-        confirmButton={TextButton(onClick={approvedRisk=RiskEngine.fingerprint(event);riskDialog=null}){Text("确认真实记录，仍保存")}},dismissButton={TextButton(onClick={riskDialog=null}){Text("返回核对")}}) }
+        confirmButton={TextButton(onClick={approvedRisk=RiskEngine.fingerprint(event);riskDialog=null;save()}){Text("确认真实记录，仍保存")}},dismissButton={TextButton(onClick={riskDialog=null}){Text("返回核对")}}) }
 }

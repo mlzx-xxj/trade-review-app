@@ -24,7 +24,7 @@ object SmartJson {
         return o.keySet().associateWith { k -> o.s(k).also { require(it.length<=80 && '\u0000' !in it) } }.filterValues { it.isNotEmpty() }
     }
     private fun id(v:String)=require(Regex("[0-9a-f]{32}").matches(v))
-    private fun text(v:String,max:Int)=require(v.isNotBlank() && v.length<=max && v.none { it=='\u0000' || it=='|' })
+    private fun text(v:String,max:Int)=require(v.isNotBlank() && v.length<=max && '\u0000' !in v)
     private fun day(v:Long)=require(v in LocalDate.of(1900,1,1).toEpochDay()..LocalDate.of(2100,12,31).toEpochDay())
     fun validate(s:SmartSettings) { require(s.id==1 && s.minimumSamples in 3..100 && s.lookbackDays in listOf(7,14,30));require(s.enabledCategories.distinct()==s.enabledCategories && s.enabledCategories.all { it in SmartOptions.categories.map { o->o.id } }) }
     fun validate(i:PreflightItem) { id(i.id);text(i.text,120) }
