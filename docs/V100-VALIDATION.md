@@ -15,6 +15,8 @@
 
 首轮 API35 在 103 项开始后只完成54项，其中2项失败、测试进程崩溃；不是通过。新增 AndroidTest 备份 Provider 在独立测试 APK 进程加载时缺少 Kotlin Intrinsics（目标 APK 运行时不会自动进入该独立进程）。将该合成 Provider 改为仅 Android/Java 类，保留同样的损坏/写入失败/只写条件及全部原断言。修复后重新执行完整 CI，不删除失败测试。
 
+第二轮 [Actions 38311222575](https://github.com/mlzx-xxj/trade-review-app/actions/runs/38311222575)，源提交 `e20b76516366619def966747f831d2c779002eae`：三种编译/JVM/Lint 再次通过。API35 实际完成103项、0跳过，100通过/3失败；新增5项备份数据测试均通过，Provider崩溃消除。3项 UI 失败是对尚未组成的 LazyColumn 子节点直接 performScrollTo：home-plan、home-post-review、show-help。加入列表定位并从 LazyColumn performScrollToNode 搜索滚动；保留原保存/恢复/历史数据断言，月报切换先滚回控制项再点击。
+
 ## 正在执行
 
 API29/35 全回归、新手引导/备份故障/完整操作链、实际交付 RC 安装及重启、截图和发布验证正在执行；结果完成后补充。最终提交必须另有完整绿色 CI，见 PR Checks，不使用 skip ci。

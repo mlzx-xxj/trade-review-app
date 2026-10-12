@@ -176,7 +176,7 @@ private fun HomePage(state: JournalState, analytics: AnalyticsState, currency: S
     val stats = analytics.home
     val todayStats = analytics.today
     val todayReview = state.reviews.firstOrNull { it.date == today }
-    LazyColumn(modifier.fillMaxSize(), contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+    LazyColumn(modifier.fillMaxSize().testTag("home-list"), contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         item {
             Text("记录交易，复盘执行", style = MaterialTheme.typography.headlineSmall,modifier=Modifier.testTag("home-title"))
             Text(dayLabel(today), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)

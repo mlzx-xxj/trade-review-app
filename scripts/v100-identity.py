@@ -64,6 +64,7 @@ def verify_delivery(directory,aapt,signer,source):
     root=Path(directory);expected={"TradeReview-v1.0-RC.apk":"rc"}
     if (root/"FIXED-IDENTITY.json").exists():expected["TradeReview-v1.0-fixed-candidate.apk"]="release"
     status=json.loads((root/"SIGNING-STATUS.json").read_text())
+    if type(status.get("configured")) is not bool or status.get("originalPinVerified") is not status["configured"] or status.get("realPhoneAcceptance")!="not-confirmed":raise ValueError("Signing/phone status must reflect this observed candidate build")
     if status.get("sourceCommit")!=source or status.get("configured")!=('release' in expected.values()):raise ValueError("Observed fixed signing configuration does not match delivered identities")
     if {p.name for p in root.glob("*.apk")}!=set(expected):raise ValueError("Unexpected APK or incomplete identity pair")
     hashes=[];checked={}
