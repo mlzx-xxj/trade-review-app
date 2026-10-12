@@ -92,7 +92,8 @@ class SmartReviewUiTest {
         compose.waitUntil(15000){model.state.value.preflightChecks.any { it.itemKey=="auto:mistake:chase" && it.checked }}
         compose.onNodeWithTag("preflight-list").performScrollToNode(hasTestTag("check-auto:goal:${model.state.value.goals.single().id}"));capture("22-preflight-checklist")
         compose.onNodeWithTag("preflight-list").performScrollToNode(hasTestTag("preflight-new-text"));compose.onNodeWithTag("preflight-new-text").performTextInput("核对最大计划风险")
-        compose.onNodeWithTag("preflight-add").performScrollTo().performClick();compose.waitUntil(15000){model.state.value.preflightItems.size==1 && !model.busy.value}
+        compose.onNodeWithTag("preflight-new-text").assertTextContains("核对最大计划风险").performImeAction()
+        compose.onNodeWithTag("preflight-add").performScrollTo().assertIsEnabled().performClick();compose.waitUntil(15000){model.state.value.preflightItems.size==1 && !model.busy.value}
         val item=model.state.value.preflightItems.single();compose.onNodeWithTag("preflight-list").performScrollToNode(hasTestTag("check-manual:${item.id}"));compose.onNodeWithTag("check-manual:${item.id}").performScrollTo().performClick()
         compose.waitUntil(15000){model.state.value.preflightChecks.size==2 && !model.busy.value};compose.waitUntil(15000){model.message.value==null}
         compose.onNodeWithTag("preflight-list").performScrollToNode(hasText("归档：核对最大计划风险"));compose.onNodeWithText("归档：核对最大计划风险").performClick()
