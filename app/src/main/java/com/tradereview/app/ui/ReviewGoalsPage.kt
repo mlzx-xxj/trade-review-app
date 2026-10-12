@@ -83,7 +83,8 @@ private fun GoalHistoryChart(goal: ReviewGoal,history: List<Pair<ReviewPeriod,Go
             if(progress.value==null)Text("—",style=MaterialTheme.typography.labelSmall)
         } }
     }
-    Text("纵轴 0—${ProfessionalMath.plain(maximum)}${if(goal.kind.endsWith("ratio")) "%" else ""}；— 表示不可计算，点击柱形查看值。",style=MaterialTheme.typography.bodySmall)
+    val maximumLabel=if(goal.kind.endsWith("ratio"))maximum.setScale(2,RoundingMode.HALF_UP).toPlainString()+"%"else ProfessionalMath.plain(maximum)
+    Text("纵轴 0—$maximumLabel；— 表示不可计算，点击柱形查看值。",style=MaterialTheme.typography.bodySmall)
 }
 @Composable
 fun ReviewGoalsPage(state: JournalState,model: TradeViewModel,busy: Boolean,modifier: Modifier = Modifier) {

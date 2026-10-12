@@ -2,9 +2,32 @@
 
 基础 main 87f0b7d（PR #5 已合并），独立分支 codex/v06-review-reports。Base 无 Android SDK，未运行本地 Android 编译、手机测试，也未安装 Android Studio 或新建环境。
 
+## 已实际完成的完整验证
+
+提交 213f6b90bd9dfce913ef95e9d11f7987b6c5dae2 的 [Actions 38204649126](https://github.com/mlzx-xxj/trade-review-app/actions/runs/38204649126) 三个任务均成功：Debug/AndroidTest APK 编译、JVM/Lint，API 29 x86_64 Pixel 2 模拟器，以及验签产物发布。逐项读取下载的原始 XML：
+
+| 检查 | 实际结果 |
+| --- | --- |
+| JVM | 103 项，0 失败、错误、跳过 |
+| Android 模拟器 | 69 项，0 失败、错误、跳过 |
+| Lint | 0 错误，17 警告 |
+| 签名/配置/payload/设备交付门禁 | 16 项通过 |
+| Room v6 schema | 实际 KSP 产物与提交字节一致 |
+| 模拟器截图 | 18 张齐全，14–18 新截图逐图查看 |
+
+模拟器包括图片/文件/ZIP 数据 9 项、迁移 6 项（含正式 v5→v6、v1→v6）、新界面 4 项和全部旧回归。JVM 包括报告跨年/闰月、多币种/有效 R、目标分母/归档/未知状态、恶意 ZIP/限额/摘要、旧 JSON 与新数据往返。系统选择器通过测试 Registry 校验真实 Intent/MIME 并注入实际测试 content URI；独立 Java 测试 Provider 不在生产 APK。容量不足测试注入可用空间，不填满设备。截图包含明确标注的合成交易图片，不是真实用户交易或真机测试。
+
+[该轮 APK 与 18 张截图](https://github.com/mlzx-xxj/trade-review-app/releases/tag/v06-debug-38204649126-1) 的 APK SHA-256：`71efa839c0d33acb165782935f9a71adba262282e784129cac805c4b37d61208`。下载 APK 独立官方 apksigner 验证 v2 单 signer 成功，证书 SHA-256：`c0ca20cb667fb737e48abc63e5c0a6ef96d101b098c0f430de8d077e9be68b8c`。SIGNING.txt 实际为 `GitHubActionsSecretsConfigured=false`、`temporary runner Debug key`；仍不能保证覆盖升级。APK 标识实际为 com.tradereview.app、0.6.0 / 6，无 INTERNET/广泛存储权限。Release 资产摘要与下载文件一致。
+
+PR 工作流默认编译 GitHub 生成的合并测试提交：该轮 SIGNING.txt 的 sourceCommit 是 `50c2b0fe387fce7325baabb92a4a2a2b0fe8c21e`，Actions head_sha 为上述真实分支提交，PR 仍未合并。两者均保留便于追溯。
+
+截图审查发现目标趋势纵轴展示了内部计算精度的长小数，本提交将比例纵轴显示为两位小数，计算/阈值判定仍使用原 BigDecimal 精度。本记录和该显示修改提交后还必须完整执行 CI；最终提交的真实 Actions、APK、证书和摘要更新在 [PR #6](https://github.com/mlzx-xxj/trade-review-app/pull/6) 中，只有最终全部成功后才标为可审核。不使用 skip ci，也不自动合并。
+
+## 环境与历轮问题修复
+
 本地实际执行：签名门禁 6、配置完整性 3、签名 payload 4、模拟器交付 3，共 16 项通过。该结果只验证发布脚本，不代替 Android 编译/JVM/模拟器。
 
-已添加报告日期/跨年/闰月、分币种/有效 R/未知纪律、目标分母/精度/归档/文字目标、ZIP 路径/重复/超限/摘要，以及原格式兼容和新增数据往返测试。AndroidTest 新增真实 ContentResolver 图片/EXIF/损坏/权限/容量/删除、ZIP 十二表与文件协调回滚、v5→v6 与完整旧链，以及截图/报告/目标/备份界面。未执行结果不标为通过，后续以 Actions 原始 XML 更新。
+测试覆盖报告日期/跨年/闰月、分币种/有效 R/未知纪律、目标分母/精度/归档/文字目标、ZIP 路径/重复/超限/摘要，以及原格式兼容和新增数据往返。AndroidTest 覆盖真实 ContentResolver 图片/EXIF/损坏/权限/容量/删除、ZIP 十二表与文件协调回滚、v5→v6 与完整旧链，以及截图/报告/目标/备份界面。上述成功记录来自实际原始 XML；以下保留失败历史，不将未执行结果标为通过。
 
 工作流重新执行 Debug/测试 APK、JVM、Lint 和 connectedDebugAndroidTest，显式 --no-build-cache；发布只在全部任务成功且原 13 张与新增 5 张截图齐全后进行，保留失败退出码。最终提交包含文档也须完整 CI，无 skip ci。
 
