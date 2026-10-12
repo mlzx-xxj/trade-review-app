@@ -298,6 +298,7 @@ jobs:
             app/build/outputs/androidTest-results/
             app/build/outputs/androidTest-additional-output/
             ci-screenshots/
+            ci-metrics/
           retention-days: 30
 
   publish:

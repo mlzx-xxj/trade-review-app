@@ -30,7 +30,7 @@ class PerformanceBaselineTest {
         date=today.toEpochDay()-(if(lossRun) i%7 else i%365),market=if(i%2==0)"futures"else "stock",symbol=if(i%2==0)"螺纹钢"else "沪深300",
         currency=if(lossRun)"CNY"else listOf("CNY","USD","USDT")[i%3],netPnl=if(lossRun)"-10.01"else when(i%5){0->"-25.35";1->"0.00";else->"100.10"},
         strategy=if(i%2==0)"trend"else "breakout",mistakes=if(i%4==0)listOf("chase")else emptyList(),reviewed=i%2==0,
-        professional=if(i%2==0)ProfessionalTrade(riskMode="manual",manualRisk="200",planStatus=if(i%4==0)"in"else "out")else null)}
+        professional=if(i%2==0)ProfessionalTrade(riskMode="amount",manualRisk="200",planStatus=if(i%4==0)"in"else "out")else null)}
     private fun measure(name:String,block:()->Unit){
         block()
         val samples=List(3){val start=SystemClock.elapsedRealtimeNanos();block();(SystemClock.elapsedRealtimeNanos()-start)/1_000_000.0}
@@ -38,9 +38,8 @@ class PerformanceBaselineTest {
     }
     private fun write(name:String){
         metrics["environment"]=mapOf("api" to Build.VERSION.SDK_INT,"model" to Build.MODEL,"abis" to Build.SUPPORTED_ABIS.toList(),"warmups" to 1,"samples" to 3,"datasetDate" to today.toString(),"measurement" to "elapsed wall time; disposable CI emulator, not phone")
-        val directory=File(requireNotNull(InstrumentationRegistry.getArguments().getString("additionalTestOutputDir")),"v08-metrics").apply{mkdirs()}
         val json=GsonBuilder().setPrettyPrinting().create().toJson(metrics)
-        File(directory,"$name-api${Build.VERSION.SDK_INT}.json").writeText(json)
+        V08Metrics.write("$name-api${Build.VERSION.SDK_INT}.json",json)
         println("V08_METRICS_FILE=$name-api${Build.VERSION.SDK_INT}.json")
     }
     @Test fun deterministicLargeDataAnalyticsRoomJsonAndZipBaseline(){runBlocking {
@@ -67,8 +66,8 @@ class PerformanceBaselineTest {
                     metrics["structuredZipBytes"]=target.length()
                 }
             }
-            write("performance")
-        }finally{db.close();root.deleteRecursively()}
+            metrics["complete"]=true
+        }finally{write("performance");db.close();root.deleteRecursively()}
     }}
     @Test fun privateImageRepeatedThumbnailBaseline(){
         val root=File(context.cacheDir,"thumbnail-bench-${newKey()}");val store=AttachmentStore(root)

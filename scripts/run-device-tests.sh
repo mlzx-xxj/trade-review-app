@@ -4,11 +4,13 @@ set -uo pipefail
 device_test_status=0
 ./gradlew --no-daemon --no-build-cache --stacktrace :app:connectedDebugAndroidTest || device_test_status=$?
 mkdir -p ci-screenshots
+mkdir -p ci-metrics
 if command -v adb >/dev/null; then
   adb pull /sdcard/Download/TradeReview-v04-ui ci-device-screenshots >/dev/null 2>&1 || true
   adb pull /sdcard/Download/TradeReview-v05-ui ci-v05-device-screenshots >/dev/null 2>&1 || true
   adb pull /sdcard/Download/TradeReview-v06-ui ci-v06-device-screenshots >/dev/null 2>&1 || true
   adb pull /sdcard/Download/TradeReview-v07-ui ci-v07-device-screenshots >/dev/null 2>&1 || true
+  adb pull /sdcard/Download/TradeReview-v08-metrics ci-metrics >/dev/null 2>&1 || true
 fi
 while IFS= read -r screenshot_path; do
   cp "$screenshot_path" "ci-screenshots/${screenshot_path##*/}" || exit 1
