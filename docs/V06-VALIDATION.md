@@ -15,3 +15,9 @@
 第二轮 627406d，[Actions 38199041760](https://github.com/mlzx-xxj/trade-review-app/actions/runs/38199041760)：Debug/测试 APK 编译成功，原始 JVM XML 101 项、0 失败/错误/跳过；Lint XML 0 错误/17 警告（ExifInterface 1、OldTargetApi 1、AppBundleLocaleChanges 1、GradleDependency 11、UsableSpace 2、UseKtx 1），16 项发布门禁通过，实际 KSP v6 schema 与提交一致。实际 APK 0.6.0 / 6 无 INTERNET/广泛存储权限，独立 apksigner v2 单 signer 验证成功，SIGNING.txt 明确 SecretsConfigured=false、临时 runner 签名。
 
 该轮模拟器进程中途崩溃，XML 只记录 35 项：32 通过、3 失败、0 错误/跳过，其余用例尚未执行，无截图，发布跳过。两项失败为旧 JSON 重导出格式/摘要预期未更新，已保留旧 golden 导入摘要检查并验证升级格式完整往返。测试 APK 的独立 Provider 进程缺少目标 APK 中的 Kotlin 标准库，导致 NoClassDefFoundError；改为只依赖 Android/Java 的测试夹具，生产 Kotlin 架构/权限不变。另补充图片奇数像素采样上限、缺失文件 ZIP 恢复及 ZIP 文件数/解压声明总量边界，等待新的完整 CI。
+
+第三轮 fbbc5fa，[Actions 38200572309](https://github.com/mlzx-xxj/trade-review-app/actions/runs/38200572309)：Debug/测试 APK、103 JVM、16 发布门禁通过，Lint 0 错误/17 警告，schema 一致；实际 APK 0.6.0/6 无 INTERNET/广泛存储权限、独立 v2 单 signer 验证、仍临时签名。模拟器原始 XML 完整 69 项：64 通过、5 失败、0 错误/跳过，无进程崩溃。
+
+九项图片/文件/ZIP数据测试与六项迁移测试均通过，覆盖删除、位置清除、缺失恢复、十二表/文件回滚；旧数据/计算回归执行。剩余失败为新 UI 三处局部文本误用 assertTextContains 默认精确匹配、首页屏外交易未先滚动，以及旧筛选方案的快速物理点击时序。改为实际完整文案断言/明确 substring、先滚动交易列表、等待临时反馈并重新定位方案。保持所有用例与真实触控，不以语义点击或跳过测试掩盖问题。此轮 14 张截图，新增周报已查看；缺其余新增截图，发布跳过。
+
+另补齐目标四周期可点击小趋势图与对应界面验收，缺失点不填 0；周报/月报截图调整至真实金额/日历区域。最新提交须重新完整 CI。

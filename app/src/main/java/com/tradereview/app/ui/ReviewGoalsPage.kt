@@ -1,6 +1,10 @@
 package com.tradereview.app.ui
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.clickable
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -46,10 +50,36 @@ fun GoalProgressCard(goal: ReviewGoal,state: JournalState,period: ReviewPeriod,s
             }
             if(p.denominator!=null && p.denominator<20 && goal.kind!="review_days")Text("有效样本少于 20，进度比较可能不稳定。",color=MaterialTheme.colorScheme.primary,style=MaterialTheme.typography.bodySmall)
             if(showHistory) { Text("最近四个周期的真实进度",style=MaterialTheme.typography.labelLarge)
+                if(data.history.any { it.second.value!=null })GoalHistoryChart(goal,data.history)
+                else Text("尚无可量化的历史进度；文字目标不自动打分。",style=MaterialTheme.typography.bodySmall)
                 data.history.forEach { (range,progress) -> Text("${dayLabel(range.start)}：${label(progress)} · 分母 ${progress.denominator?.toString() ?: "—"}",style=MaterialTheme.typography.bodySmall) }
             }
         }
     }
+}
+@Composable
+private fun GoalHistoryChart(goal: ReviewGoal,history: List<Pair<ReviewPeriod,GoalProgress>>) {
+    var selected by remember(history) { mutableIntStateOf(history.lastIndex) }
+    val maximum=history.mapNotNull { it.second.value }.maxOrNull()?.max(BigDecimal.ONE) ?: BigDecimal.ONE
+    val color=MaterialTheme.colorScheme.primary;val outline=MaterialTheme.colorScheme.outlineVariant
+    val p=history[selected]
+    Text("${dayLabel(p.first.start)}：${p.second.value?.let { if(goal.kind.endsWith("ratio"))it.setScale(2,RoundingMode.HALF_UP).toPlainString()+"%"else ProfessionalMath.plain(it) } ?: "不可计算"} · 分母 ${p.second.denominator?.toString() ?: "—"}",style=MaterialTheme.typography.bodySmall)
+    Row(Modifier.fillMaxWidth().testTag("goal-history-${goal.id}"),horizontalArrangement=Arrangement.spacedBy(6.dp)) {
+        history.forEachIndexed { index,(period,progress) -> Column(Modifier.weight(1f).clickable { selected=index }) {
+            Canvas(Modifier.fillMaxWidth().height(56.dp)) {
+                drawLine(outline,Offset(0f,size.height-2),Offset(size.width,size.height-2),1.dp.toPx())
+                val v=progress.value
+                if(v!=null) {
+                    val height=v.divide(maximum,8,RoundingMode.HALF_UP).toFloat()*(size.height-4)
+                    if(v.signum()==0)drawLine(color,Offset(size.width*.2f,size.height-2),Offset(size.width*.8f,size.height-2),3.dp.toPx())
+                    else drawRect(color.copy(alpha=if(index==selected)1f else .55f),Offset(size.width*.2f,size.height-2-height),Size(size.width*.6f,height))
+                }
+            }
+            Text(LocalDate.ofEpochDay(period.start).let { "${it.monthValue}/${it.dayOfMonth}" },style=MaterialTheme.typography.labelSmall)
+            if(progress.value==null)Text("—",style=MaterialTheme.typography.labelSmall)
+        } }
+    }
+    Text("纵轴 0—${ProfessionalMath.plain(maximum)}${if(goal.kind.endsWith("ratio")) "%" else ""}；— 表示不可计算，点击柱形查看值。",style=MaterialTheme.typography.bodySmall)
 }
 @Composable
 fun ReviewGoalsPage(state: JournalState,model: TradeViewModel,busy: Boolean,modifier: Modifier = Modifier) {

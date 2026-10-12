@@ -69,6 +69,7 @@ class ReviewEvidenceUiTest {
     @After fun close(){db.close();root.deleteRecursively()}
     private fun nav(label:String){compose.onAllNodesWithText(label).onFirst().performClick()}
     private fun openImages() {
+        nav("交易记录");compose.onNodeWithTag("trades-list").performScrollToNode(hasText("+400.00"))
         compose.onNodeWithText("+400.00").performClick();compose.onNodeWithTag("open-trade-evidence").performScrollTo().performClick()
         compose.onNodeWithTag("pick-evidence").assertIsDisplayed()
     }
@@ -96,33 +97,34 @@ class ReviewEvidenceUiTest {
     @Test fun weeklyMonthlyReportsUseAllCurrenciesAllowHistoryAndDrillIntoRealTrades() {
         nav("统计分析");compose.onNodeWithTag("open-week-report").performClick()
         compose.waitUntil(15000){compose.onAllNodesWithTag("report-total").fetchSemanticsNodes().isNotEmpty()}
-        compose.onNodeWithTag("report-total").assertTextEquals("记录 3 笔 · 上期 1 笔");capture("15-week-report")
+        compose.onNodeWithTag("report-total").assertTextEquals("记录 3 笔 · 上期 1 笔")
         compose.onNodeWithTag("period-report-list").performScrollToNode(hasTestTag("report-net-CNY"));compose.onNodeWithTag("report-net-CNY").assertTextEquals("CNY · 2 笔 · +300.00")
         compose.onNodeWithTag("report-net-USD").performScrollTo().assertTextEquals("USD · 1 笔 · +99.00")
+        capture("15-week-report")
         compose.onNodeWithText("查看 USD 明细").performScrollTo().performClick();compose.onNodeWithTag("report-trades-list").assertIsDisplayed();compose.onNodeWithText("AAPL").assertIsDisplayed()
         compose.onNodeWithContentDescription("返回主页面").performClick();compose.onNodeWithTag("period-report-list").performScrollToNode(hasTestTag("report-previous"));compose.onNodeWithTag("report-previous").performClick()
         compose.waitUntil(15000){compose.onAllNodes(hasTestTag("report-total") and hasText("记录 1 笔 · 上期 0 笔")).fetchSemanticsNodes().isNotEmpty()}
         compose.onNodeWithText("当前周期").performClick();compose.onNodeWithText("月报").performClick()
         compose.waitUntil(15000){compose.onAllNodesWithText("每月复盘报告").fetchSemanticsNodes().isNotEmpty() && compose.onAllNodesWithTag("report-total").fetchSemanticsNodes().isNotEmpty()}
         val current=ReviewReports.calculate(model.state.value.trades,model.state.value.reviews,ReviewPeriod.at("month",LocalDate.now()))
-        compose.onNodeWithTag("report-total").assertTextContains("记录 ${current.trades.size} 笔")
-        capture("16-month-report")
-        compose.onNodeWithTag("period-report-list").performScrollToNode(hasTestTag("report-calendar-${LocalDate.now().toEpochDay()}"));compose.onNodeWithTag("report-calendar-${LocalDate.now().toEpochDay()}").performClick()
+        compose.onNodeWithTag("report-total").assertTextEquals("记录 ${current.trades.size} 笔 · 上期 ${current.previousCount} 笔")
+        compose.onNodeWithTag("period-report-list").performScrollToNode(hasTestTag("report-calendar-${LocalDate.now().toEpochDay()}"));compose.onNodeWithTag("report-calendar-${LocalDate.now().toEpochDay()}").performScrollTo();capture("16-month-report")
+        compose.onNodeWithTag("report-calendar-${LocalDate.now().toEpochDay()}").performClick()
         compose.onNodeWithTag("report-trades-list").assertIsDisplayed();compose.onNodeWithText("+400.00").performClick();compose.onNodeWithText("编辑交易与复盘").assertIsDisplayed()
     }
     @Test fun predefinedAndTextGoalsCreateTrackArchiveAndKeepFactsUnchanged() {
         val before=runBlocking{db.trades().allTrades()};nav("统计分析");compose.onNodeWithText("纪律改善目标").performClick()
         compose.onNodeWithTag("new-review-goal").performClick();compose.onNodeWithText("提高交易复盘比例").performScrollTo().performClick();compose.onNodeWithText("80").performScrollTo().performClick()
         compose.onNodeWithTag("save-review-goal").performClick();compose.waitUntil(15000){model.state.value.goals.size==1 && !model.busy.value}
-        val ratio=model.state.value.goals.single();compose.onNodeWithTag("goals-list").performScrollToNode(hasTestTag("goal-progress-${ratio.id}"));compose.onNodeWithTag("goal-progress-${ratio.id}").assertTextContains("实际 33.33%")
+        val ratio=model.state.value.goals.single();compose.onNodeWithTag("goals-list").performScrollToNode(hasTestTag("goal-progress-${ratio.id}"));compose.onNodeWithTag("goal-progress-${ratio.id}").assertTextEquals("实际 33.33% · 阈值 80%")
         compose.onNodeWithTag("goals-list").performScrollToNode(hasTestTag("new-review-goal"));compose.onNodeWithTag("new-review-goal").performClick()
         compose.onNodeWithText("文字改善目标").performScrollTo().performClick();compose.onNodeWithTag("goal-title").performScrollTo().performTextInput("人工核对交易理由")
         compose.onNodeWithTag("save-review-goal").assertIsDisplayed().performClick();compose.waitUntil(15000){model.state.value.goals.size==2 && !model.busy.value};hideKeyboard()
-        val text=model.state.value.goals.first { it.kind=="text" };compose.onNodeWithTag("goals-list").performScrollToNode(hasTestTag("goal-progress-${text.id}"));compose.onNodeWithTag("goal-progress-${text.id}").assertTextContains("不可自动计算")
+        val text=model.state.value.goals.first { it.kind=="text" };compose.onNodeWithTag("goals-list").performScrollToNode(hasTestTag("goal-progress-${text.id}"));compose.onNodeWithTag("goal-progress-${text.id}").assertTextEquals("实际 不可自动计算 · 文字目标")
         compose.onNodeWithTag("goals-list").performScrollToNode(hasTestTag("archive-goal-${ratio.id}"));compose.onNodeWithTag("archive-goal-${ratio.id}").performScrollTo().performClick();compose.onNodeWithText("确认归档").performClick()
         compose.waitUntil(15000){model.state.value.goals.first { it.id==ratio.id }.archivedDay!=null && !model.busy.value}
         compose.onNodeWithTag("goals-list").performScrollToNode(hasText("已归档"));compose.onNodeWithText("已归档").performClick()
-        compose.onNodeWithTag("goals-list").performScrollToNode(hasTestTag("goal-progress-${ratio.id}"));capture("17-review-goals")
+        compose.onNodeWithTag("goals-list").performScrollToNode(hasTestTag("goal-history-${ratio.id}"));compose.onNodeWithTag("goal-history-${ratio.id}").performScrollTo().assertIsDisplayed();capture("17-review-goals")
         runBlocking { assertEquals(before,db.trades().allTrades());assertEquals(2,db.trades().allGoals().size) }
     }
     @Test fun fullZipPreviewNeedsSecondConsentAndJsonScopeNeverClaimsImageBackup()=runBlocking {
@@ -134,14 +136,14 @@ class ReviewEvidenceUiTest {
             compose.onNodeWithContentDescription("设置与备份").performClick();compose.runOnIdle { backup.readBackup(Uri.fromFile(backupFile)) }
             compose.waitUntil(15000){backup.preview.value!=null && !backup.busy.value};assertEquals(1,backup.preview.value!!.backup.attachments.size);assertEquals(1,backup.preview.value!!.backup.goals.size)
             val before=BackupRepository(db,store).export(full=true)
-            compose.onNodeWithTag("settings-list").performScrollToNode(hasTestTag("backup-scope"));compose.onNodeWithTag("backup-scope").assertTextContains("全部截图已校验");capture("18-full-zip-preview")
+            compose.onNodeWithTag("settings-list").performScrollToNode(hasTestTag("backup-scope"));compose.onNodeWithTag("backup-scope").assertTextEquals("备份范围：完整 ZIP，全部截图已校验");capture("18-full-zip-preview")
             compose.onNodeWithText("继续确认恢复").performScrollTo().performClick();compose.onNodeWithText("确认去重合并？").assertIsDisplayed()
             assertEquals(before.trades,db.trades().allTrades());compose.onNodeWithText("返回预览").performClick();assertEquals(1,db.trades().allAttachments().size)
             compose.onNodeWithText("继续确认恢复").performScrollTo().performClick();compose.onNodeWithText("确认恢复").performClick();compose.waitUntil(15000){backup.preview.value==null && !backup.busy.value}
             assertEquals(1,db.trades().allAttachments().size);store.verifyAll(db.trades().allAttachments())
             compose.runOnIdle { backup.exportJson(Uri.fromFile(backupFile)) };compose.waitUntil(15000){!backup.busy.value};assertTrue(BackupCodec.read(backupFile.inputStream()).attachments.isEmpty())
             compose.runOnIdle { backup.readBackup(Uri.fromFile(backupFile)) };compose.waitUntil(15000){backup.preview.value!=null && !backup.busy.value}
-            compose.onNodeWithTag("settings-list").performScrollToNode(hasTestTag("backup-scope"));compose.onNodeWithTag("backup-scope").assertTextContains("不含图片");assertEquals(1,db.trades().allAttachments().size)
+            compose.onNodeWithTag("settings-list").performScrollToNode(hasTestTag("backup-scope"));compose.onNodeWithTag("backup-scope").assertTextContains("不含图片",substring=true);assertEquals(1,db.trades().allAttachments().size)
         } finally { backupFile.delete() }
     }
     private fun capture(name:String) {
