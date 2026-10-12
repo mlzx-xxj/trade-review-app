@@ -65,8 +65,11 @@ def main():
         new=identity.inspect(fixed,a.aapt,a.apksigner);identity.require_identity(new,"release")
         # Prior Main regression data are all synthetic, and already reported. Discard ONLY here on qemu.
         adb("uninstall","com.tradereview.app",check=False)
+        adb("uninstall","com.tradereview.app.test",check=False)
         if a.old_apk:
-            old=identity.inspect(a.old_apk,a.aapt,a.apksigner)
+            # Genuine V0.3 predates bundled OCR/ABIs; validate its actual signer and identity,
+            # while both delivered V1.0 APKs still require the complete current OCR payload.
+            old=identity.inspect(a.old_apk,a.aapt,a.apksigner,require_current_payload=False)
             assert old["applicationId"]=="com.tradereview.app" and old["certificateSha256"]==identity.PIN and 3<=old["versionCode"]<10,"Real old original-signer APK required"
             assert a.upgrade_fixture,"Same fixed-signed synthetic instrumentation required"
             assert "Success" in adb("install",a.old_apk).stdout

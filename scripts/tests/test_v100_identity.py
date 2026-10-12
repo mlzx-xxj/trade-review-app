@@ -30,11 +30,11 @@ class IdentityTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as folder:
             root=Path(folder);(root/'TradeReview-v1.0-RC.apk').write_bytes(b'fake-unit-fixture')
             (root/'SIGNING-STATUS.json').write_text(json.dumps(dict(sourceCommit=SOURCE,configured=False)))
-            data=rc();saved=dict(data,sourceCommit=SOURCE,stablePublished=False,phoneAcceptance='not-confirmed',upgradeIdentityVerified=False)
+            data=rc();saved=dict(data,sourceCommit=SOURCE,stablePublished=False,phoneAcceptance='not-confirmed',upgradeIdentityVerified=False,buildType='rc',classification='isolated-rc')
             meta=root/'RC-IDENTITY.json';meta.write_text(json.dumps(saved))
             with patch.object(gate,'inspect',return_value=data):
                 gate.verify_delivery(root,'fake-aapt','fake-signer',SOURCE)
-                for key,value in [('stablePublished',True),('phoneAcceptance','passed'),('upgradeIdentityVerified',True),('apkSha256','d'*64),('sourceCommit','e'*40)]:
+                for key,value in [('stablePublished',True),('phoneAcceptance','passed'),('upgradeIdentityVerified',True),('apkSha256','d'*64),('sourceCommit','e'*40),('buildType','debug'),('classification','stable-release')]:
                     meta.write_text(json.dumps(dict(saved,**{key:value})))
                     with self.subTest(key=key),self.assertRaises(ValueError):gate.verify_delivery(root,'fake-aapt','fake-signer',SOURCE)
     def test_configured_secrets_cannot_be_claimed_without_fixed_apk(self):

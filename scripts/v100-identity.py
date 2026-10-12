@@ -15,7 +15,7 @@ def sha(path):
     with Path(path).open("rb") as f:return hashlib.file_digest(f,"sha256").hexdigest()
 
 
-def inspect(apk,aapt,signer):
+def inspect(apk,aapt,signer,require_current_payload=True):
     apk=Path(apk)
     if not apk.is_file() or apk.is_symlink():raise ValueError("Regular APK required")
     badging=subprocess.run([str(aapt),"dump","badging",str(apk)],check=True,capture_output=True,text=True).stdout
@@ -29,16 +29,18 @@ def inspect(apk,aapt,signer):
     with zipfile.ZipFile(apk) as z:
         names=z.namelist()
         if len(names)!=len(set(names)):raise ValueError("Duplicate APK entries")
-        for language in ["Hani_ctc","Latn_ctc"]:
-            for model in ["conv_model.fb","lstm_model.fb"]:
-                if not any(language in n and n.endswith(model) for n in names):raise ValueError("Bundled offline OCR model missing")
         abis=sorted({n.split('/')[1] for n in names if n.startswith("lib/") and n.endswith(".so")})
-        if abis!=["arm64-v8a","armeabi-v7a","x86","x86_64"]:raise ValueError("Existing ABI support changed")
+        if require_current_payload:
+            for language in ["Hani_ctc","Latn_ctc"]:
+                for model in ["conv_model.fb","lstm_model.fb"]:
+                    if not any(language in n and n.endswith(model) for n in names):raise ValueError("Bundled offline OCR model missing")
+            if abis!=["arm64-v8a","armeabi-v7a","x86","x86_64"]:raise ValueError("Existing ABI support changed")
     return dict(applicationId=match[1],versionCode=int(match[2]),versionName=match[3],debuggable="application-debuggable" in badging,
                 certificateSha256=certs[0].lower(),apkSha256=sha(apk),apkBytes=apk.stat().st_size,abis=abis)
 
 
 def require_identity(data,kind):
+    if kind not in ("rc","release"):raise ValueError("Known build type required")
     if (ROOT/"docs/V03-CERTIFICATE-SHA256.txt").read_text().strip().lower()!=PIN:raise ValueError("Original V0.3 certificate pin changed")
     package="com.tradereview.app.rc" if kind=="rc" else "com.tradereview.app"
     version="1.0.0-rc.1" if kind=="rc" else "1.0.0"
@@ -70,6 +72,7 @@ def verify_delivery(directory,aapt,signer,source):
         saved=json.loads((root/("RC-IDENTITY.json" if kind=="rc" else "FIXED-IDENTITY.json")).read_text())
         if any(saved.get(k)!=v for k,v in data.items()) or saved.get("sourceCommit")!=source or saved.get("stablePublished") is not False or saved.get("phoneAcceptance")!="not-confirmed":raise ValueError("Actual APK/metadata/source/RC status mismatch")
         if saved.get("upgradeIdentityVerified")!=(kind=="release"):raise ValueError("Upgrade identity misclassified")
+        if saved.get("buildType")!=kind or saved.get("classification")!=("isolated-rc" if kind=="rc" else "fixed-v03-release-candidate"):raise ValueError("Build classification mismatch")
         hashes.append(f'{data["apkSha256"]}  {filename}');checked[filename]=saved
     (root/"SHA256SUMS.txt").write_text("\n".join(hashes)+"\n")
     (root/"PUBLICATION-CHECK.json").write_text(json.dumps(checked,indent=2)+"\n")

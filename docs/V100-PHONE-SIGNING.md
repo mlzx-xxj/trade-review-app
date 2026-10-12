@@ -6,16 +6,16 @@
 本轮不读取、生成或替换长期私钥。Secrets/Variables 管理 API 权限不足时，实际 Actions 分支与校验证据才决定状态，不把 403 当作没有配置。正式版不能从临时 Debug 身份自动升级。
 
 1. 在自己可信手机/设备上确认确实拥有原 keystore、别名和两个密码，并有安全离线副本。不要发送到聊天、Issue、PR、Release、artifact 或未知转换网站。
-2. 仅在可信本地工具上把原 keystore 转成单行 Base64；Base64 仍是私钥，不是加密。已有本地工具可参考仓库既有签名指南；没有可信工具或原材料则先停止配置，继续使用隔离 RC。
+2. 从 GitHub 查看并下载既有 [离线转换工具](../tools/keystore-base64-offline.html)，审查后用手机文件管理器在可信浏览器本地打开，断网使用。自包含代码、CSP 禁止连接、无外部脚本、无 localStorage。仅把原 keystore 转成单行 Base64；Base64 仍是私钥，不是加密。若浏览器无法本地运行 HTML，只用自己已信任的离线工具，不用在线转换站点。没有原材料则先停止配置，继续隔离 RC。
 3. 手机浏览器打开 GitHub 官方仓库 → Settings → Secrets and variables → Actions（手机可开启桌面网站）。在 Repository secrets 添加：
    - `TRADE_REVIEW_KEYSTORE_BASE64`：原 keystore 的 Base64。
    - `TRADE_REVIEW_KEYSTORE_PASSWORD`：原仓库密码。
    - `TRADE_REVIEW_KEY_ALIAS`：原别名。
    - `TRADE_REVIEW_KEY_PASSWORD`：原私钥密码。
 4. Repository variables 添加 `TRADE_REVIEW_UPGRADE_CERT_SHA256`，值为上面的公开 64 位小写指纹。不要把密码放 Variables。
-5. Actions → Android CI → Run workflow，选择 V1.0 分支。四个 Secrets 必须齐全；部分配置或 pin 不匹配会失败，不能降级冒充固定签名。CI 临时写原 keystore、仅通过环境引用密码，完成后删除；不上传签名材料。
+5. 清除转换页、关闭并清除剪贴板；保留原材料安全副本。Actions → Android CI → Run workflow，选择 V1.0 分支。四个 Secrets 必须齐全；部分配置或 pin 不匹配会失败，不能降级冒充固定签名。CI 临时写原 keystore、仅通过环境引用密码，完成后删除；不上传签名材料。
 6. 只有真实 `FIXED-IDENTITY.json`、`SIGNING-STATUS.json`、原 pin 与 apksigner 校验一致，才得到 `TradeReview-v1.0-fixed-candidate.apk`：com.tradereview.app / 1.0.0 / code10 / non-debuggable。CI 另行实际安装此 APK。
-7. 若保存了真实原固定签名旧 APK 的 GitHub Release，可在手动工作流填写 `old_fixed_release_tag` 和精确 `old_fixed_asset_name`。CI 再次验证原证书、真实 install -r、合成交易/日志数据保留；不填时明确“未执行”，不以 Debug 密钥模拟成功。
+7. 已找到[原固定证书 V0.3 公开包](https://github.com/mlzx-xxj/trade-review-app/releases/tag/v03-debug-38133182112-1)：手动工作流填写 `old_fixed_release_tag=v03-debug-38133182112-1`、`old_fixed_asset_name=TradeReview-v0.3-stable.apk`。原包是历史固定签名 Debug 试用版，不是本轮正式 Release；本机保留的公开 APK 已用 apksigner 核实原 pin，code3，SHA-256 `4b7422e1f9c03f6cafb166014dd306265fcf10aee49959ce7284d1f62c6db995`。CI 会对实际下载文件再次验签，执行真实 install -r、合成交易/日志数据保留；原私钥未配置或不提供旧包时明确“未执行”，不以临时 Debug 密钥模拟成功。
 8. 由所有者完成手机真机验收后再决定正式发布；本工作流始终创建预发布候选，不自动宣称稳定发布或合并 PR。
 
 若原私钥不可用，证书指纹本身不能恢复私钥。正式签名处于阻塞状态。可继续隔离 RC；或由所有者以后明确批准建立新身份并先备份迁移。后者不能覆盖原固定签名，涉及重新安装及数据迁移，当前未授权也未实施。
