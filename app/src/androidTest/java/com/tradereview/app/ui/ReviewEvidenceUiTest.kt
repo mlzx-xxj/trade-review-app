@@ -101,7 +101,7 @@ class ReviewEvidenceUiTest {
         compose.onNodeWithTag("report-net-USD").performScrollTo().assertTextEquals("USD · 1 笔 · +99.00")
         compose.onNodeWithText("查看 USD 明细").performScrollTo().performClick();compose.onNodeWithTag("report-trades-list").assertIsDisplayed();compose.onNodeWithText("AAPL").assertIsDisplayed()
         compose.onNodeWithContentDescription("返回主页面").performClick();compose.onNodeWithTag("period-report-list").performScrollToNode(hasTestTag("report-previous"));compose.onNodeWithTag("report-previous").performClick()
-        compose.waitUntil(15000){compose.onAllNodesWithTag("report-total").fetchSemanticsNodes().firstOrNull()?.config?.getOrElse(androidx.compose.ui.semantics.SemanticsProperties.Text){emptyList()}?.joinToString { it.text }=="记录 1 笔 · 上期 0 笔"}
+        compose.waitUntil(15000){compose.onAllNodes(hasTestTag("report-total") and hasText("记录 1 笔 · 上期 0 笔")).fetchSemanticsNodes().isNotEmpty()}
         compose.onNodeWithText("当前周期").performClick();compose.onNodeWithText("月报").performClick()
         compose.waitUntil(15000){compose.onAllNodesWithText("每月复盘报告").fetchSemanticsNodes().isNotEmpty() && compose.onAllNodesWithTag("report-total").fetchSemanticsNodes().isNotEmpty()}
         val current=ReviewReports.calculate(model.state.value.trades,model.state.value.reviews,ReviewPeriod.at("month",LocalDate.now()))

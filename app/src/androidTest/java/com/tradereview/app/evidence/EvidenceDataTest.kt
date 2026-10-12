@@ -62,11 +62,24 @@ class EvidenceDataTest {
         val t=trade();images.importImage(context.contentResolver,TestImageProvider.uri(),t.recordKey,"analysis","")
         val zip=FullZipRepository(db,store);val bytes=ByteArrayOutputStream().also { zip.export(it) }.toByteArray();images.deleteTrade(t)
         val local=trade();val old=images.importImage(context.contentResolver,TestImageProvider.uri("second.png"),local.recordKey,"holding","本地保留")
+        db.trades().saveGoal(ReviewGoal(title="本地目标也保留",kind="text",startDate=ReviewPeriod.at("week",LocalDate.now()).start))
+        db.trades().saveEvidenceSettings(EvidenceSettings(maxInputMiB=20))
         val before=BackupRepository(db,store).export(full=true);val preview=zip.read(ByteArrayInputStream(bytes))
         db.openHelper.writableDatabase.execSQL("CREATE TRIGGER fail_restore BEFORE INSERT ON attachments BEGIN SELECT RAISE(ABORT,'synthetic restore failure'); END")
         try{zip.restore(preview,RestoreMode.REPLACE);fail()}catch(_:Exception){}finally{db.openHelper.writableDatabase.execSQL("DROP TRIGGER fail_restore");preview.archive.close()}
         val after=BackupRepository(db,store).export(full=true);assertEquals(before.copy(exportedAt=after.exportedAt),after)
         store.verify(old.let(store::file),old);assertEquals(setOf(attachmentFileName(old)),root.listFiles()!!.filter { it.isFile }.map { it.name }.toSet())
+    }
+    @Test fun missingPrivateImageCanBeRecoveredFromFullZipWithoutChangingTradeIdentity()=runBlocking {
+        val t=trade();val a=images.importImage(context.contentResolver,TestImageProvider.uri(),t.recordKey,"before","恢复缺失文件")
+        val zip=FullZipRepository(db,store);val bytes=ByteArrayOutputStream().also { zip.export(it) }.toByteArray()
+        assertTrue(store.file(a).delete());assertEquals(a,db.trades().allAttachments().single())
+        val preview=zip.read(ByteArrayInputStream(bytes));zip.restore(preview,RestoreMode.MERGE);preview.archive.close()
+        assertEquals(t,db.trades().allTrades().single());assertEquals(a,db.trades().allAttachments().single());store.verify(store.file(a),a)
+    }
+    @Test fun oddPixelDimensionsDoNotExceedPrivateImageEdgeAfterSampling()=runBlocking {
+        val t=trade();val a=images.importImage(context.contentResolver,TestImageProvider.uri("odd.png"),t.recordKey,"analysis","")
+        assertTrue(a.width<=EvidenceLimits.MAX_EDGE && a.height<=EvidenceLimits.MAX_EDGE);store.verify(store.file(a),a)
     }
     @Test fun jsonScopeIsHonestOldFormatsImportAndPreviewIncludesGoalsAndImages()=runBlocking {
         val t=trade();images.importImage(context.contentResolver,TestImageProvider.uri(),t.recordKey,"analysis","")

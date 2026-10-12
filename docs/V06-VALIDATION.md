@@ -11,3 +11,7 @@
 签名以实际 APK 与 SIGNING.txt 为准。前置 main 的真实日志仍为 Fixed V0.3 key not configured；保留原 pin，本轮不读取、生成或替换长期私钥。测试环境/数据/限制说明见 V06-DATA-AND-REPORTS.md。
 
 首轮 89a7ba4，[Actions 38198694976](https://github.com/mlzx-xxj/trade-review-app/actions/runs/38198694976)：Room KSP 已实际生成十二表 v6 schema，但主 Kotlin 编译失败，Android 公开 SDK 无 OsConstants.O_DIRECTORY。改用 O_RDONLY 打开已知私有目录，保留 fsync；正式 schema 来自该轮真实 KSP 产物。本轮 JVM/Lint/模拟器未执行，发布跳过，不当作通过。
+
+第二轮 627406d，[Actions 38199041760](https://github.com/mlzx-xxj/trade-review-app/actions/runs/38199041760)：Debug/测试 APK 编译成功，原始 JVM XML 101 项、0 失败/错误/跳过；Lint XML 0 错误/17 警告（ExifInterface 1、OldTargetApi 1、AppBundleLocaleChanges 1、GradleDependency 11、UsableSpace 2、UseKtx 1），16 项发布门禁通过，实际 KSP v6 schema 与提交一致。实际 APK 0.6.0 / 6 无 INTERNET/广泛存储权限，独立 apksigner v2 单 signer 验证成功，SIGNING.txt 明确 SecretsConfigured=false、临时 runner 签名。
+
+该轮模拟器进程中途崩溃，XML 只记录 35 项：32 通过、3 失败、0 错误/跳过，其余用例尚未执行，无截图，发布跳过。两项失败为旧 JSON 重导出格式/摘要预期未更新，已保留旧 golden 导入摘要检查并验证升级格式完整往返。测试 APK 的独立 Provider 进程缺少目标 APK 中的 Kotlin 标准库，导致 NoClassDefFoundError；改为只依赖 Android/Java 的测试夹具，生产 Kotlin 架构/权限不变。另补充图片奇数像素采样上限、缺失文件 ZIP 恢复及 ZIP 文件数/解压声明总量边界，等待新的完整 CI。

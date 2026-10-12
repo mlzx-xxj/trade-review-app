@@ -58,4 +58,17 @@ class FullZipArchiveTest {
         assertThrows(IllegalArgumentException::class.java){BackupCodec.encode(data.copy(attachments=data.attachments.map { it.copy(recordKey="f".repeat(32)) }))}
         assertThrows(IllegalArgumentException::class.java){BackupCodec.encode(data.copy(attachments=List(11){data.attachments.single().copy(id=newKey())}))}
     }
+    @Test fun excessiveCentralFileCountIsRejectedBeforeReadingPayload() {
+        val files=(0..FullZipArchive.MAX_FILES).map { "images/${it.toString(16).padStart(32,'0')}-${"b".repeat(64)}.jpg" to byteArrayOf(1) }
+        val error=assertThrows(BackupException::class.java){read(archive(files))};assertTrue(error.message!!.contains("文件过多"))
+    }
+    @Test fun inflatedDeclaredTotalIsRejectedWithoutAllocatingExpandedFiles() {
+        val files=(0..128).map { "images/${it.toString(16).padStart(32,'0')}-${"b".repeat(64)}.jpg" to byteArrayOf(1) }
+        val bytes=archive(files)
+        // Central header uncompressed size lives at byte 24; actual payload stays one byte.
+        for(i in 0..bytes.size-28)if(bytes[i]==0x50.toByte() && bytes[i+1]==0x4b.toByte() && bytes[i+2]==0x01.toByte() && bytes[i+3]==0x02.toByte()) {
+            val size=EvidenceLimits.MAX_IMAGE_BYTES.toInt();for(j in 0..3)bytes[i+24+j]=(size ushr (j*8)).toByte()
+        }
+        val error=assertThrows(BackupException::class.java){read(bytes)};assertTrue(error.message!!.contains("声明总量"))
+    }
 }

@@ -82,6 +82,10 @@ class V05DataTest {
         val raw=EntryDraft(amount="12.",professional=ProfessionalDraft(entryPrice="3500.",expanded=true))
         EntryRepository(db).saveDraft(raw);assertEquals(raw,db.trades().allDrafts().single())
         val backup=BackupCodec.decode(BackupCodec.encode(BackupRepository(db).export()));assertEquals(raw,backup.drafts.single());assertEquals("",backup.drafts.single().professional!!.fees)
-        assertEquals("935070b335dad76a94d1d3bcd8615268260bb46adffd97fdebc1f1b622cea78a",com.google.gson.JsonParser.parseString(BackupCodec.encode(BackupCodec.read(assets.open("v05-backup.json")))).asJsonObject["checksumSha256"].asString)
+        val source=assets.open("v05-backup.json").bufferedReader().use { it.readText() }
+        assertEquals("935070b335dad76a94d1d3bcd8615268260bb46adffd97fdebc1f1b622cea78a",com.google.gson.JsonParser.parseString(source).asJsonObject["checksumSha256"].asString)
+        val old=BackupCodec.decode(source);val upgraded=BackupCodec.encode(old)
+        assertNotEquals(com.google.gson.JsonParser.parseString(source).asJsonObject["checksumSha256"],com.google.gson.JsonParser.parseString(upgraded).asJsonObject["checksumSha256"])
+        assertEquals(old.copy(sourceSchemaVersion=5),BackupCodec.decode(upgraded))
     }
 }

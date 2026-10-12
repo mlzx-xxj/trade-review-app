@@ -69,7 +69,7 @@ class AttachmentStore(val root: File, private val availableBytes: () -> Long = {
             val bounds=BitmapFactory.Options().apply { inJustDecodeBounds=true };BitmapFactory.decodeFile(input.path,bounds)
             require(bounds.outMimeType in listOf("image/jpeg","image/png","image/webp") && bounds.outWidth>0 && bounds.outHeight>0) { "请选择有效 JPEG、PNG 或 WebP 图片" }
             require(bounds.outWidth.toLong()*bounds.outHeight.toLong() <= 40_000_000) { "原图超过 4000 万像素，请先缩小" }
-            var sample=1;while(maxOf(bounds.outWidth,bounds.outHeight)/sample > EvidenceLimits.MAX_EDGE)sample*=2
+            var sample=1;while((maxOf(bounds.outWidth,bounds.outHeight)+sample-1)/sample > EvidenceLimits.MAX_EDGE)sample*=2
             val decoded=BitmapFactory.decodeFile(input.path,BitmapFactory.Options().apply { inSampleSize=sample }) ?: throw EvidenceException("图片内容损坏，无法读取")
             val matrix=Matrix()
             if(bounds.outMimeType=="image/jpeg") {
