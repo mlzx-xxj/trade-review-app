@@ -9,3 +9,5 @@
 工作流重新执行 Debug/测试 APK、JVM、Lint 和 connectedDebugAndroidTest，显式 --no-build-cache；发布只在全部任务成功且原 13 张与新增 5 张截图齐全后进行，保留失败退出码。最终提交包含文档也须完整 CI，无 skip ci。
 
 签名以实际 APK 与 SIGNING.txt 为准。前置 main 的真实日志仍为 Fixed V0.3 key not configured；保留原 pin，本轮不读取、生成或替换长期私钥。测试环境/数据/限制说明见 V06-DATA-AND-REPORTS.md。
+
+首轮 89a7ba4，[Actions 38198694976](https://github.com/mlzx-xxj/trade-review-app/actions/runs/38198694976)：Room KSP 已实际生成十二表 v6 schema，但主 Kotlin 编译失败，Android 公开 SDK 无 OsConstants.O_DIRECTORY。改用 O_RDONLY 打开已知私有目录，保留 fsync；正式 schema 来自该轮真实 KSP 产物。本轮 JVM/Lint/模拟器未执行，发布跳过，不当作通过。

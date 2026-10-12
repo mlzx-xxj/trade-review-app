@@ -46,7 +46,8 @@ class AttachmentStore(val root: File, private val availableBytes: () -> Long = {
             FileOutputStream(temp).use { out -> source.inputStream().use { copyBounded(it,out,EvidenceLimits.MAX_IMAGE_BYTES) };out.fd.sync() }
             verify(temp,a)
             Files.move(temp.toPath(),target.toPath(),StandardCopyOption.ATOMIC_MOVE)
-            val descriptor=android.system.Os.open(root.path,android.system.OsConstants.O_RDONLY or android.system.OsConstants.O_DIRECTORY,0)
+            // O_RDONLY can open a known directory; O_DIRECTORY is not in the public Android SDK.
+            val descriptor=android.system.Os.open(root.path,android.system.OsConstants.O_RDONLY,0)
             try { android.system.Os.fsync(descriptor) } finally { android.system.Os.close(descriptor) }
         } finally { temp.delete() }
     }
