@@ -95,7 +95,7 @@ class V03DataTest {
         assertEquals("旧备份黄金", db.trades().allTrades().single().symbol)
         assertEquals("0123456789abcdef0123456789abcdef", db.trades().allTrades().single().recordKey)
         assertTrue(db.trades().allReviews().single().reviewSaved)
-        assertEquals(3, BackupCodec.decode(BackupCodec.encode(repo.export())).sourceSchemaVersion)
+        assertEquals(4, BackupCodec.decode(BackupCodec.encode(repo.export())).sourceSchemaVersion)
     }
     @Test fun entryFailureKeepsDraftAndDoesNotUpdateTradeOrRecents() = runBlocking {
         val d = EntryDraft(amount = "5")

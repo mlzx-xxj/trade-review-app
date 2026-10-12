@@ -11,6 +11,6 @@ import com.tradereview.app.data.CatalogSeeds
 class TradeReviewApplication : Application() {
     val database: TradeDatabase by lazy {
         Room.databaseBuilder(this, TradeDatabase::class.java, "trade-review.db")
-            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4).addCallback(CatalogSeeds.callback).build()
+            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, com.tradereview.app.data.MIGRATION_4_5).addCallback(CatalogSeeds.callback).build()
     }
 }

@@ -72,6 +72,15 @@ interface TradeDao {
     @Upsert suspend fun saveFilter(value: SavedFilter)
     @Delete suspend fun deleteFilter(value: SavedFilter)
     @Query("DELETE FROM saved_filters") suspend fun clearFilters()
+    @Query("SELECT * FROM risk_rules ORDER BY currency") fun observeRiskRules(): Flow<List<RiskRules>>
+    @Query("SELECT * FROM risk_rules ORDER BY currency") suspend fun allRiskRules(): List<RiskRules>
+    @Upsert suspend fun saveRiskRules(value: RiskRules)
+    @Query("DELETE FROM risk_rules") suspend fun clearRiskRules()
+    @Query("SELECT * FROM contract_templates ORDER BY market, name, id") fun observeTemplates(): Flow<List<ContractTemplate>>
+    @Query("SELECT * FROM contract_templates ORDER BY market, name, id") suspend fun allTemplates(): List<ContractTemplate>
+    @Upsert suspend fun saveTemplate(value: ContractTemplate)
+    @Delete suspend fun deleteTemplate(value: ContractTemplate)
+    @Query("DELETE FROM contract_templates") suspend fun clearTemplates()
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insertReview(review: DailyReview)
 }
@@ -104,8 +113,18 @@ val MIGRATION_3_4 = object : Migration(3, 4) {
     }
 }
 
-@Database(entities = [Trade::class, DailyReview::class, ManagedTag::class, Instrument::class, AppSettings::class, EntryDraft::class, SavedFilter::class], version = 4, exportSchema = true)
-@TypeConverters(TagConverters::class, FilterConverters::class)
+val MIGRATION_4_5 = object : Migration(4, 5) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL("ALTER TABLE trades ADD COLUMN professional TEXT DEFAULT NULL")
+        db.execSQL("ALTER TABLE trades ADD COLUMN riskRecord TEXT DEFAULT NULL")
+        db.execSQL("ALTER TABLE entry_drafts ADD COLUMN professional TEXT DEFAULT NULL")
+        db.execSQL("CREATE TABLE IF NOT EXISTS risk_rules (currency TEXT NOT NULL PRIMARY KEY, accountEquity TEXT, maxRiskPercent TEXT, maxPositionPercent TEXT, lossStreakThreshold INTEGER, dailyLossLimit TEXT)")
+        db.execSQL("CREATE TABLE IF NOT EXISTS contract_templates (id TEXT NOT NULL PRIMARY KEY, name TEXT NOT NULL, market TEXT NOT NULL, symbol TEXT NOT NULL, quantityUnit TEXT NOT NULL, multiplier TEXT, minTick TEXT, note TEXT NOT NULL, userVerified INTEGER NOT NULL)")
+    }
+}
+
+@Database(entities = [Trade::class, DailyReview::class, ManagedTag::class, Instrument::class, AppSettings::class, EntryDraft::class, SavedFilter::class, RiskRules::class, ContractTemplate::class], version = 5, exportSchema = true)
+@TypeConverters(TagConverters::class, FilterConverters::class, ProfessionalConverters::class)
 abstract class TradeDatabase : RoomDatabase() {
     abstract fun trades(): TradeDao
 }

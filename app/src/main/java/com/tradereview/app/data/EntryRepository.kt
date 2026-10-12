@@ -2,12 +2,23 @@ package com.tradereview.app.data
 
 import androidx.room.withTransaction
 import com.tradereview.app.domain.FastEntry
+import com.tradereview.app.domain.*
 
 /** Saving a completed trade, recency and clearing its draft is one transaction. */
 class EntryRepository(private val database: TradeDatabase) {
     private val dao get() = database.trades()
-    suspend fun save(draft: EntryDraft) = database.withTransaction {
-        val trade = FastEntry.trade(draft)
+    suspend fun save(draft: EntryDraft, approvedRisk: String? = null) = database.withTransaction {
+        val candidate = FastEntry.trade(draft)
+        val old = if(candidate.id == 0L) null else dao.findTrade(candidate.id)
+        val rules = dao.allRiskRules().firstOrNull { it.currency == candidate.currency }
+        var record = old?.riskRecord
+        if (RiskEngine.financialFactsChanged(old, candidate) && (rules?.configured == true || candidate.professional != null || record != null)) {
+            val check = RiskEngine.check(candidate, rules, dao.allTrades())
+            require(check.violations.isEmpty() || approvedRisk == RiskEngine.fingerprint(check)) { "请确认风险提醒后再保存；若纪律条件已变化，请重新确认" }
+            require((record?.events?.size ?: 0) < 1000) { "本笔纪律检查已达 1000 次，请先备份" }
+            record = RiskRecord(record?.events.orEmpty() + check)
+        }
+        val trade = candidate.copy(riskRecord = record)
         val tags = dao.allTags()
         fun contains(kind: String, id: String) = tags.any { it.kind == kind && it.id == id }
         require(contains("strategy", trade.strategy) && contains("emotion", trade.emotion) &&

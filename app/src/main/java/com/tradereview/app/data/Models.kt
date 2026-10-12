@@ -45,6 +45,8 @@ data class Trade(
     val reviewed: Boolean = false,
     @ColumnInfo(defaultValue = "''") val note: String = "",
     @ColumnInfo(defaultValue = "''") val recordKey: String = java.util.UUID.randomUUID().toString().replace("-", ""),
+    @ColumnInfo(defaultValue = "NULL") val professional: ProfessionalTrade? = null,
+    @ColumnInfo(defaultValue = "NULL") val riskRecord: RiskRecord? = null,
 )
 
 @Entity(tableName = "daily_reviews")

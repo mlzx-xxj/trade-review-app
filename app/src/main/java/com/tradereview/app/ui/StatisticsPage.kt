@@ -100,6 +100,7 @@ fun StatisticsPage(state: JournalState, analytics: AnalyticsState, currency: Str
         item { SectionCard("每日执行评分趋势", "来自日期范围内已保存的盘后复盘；加入交易条件后，仅显示匹配交易日期。每日日志本身不区分币种。") {
             RatingTrend(report.ratings, onDay)
         } }
+        riskAnalyticsItems(analytics.risk, currency, catalog, filter, onDrill)
     }
 }
 

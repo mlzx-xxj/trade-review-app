@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
 data class JournalState(
@@ -29,9 +30,13 @@ data class JournalState(
     val settings: AppSettings = AppSettings(),
     val drafts: List<EntryDraft> = emptyList(),
     val savedFilters: List<SavedFilter> = emptyList(),
+    val riskRules: List<RiskRules> = emptyList(),
+    val contractTemplates: List<ContractTemplate> = emptyList(),
     val loading: Boolean = true,
     val error: String? = null,
 )
+
+private data class AnalysisInput(val trades: List<Trade>, val reviews: List<DailyReview>, val loading: Boolean, val error: String?, val currency: String, val filter: TradeFilter)
 
 class TradeViewModel(private val database: TradeDatabase, private val savedState: SavedStateHandle) : ViewModel() {
     private val dao = database.trades()
@@ -49,17 +54,19 @@ class TradeViewModel(private val database: TradeDatabase, private val savedState
     private val catalog = combine(dao.observeTags(), dao.observeInstruments(), dao.observeSettings(), dao.observeDrafts()) { tags, instruments, settings, drafts ->
         JournalState(tags = tags, instruments = instruments, settings = settings ?: AppSettings(), drafts = drafts, loading = false)
     }
-    val state = combine(journal, catalog, dao.observeFilters()) { (trades, reviews), catalog, filters -> catalog.copy(trades = trades, reviews = reviews, savedFilters = filters) }
+    private val riskSettings = combine(dao.observeRiskRules(), dao.observeTemplates()) { rules, templates -> rules to templates }
+    val state = combine(journal, catalog, dao.observeFilters(), riskSettings) { (trades, reviews), catalog, filters, risk -> catalog.copy(trades = trades, reviews = reviews, savedFilters = filters, riskRules = risk.first, contractTemplates = risk.second) }
         .catch { error ->
             if (error is CancellationException) throw error
             emit(JournalState(loading = false, error = "本地数据库读取失败，请重启应用后重试。"))
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), JournalState())
 
     @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
-    val analytics = combine(state, currency, filter) { journal, currency, filter -> Triple(journal, currency, filter) }
-        .mapLatest { (journal, currency, filter) ->
-            if (journal.loading || journal.error != null) AnalyticsState()
-            else withContext(Dispatchers.Default) { AdvancedAnalytics.calculate(journal.trades, journal.reviews, currency, filter) }
+    val analytics = combine(state, currency, filter) { j, c, f -> AnalysisInput(j.trades, j.reviews, j.loading, j.error, c, f) }
+        .distinctUntilChanged()
+        .mapLatest { input ->
+            if (input.loading || input.error != null) AnalyticsState()
+            else withContext(Dispatchers.Default) { AdvancedAnalytics.calculate(input.trades, input.reviews, input.currency, input.filter) }
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AnalyticsState())
 
     private val _message = MutableStateFlow<String?>(null)
@@ -96,10 +103,10 @@ class TradeViewModel(private val database: TradeDatabase, private val savedState
             finally { draftMutex.unlock() }
         }
     }
-    fun saveEntry(draft: EntryDraft, onSuccess: () -> Unit) = write("交易已保存", onSuccess) {
+    fun saveEntry(draft: EntryDraft, onSuccess: () -> Unit, approvedRisk: String? = null) = write("交易已保存", onSuccess) {
         draftJob?.join()
         draftMutex.lock()
-        try { entries.save(draft) } finally { draftMutex.unlock() }
+        try { entries.save(draft, approvedRisk) } finally { draftMutex.unlock() }
     }
     fun deleteTrade(trade: Trade, onSuccess: () -> Unit) = write("交易已删除", onSuccess) { entries.delete(trade) }
     fun saveTag(tag: ManagedTag) = write("标签已保存") { entries.saveTag(tag) }
@@ -121,6 +128,11 @@ class TradeViewModel(private val database: TradeDatabase, private val savedState
     fun applyFilter(value: SavedFilter) { selectCurrency(value.currency); updateFilter(value.criteria); notify("已应用筛选方案：${value.name}") }
     fun deleteFilter(value: SavedFilter) = write("筛选方案已删除") { dao.deleteFilter(value) }
     fun notify(message: String) { _message.value = message }
+    fun saveRiskRules(value: RiskRules) = write("风险规则已保存，仅影响后续检查") { ProfessionalMath.validateRule(value); dao.saveRiskRules(value) }
+    fun saveTemplate(value: ContractTemplate) = write("合约参数模板已保存") {
+        database.withTransaction { ProfessionalMath.validateTemplate(value); require(dao.allTemplates().size < 500 || dao.allTemplates().any { it.id == value.id }); dao.saveTemplate(value) }
+    }
+    fun deleteTemplate(value: ContractTemplate) = write("模板已删除，历史交易参数保留") { dao.deleteTemplate(value) }
 
     fun savePlan(draft: DailyReview) = write("盘前计划已保存") {
         val current = dao.findReview(draft.date) ?: DailyReview(date = draft.date)

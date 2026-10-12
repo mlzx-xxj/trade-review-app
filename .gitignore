@@ -18,3 +18,5 @@ __pycache__/
 /private-signing/
 /trade-review-v03/
 *-signing-PRIVATE.tar.gz
+
+/ci-v05-device-screenshots/
