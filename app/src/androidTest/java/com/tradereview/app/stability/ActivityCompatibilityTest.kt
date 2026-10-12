@@ -4,6 +4,9 @@ import android.content.pm.ActivityInfo
 import android.os.Build
 import android.os.ParcelFileDescriptor
 import android.os.SystemClock
+import android.view.inputmethod.InputMethodManager
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.lifecycle.Lifecycle
@@ -62,12 +65,17 @@ class ActivityCompatibilityTest {
     }
     @Test fun largeFontDarkThemeKeyboardAndLandscapeKeepSaveUsable(){
         val oldScale=shell("settings get system font_scale").trim()
+        val oldKeyboard=shell("settings get secure show_ime_with_hard_keyboard").trim()
         try {
             runBlocking{db.trades().saveSettings(AppSettings(theme="dark",pnlPalette="red_profit"))}
             shell("settings put system font_scale 1.3")
             compose.waitUntil(20000){compose.activity.resources.configuration.fontScale>=1.29f && model.state.value.settings.theme=="dark"}
             compose.onNodeWithContentDescription("新增交易").performClick()
             compose.onNodeWithTag("entry-amount").performScrollTo().performClick().performTextReplacement("77.77")
+            // Emulator hardware keyboards can suppress the soft IME; require real
+            // window insets rather than calling a focused field a keyboard test.
+            shell("settings put secure show_ime_with_hard_keyboard 1")
+            showKeyboard()
             compose.onNodeWithText("保存交易").assertIsDisplayed();capture("23-v08-large-font-keyboard")
             compose.activityRule.scenario.onActivity{it.requestedOrientation=ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE}
             compose.waitUntil(20000){compose.activity.resources.configuration.orientation==android.content.res.Configuration.ORIENTATION_LANDSCAPE}
@@ -77,11 +85,21 @@ class ActivityCompatibilityTest {
             compose.waitUntil(15000){!model.busy.value && compose.onAllNodesWithTag("entry-amount").fetchSemanticsNodes().isEmpty()}
             runBlocking{assertEquals("123.45",db.trades().findTradeByKey(key)!!.netPnl)}
         }finally{
+            if(oldKeyboard=="null")shell("settings delete secure show_ime_with_hard_keyboard")
+            else shell("settings put secure show_ime_with_hard_keyboard $oldKeyboard")
             shell("settings put system font_scale ${oldScale.toFloatOrNull() ?: 1f}")
             compose.activityRule.scenario.onActivity{it.requestedOrientation=ActivityInfo.SCREEN_ORIENTATION_PORTRAIT}
             compose.waitUntil(20000){compose.activity.resources.configuration.orientation==android.content.res.Configuration.ORIENTATION_PORTRAIT}
             runBlocking{db.trades().saveSettings(AppSettings())}
         }
+    }
+    private fun showKeyboard(){
+        compose.onNodeWithTag("entry-amount").performClick()
+        compose.activityRule.scenario.onActivity{activity->
+            val view=requireNotNull(activity.currentFocus)
+            activity.getSystemService(InputMethodManager::class.java).showSoftInput(view,InputMethodManager.SHOW_IMPLICIT)
+        }
+        compose.waitUntil(15000){ViewCompat.getRootWindowInsets(compose.activity.window.decorView)?.isVisible(WindowInsetsCompat.Type.ime())==true}
     }
     @Test fun realThousandFiveThousandTenThousandListsAndCalendarRemainInteractive(){
         val result=linkedMapOf<String,Any>("api" to Build.VERSION.SDK_INT,"definition" to "test-framework end-to-end scroll-to-index and idle, not frame-jank/phone latency")

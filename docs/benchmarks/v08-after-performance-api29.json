@@ -1,0 +1,336 @@
+{
+  "analytics-1000": {
+    "samplesMs": [
+      55.31959,
+      46.33433,
+      46.15518
+    ],
+    "medianMs": 46.33433,
+    "minimumMs": 46.15518,
+    "maximumMs": 55.31959
+  },
+  "analytics-reference-v07-1000": {
+    "samplesMs": [
+      61.90885,
+      71.96342,
+      51.41893
+    ],
+    "medianMs": 61.90885,
+    "minimumMs": 51.41893,
+    "maximumMs": 71.96342
+  },
+  "calendar-1000": {
+    "samplesMs": [
+      3.04521,
+      5.40458,
+      2.16344
+    ],
+    "medianMs": 3.04521,
+    "minimumMs": 2.16344,
+    "maximumMs": 5.40458
+  },
+  "week-report-1000": {
+    "samplesMs": [
+      13.35347,
+      10.39899,
+      9.51395
+    ],
+    "medianMs": 10.39899,
+    "minimumMs": 9.51395,
+    "maximumMs": 13.35347
+  },
+  "month-report-1000": {
+    "samplesMs": [
+      32.13422,
+      33.6309,
+      38.3132
+    ],
+    "medianMs": 33.6309,
+    "minimumMs": 32.13422,
+    "maximumMs": 38.3132
+  },
+  "insights-1000": {
+    "samplesMs": [
+      5.49038,
+      5.74019,
+      11.74643
+    ],
+    "medianMs": 5.74019,
+    "minimumMs": 5.49038,
+    "maximumMs": 11.74643
+  },
+  "loss-run-insights-1000": {
+    "samplesMs": [
+      20.9394,
+      16.78261,
+      14.49717
+    ],
+    "medianMs": 16.78261,
+    "minimumMs": 14.49717,
+    "maximumMs": 20.9394
+  },
+  "loss-run-reference-v07-1000": {
+    "samplesMs": [
+      10.90848,
+      17.05485,
+      14.18466
+    ],
+    "medianMs": 14.18466,
+    "minimumMs": 10.90848,
+    "maximumMs": 17.05485
+  },
+  "room-list-1000": {
+    "samplesMs": [
+      31.52472,
+      24.54132,
+      27.84842
+    ],
+    "medianMs": 27.84842,
+    "minimumMs": 24.54132,
+    "maximumMs": 31.52472
+  },
+  "json-roundtrip-1000": {
+    "samplesMs": [
+      370.7322,
+      381.4289,
+      424.83337
+    ],
+    "medianMs": 381.4289,
+    "minimumMs": 370.7322,
+    "maximumMs": 424.83337
+  },
+  "analytics-5000": {
+    "samplesMs": [
+      261.1573,
+      240.99374,
+      238.58424
+    ],
+    "medianMs": 240.99374,
+    "minimumMs": 238.58424,
+    "maximumMs": 261.1573
+  },
+  "analytics-reference-v07-5000": {
+    "samplesMs": [
+      251.83555,
+      262.84353,
+      242.12029
+    ],
+    "medianMs": 251.83555,
+    "minimumMs": 242.12029,
+    "maximumMs": 262.84353
+  },
+  "calendar-5000": {
+    "samplesMs": [
+      2.79296,
+      4.58437,
+      5.25165
+    ],
+    "medianMs": 4.58437,
+    "minimumMs": 2.79296,
+    "maximumMs": 5.25165
+  },
+  "week-report-5000": {
+    "samplesMs": [
+      27.73488,
+      21.39921,
+      26.02568
+    ],
+    "medianMs": 26.02568,
+    "minimumMs": 21.39921,
+    "maximumMs": 27.73488
+  },
+  "month-report-5000": {
+    "samplesMs": [
+      117.30268,
+      131.67619,
+      126.02447
+    ],
+    "medianMs": 126.02447,
+    "minimumMs": 117.30268,
+    "maximumMs": 131.67619
+  },
+  "insights-5000": {
+    "samplesMs": [
+      7.0826,
+      8.01577,
+      10.09808
+    ],
+    "medianMs": 8.01577,
+    "minimumMs": 7.0826,
+    "maximumMs": 10.09808
+  },
+  "loss-run-insights-5000": {
+    "samplesMs": [
+      27.96497,
+      27.64302,
+      30.22447
+    ],
+    "medianMs": 27.96497,
+    "minimumMs": 27.64302,
+    "maximumMs": 30.22447
+  },
+  "loss-run-reference-v07-5000": {
+    "samplesMs": [
+      58.60957,
+      60.81318,
+      81.85545
+    ],
+    "medianMs": 60.81318,
+    "minimumMs": 58.60957,
+    "maximumMs": 81.85545
+  },
+  "room-list-5000": {
+    "samplesMs": [
+      119.24248,
+      132.87126,
+      151.18357
+    ],
+    "medianMs": 132.87126,
+    "minimumMs": 119.24248,
+    "maximumMs": 151.18357
+  },
+  "json-roundtrip-5000": {
+    "samplesMs": [
+      1846.1128,
+      1893.09111,
+      1806.35851
+    ],
+    "medianMs": 1846.1128,
+    "minimumMs": 1806.35851,
+    "maximumMs": 1893.09111
+  },
+  "analytics-10000": {
+    "samplesMs": [
+      487.63424,
+      488.08068,
+      457.28368
+    ],
+    "medianMs": 487.63424,
+    "minimumMs": 457.28368,
+    "maximumMs": 488.08068
+  },
+  "analytics-reference-v07-10000": {
+    "samplesMs": [
+      457.89473,
+      490.4416,
+      446.04468
+    ],
+    "medianMs": 457.89473,
+    "minimumMs": 446.04468,
+    "maximumMs": 490.4416
+  },
+  "calendar-10000": {
+    "samplesMs": [
+      9.61996,
+      9.22063,
+      8.15629
+    ],
+    "medianMs": 9.22063,
+    "minimumMs": 8.15629,
+    "maximumMs": 9.61996
+  },
+  "week-report-10000": {
+    "samplesMs": [
+      47.35834,
+      51.81003,
+      57.67589
+    ],
+    "medianMs": 51.81003,
+    "minimumMs": 47.35834,
+    "maximumMs": 57.67589
+  },
+  "month-report-10000": {
+    "samplesMs": [
+      249.57084,
+      242.91741,
+      278.76871
+    ],
+    "medianMs": 249.57084,
+    "minimumMs": 242.91741,
+    "maximumMs": 278.76871
+  },
+  "insights-10000": {
+    "samplesMs": [
+      17.02911,
+      12.32274,
+      10.42007
+    ],
+    "medianMs": 12.32274,
+    "minimumMs": 10.42007,
+    "maximumMs": 17.02911
+  },
+  "loss-run-insights-10000": {
+    "samplesMs": [
+      48.35175,
+      51.21102,
+      58.47451
+    ],
+    "medianMs": 51.21102,
+    "minimumMs": 48.35175,
+    "maximumMs": 58.47451
+  },
+  "loss-run-reference-v07-10000": {
+    "samplesMs": [
+      212.56492,
+      217.40238,
+      220.70115
+    ],
+    "medianMs": 217.40238,
+    "minimumMs": 212.56492,
+    "maximumMs": 220.70115
+  },
+  "room-list-10000": {
+    "samplesMs": [
+      265.45095,
+      279.86853,
+      269.84087
+    ],
+    "medianMs": 269.84087,
+    "minimumMs": 265.45095,
+    "maximumMs": 279.86853
+  },
+  "json-roundtrip-10000": {
+    "samplesMs": [
+      3654.12156,
+      3595.12488,
+      3550.74031
+    ],
+    "medianMs": 3595.12488,
+    "minimumMs": 3550.74031,
+    "maximumMs": 3654.12156
+  },
+  "zip-write-10000": {
+    "samplesMs": [
+      1498.31869,
+      1442.15484,
+      1425.71661
+    ],
+    "medianMs": 1442.15484,
+    "minimumMs": 1425.71661,
+    "maximumMs": 1498.31869
+  },
+  "zip-read-10000": {
+    "samplesMs": [
+      2436.64826,
+      2359.51432,
+      2336.55514
+    ],
+    "medianMs": 2359.51432,
+    "minimumMs": 2336.55514,
+    "maximumMs": 2436.64826
+  },
+  "structuredZipBytes": 172136,
+  "complete": true,
+  "environment": {
+    "api": 29,
+    "model": "Android SDK built for x86_64",
+    "abis": [
+      "x86_64",
+      "x86"
+    ],
+    "warmups": 1,
+    "samples": 3,
+    "datasetDate": "2026-01-31",
+    "measurement": "elapsed wall time; disposable CI emulator, not phone"
+  }
+}

@@ -1,3 +1,15 @@
+# V0.8 稳定性与长期升级
+
+基于已合并 V0.7，保留全部离线交易、风险/R、截图、ZIP、报告、目标、OCR 和洞察功能。版本 0.8.0 / code 8 / com.tradereview.app；compile/target SDK 35，Room 仍 v7、JSON 6/ZIP 1，没有为了应用版本号改变数据库结构。
+
+本轮加强原 V0.3 签名连续性门禁、恢复取消及删除标识校验、受限缩略图缓存、现有索引查询、统计一次排序/亏损段扫描与显示范围一致性。APK 保留全部 ABI 和中文/Latin OCR 模型，仅移除未用扩展图标和默认 IDE inspector；开发需要 inspector 时使用 `-PenableComposeTooling=true`。
+
+[V0.8 PR #8](https://github.com/mlzx-xxj/trade-review-app/pull/8)提供最终提交的 CI、手机浏览器 APK、实际 API 29/35 截图和完整性能/OCR原始结果；不自动合并。固定 Secrets 尚未配置成功时仅临时测试包，不保证覆盖安装。真正原签名旧版升级与真机验收尚未执行，不以同版本模拟器进程重启替代。
+
+[实施计划](docs/V08-PLAN.md) · [实际验证/失败记录](docs/V08-VALIDATION.md) · [数据安全与兼容](docs/V08-DATA-SAFETY.md) · [性能与OCR实测](docs/V08-PERFORMANCE-AND-OCR.md) · [仅用安卓手机配置原签名](docs/V08-PHONE-SIGNING.md) · [手机验收清单](docs/V08-PHONE-ACCEPTANCE.md)
+
+以下保留 V0.1–V0.7 的功能与历史验证背景，历史结果仅代表当时的版本。
+
 # V0.7 交易复盘
 
 在已合并 V0.6 上增加打包中文/Latin 离线 OCR、逐项核实/专用草稿/重复提醒、集中本地洞察规则、盘前清单与周月报洞察。保留旧版全部功能；无新增 INTERNET 权限，原 V0.3 私钥与 pin 不替换。

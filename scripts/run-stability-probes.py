@@ -21,7 +21,9 @@ def snapshot(name):
     folder = ROOT / name;folder.mkdir(parents=True, exist_ok=True)
     for suffix in ["", "-wal", "-shm"]:
         result = adb("exec-out", "run-as", APP, "cat", "databases/trade-review.db" + suffix, check=False, binary=True)
-        if result.returncode == 0 and result.stdout:
+        if suffix == "":
+            assert result.returncode == 0 and result.stdout.startswith(b"SQLite format 3\x00"), "Private database unavailable or invalid; refusing to treat adb diagnostics as a snapshot"
+        if result.returncode == 0 and result.stdout and not result.stdout.startswith(b"run-as:"):
             (folder / ("trade-review.db" + suffix)).write_bytes(result.stdout)
     with sqlite3.connect(folder / "trade-review.db") as db:
         assert db.execute("PRAGMA user_version").fetchone()[0] == 7
@@ -53,6 +55,19 @@ def main():
     ROOT.mkdir(exist_ok=True)
     assert adb("shell", "getprop", "ro.kernel.qemu").stdout.strip() == "1", "Never run this probe on a real phone"
     api = int(adb("shell", "getprop", "ro.build.version.sdk").stdout.strip())
+    # Gradle UTP uninstalls both packages at the end of connectedDebugAndroidTest.
+    # Manually install the SAME locally compiled test APKs and run an existing real
+    # Activity regression to seed committed synthetic facts. Manual instrumentation
+    # leaves the packages installed for process-stop probes; this is not an upgrade.
+    for apk in ["app/build/outputs/apk/debug/app-debug.apk", "app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk"]:
+        assert Path(apk).is_file(), apk
+        result = adb("install", "-r", apk)
+        assert "Success" in result.stdout, "Disposable emulator fixture install failed"
+    seed = adb("shell", "am", "instrument", "-w", "-r", "-e", "class",
+               "com.tradereview.app.stability.ActivityCompatibilityTest#actualActivityDraftSurvivesRecreationAndBackgroundResume",
+               APP + ".test/androidx.test.runner.AndroidJUnitRunner")
+    (ROOT / "fixture-instrumentation.txt").write_text(seed.stdout + seed.stderr)
+    assert "OK (1 test)" in seed.stdout and "FAILURES" not in seed.stdout, "Actual Activity fixture regression failed"
     adb("shell", "am", "force-stop", APP)
     before = snapshot("before")
     # Simulate interrupted private-file staging. No DB row points to either synthetic orphan.
@@ -85,7 +100,7 @@ def main():
     (ROOT / "launch-times.txt").write_text("\n".join(logs))
     report = {"api": api, "processRestarts": 3, "allSixteenTablesUnchanged": len(before) == 16, "attachmentShaVerified": True,
               "coldProcessLaunch": cold, "warmProcessLaunch": warm,
-              "definition": "am start -W system launch times; OS/page caches warmed by prior tests; warm start omits force-stop and may reuse/create Activity; not phone/end-to-end data-ready latency; no reinstall/downgrade/fixed-signer upgrade"}
+              "definition": "am start -W system launch times; OS/page caches warmed by prior tests; warm start omits force-stop and may reuse/create Activity; not phone/end-to-end data-ready latency. After Gradle UTP cleanup, the same locally compiled test APKs are manually installed and one existing Activity test seeds synthetic facts; this setup is not a fixed-signer old-to-new upgrade."}
     assert report["allSixteenTablesUnchanged"]
     (ROOT / f"process-probes-api{api}.json").write_text(json.dumps(report, ensure_ascii=False, indent=2)+"\n")
     print(json.dumps(report, ensure_ascii=False))
