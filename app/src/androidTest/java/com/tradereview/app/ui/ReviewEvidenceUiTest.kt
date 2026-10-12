@@ -65,7 +65,7 @@ class ReviewEvidenceUiTest {
         compose.waitUntil(15000){!model.state.value.loading && !model.analytics.value.loading}
     }
     @After fun close(){db.close();root.deleteRecursively()}
-    private fun nav(label:String){compose.onAllNodesWithText(label).onFirst().performClick()}
+    private fun nav(label:String){val index=mapOf("首页" to 0,"交易记录" to 1,"勾选复盘" to 2,"统计分析" to 3).getValue(label);compose.onNodeWithTag("main-page-$index").performClick()}
     private fun openImages() {
         nav("交易记录");compose.onNodeWithTag("trades-list").performScrollToNode(hasText("+400.00"))
         compose.onNodeWithText("+400.00").performClick();compose.onNodeWithTag("open-trade-evidence").performScrollTo().performClick()

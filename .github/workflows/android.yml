@@ -6,10 +6,17 @@ on:
   pull_request:
   workflow_dispatch:
     inputs:
-      signed_apk_blob_sha:
-        description: 'Optional public fixed-signed APK Git blob; payload and signer must match this build and committed pin'
+      old_fixed_release_tag:
+        description: 'Optional existing V0.3–V0.8 Release tag containing a real original-pin APK'
         required: false
         type: string
+      old_fixed_asset_name:
+        description: 'Exact existing public APK asset name; requires original Secrets to test real upgrade'
+        required: false
+        type: string
+
+env:
+  SOURCE_COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
 
 permissions:
   contents: read
@@ -20,16 +27,19 @@ concurrency:
 
 jobs:
   build:
-    name: Debug APK, unit tests and lint
+    name: Debug, RC and Release builds, JVM and lint
     runs-on: ubuntu-latest
     timeout-minutes: 30
     outputs:
       validation_ready: ${{ steps.compilation.outcome == 'success' }}
+      fixed_ready: ${{ steps.signing.outputs.configured }}
     permissions:
       contents: write
     steps:
       - name: Checkout source
         uses: actions/checkout@v5
+        with:
+          ref: ${{ env.SOURCE_COMMIT }}
       - name: Set up JDK 17
         uses: actions/setup-java@v5
         with:
@@ -60,92 +70,52 @@ jobs:
           python3 scripts/tests/test_device_delivery.py
           python3 scripts/tests/test_publication.py
           python3 scripts/tests/test_stability_probes.py
+          python3 scripts/tests/test_v100_identity.py
+          python3 -m py_compile scripts/run-v100-package-probes.py scripts/v100-identity.py
       - name: Compile, run JVM tests and Android lint
         id: compilation
-        run: ./gradlew --no-daemon --no-build-cache --stacktrace :app:assembleDebug :app:assembleDebugAndroidTest :app:testDebugUnitTest :app:lintDebug
-      - name: Verify compiled APK identity, bundled OCR models, V0.8 version and offline permissions
+        run: ./gradlew --no-daemon --no-build-cache --stacktrace :app:assembleDebug :app:assembleDebugAndroidTest :app:assembleRc :app:assembleRelease :app:testDebugUnitTest :app:lintDebug :app:lintRc :app:lintRelease
+      - name: Verify isolated non-debuggable RC APK and bundled offline OCR
         run: |
-          apk_path=app/build/outputs/apk/debug/app-debug.apk
-          aapt_path="$ANDROID_HOME/build-tools/35.0.0/aapt"
-          badging=$("$aapt_path" dump badging "$apk_path")
-          apk_identity=${badging%%$'\n'*}
-          printf '%s\n' "$apk_identity"
-          [[ "$apk_identity" == *"package: name='com.tradereview.app' versionCode='8' versionName='0.8.0'"* ]] || exit 1
-          permissions=$("$aapt_path" dump permissions "$apk_path")
-          if [[ "$permissions" == *"android.permission.INTERNET"* || "$permissions" == *"android.permission.READ_EXTERNAL_STORAGE"* || "$permissions" == *"android.permission.WRITE_EXTERNAL_STORAGE"* || "$permissions" == *"android.permission.READ_MEDIA_"* || "$permissions" == *"android.permission.MANAGE_EXTERNAL_STORAGE"* ]]; then
-            printf 'Offline APK unexpectedly requests INTERNET; publication refused\n' >&2
-            exit 1
-          fi
-          python3 - "$apk_path" <<'PYMODEL'
-          import sys, zipfile
-          with zipfile.ZipFile(sys.argv[1]) as apk:
-              names=apk.namelist()
-              for script in ("Hani_ctc", "Latn_ctc"):
-                  assert any(script in n and n.endswith("conv_model.fb") for n in names), "Bundled OCR model missing: " + script
-          PYMODEL
           mkdir -p dist
-          printf '%s\n%s\n' "$apk_identity" "$permissions" > dist/APK-IDENTITY.txt
-      - name: Configure fixed V0.3 signing key from Secrets when available
+          cp app/build/outputs/apk/rc/app-rc.apk dist/TradeReview-v1.0-RC.apk
+          python3 scripts/v100-identity.py --apk dist/TradeReview-v1.0-RC.apk --kind rc --directory dist --aapt "$ANDROID_HOME/build-tools/35.0.0/aapt" --apksigner "$ANDROID_HOME/build-tools/35.0.0/apksigner" --source "$SOURCE_COMMIT"
+      - name: Upload RC independently of fixed-key availability
+        uses: actions/upload-artifact@v4
+        with:
+          name: TradeReview-v1.0-RC-${{ github.run_number }}
+          path: |
+            dist/TradeReview-v1.0-RC.apk
+            dist/RC-IDENTITY.json
+          if-no-files-found: error
+          retention-days: 30
+      - name: Sign real Release with existing V0.3 key and verify original pin
         id: signing
         env:
           EXISTING_KEY_BASE64: ${{ secrets.TRADE_REVIEW_KEYSTORE_BASE64 }}
           EXISTING_STORE_PASSWORD: ${{ secrets.TRADE_REVIEW_KEYSTORE_PASSWORD }}
           EXISTING_KEY_ALIAS: ${{ secrets.TRADE_REVIEW_KEY_ALIAS }}
           EXISTING_KEY_PASSWORD: ${{ secrets.TRADE_REVIEW_KEY_PASSWORD }}
-        run: |
-          configured=$(python3 scripts/signing-config-state.py)
-          if [ "$configured" = true ]; then
-            umask 077
-            key_path="$RUNNER_TEMP/trade-review-existing.keystore"
-            printf '%s' "$EXISTING_KEY_BASE64" | base64 --decode > "$key_path"
-            printf 'TRADE_REVIEW_KEYSTORE_PATH=%s\n' "$key_path" >> "$GITHUB_ENV"
-            printf 'TRADE_REVIEW_KEYSTORE_PASSWORD=%s\n' "$EXISTING_STORE_PASSWORD" >> "$GITHUB_ENV"
-            printf 'TRADE_REVIEW_KEY_ALIAS=%s\n' "$EXISTING_KEY_ALIAS" >> "$GITHUB_ENV"
-            printf 'TRADE_REVIEW_KEY_PASSWORD=%s\n' "$EXISTING_KEY_PASSWORD" >> "$GITHUB_ENV"
-            printf 'configured=true\n' >> "$GITHUB_OUTPUT"
-          else
-            printf 'configured=false\n' >> "$GITHUB_OUTPUT"
-          fi
-      - name: Sign compiled payload with existing key only after independent validation
-        if: steps.signing.outputs.configured == 'true'
-        run: |
-          "$ANDROID_HOME/build-tools/35.0.0/apksigner" sign --ks "$TRADE_REVIEW_KEYSTORE_PATH" --ks-key-alias "$TRADE_REVIEW_KEY_ALIAS" --ks-pass env:TRADE_REVIEW_KEYSTORE_PASSWORD --key-pass env:TRADE_REVIEW_KEY_PASSWORD app/build/outputs/apk/debug/app-debug.apk
-      - name: Verify fixed signer certificate pin or label APK as temporary test
-        id: signature
-        env:
-          TRADE_REVIEW_EXISTING_KEY_CONFIGURED: ${{ steps.signing.outputs.configured }}
           TRADE_REVIEW_UPGRADE_CERT_SHA256: ${{ vars.TRADE_REVIEW_UPGRADE_CERT_SHA256 }}
-        run: bash scripts/check-apk-signature.sh app/build/outputs/apk/debug/app-debug.apk
-      - name: Remove temporary existing key
-        if: always()
-        run: rm -f "$RUNNER_TEMP/trade-review-existing.keystore"
-      - name: Verify explicitly supplied public fixed-signed APK against this build
-        if: github.event_name == 'workflow_dispatch' && inputs.signed_apk_blob_sha != ''
-        env:
-          GH_TOKEN: ${{ github.token }}
-          SIGNED_APK_BLOB_SHA: ${{ inputs.signed_apk_blob_sha }}
-        run: |
-          [[ "$SIGNED_APK_BLOB_SHA" =~ ^[0-9a-f]{40}$ ]] || exit 1
-          gh api "repos/$GITHUB_REPOSITORY/git/blobs/$SIGNED_APK_BLOB_SHA" > "$RUNNER_TEMP/public-apk-blob.json"
-          python3 scripts/adopt-signed-apk.py \
-            --blob-file "$RUNNER_TEMP/public-apk-blob.json" --blob-sha "$SIGNED_APK_BLOB_SHA" \
-            --compiled-apk app/build/outputs/apk/debug/app-debug.apk \
-            --apksigner "$ANDROID_HOME/build-tools/35.0.0/apksigner" \
-            --expected-cert-file docs/V03-CERTIFICATE-SHA256.txt --output-dir dist \
-            --source-commit "$GITHUB_SHA" --secrets-configured '${{ steps.signing.outputs.configured }}'
-      - name: Upload debug APK
-        id: apk
+        run: bash scripts/sign-v100-existing.sh
+      - name: Upload original-pin Release candidate and private-key-free upgrade fixture
+        if: steps.signing.outputs.configured == 'true'
         uses: actions/upload-artifact@v4
         with:
-          name: TradeReview-v0.8-${{ github.run_number }}
-          path: dist/
+          name: original-pin-candidate
+          path: |
+            dist/TradeReview-v1.0-fixed-candidate.apk
+            dist/FIXED-IDENTITY.json
+            signing-fixture/original-signed-test.apk
           if-no-files-found: error
           retention-days: 30
+      - name: Verify delivered APKs and explicit candidate status
+        run: python3 scripts/v100-identity.py --verify --directory dist --aapt "$ANDROID_HOME/build-tools/35.0.0/aapt" --apksigner "$ANDROID_HOME/build-tools/35.0.0/apksigner" --source "$SOURCE_COMMIT"
       - name: Prepare bounded verification copies for the Base file tool
         run: |
           python3 - <<'PYPARTS'
           from pathlib import Path
-          apk = next(Path('dist').glob('*.apk'))
+          apk = Path('dist/TradeReview-v1.0-RC.apk')
           out = Path('apk-verification'); out.mkdir()
           with apk.open('rb') as source:
               for index in range(1, 10):
@@ -162,6 +132,7 @@ jobs:
           name: signing-metadata
           path: |
             dist/*.txt
+            dist/*.json
             apk-verification/original-apk-name.txt
           if-no-files-found: error
           retention-days: 30
@@ -241,6 +212,7 @@ jobs:
     if: ${{ !cancelled() && needs.build.outputs.validation_ready == 'true' }}
     env:
       V08_STABILITY_PROBES: 'true'
+      V100_PACKAGE_PROBES: 'true'
     strategy:
       fail-fast: false
       matrix:
@@ -249,7 +221,7 @@ jobs:
             target: google_apis
           - api: 35
             target: default
-    timeout-minutes: 35
+    timeout-minutes: 45
     steps:
       - name: Reserve disk space for the disposable emulator
         run: |
@@ -257,6 +229,8 @@ jobs:
           sudo rm -rf /usr/share/dotnet
           df -h /
       - uses: actions/checkout@v5
+        with:
+          ref: ${{ env.SOURCE_COMMIT }}
       - uses: actions/setup-java@v5
         with:
           distribution: temurin
@@ -281,6 +255,34 @@ jobs:
           path: ci-reports
       - name: Install generated schemas as migration test assets
         run: cp -R ci-reports/schemas/. app/schemas/
+      - name: Download actual RC package for installation checks
+        uses: actions/download-artifact@v4
+        with:
+          name: TradeReview-v1.0-RC-${{ github.run_number }}
+          path: delivered-packages
+      - name: Download original-pin Release candidate when genuinely signed
+        if: needs.build.outputs.fixed_ready == 'true'
+        uses: actions/download-artifact@v4
+        with:
+          name: original-pin-candidate
+          path: original-candidate
+      - name: Prepare optional real original-identity old APK
+        env:
+          GH_TOKEN: ${{ github.token }}
+          OLD_TAG: ${{ inputs.old_fixed_release_tag }}
+          OLD_ASSET: ${{ inputs.old_fixed_asset_name }}
+          FIXED_READY: ${{ needs.build.outputs.fixed_ready }}
+        run: |
+          if [ "$FIXED_READY" = true ]; then
+            cp original-candidate/dist/* delivered-packages/
+            cp original-candidate/signing-fixture/original-signed-test.apk delivered-packages/upgrade-fixture.apk
+          fi
+          if [ -n "$OLD_TAG" ] || [ -n "$OLD_ASSET" ]; then
+            [[ "$FIXED_READY" = true && -n "$OLD_TAG" && -n "$OLD_ASSET" ]] || { echo 'Real upgrade requires both public old asset fields and original key configuration' >&2; exit 1; }
+            [[ "$OLD_ASSET" =~ ^[A-Za-z0-9._-]+\.apk$ ]] || exit 1
+            gh release download "$OLD_TAG" --repo "$GITHUB_REPOSITORY" --pattern "$OLD_ASSET" --dir old-fixed-package
+            mv "old-fixed-package/$OLD_ASSET" delivered-packages/old-fixed.apk
+          fi
       - name: Enable KVM
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
@@ -302,7 +304,7 @@ jobs:
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: v08-emulator-screenshots-api${{ matrix.api }}
+          name: v100-emulator-screenshots-api${{ matrix.api }}
           path: ci-screenshots/
           if-no-files-found: error
           retention-days: 30
@@ -318,10 +320,11 @@ jobs:
             ci-screenshots/
             ci-metrics/
             ci-stability/
+            ci-v100/
           retention-days: 30
 
   publish:
-    name: Publish verified V0.8 APK with explicit signing status
+    name: Publish verified V1.0 candidates; stable release requires owner phone acceptance
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     needs: [build, device-tests]
     runs-on: ubuntu-latest
@@ -329,6 +332,8 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v5
+        with:
+          ref: ${{ env.SOURCE_COMMIT }}
       - uses: android-actions/setup-android@v3
         with:
           packages: platform-tools
@@ -336,42 +341,47 @@ jobs:
       - run: sdkmanager 'build-tools;35.0.0'
       - uses: actions/download-artifact@v4
         with:
-          name: TradeReview-v0.8-${{ github.run_number }}
+          name: TradeReview-v1.0-RC-${{ github.run_number }}
           path: dist
+      - uses: actions/download-artifact@v4
+        with:
+          name: signing-metadata
+          path: signing-metadata
+      - run: cp signing-metadata/dist/*.json dist/
+      - name: Download original Release when original signer passed
+        if: needs.build.outputs.fixed_ready == 'true'
+        uses: actions/download-artifact@v4
+        with:
+          name: original-pin-candidate
+          path: original-candidate
+      - name: Include only app Release, not emulator instrumentation
+        if: needs.build.outputs.fixed_ready == 'true'
+        run: cp original-candidate/dist/* dist/
       - name: Download verified emulator screenshots
         uses: actions/download-artifact@v4
         with:
-          pattern: v08-emulator-screenshots-api*
+          pattern: v100-emulator-screenshots-api*
           path: screenshots
-      - name: Package synthetic UI screenshots
-        run: zip -r dist/TradeReview-v0.8-emulator-screenshots.zip screenshots
-      - name: Download actual build reports
-        uses: actions/download-artifact@v4
+      - run: zip -r dist/TradeReview-v1.0-emulator-screenshots.zip screenshots
+      - uses: actions/download-artifact@v4
         with:
           name: verification-reports
           path: verified-reports/build
-      - name: Download actual API 29 and 35 reports
-        uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v4
         with:
           pattern: android-test-reports-api*
           path: verified-reports/devices
-      - name: Independently verify final APK signer, original identity, SHA and source
-        run: python3 scripts/verify-publication.py --directory dist --apksigner "$ANDROID_HOME/build-tools/35.0.0/apksigner" --aapt "$ANDROID_HOME/build-tools/35.0.0/aapt" --source-commit "$GITHUB_SHA"
-      - name: Generate delivery report from actual XML and synthetic metrics
-        run: python3 scripts/create-delivery-report.py --reports verified-reports --screenshots screenshots --dist dist --run-url "https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
-      - name: Publish after all verification jobs pass
+      - name: Independently verify actual APK package, certificate, permissions and build source
+        run: python3 scripts/v100-identity.py --verify --directory dist --apksigner "$ANDROID_HOME/build-tools/35.0.0/apksigner" --aapt "$ANDROID_HOME/build-tools/35.0.0/aapt" --source "$SOURCE_COMMIT"
+      - name: Derive candidate report from actual tests, screenshots and installed-package probes
+        run: python3 scripts/create-v100-delivery-report.py --reports verified-reports --screenshots screenshots --dist dist --run-url "https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+      - name: Publish candidates only after all verification jobs pass
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          tag="v08-debug-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
-          if [ -f dist/TradeReview-v0.8-stable.apk ]; then
-            title="交易复盘 V0.8 · 固定签名 Debug 包"
-            notes="V0.8.0 / versionCode 8 / com.tradereview.app。Debug 编译、JVM 单元测试、Lint、API 29/35 完整模拟器回归与实际进程重启探针均通过；具体测试、性能及合成 OCR 结果见 CI-RESULTS.txt、PERFORMANCE-AND-OCR.json。固定签名已验证原 V0.3 证书 pin，实际证书、来源、升级分类见 SIGNING.txt、PUBLICATION-CHECK.txt；若 Secrets 尚未配置，所有者仍需配置原密钥才能自动签署未来更新。后续保持相同私钥及递增 versionCode。不同证书不能覆盖安装；先保存可读的完整 ZIP（包含截图），由所有者决定迁移方式。备份是明文。模拟器不是手机实测，原固定身份旧版安装升级及厂家兼容尚未验证。"
-          else
-            title="交易复盘 V0.8 · 临时签名测试包"
-            notes="V0.8.0 / versionCode 8 / com.tradereview.app。Debug 编译、JVM 单元测试、Lint、API 29/35 完整模拟器回归与实际进程重启探针均通过；具体测试、性能及合成 OCR 结果见 CI-RESULTS.txt、PERFORMANCE-AND-OCR.json。固定签名未配置成功，此包明确为临时测试身份，不保证长期覆盖升级、不能覆盖原 V0.3 固定身份；实际证书、SHA-256 和来源见 SIGNING.txt、SHA256SUMS.txt、PUBLICATION-CHECK.txt。先保存可读的完整 ZIP（包含截图），由所有者决定不同签名的安装迁移；卸载会清空本机数据。仅 JSON 不含图片。备份是明文。模拟器不是手机实测，真正固定签名旧版升级、厂家兼容和 API36 尚未验证。"
-          fi
-          printf '%s\n' "$notes" > "$RUNNER_TEMP/release-notes.txt"
+          tag="v100-rc-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          printf '%s\n' 'V1.0 候选版。RC 使用独立包名 com.tradereview.app.rc、临时签名、不可调试，不承诺长期覆盖升级；它与原 App 数据隔离。如包含 fixed-candidate，实际非调试 Release 已验证原 V0.3 pin，但仍需所有者真机验收，尚不是正式稳定发布。原 App/RC 卸载前请完整 ZIP 备份。ZIP/JSON 为明文，JSON 不含截图。模拟器不代表手机实测。实际签名、SHA、CI 和未执行事项见下列文件。' > "$RUNNER_TEMP/release-notes.txt"
           cat dist/CI-RESULTS.txt >> "$RUNNER_TEMP/release-notes.txt"
-          gh release create "$tag" dist/*.apk dist/SHA256SUMS.txt dist/SIGNING.txt dist/APK-IDENTITY.txt dist/PUBLICATION-CHECK.txt dist/CI-RESULTS.txt dist/PERFORMANCE-AND-OCR.json dist/TradeReview-v0.8-emulator-screenshots.zip --repo "$GITHUB_REPOSITORY" --target "${{ github.event.pull_request.head.sha || github.sha }}" --title "$title" --prerelease --notes-file "$RUNNER_TEMP/release-notes.txt"
-          printf '[APK 与真实验证结果](https://github.com/%s/releases/tag/%s)\n' "$GITHUB_REPOSITORY" "$tag" >> "$GITHUB_STEP_SUMMARY"
+          gh release create "$tag" dist/*.apk dist/*.txt dist/*.json dist/TradeReview-v1.0-emulator-screenshots.zip --repo "$GITHUB_REPOSITORY" --target "$SOURCE_COMMIT" --title '交易复盘 V1.0 · RC 候选版' --prerelease --notes-file "$RUNNER_TEMP/release-notes.txt"
+          gh release upload "$tag" screenshots/v100-emulator-screenshots-api35/{27,28,29,30,31,32,33,34}-*.png --repo "$GITHUB_REPOSITORY"
+          printf '[APK 与实际验证结果](https://github.com/%s/releases/tag/%s)\n' "$GITHUB_REPOSITORY" "$tag" >> "$GITHUB_STEP_SUMMARY"

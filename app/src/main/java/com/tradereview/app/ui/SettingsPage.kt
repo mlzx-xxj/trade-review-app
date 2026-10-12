@@ -20,10 +20,12 @@ import java.time.LocalDate
 fun SettingsPage(model: BackupViewModel, journalBusy: Boolean, modifier: Modifier = Modifier,
     onTags: () -> Unit = {}, onSymbols: () -> Unit = {}, theme: String = "system", onTheme: (String) -> Unit = {},
     palette: String = "green_profit", onPalette: (String) -> Unit = {}, onRisk: () -> Unit = {},
-    imageLimit: Int = 10,onImageLimit: (Int)->Unit = {},onGoals: ()->Unit = {},onSmart:()->Unit = {}) {
+    imageLimit: Int = 10,onImageLimit: (Int)->Unit = {},onGoals: ()->Unit = {},onSmart:()->Unit = {},onHelp:()->Unit = {}) {
     val busy by model.busy.collectAsStateWithLifecycle()
     val preview by model.preview.collectAsStateWithLifecycle()
     val message by model.message.collectAsStateWithLifecycle()
+    val operations by (model.experience?.state ?: remember{ kotlinx.coroutines.flow.MutableStateFlow(com.tradereview.app.device.ExperienceState()) }).collectAsStateWithLifecycle()
+    fun time(millis:Long)=if(millis<=0)"尚无记录"else java.time.Instant.ofEpochMilli(millis).atZone(java.time.ZoneId.systemDefault()).format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
     val listState = rememberLazyListState()
     LaunchedEffect(message) { if (message != null) listState.scrollToItem(0) }
     var mode by rememberSaveable { mutableStateOf(RestoreMode.MERGE.name) }
@@ -36,12 +38,22 @@ fun SettingsPage(model: BackupViewModel, journalBusy: Boolean, modifier: Modifie
     LazyColumn(modifier.fillMaxSize().testTag("settings-list"), state = listState, contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         if (busy) item { LinearProgressIndicator(Modifier.fillMaxWidth()); Text("正在处理，请等待完成") }
         message?.let { item { SectionCard("处理结果") { Text(it, style = MaterialTheme.typography.bodyMedium) } } }
-        item { SectionCard("数据安全", "数据保存在本机；文件由你选择位置，应用不联网上传。") {
+        item { SectionCard("完整备份与恢复", "卸载与换机前，先确认可读的完整 ZIP。") {
             Text("完整 ZIP 包含全部结构化数据、设置、目标及截图文件和校验清单。JSON 仅包含结构化数据与目标，不含图片。两种备份均为明文，请选择你信任的位置。")
-            Button(enabled = !locked && preview == null, onClick = { zip.launch("交易复盘-完整-${LocalDate.now()}.zip") }, modifier = Modifier.fillMaxWidth()) { Text("保存完整 ZIP 备份（含截图）") }
+            Button(enabled = !locked && preview == null, onClick = { zip.launch("交易复盘-完整-${LocalDate.now()}.zip") }, modifier = Modifier.fillMaxWidth().heightIn(min=56.dp).testTag("complete-backup")) { Text("保存完整 ZIP 备份（含截图）") }
+            Text("上次完整 ZIP 已写出：${time(operations.zipWrittenMillis)}",modifier=Modifier.testTag("zip-written-time"))
+            Text("上次完整 ZIP 已回读校验：${time(operations.verifiedZipMillis)}",modifier=Modifier.testTag("zip-verified-time"))
+            if(operations.zipVerification=="unavailable")Text("最近写出的ZIP未能回读，不代表完整性已验证。",color=MaterialTheme.colorScheme.error)
             OutlinedButton(enabled = !locked && preview == null, onClick = { json.launch("交易复盘-数据-${LocalDate.now()}.json") }, modifier = Modifier.fillMaxWidth()) { Text("保存 JSON 备份（不含图片）") }
             OutlinedButton(enabled = !locked, onClick = { restore.launch(arrayOf("application/zip","application/json", "text/plain", "application/octet-stream")) }, modifier = Modifier.fillMaxWidth()) { Text("选择 ZIP / JSON 备份恢复") }
             Text("卸载会删除本机数据。建议定期备份；系统文件选择器也可能提供你自行配置的云盘。", style = MaterialTheme.typography.bodySmall)
+            Row(verticalAlignment=androidx.compose.ui.Alignment.CenterVertically){Checkbox(operations.remindersEnabled,{model.backupReminders(it)},enabled=!locked && model.experience!=null,modifier=Modifier.testTag("backup-reminders"));Text("本机备份建议 · 7天无已校验ZIP时显示")}
+            Row(horizontalArrangement=Arrangement.spacedBy(8.dp)){
+                TextButton(enabled=!locked && model.experience!=null,onClick={model.snoozeBackup(7)},modifier=Modifier.heightIn(min=48.dp)){Text("延后7天")}
+                TextButton(enabled=!locked && model.experience!=null,onClick={model.snoozeBackup(30)},modifier=Modifier.heightIn(min=48.dp)){Text("延后30天")}
+            }
+            if(operations.snoozedUntilMillis>System.currentTimeMillis())Text("提醒延后至 ${time(operations.snoozedUntilMillis)}",style=MaterialTheme.typography.bodySmall)
+            Text("提醒、导出历史与引导状态仅属于这台设备，不随恢复冒充另一台手机已备份。",style=MaterialTheme.typography.bodySmall)
         } }
         preview?.let { p -> item { SectionCard("恢复预览", "文件已校验，尚未修改本地数据。") {
             Text("导出时间：${p.backup.exportedAt}")
@@ -68,6 +80,7 @@ fun SettingsPage(model: BackupViewModel, journalBusy: Boolean, modifier: Modifie
         item { SectionCard("交易明细导出", "CSV 用于查看或分析，不能用于完整恢复。") {
             OutlinedButton(enabled = !locked && preview == null, onClick = { csv.launch("交易明细-${LocalDate.now()}.csv") }, modifier = Modifier.fillMaxWidth()) { Text("导出全部交易 CSV") }
             Text("UTF-8 中文，按币种保留金额，支持逗号、引号与换行。", style = MaterialTheme.typography.bodySmall)
+            Text("上次JSON已写出：${time(operations.jsonWrittenMillis)} · 上次已校验：${time(operations.verifiedJsonMillis)}",style=MaterialTheme.typography.bodySmall)
         } }
         item { SectionCard("偏好与管理") {
             OutlinedButton(enabled = !locked && preview == null, onClick = onTags, modifier = Modifier.fillMaxWidth()) { Text("管理自定义标签") }
@@ -84,10 +97,14 @@ fun SettingsPage(model: BackupViewModel, journalBusy: Boolean, modifier: Modifie
             Text("盈亏配色 · 日历、金额卡片与图表同步")
             SingleChoice(listOf(com.tradereview.app.data.Option("green_profit", "绿盈红亏"), com.tradereview.app.data.Option("red_profit", "红盈绿亏")), palette) { if(!locked && preview == null) onPalette(it) }
         } }
+        item{PrivacyDataCard()}
         item { SectionCard("应用信息") {
             Text("交易复盘 ${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})")
-            Text("本地数据库版本 7 · JSON 格式 6 / 完整 ZIP 格式 1（兼容 V0.2–V0.6 JSON）")
+            Text(if(BuildConfig.APPLICATION_ID.endsWith(".rc"))"RC测试包 · 与正式应用数据隔离；不代表固定签名已就绪"else"正式身份的稳定状态以发布签名说明与真机验收为准")
+            Text("应用标识：${BuildConfig.APPLICATION_ID}")
+            Text("本地数据库版本 7 · JSON 格式 6 / 完整 ZIP 格式 1（兼容 V0.2–V0.8 受支持备份）")
             Text("升级安装需要相同应用标识及签名；应用不会自动下载或上传数据。", style = MaterialTheme.typography.bodySmall)
+            OutlinedButton(onClick=onHelp,modifier=Modifier.fillMaxWidth().heightIn(min=48.dp).testTag("show-help")){Text("使用指南与备份说明")}
         } }
     }
     if (confirm && preview != null) AlertDialog(

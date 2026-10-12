@@ -1,3 +1,15 @@
+# 交易复盘 V1.0 候选版
+
+基于已合并 V0.8 的原生离线工程，保留全部交易、复盘、风险/R、日历筛选、截图、离线 OCR、智能洞察、周月报、目标、CSV 导出与 JSON/ZIP 恢复。不开发原 V0.9 CSV 成交导入、映射、自动配对。
+
+正式目标 1.0.0 / code10 / com.tradereview.app；Room 仍 v7、JSON 6、ZIP 1，历史 recordKey、盈亏与完整迁移链不变。优化首页直接操作、可跳过引导、专业自适应/单色图标、48dp 操作和隐私说明。完整 ZIP 为主入口，真实导出后尽可能 SHA-256 回读；无法回读如实标注，取消选择不冒充完成。
+
+同工程隔离 RC：com.tradereview.app.rc / 1.0.0-rc.1，非 debuggable、临时测试签名、数据独立，不保证长期覆盖更新。真正 Release 只允许原 V0.3 pin 的既有私钥，未配置不能回退随机 Debug 签名。稳定签名、必要验证与所有者真机验收未齐备时不能声称正式稳定发布。
+
+[实施计划](docs/V100-PLAN.md) · [实际验证](docs/V100-VALIDATION.md) · [数据与备份](docs/V100-DATA-AND-BACKUP.md) · [手机配置原签名](docs/V100-PHONE-SIGNING.md) · [手机验收](docs/V100-PHONE-ACCEPTANCE.md)
+
+以下为历史版本背景；历史测试和签名状态仅代表对应版本。
+
 # V0.8 稳定性与长期升级
 
 基于已合并 V0.7，保留全部离线交易、风险/R、截图、ZIP、报告、目标、OCR 和洞察功能。版本 0.8.0 / code 8 / com.tradereview.app；compile/target SDK 35，Room 仍 v7、JSON 6/ZIP 1，没有为了应用版本号改变数据库结构。

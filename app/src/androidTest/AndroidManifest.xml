@@ -1,7 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <instrumentation android:name="com.tradereview.app.release.LegacyUpgradeInstrumentation"
+        android:targetPackage="com.tradereview.app" />
     <application>
         <!-- Synthetic picker fixture only in the test APK; production has no exported provider. -->
         <provider android:name="com.tradereview.app.evidence.TestImageProvider"
             android:authorities="com.tradereview.app.test.images" android:exported="true" />
+        <provider android:name="com.tradereview.app.release.BackupDocumentProvider"
+            android:authorities="com.tradereview.app.test.v100backup" android:exported="true" />
     </application>
 </manifest>

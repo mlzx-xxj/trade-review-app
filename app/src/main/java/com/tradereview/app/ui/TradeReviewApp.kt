@@ -34,14 +34,21 @@ import com.tradereview.app.domain.Money
 import com.tradereview.app.domain.TradeFilter
 import com.tradereview.app.domain.AnalyticsState
 import java.time.LocalDate
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.stateDescription
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.Dispatchers
 
-private data class Page(val title: String, val icon: ImageVector)
-private val pages = listOf(Page("首页", Icons.Default.Home), Page("交易记录", Icons.AutoMirrored.Filled.ReceiptLong),
-    Page("勾选复盘", Icons.Default.Checklist), Page("统计分析", Icons.Default.Assessment), Page("交易日历", Icons.Default.CalendarMonth))
+private data class Page(val title: String, val icon: ImageVector,val label:String=title)
+private val pages = listOf(Page("首页", Icons.Default.Home), Page("交易记录", Icons.AutoMirrored.Filled.ReceiptLong,"交易"),
+    Page("勾选复盘", Icons.Default.Checklist,"复盘"), Page("统计分析", Icons.Default.Assessment,"统计"), Page("交易日历", Icons.Default.CalendarMonth,"日历"))
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TradeReviewApp(model: TradeViewModel, backup: BackupViewModel, ocrModel: OcrViewModel? = null) {
+fun TradeReviewApp(model: TradeViewModel, backup: BackupViewModel, ocrModel: OcrViewModel? = null,
+    experience:com.tradereview.app.device.DeviceExperienceStore?=null) {
     val applicationContext=LocalContext.current.applicationContext
     val ocr=ocrModel ?: androidx.lifecycle.viewmodel.compose.viewModel<OcrViewModel>(factory=object:androidx.lifecycle.ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST") override fun <T:androidx.lifecycle.ViewModel> create(modelClass:Class<T>):T=OcrViewModel(applicationContext) as T
@@ -49,6 +56,11 @@ fun TradeReviewApp(model: TradeViewModel, backup: BackupViewModel, ocrModel: Ocr
     var ocrShown by rememberSaveable { mutableStateOf(false) }
     var preflightDate by rememberSaveable { mutableLongStateOf(LocalDate.now().toEpochDay()) }
     val state by model.state.collectAsStateWithLifecycle()
+    val experienceState by (experience?.state ?: remember{ kotlinx.coroutines.flow.MutableStateFlow(com.tradereview.app.device.ExperienceState()) }).collectAsStateWithLifecycle()
+    val experienceError by (experience?.error ?: remember{ kotlinx.coroutines.flow.MutableStateFlow<String?>(null) }).collectAsStateWithLifecycle()
+    var helpShown by rememberSaveable{mutableStateOf(false)}
+    val experienceScope=rememberCoroutineScope()
+    fun finishGuide(){helpShown=false;experience?.let {store->experienceScope.launch{try{withContext(Dispatchers.IO){store.finishOnboarding()}}catch(e:Exception){model.notify("引导状态保存失败，请检查手机空间")}}}}
     val currency by model.currency.collectAsStateWithLifecycle()
     val filter by model.filter.collectAsStateWithLifecycle()
     val calculated by model.analytics.collectAsStateWithLifecycle()
@@ -87,18 +99,19 @@ fun TradeReviewApp(model: TradeViewModel, backup: BackupViewModel, ocrModel: Ocr
     LaunchedEffect(message) {
         message?.let { snack.showSnackbar(it); model.clearMessage() }
     }
+    LaunchedEffect(experienceError){experienceError?.let{snack.showSnackbar(it)}}
     CompositionLocalProvider(LocalContext provides chineseContext, LocalConfiguration provides chineseConfiguration, LocalActivityResultRegistryOwner provides activityResultOwner, LocalCatalog provides Catalog(state.tags), LocalPnlColors provides paletteColors(state.settings.pnlPalette)) {
         Scaffold(containerColor = MaterialTheme.colorScheme.background,
             topBar = { TopAppBar(title = { Text(when(management) { "tags" -> "标签管理"; "symbols" -> "常用品种"; "risk" -> "风险规则与合约模板"; "goals" -> "纪律改善目标"; else -> if(settings) "设置" else if(reports!=null) { if(reportKeys!=null)reportTitle else when(reports){"week"->"每周复盘";"month"->"每月复盘";"insights"->"智能洞察";"preflight"->"盘前纪律检查";else->"纪律改善目标"} } else if(selectedDay != null) "每日详情" else pages[page].title }) }, navigationIcon = {
                 if (settings || selectedDay != null || reports!=null) IconButton(enabled = !backupBusy && !busy, onClick = { if(settings) { if(management != null) management = null else settings = false } else if(reports!=null)backReport() else selectedDay = null }) { Icon(Icons.AutoMirrored.Filled.ArrowBack, "返回主页面") }
             }, actions = {
-                if (!settings && reports==null && (page == 0 || page == 1)) IconButton(enabled = !state.loading && state.error == null, onClick = { editorId = 0 }) { Icon(Icons.Default.Add, "新增交易") }
+                if (!settings && reports==null && page == 1) IconButton(enabled = !state.loading && state.error == null, onClick = { editorId = 0 }) { Icon(Icons.Default.Add, "新增交易") }
                 if (!settings && reports==null && page != 4) IconButton(onClick = { selectedDay = null; page = 4 }) { Icon(Icons.Default.CalendarMonth, "打开交易日历") }
                 if (!settings && reports==null) IconButton(onClick = { settings = true }) { Icon(Icons.Default.Settings, "设置与备份") }
             }) },
             bottomBar = { if (!settings && reports==null) NavigationBar {
                 pages.forEachIndexed { index, item ->
-                    NavigationBarItem(modifier=Modifier.testTag("main-page-$index"),selected = page == index, onClick = { selectedDay = null; page = index }, icon = { Icon(item.icon, item.title) }, label = { Text(if(index == 4) "日历" else item.title) })
+                    NavigationBarItem(modifier=Modifier.testTag("main-page-$index"),selected = page == index, onClick = { selectedDay = null; page = index }, icon = { Icon(item.icon, item.title) }, label = { Text(item.label,maxLines=1) })
                 }
             } },
             snackbarHost = { SnackbarHost(snack) },
@@ -110,7 +123,7 @@ fun TradeReviewApp(model: TradeViewModel, backup: BackupViewModel, ocrModel: Ocr
                     "risk" -> RiskSettingsPage(state, model, busy, Modifier.padding(padding))
                     "goals" -> ReviewGoalsPage(state,model,busy,Modifier.padding(padding))
                     else -> SettingsPage(backup, busy, Modifier.padding(padding), onTags = { management = "tags" }, onSymbols = { management = "symbols" }, theme = state.settings.theme, onTheme = model::selectTheme,
-                        palette = state.settings.pnlPalette, onPalette = model::selectPalette, onRisk = { management = "risk" },imageLimit=state.evidenceSettings.maxInputMiB,onImageLimit=model::imageLimit,onGoals={management="goals"},onSmart={settings=false;reports="insights"})
+                        palette = state.settings.pnlPalette, onPalette = model::selectPalette, onRisk = { management = "risk" },imageLimit=state.evidenceSettings.maxInputMiB,onImageLimit=model::imageLimit,onGoals={management="goals"},onSmart={settings=false;reports="insights"},onHelp={helpShown=true})
                 }
             } else if (state.loading || (state.error == null && analytics.loading)) {
                 Box(Modifier.fillMaxSize().padding(padding), contentAlignment = androidx.compose.ui.Alignment.Center) { CircularProgressIndicator() }
@@ -135,7 +148,7 @@ fun TradeReviewApp(model: TradeViewModel, backup: BackupViewModel, ocrModel: Ocr
                     onOpen = { editorId = it.id }, onJournal = { section -> pageState.removeState("page:2"); reviewDate = requireNotNull(selectedDay); reviewSection = section; selectedDay = null; page = 2 }, modifier = Modifier.padding(padding))
                 else pageState.SaveableStateProvider("page:$page") { when (page) {
                     0 -> HomePage(state, analytics, currency, model::selectCurrency, Modifier.padding(padding),
-                        onAdd = { editorId = 0 }, onReview = { pageState.removeState("page:2"); reviewDate = LocalDate.now().toEpochDay(); reviewSection = "plan"; page = 2 }, onOpen = { editorId = it.id }, onDemo = model::addDemo, busy = busy, onCalendar = { page = 4 },onSmart={reports="insights"},onOcr={ocrShown=true})
+                        onAdd = { editorId = 0 }, onReview = { section->pageState.removeState("page:2"); reviewDate = LocalDate.now().toEpochDay(); reviewSection = section; page = 2 }, onOpen = { editorId = it.id }, onDemo = model::addDemo, busy = busy, onCalendar = { page = 4 },onSmart={reports="insights"},onOcr={ocrShown=true},experience=experienceState,onBackup={settings=true},onSnooze={backup.snoozeBackup(7)})
                     1 -> TradesPage(state, analytics.filtered, currency, filter, model, busy, Modifier.padding(padding), { editorId = 0 }, { editorId = it.id })
                     2 -> DailyReviewPage(state.reviews, busy, model::savePlan, model::saveReview, Modifier.padding(padding), reviewDate, reviewSection,onPreflight={date->preflightDate=date;reportReturn="plan";reports="preflight"})
                     3 -> StatisticsPage(state, analytics, currency, filter, model, busy, onDay = { selectedDay = it }, onDrill = { model.updateFilter(it); page = 1 }, modifier = Modifier.padding(padding),onReports={reports=it;reportReturn="week"})
@@ -150,44 +163,64 @@ fun TradeReviewApp(model: TradeViewModel, backup: BackupViewModel, ocrModel: Ocr
                 evidenceKey?.let { key -> EvidencePage(key,state,model,busy,onOcr={a->ocrShown=true;ocr.read(android.net.Uri.EMPTY,state.evidenceSettings,a,model.evidenceStore)}) { evidenceKey=null;editorId=state.trades.firstOrNull { it.recordKey==key }?.id } }
             }
             if(ocrShown)OcrPage(ocr,state,model){ocrShown=false}
+            if(helpShown || (experienceState.initialized && !experienceState.onboardingDone))FirstUsePage(!experienceState.onboardingDone,::finishGuide)
         }
     }
 }
 
 @Composable
 private fun HomePage(state: JournalState, analytics: AnalyticsState, currency: String, onCurrency: (String) -> Unit, modifier: Modifier,
-    onAdd: () -> Unit, onReview: () -> Unit, onOpen: (Trade) -> Unit, onDemo: () -> Unit, busy: Boolean, onCalendar: () -> Unit,onSmart:()->Unit,onOcr:()->Unit) {
+    onAdd: () -> Unit, onReview: (String) -> Unit, onOpen: (Trade) -> Unit, onDemo: () -> Unit, busy: Boolean, onCalendar: () -> Unit,onSmart:()->Unit,onOcr:()->Unit,
+    experience:com.tradereview.app.device.ExperienceState,onBackup:()->Unit,onSnooze:()->Unit) {
     val today = LocalDate.now().toEpochDay()
     val stats = analytics.home
     val todayStats = analytics.today
     val todayReview = state.reviews.firstOrNull { it.date == today }
     LazyColumn(modifier.fillMaxSize(), contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         item {
-            Text("让每一笔交易都有收获", style = MaterialTheme.typography.headlineSmall)
+            Text("记录交易，复盘执行", style = MaterialTheme.typography.headlineSmall,modifier=Modifier.testTag("home-title"))
             Text(dayLabel(today), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            Button(onClick = onAdd, modifier = Modifier.fillMaxWidth().padding(top = 12.dp).heightIn(min = 56.dp)) { Text(if(state.drafts.any { it.key == "new" }) "快捷记账 · 恢复草稿" else "快捷记账") }
-            OutlinedButton(onClick = onCalendar, modifier = Modifier.fillMaxWidth()) { Text("交易日历与热力图") }
-            OutlinedButton(onClick=onSmart,modifier=Modifier.fillMaxWidth().testTag("open-smart-insights")){Text("智能洞察与盘前提醒")}
-            TextButton(onClick=onOcr,modifier=Modifier.fillMaxWidth().testTag("open-ocr")){Text("从截图识别交易")}
+            Button(onClick = onAdd, modifier = Modifier.fillMaxWidth().padding(top = 12.dp).heightIn(min = 56.dp).testTag("home-fast-entry").semantics{contentDescription="新增交易"}) { Text(if(state.drafts.any { it.key == "new" }) "快捷记账 · 恢复草稿" else "快捷记账") }
+            Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.spacedBy(8.dp)) {
+                OutlinedButton(onClick=onOcr,modifier=Modifier.weight(1f).heightIn(min=48.dp).testTag("open-ocr")){Text("从截图识别交易")}
+                OutlinedButton(onClick=onSmart,modifier=Modifier.weight(1f).heightIn(min=48.dp).testTag("open-smart-insights")){Text("智能洞察与盘前提醒")}
+            }
         }
-        item { SectionCard("账户概览", "所有金额按选定币种分别统计。") {
+        item { SectionCard("今日表现", "按选定币种统计已录入的平仓记录。") {
             SingleChoice(Presets.currencies, currency, onCurrency)
+            Text("今日净盈亏 · $currency",style=MaterialTheme.typography.labelLarge)
+            Text(if(todayStats.count==0)"暂无交易"else Money.format(todayStats.netPnl,true),color=if(todayStats.count==0)MaterialTheme.colorScheme.onSurfaceVariant else pnlColor(todayStats.netPnl),style=MaterialTheme.typography.headlineMedium,modifier=Modifier.testTag("home-today-pnl"))
+            Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.spacedBy(12.dp)) {
+                Metric("今日交易","${todayStats.count} 笔",Modifier.weight(1f))
+                Metric("已复盘",if(todayStats.count==0)"—"else "${todayStats.reviewed} / ${todayStats.count}",Modifier.weight(1f))
+            }
+            val todayRows=state.trades.filter{it.date==today && it.currency==currency}
+            Text("风险快照 ${todayRows.count{it.riskRecord!=null}} 笔 · 含违规 ${todayRows.count{it.riskRecord?.violations?.isNotEmpty()==true}} 笔；无快照不视为遵守纪律。",style=MaterialTheme.typography.bodySmall)
+        } }
+        item { SectionCard("今天的复盘", "计划、复盘和执行评分按日期保存，不区分币种。") {
+            Text("盘前计划：${if (todayReview?.planSaved == true) "已保存" else "待制定"} · 盘后复盘：${if (todayReview?.reviewSaved == true) "已保存" else "待复盘"}")
+            Text(if(todayReview?.reviewSaved==true)"执行评分 ${todayReview.rating} / 5 · 已勾选 ${todayReview.discipline.size} 项纪律"else "执行评分：未提供")
+            Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.spacedBy(8.dp)) {
+                OutlinedButton(onClick={onReview("plan")},modifier=Modifier.weight(1f).heightIn(min=48.dp).testTag("home-plan")){Text("盘前计划")}
+                Button(onClick={onReview("review")},modifier=Modifier.weight(1f).heightIn(min=48.dp).testTag("home-post-review")){Text("盘后复盘")}
+            }
+        } }
+        if(experience.reminderDue(System.currentTimeMillis()))item {SectionCard("备份建议","距离本机最近已校验完整备份或首次使用已满7天。"){
+            Text("卸载与换机前，请先保存并确认完整ZIP；它包含截图。")
+            Button(onClick=onBackup,modifier=Modifier.fillMaxWidth().heightIn(min=48.dp).testTag("home-backup")){Text("打开完整备份")}
+            TextButton(onClick=onSnooze,modifier=Modifier.heightIn(min=48.dp)){Text("7天后提醒")}
+        }}
+        item { SectionCard("累计表现", "所有金额按选定币种分别统计。") {
             Text("累计净盈亏 · $currency", style = MaterialTheme.typography.labelMedium)
-            Text(Money.format(stats.netPnl, signed = true), color = pnlColor(stats.netPnl), style = MaterialTheme.typography.titleLarge)
-            Row(Modifier.fillMaxWidth()) {
+            Text(if(stats.count==0)"暂无记录"else Money.format(stats.netPnl, signed = true), color = pnlColor(stats.netPnl), style = MaterialTheme.typography.titleLarge)
+            Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.spacedBy(12.dp)) {
                 Metric("胜率", stats.winRate?.let(::percent) ?: "—", Modifier.weight(1f))
                 Metric("交易笔数", "${stats.count}", Modifier.weight(1f))
                 Metric("复盘完成", stats.reviewRate?.let(::percent) ?: "—", Modifier.weight(1f))
             }
-            Text("今日 ${todayStats.count} 笔 · 净盈亏 ${Money.format(todayStats.netPnl, true)} $currency", color = pnlColor(todayStats.netPnl), style = MaterialTheme.typography.bodyMedium)
-        } }
-        item { SectionCard("今天的交易节奏") {
-            Text("盘前计划：${if (todayReview?.planSaved == true) "已保存" else "待制定"}    盘后复盘：${if (todayReview?.reviewSaved == true) "已保存" else "待复盘"}")
-            Button(onClick = onReview, modifier = Modifier.fillMaxWidth()) { Text("制定计划 / 勾选复盘") }
-            OutlinedButton(onClick = onAdd, modifier = Modifier.fillMaxWidth()) { Text("记录交易") }
         } }
         if (state.trades.isEmpty()) item { SectionCard("从第一笔开始", "数据只保存在这台手机上，不上传真实交易记录。") {
-            Text("先记录一笔已平仓交易，或添加示例体验统计。")
+            Text("先记录一笔已平仓交易。示例仅在你主动点击后添加，不代表真实交易。")
             TextButton(enabled = !busy, onClick = onDemo) { Text("添加示例交易（人民币）") }
         } }
         else {
@@ -245,7 +278,7 @@ private fun PlanForm(saved: DailyReview, busy: Boolean, onSave: (DailyReview) ->
         Text("今天允许的策略 · 多选")
         ChoiceChips(catalog.options("strategy", strategies), strategies) { strategies = toggleTag(strategies, it) }
         Text("最大单笔仓位：${maxPosition.toInt()}%")
-        Slider(maxPosition, { maxPosition = it }, valueRange = 1f..100f, steps = 98)
+        Slider(maxPosition, { maxPosition = it }, valueRange = 1f..100f, steps = 98,modifier=Modifier.semantics{contentDescription="最大单笔仓位百分比";stateDescription="${maxPosition.toInt()}%"})
         Text("准备清单")
         catalog.options("preparation", preparations).forEach { option ->
             Row {
@@ -279,7 +312,7 @@ private fun PostReviewForm(saved: DailyReview, busy: Boolean, onSave: (DailyRevi
         Text("明天的改进方向")
         ChoiceChips(catalog.options("lesson", lessons), lessons) { lessons = toggleTag(lessons, it) }
         Text("执行评分：${rating.toInt()} / 5")
-        Slider(rating, { rating = it }, valueRange = 1f..5f, steps = 3)
+        Slider(rating, { rating = it }, valueRange = 1f..5f, steps = 3,modifier=Modifier.semantics{contentDescription="盘后执行评分";stateDescription="${rating.toInt()} / 5"})
         Button(enabled = !busy && !future, onClick = { onSave(saved.copy(emotion = emotion, discipline = discipline, mistakes = mistakes, lessons = lessons, rating = rating.toInt())) }, modifier = Modifier.fillMaxWidth()) {
             Text(if (busy) "正在保存…" else "保存盘后复盘")
         }

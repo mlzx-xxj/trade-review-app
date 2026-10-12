@@ -12,8 +12,8 @@ android {
         applicationId = "com.tradereview.app"
         minSdk = 26
         targetSdk = 35
-        versionCode = 8
-        versionName = "0.8.0"
+        versionCode = 10
+        versionName = "1.0.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildFeatures { compose = true; buildConfig = true }
@@ -27,15 +27,27 @@ android {
     kotlinOptions { jvmTarget = "17" }
     packaging { resources.excludes += "/META-INF/{AL2.0,LGPL2.1}" }
     testOptions { animationsDisabled = true }
-    // Optional existing key supplied only at build time. No release key is generated here.
+    buildTypes {
+        getByName("release") { isDebuggable = false; isMinifyEnabled = false }
+        create("rc") {
+            initWith(getByName("release"))
+            applicationIdSuffix = ".rc"
+            versionNameSuffix = "-rc.1"
+            signingConfig = signingConfigs.getByName("debug")
+            matchingFallbacks += listOf("release")
+            resValue("string", "app_name", "交易复盘 RC")
+        }
+    }
+    // Only the formal Release can use the existing private identity. RC never reuses it.
     val existingKey = providers.environmentVariable("TRADE_REVIEW_KEYSTORE_PATH").orNull
     if (existingKey != null) {
-        signingConfigs.getByName("debug") {
+        val fixed = signingConfigs.create("existingV03") {
             storeFile = file(existingKey)
             storePassword = providers.environmentVariable("TRADE_REVIEW_KEYSTORE_PASSWORD").get()
             keyAlias = providers.environmentVariable("TRADE_REVIEW_KEY_ALIAS").get()
             keyPassword = providers.environmentVariable("TRADE_REVIEW_KEY_PASSWORD").get()
         }
+        buildTypes.getByName("release").signingConfig = fixed
     }
 }
 

@@ -14,6 +14,8 @@ import com.tradereview.app.domain.CurvePoint
 import com.tradereview.app.domain.Money
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.heading
 
 val LocalChoicesEnabled = staticCompositionLocalOf { true }
 val LocalCatalog = staticCompositionLocalOf { Catalog() }
@@ -25,7 +27,7 @@ fun percent(value: Double) = String.format(java.util.Locale.CHINA, "%.1f%%", val
 fun SectionCard(title: String, subtitle: String? = null, content: @Composable ColumnScope.() -> Unit) {
     Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
         Column(Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            Text(title, style = MaterialTheme.typography.titleMedium)
+            Text(title, style = MaterialTheme.typography.titleMedium,modifier=Modifier.semantics{heading()})
             if (subtitle != null) Text(subtitle, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             content()
         }
@@ -36,7 +38,7 @@ fun SectionCard(title: String, subtitle: String? = null, content: @Composable Co
 @Composable
 fun ChoiceChips(options: List<Option>, selected: List<String>, onToggle: (String) -> Unit) {
     FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        options.forEach { option -> FilterChip(enabled = LocalChoicesEnabled.current, selected = option.id in selected, onClick = { onToggle(option.id) }, label = { Text(option.label) }) }
+        options.forEach { option -> FilterChip(modifier=Modifier.heightIn(min=48.dp),enabled = LocalChoicesEnabled.current, selected = option.id in selected, onClick = { onToggle(option.id) }, label = { Text(option.label) }) }
     }
 }
 

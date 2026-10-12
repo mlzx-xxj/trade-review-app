@@ -14,6 +14,7 @@ import com.tradereview.app.domain.*
 import java.math.BigDecimal
 
 @Composable
+@OptIn(ExperimentalLayoutApi::class)
 fun StatisticsPage(state: JournalState, analytics: AnalyticsState, currency: String, filter: TradeFilter,
     model: TradeViewModel, busy: Boolean, onDay: (Long) -> Unit, onDrill: (TradeFilter) -> Unit, modifier: Modifier = Modifier,onReports: (String)->Unit = {}) {
     val report = analytics.report; val performance = report.performance; val catalog = LocalCatalog.current
@@ -40,9 +41,9 @@ fun StatisticsPage(state: JournalState, analytics: AnalyticsState, currency: Str
         else -> filter.copy(markets = listOf(group.market), symbols = listOf(group.key))
     })
     LazyColumn(modifier.fillMaxSize().testTag("statistics-list"), contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        item { SectionCard("周期复盘与改善追踪") { Row(horizontalArrangement=Arrangement.spacedBy(12.dp)) {
-            Button(onClick={onReports("week")},modifier=Modifier.testTag("open-week-report")){Text("每周复盘")}
-            OutlinedButton(onClick={onReports("month")},modifier=Modifier.testTag("open-month-report")){Text("每月复盘")}
+        item { SectionCard("周期复盘与改善追踪") { FlowRow(horizontalArrangement=Arrangement.spacedBy(12.dp)) {
+            Button(onClick={onReports("week")},modifier=Modifier.heightIn(min=48.dp).testTag("open-week-report")){Text("每周复盘")}
+            OutlinedButton(onClick={onReports("month")},modifier=Modifier.heightIn(min=48.dp).testTag("open-month-report")){Text("每月复盘")}
         };TextButton(onClick={onReports("goals")}){Text("纪律改善目标")} } }
         item { FilterCard("分析范围", state, currency, filter, performance.count, model::selectCurrency, model::updateFilter,
             model::saveFilter, model::applyFilter, model::deleteFilter, busy) }

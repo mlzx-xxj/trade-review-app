@@ -60,6 +60,7 @@ fun AmountBarChart(points: List<AmountPoint>, currency: String, weekly: Boolean 
 }
 
 @Composable
+@OptIn(ExperimentalLayoutApi::class)
 fun InteractivePnlChart(points: List<CurvePoint>, currency: String, onDay: (Long) -> Unit) {
     if (points.isEmpty()) { Text("暂无匹配交易，累计曲线为空。"); return }
     var selected by remember(points) { mutableIntStateOf(points.lastIndex) }
@@ -100,10 +101,10 @@ fun InteractivePnlChart(points: List<CurvePoint>, currency: String, onDay: (Long
     }
     Text("纵轴 ${Money.format(low)} ～ ${Money.format(high)} $currency；交易日等距排列，起点 0。", style = MaterialTheme.typography.bodySmall)
     if (points.size > 600) Text("数据较多，曲线保留分段高低点；点击数值仍来自完整交易日数据。", style = MaterialTheme.typography.bodySmall)
-    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        TextButton(enabled = selected > 0, onClick = { selected-- }) { Text("前一交易日") }
-        TextButton(enabled = selected < points.lastIndex, onClick = { selected++ }) { Text("后一交易日") }
-        TextButton(onClick = { onDay(current.date) }) { Text("当日详情") }
+    FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        TextButton(modifier=Modifier.heightIn(min=48.dp),enabled = selected > 0, onClick = { selected-- }) { Text("前一交易日") }
+        TextButton(modifier=Modifier.heightIn(min=48.dp),enabled = selected < points.lastIndex, onClick = { selected++ }) { Text("后一交易日") }
+        TextButton(modifier=Modifier.heightIn(min=48.dp),onClick = { onDay(current.date) }) { Text("当日详情") }
     }
 }
 
@@ -128,7 +129,7 @@ fun RatingTrend(points: List<RatingPoint>, onDay: (Long) -> Unit) {
     Text("${dayLabel(selected.date)}：执行评分 ${selected.rating} / 5", modifier = Modifier.testTag("rating-chart-value"))
     LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         items(points, key = { it.date }) { point ->
-            Column(Modifier.width(52.dp).height(130.dp).clickable { selected = point }, horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Bottom) {
+            Column(Modifier.width(52.dp).height(130.dp).clickable { selected = point }.semantics{contentDescription="${dayLabel(point.date)}，执行评分 ${point.rating} / 5，点击查看"}, horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Bottom) {
                 Canvas(Modifier.fillMaxWidth().height((point.rating * 16).dp)) { drawRect(color.copy(alpha = if (point == selected) 1f else .5f)) }
                 Text("${point.rating}/5", style = MaterialTheme.typography.labelSmall)
                 Text(LocalDate.ofEpochDay(point.date).let { "${it.monthValue}/${it.dayOfMonth}" }, style = MaterialTheme.typography.labelSmall)

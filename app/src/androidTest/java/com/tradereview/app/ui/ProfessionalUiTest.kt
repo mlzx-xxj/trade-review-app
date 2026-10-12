@@ -83,7 +83,7 @@ class ProfessionalUiTest {
         compose.onNodeWithText("已恢复未保存草稿").assertIsDisplayed()
         compose.onNodeWithTag("professional-entry").performScrollTo().assertTextContains("3499.75")
         save();val first=runBlocking { db.trades().allTrades().single() };assertEquals("42.00",first.netPnl)
-        feedbackGone();compose.onAllNodesWithText("交易记录").onFirst().performClick()
+        feedbackGone();compose.onNodeWithTag("main-page-1").performClick()
         compose.onNodeWithTag("trades-list").performScrollToNode(hasText("+42.00"));compose.onNodeWithText("+42.00").performClick()
         compose.onNodeWithTag("expand-professional").performScrollTo().performClick()
         compose.onNodeWithTag("professional-entry").performScrollTo().performTextReplacement("3498")
@@ -108,14 +108,14 @@ class ProfessionalUiTest {
         runBlocking { listOf(Trade(netPnl="400.00",professional=ProfessionalTrade(riskMode="amount",manualRisk="200.00",planStatus="in")),
             Trade(netPnl="-100.00",strategy="breakout",professional=ProfessionalTrade(riskMode="amount",manualRisk="100.00",planStatus="out")),Trade(netPnl="99.00")).forEach { db.trades().insert(it) } }
         compose.waitUntil(15000) { model.analytics.value.risk.r.valid==2 }
-        compose.onAllNodesWithText("统计分析").onFirst().performClick()
+        compose.onNodeWithTag("main-page-3").performClick()
         compose.onNodeWithTag("statistics-list").performScrollToNode(hasTestTag("r-valid-samples"));compose.onNodeWithTag("r-valid-samples").assertTextEquals("有效 R 样本 2 / 3 笔")
         compose.onNodeWithTag("r-average").assertTextEquals("平均 R：+0.500 R");capture("12-r-analytics")
         compose.onNodeWithContentDescription("设置与备份").performClick();compose.onNodeWithTag("settings-list").performScrollToNode(hasText("深色"));compose.onNodeWithText("深色").performClick()
         compose.waitUntil(15000) { model.state.value.settings.theme=="dark" && !model.busy.value };feedbackGone()
         compose.onNodeWithTag("settings-list").performScrollToNode(hasText("红盈绿亏"));compose.onNodeWithText("红盈绿亏").performClick()
         compose.waitUntil(15000) { model.state.value.settings.pnlPalette=="red_profit" && !model.busy.value };feedbackGone()
-        compose.onNodeWithContentDescription("返回主页面").performClick();compose.onAllNodesWithText("首页").onFirst().performClick();entry()
+        compose.onNodeWithContentDescription("返回主页面").performClick();compose.onNodeWithTag("main-page-0").performClick();entry()
         compose.onNodeWithTag("professional-entry").performScrollTo();capture("13-professional-dark")
     }
     private fun capture(name:String) {
