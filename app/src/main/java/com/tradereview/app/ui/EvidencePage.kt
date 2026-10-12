@@ -21,6 +21,11 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -88,11 +93,13 @@ fun EvidencePage(key: String,state: JournalState,model: TradeViewModel,busy: Boo
         uri?.let { model.importAttachment(context.contentResolver,it,key,kind,caption) }
     }
     LocalFullScreenDialog(onDismiss) {
+        val keyboard=LocalSoftwareKeyboardController.current;val focus=LocalFocusManager.current
         Scaffold(modifier=Modifier.imePadding(),topBar={ TopAppBar(title={Text("截图与证据")},navigationIcon={IconButton(enabled=!busy,onClick=onDismiss){Icon(Icons.AutoMirrored.Filled.ArrowBack,"返回交易详情")}}) }) { padding ->
             LazyColumn(Modifier.fillMaxSize().padding(padding).testTag("evidence-list"),contentPadding=PaddingValues(16.dp),verticalArrangement=Arrangement.spacedBy(12.dp)) {
                 item { SectionCard("本笔截图 ${rows.size} / 10", "图片复制到本机；不依赖外部 URI、不上传、不保留照片位置。") {
                     SingleChoice(EvidenceOptions.kinds,kind) { if(!busy)kind=it }
-                    OutlinedTextField(caption,{if(it.length<=200)caption=it},enabled=!busy,label={Text("简短截图说明（可选）")},modifier=Modifier.fillMaxWidth().testTag("image-caption"),maxLines=3)
+                    OutlinedTextField(caption,{if(it.length<=200)caption=it},enabled=!busy,label={Text("简短截图说明（可选）")},modifier=Modifier.fillMaxWidth().testTag("image-caption"),maxLines=3,
+                        keyboardOptions=KeyboardOptions(imeAction=ImeAction.Done),keyboardActions=KeyboardActions(onDone={keyboard?.hide();focus.clearFocus()}))
                     Button(enabled=!busy && rows.size<10 && state.trades.any { it.recordKey==key },onClick={picker.launch(arrayOf("image/jpeg","image/png","image/webp"))},modifier=Modifier.fillMaxWidth().testTag("pick-evidence")) { Text("从系统文件 / 照片选择截图") }
                     Text("原图最多 ${state.evidenceSettings.maxInputMiB} MiB / 4000 万像素，压缩到最长边 2048、单张最多 4 MiB。透明背景转白色；动图只保存首帧。",style=MaterialTheme.typography.bodySmall)
                     if(busy)LinearProgressIndicator(Modifier.fillMaxWidth())

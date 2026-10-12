@@ -16,6 +16,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import com.tradereview.app.data.*
 import com.tradereview.app.domain.*
@@ -117,13 +121,15 @@ private fun ReviewGoalEditor(state: JournalState,busy: Boolean,onDismiss: ()->Un
     var mistake by rememberSaveable { mutableStateOf(state.tags.firstOrNull { it.kind=="mistake" }?.id ?: "chase") }
     var title by rememberSaveable { mutableStateOf("") };var threshold by rememberSaveable { mutableStateOf("") };var error by remember { mutableStateOf<String?>(null) }
     val catalog=LocalCatalog.current
-    LocalFullScreenDialog(onDismiss) { Scaffold(modifier=Modifier.imePadding(),topBar={TopAppBar(title={Text("新增改善目标")},navigationIcon={IconButton(enabled=!busy,onClick=onDismiss){Icon(Icons.AutoMirrored.Filled.ArrowBack,"返回目标列表")}})},
+    LocalFullScreenDialog(onDismiss) {
+        val keyboard=LocalSoftwareKeyboardController.current;val focus=LocalFocusManager.current
+        Scaffold(modifier=Modifier.imePadding(),topBar={TopAppBar(title={Text("新增改善目标")},navigationIcon={IconButton(enabled=!busy,onClick=onDismiss){Icon(Icons.AutoMirrored.Filled.ArrowBack,"返回目标列表")}})},
         bottomBar={Surface(shadowElevation=4.dp){Column(Modifier.fillMaxWidth().padding(16.dp)) {
             error?.let { Text(it,color=MaterialTheme.colorScheme.error,modifier=Modifier.testTag("goal-error")) }
             Button(enabled=!busy,onClick={
                 try { val goal=ReviewGoal(id=id,title=title.trim().ifBlank { if(kind=="text") "" else Presets.label(EvidenceOptions.goals,kind) },kind=kind,period=period,
                     startDate=ReviewPeriod.at(period,LocalDate.ofEpochDay(date)).start,threshold=if(kind=="text")null else threshold.toBigDecimalOrNull()?.let(ProfessionalMath::plain),mistakeId=if(kind=="mistake_count")mistake else null)
-                    ReviewGoals.validate(goal,state.tags);error=null;onSave(goal)
+                    ReviewGoals.validate(goal,state.tags);error=null;keyboard?.hide();focus.clearFocus();onSave(goal)
                 } catch(e: IllegalArgumentException) { error="请核对名称、目标阈值与生效日期；文字目标需填写名称" }
             },modifier=Modifier.fillMaxWidth().heightIn(min=48.dp).testTag("save-review-goal")){Text("保存改善目标")}
         } } }) { padding -> LazyColumn(Modifier.fillMaxSize().padding(padding).testTag("goal-editor-list"),contentPadding=PaddingValues(16.dp),verticalArrangement=Arrangement.spacedBy(12.dp)) {
@@ -131,7 +137,8 @@ private fun ReviewGoalEditor(state: JournalState,busy: Boolean,onDismiss: ()->Un
                 SingleChoice(EvidenceOptions.goals,kind) { kind=it;threshold="" }
                 SingleChoice(EvidenceOptions.periods,period) { period=it;threshold="" }
                 DateControl(date,{date=it});Text("从所选日期所在周/月开始，每周期独立追踪。")
-                OutlinedTextField(title,{if(it.length<=120)title=it},enabled=!busy,label={Text(if(kind=="text")"文字改善目标（必填）"else "目标名称（可选）")},modifier=Modifier.fillMaxWidth().testTag("goal-title"))
+                OutlinedTextField(title,{if(it.length<=120)title=it},enabled=!busy,label={Text(if(kind=="text")"文字改善目标（必填）"else "目标名称（可选）")},modifier=Modifier.fillMaxWidth().testTag("goal-title"),
+                    keyboardOptions=KeyboardOptions(imeAction=ImeAction.Done),keyboardActions=KeyboardActions(onDone={keyboard?.hide();focus.clearFocus()}))
                 if(kind=="mistake_count") { Text("选择错误标签（含历史隐藏标签）")
                     SingleChoice(catalog.options("mistake",state.tags.filter { it.kind=="mistake" }.map { it.id }),mistake){mistake=it} }
                 if(kind!="text") {

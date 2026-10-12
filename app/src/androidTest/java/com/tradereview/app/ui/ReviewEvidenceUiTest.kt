@@ -6,8 +6,6 @@ import android.net.Uri
 import android.os.SystemClock
 import android.provider.MediaStore
 import android.view.Choreographer
-import android.view.accessibility.AccessibilityWindowInfo
-import android.accessibilityservice.AccessibilityServiceInfo
 import androidx.activity.compose.LocalActivityResultRegistryOwner
 import androidx.activity.result.*
 import androidx.activity.result.contract.ActivityResultContract
@@ -74,9 +72,8 @@ class ReviewEvidenceUiTest {
         compose.onNodeWithTag("pick-evidence").assertIsDisplayed()
     }
     private fun hideKeyboard() {
-        val automation=InstrumentationRegistry.getInstrumentation().uiAutomation
-        val info=automation.serviceInfo;info.flags=info.flags or AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS;automation.serviceInfo=info
-        if(automation.windows.any { it.type==AccessibilityWindowInfo.TYPE_INPUT_METHOD })automation.executeShellCommand("input keyevent 4").close()
+        // Use the actual editor IME action; a delayed system BACK can navigate away after dismissal.
+        compose.onNodeWithTag("image-caption").performImeAction()
         compose.waitForIdle()
     }
     @Test fun systemPickerResultPrivateThumbnailsViewerSwitchCaptionAndDeleteWork() {
@@ -122,7 +119,7 @@ class ReviewEvidenceUiTest {
         val ratio=model.state.value.goals.single();compose.onNodeWithTag("goals-list").performScrollToNode(hasTestTag("goal-progress-${ratio.id}"));compose.onNodeWithTag("goal-progress-${ratio.id}").assertTextEquals("实际 33.33% · 阈值 80%")
         compose.onNodeWithTag("goals-list").performScrollToNode(hasTestTag("new-review-goal"));compose.onNodeWithTag("new-review-goal").performClick()
         compose.onNodeWithText("文字改善目标").performScrollTo().performClick();compose.onNodeWithTag("goal-title").performScrollTo().performTextInput("人工核对交易理由")
-        compose.onNodeWithTag("save-review-goal").assertIsDisplayed().performClick();compose.waitUntil(15000){model.state.value.goals.size==2 && !model.busy.value};hideKeyboard()
+        compose.onNodeWithTag("save-review-goal").assertIsDisplayed().performClick();compose.waitUntil(15000){model.state.value.goals.size==2 && !model.busy.value}
         compose.waitUntil(15000){model.message.value==null && !model.busy.value}
         val text=model.state.value.goals.first { it.kind=="text" };compose.onNodeWithTag("goals-list").performScrollToNode(hasTestTag("goal-progress-${text.id}"));compose.onNodeWithTag("goal-progress-${text.id}").assertTextEquals("实际 不可自动计算 · 文字目标")
         compose.onNodeWithTag("goals-list").performScrollToNode(hasTestTag("goal-history-${ratio.id}"));compose.onNodeWithTag("goal-history-${ratio.id}").performScrollTo().assertIsDisplayed();capture("17-review-goals")
