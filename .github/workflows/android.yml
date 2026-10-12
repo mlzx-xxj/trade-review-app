@@ -364,10 +364,10 @@ jobs:
           tag="v08-debug-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
           if [ -f dist/TradeReview-v0.8-stable.apk ]; then
             title="交易复盘 V0.8 · 固定签名 Debug 包"
-            notes="Debug 编译、JVM 单元测试、Lint、Room 迁移/事务恢复、快速录入/标签/品种/草稿、日历/筛选/分币种统计、图片/完整 ZIP/周月报告/改善目标及 Compose 模拟器测试均通过。固定签名已验证证书 pin，真实签名来源和 Secrets 配置状态见 SIGNING.txt；若 Secrets 尚未配置，仓库所有者仍需完成配置才能自动签署未来更新。后续必须使用相同私钥和更大 versionCode。旧测试版不同签名时需手动卸载。模拟器测试不是手机实测。"
+            notes="V0.8.0 / versionCode 8 / com.tradereview.app。Debug 编译、JVM 单元测试、Lint、API 29/35 完整模拟器回归与实际进程重启探针均通过；具体测试、性能及合成 OCR 结果见 CI-RESULTS.txt、PERFORMANCE-AND-OCR.json。固定签名已验证原 V0.3 证书 pin，实际证书、来源、升级分类见 SIGNING.txt、PUBLICATION-CHECK.txt；若 Secrets 尚未配置，所有者仍需配置原密钥才能自动签署未来更新。后续保持相同私钥及递增 versionCode。不同证书不能覆盖安装；先保存可读的完整 ZIP（包含截图），由所有者决定迁移方式。备份是明文。模拟器不是手机实测，原固定身份旧版安装升级及厂家兼容尚未验证。"
           else
             title="交易复盘 V0.8 · 临时签名测试包"
-            notes="Debug 编译、JVM 单元测试、Lint、Room 迁移/事务恢复、快速录入/标签/品种/草稿、日历/筛选/分币种统计、图片/完整 ZIP/周月报告/改善目标及 Compose 模拟器测试均通过。固定签名 Secrets 未配置，此包不保证未来长期覆盖升级。此临时包不能覆盖安装固定签名 V0.3；请先 JSON 备份，确认后自行处理不同签名的旧版安装，卸载会清空本地数据。V0.8 数据请定期备份。模拟器测试不是手机实测。"
+            notes="V0.8.0 / versionCode 8 / com.tradereview.app。Debug 编译、JVM 单元测试、Lint、API 29/35 完整模拟器回归与实际进程重启探针均通过；具体测试、性能及合成 OCR 结果见 CI-RESULTS.txt、PERFORMANCE-AND-OCR.json。固定签名未配置成功，此包明确为临时测试身份，不保证长期覆盖升级、不能覆盖原 V0.3 固定身份；实际证书、SHA-256 和来源见 SIGNING.txt、SHA256SUMS.txt、PUBLICATION-CHECK.txt。先保存可读的完整 ZIP（包含截图），由所有者决定不同签名的安装迁移；卸载会清空本机数据。仅 JSON 不含图片。备份是明文。模拟器不是手机实测，真正固定签名旧版升级、厂家兼容和 API36 尚未验证。"
           fi
           printf '%s\n' "$notes" > "$RUNNER_TEMP/release-notes.txt"
           cat dist/CI-RESULTS.txt >> "$RUNNER_TEMP/release-notes.txt"
