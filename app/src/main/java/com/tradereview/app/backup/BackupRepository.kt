@@ -15,19 +15,21 @@ enum class RestoreMode { MERGE, REPLACE }
 data class DatabaseSnapshot(val trades: List<Trade>, val reviews: List<DailyReview>, val tags: List<ManagedTag>,
     val instruments: List<Instrument>, val settings: AppSettings, val drafts: List<EntryDraft>, val savedFilters: List<SavedFilter> = emptyList(),
     val riskRules: List<RiskRules> = emptyList(), val contractTemplates: List<ContractTemplate> = emptyList(),
-    val attachments: List<Attachment> = emptyList(), val goals: List<ReviewGoal> = emptyList(), val evidenceSettings: EvidenceSettings = EvidenceSettings())
+    val attachments: List<Attachment> = emptyList(), val goals: List<ReviewGoal> = emptyList(), val evidenceSettings: EvidenceSettings = EvidenceSettings(),
+    val smartSettings: SmartSettings = SmartSettings(), val preflightItems: List<PreflightItem> = emptyList(),
+    val preflightChecks: List<PreflightCheck> = emptyList(), val ocrDrafts: List<OcrDraft> = emptyList())
 data class MergeSummary(val newTrades: Int, val repeatedTrades: Int, val conflictingTrades: Int,
     val newDays: Int, val addedPlans: Int, val addedReviews: Int, val conflictingPlans: Int, val conflictingReviews: Int)
 data class RestorePreview(val backup: BackupData, val before: DatabaseSnapshot, val summary: MergeSummary)
 
 class BackupRepository(private val database: TradeDatabase, private val store: AttachmentStore? = null) {
     private val dao get() = database.trades()
-    private suspend fun snapshot() = DatabaseSnapshot(dao.allTrades(), dao.allReviews(), dao.allTags(), dao.allInstruments(), dao.settings() ?: AppSettings(), dao.allDrafts(), dao.allFilters(), dao.allRiskRules(), dao.allTemplates(), dao.allAttachments(), dao.allGoals(), dao.evidenceSettings() ?: EvidenceSettings())
+    private suspend fun snapshot() = DatabaseSnapshot(dao.allTrades(), dao.allReviews(), dao.allTags(), dao.allInstruments(), dao.settings() ?: AppSettings(), dao.allDrafts(), dao.allFilters(), dao.allRiskRules(), dao.allTemplates(), dao.allAttachments(), dao.allGoals(), dao.evidenceSettings() ?: EvidenceSettings(), dao.smartSettings() ?: SmartSettings(), dao.allPreflightItems(), dao.allPreflightChecks(), dao.allOcrDrafts())
 
     suspend fun export(full: Boolean = false): BackupData = database.withTransaction {
         val state = snapshot()
         BackupData(Instant.now().toString(), state.trades, state.reviews, state.tags, state.instruments, state.settings, state.drafts, savedFilters = state.savedFilters, riskRules = state.riskRules, contractTemplates = state.contractTemplates,
-            attachments=if(full)state.attachments else emptyList(),goals=state.goals,evidenceSettings=state.evidenceSettings,backupScope=if(full)"with-attachment-files"else "structured-data-only")
+            attachments=if(full)state.attachments else emptyList(),goals=state.goals,evidenceSettings=state.evidenceSettings,backupScope=if(full)"with-attachment-files"else "structured-data-only",smartSettings=state.smartSettings,preflightItems=state.preflightItems,preflightChecks=state.preflightChecks,ocrDrafts=state.ocrDrafts)
     }
 
     suspend fun preview(data: BackupData): RestorePreview {
@@ -69,6 +71,7 @@ class BackupRepository(private val database: TradeDatabase, private val store: A
         database.withTransaction {
             if (snapshot() != preview.before) throw BackupException("本地数据在预览后已变化，请重新预览再确认")
             if (mode == RestoreMode.REPLACE) {
+                dao.clearSmartSettings();dao.clearPreflightItems();dao.clearPreflightChecks();dao.clearOcrDrafts()
                 dao.clearAttachments();dao.clearGoals();dao.clearEvidenceSettings()
                 dao.clearTrades()
                 dao.clearReviews()
@@ -85,6 +88,8 @@ class BackupRepository(private val database: TradeDatabase, private val store: A
                 incoming.forEach { dao.saveAttachment(it) }
                 preview.backup.goals.forEach { dao.saveGoal(it) }
                 dao.saveEvidenceSettings(preview.backup.evidenceSettings)
+                dao.saveSmartSettings(preview.backup.smartSettings)
+                preview.backup.preflightItems.forEach { dao.savePreflightItem(it) };preview.backup.preflightChecks.forEach { dao.savePreflightCheck(it) };preview.backup.ocrDrafts.forEach { dao.saveOcrDraft(it) }
             } else {
                 val tagKeys = preview.before.tags.map { it.kind to it.id }.toSet()
                 preview.backup.tags.filter { (it.kind to it.id) !in tagKeys }.forEach { dao.saveTag(it) }
@@ -126,6 +131,11 @@ class BackupRepository(private val database: TradeDatabase, private val store: A
                 val goals=preview.backup.goals.filter { it.id !in goalIds }
                 require(preview.before.goals.size+goals.size<=500) { "合并后目标超过 500 个上限" }
                 goals.forEach { dao.saveGoal(it) }
+                val items=preview.backup.preflightItems.filter { i->preview.before.preflightItems.none { it.id==i.id } }
+                val checks=preview.backup.preflightChecks.filter { c->preview.before.preflightChecks.none { it.date==c.date && it.itemKey==c.itemKey } }
+                val drafts=preview.backup.ocrDrafts.filter { d->preview.before.ocrDrafts.none { it.id==d.id } }
+                require(preview.before.preflightItems.size+items.size<=100 && preview.before.preflightChecks.size+checks.size<=10000 && preview.before.ocrDrafts.size+drafts.size<=100) { "合并后的智能清单或草稿超限" }
+                items.forEach { dao.savePreflightItem(it) };checks.forEach { dao.savePreflightCheck(it) };drafts.forEach { dao.saveOcrDraft(it) }
             }
         }
     }

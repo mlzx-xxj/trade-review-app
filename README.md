@@ -1,3 +1,13 @@
+# V0.7 交易复盘
+
+在已合并 V0.6 上增加打包中文/Latin 离线 OCR、逐项核实/专用草稿/重复提醒、集中本地洞察规则、盘前清单与周月报洞察。保留旧版全部功能；无新增 INTERNET 权限，原 V0.3 私钥与 pin 不替换。
+
+[V0.7 实施计划](docs/V07-PLAN.md) · [OCR/规则/十六表迁移与备份说明](docs/V07-DATA-AND-REVIEW.md) · [真实验证记录](docs/V07-VALIDATION.md) · [手机逐项验收](docs/V07-PHONE-ACCEPTANCE.md)
+
+版本 0.7.0 / code 7。正式 Room v6→v7 保留所有旧链；JSON schema 6 兼容格式 1–5，完整 ZIP 容器 1 保留全部图片/校验/事务安全。[V0.7 PR #7](https://github.com/mlzx-xxj/trade-review-app/pull/7)提供最终提交的 CI、APK 和截图链接，不自动合并。功能提交已实际通过 Debug/测试 APK 编译、133 JVM、81 模拟器测试，Lint 0 错误/17 警告，详见验证记录。实际固定 Secrets 未启用，交付临时测试包，不能保证覆盖升级；真机验收待执行。
+
+以下保留已有功能和此前版本背景，历史验证/签名状态仅代表当时情况。
+
 # 交易复盘 Android App
 
 V0.6：Kotlin + Jetpack Compose + Material 3 + Room，中文卡片界面，离线运行，无 INTERNET 权限。
@@ -18,7 +28,7 @@ V0.6：Kotlin + Jetpack Compose + Material 3 + Room，中文卡片界面，离�
 - 本地周报/月报、分币种盈亏与有效 R、前期对照、错误排行、评分趋势；并行纪律目标、明确分母/未知状态、归档与真实历史。
 - Room 正式 v5→v6（保留全部旧链）；完整 ZIP 格式 1 含十二表与全部截图，JSON 格式 5 明确不含图片，兼容 V0.2–V0.5 格式 1/2/3/4，严格预览/二次确认与文件/数据库协调恢复。
 
-工程沿用现有架构与 Wrapper：Gradle 8.11.1、AGP 8.9.2、Kotlin/Compose 插件 2.1.20、Compose BOM 2025.04.01、Room 2.7.2；minSdk 26、compile/targetSdk 35、CI JDK 17。版本 0.6.0，versionCode 6，applicationId com.tradereview.app。
+工程沿用现有架构与 Wrapper：Gradle 8.11.1、AGP 8.9.2、Kotlin/Compose 插件 2.1.20、Compose BOM 2025.04.01、Room 2.7.2；minSdk 26、compile/targetSdk 35、CI JDK 17。版本 0.7.0，versionCode 7，applicationId com.tradereview.app。
 
 [V0.6 实施计划](docs/V06-PLAN.md) · [计算、数据与签名配置](docs/V06-DATA-AND-REPORTS.md) · [V0.6 实际验证记录](docs/V06-VALIDATION.md)
 
@@ -39,4 +49,4 @@ Base 缺少 SDK 时用 GitHub Actions，不需要完整 Android Studio。本地�
 
 JSON 为明文，校验摘要不提供加密或身份认证。模拟器结果不等于真实手机测试；请以本轮 Actions 和验证文档中的实际结果为准。
 
-历史方案与验证记录保留在 docs 中，包括 V0.1–V0.3；历史文档中的签名和版本状态仅描述当时情况。本轮以 V0.6 验证报告及 APK 自带的 SIGNING.txt 为准。
+历史方案与验证记录保留在 docs 中，包括 V0.1–V0.6；历史文档中的签名和版本状态仅描述当时情况。本轮以 V0.7 验证报告、PR #7 及对应 APK 自带的 SIGNING.txt 为准。

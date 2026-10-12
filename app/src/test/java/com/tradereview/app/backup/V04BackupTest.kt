@@ -11,7 +11,7 @@ class V04BackupTest {
         assertEquals(2, data.sourceSchemaVersion); assertEquals("V0.3 原始备注", data.trades.single().note)
         assertEquals("custom_v03", data.trades.single().strategy); assertTrue(data.tags.first { it.id == "custom_v03" }.hidden)
         assertEquals("dark", data.settings.theme); assertEquals("green_profit", data.settings.pnlPalette); assertTrue(data.savedFilters.isEmpty())
-        assertEquals(data.copy(sourceSchemaVersion = 5), BackupCodec.decode(BackupCodec.encode(data)))
+        assertEquals(data.copy(sourceSchemaVersion = BackupCodec.SCHEMA_VERSION), BackupCodec.decode(BackupCodec.encode(data)))
     }
     @Test fun oldAndroidReflectionOrderIsAcceptedWithoutWeakeningIntegrity() {
         val data = BackupCodec.read(requireNotNull(javaClass.getResourceAsStream("/v03-android-backup.json")))
@@ -19,7 +19,7 @@ class V04BackupTest {
         assertEquals(jvm, data)
         val json = requireNotNull(javaClass.getResourceAsStream("/v03-android-backup.json")).bufferedReader().use { it.readText() }
         assertThrows(BackupException::class.java) { BackupCodec.decode(json.replace("隐藏的旧策略", "修改的旧策略")) }
-        assertEquals(data.copy(sourceSchemaVersion = 5), BackupCodec.decode(BackupCodec.encode(data)))
+        assertEquals(data.copy(sourceSchemaVersion = BackupCodec.SCHEMA_VERSION), BackupCodec.decode(BackupCodec.encode(data)))
     }
     @Test fun v04RoundTripPreservesPaletteFiltersAllTagModesAndCurrency() {
         val criteria = TradeFilter(period = "custom", startDay = 19999, endDay = 20000, markets = listOf("stock"), symbols = listOf("沪深300"),
@@ -36,7 +36,7 @@ class V04BackupTest {
         val before = com.google.gson.JsonParser.parseString(json).asJsonObject["checksumSha256"].asString
         val after = com.google.gson.JsonParser.parseString(BackupCodec.encode(data)).asJsonObject["checksumSha256"].asString
         assertNotEquals(before, after) // Re-export intentionally upgrades to format 4.
-        assertEquals(data.copy(sourceSchemaVersion = 5), BackupCodec.decode(BackupCodec.encode(data)))
+        assertEquals(data.copy(sourceSchemaVersion = BackupCodec.SCHEMA_VERSION), BackupCodec.decode(BackupCodec.encode(data)))
     }
     @Test fun invalidFilterReferencesCountsSettingsAndTamperingAreRejected() {
         val data = BackupData("2026-10-11T07:00:00Z", emptyList(), emptyList(), savedFilters = listOf(SavedFilter(name = "常用")))

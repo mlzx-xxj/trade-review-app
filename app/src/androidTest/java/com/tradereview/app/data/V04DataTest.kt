@@ -83,7 +83,7 @@ class V04DataTest {
         val expected = com.google.gson.JsonParser.parseString(json).asJsonObject["checksumSha256"].asString
         val actual = com.google.gson.JsonParser.parseString(BackupCodec.encode(data)).asJsonObject["checksumSha256"].asString
         assertNotEquals(expected, actual) // Re-export upgrades old format 3 to current format 4.
-        assertEquals(data.copy(sourceSchemaVersion = 5), BackupCodec.decode(BackupCodec.encode(data)))
+        assertEquals(data.copy(sourceSchemaVersion = BackupCodec.SCHEMA_VERSION), BackupCodec.decode(BackupCodec.encode(data)))
         backup.restore(backup.preview(data), RestoreMode.REPLACE)
         assertEquals("red_profit", db.trades().settings()!!.pnlPalette)
         assertEquals(data.savedFilters, db.trades().allFilters()); assertEquals(data.drafts, db.trades().allDrafts())

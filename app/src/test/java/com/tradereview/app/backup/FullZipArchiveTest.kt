@@ -21,6 +21,22 @@ class FullZipArchiveTest {
         val (data,image)=fixture();val file=tmp.newFile();FullZipArchive.write(data,{image},file)
         val parsed=read(file.readBytes());assertEquals(data,parsed.data);assertArrayEquals(image.readBytes(),parsed.image(data.attachments.single()).readBytes());val directory=parsed.directory;parsed.close();assertFalse(directory.exists())
     }
+    @Test fun legacyV06SchemaFiveZipRetainsItsImagesAndSuppliesSmartDefaults() {
+        val (data,image)=fixture();val file=tmp.newFile();FullZipArchive.write(data,{image},file)
+        val entries=linkedMapOf<String,ByteArray>();ZipInputStream(file.inputStream()).use { z->while(true){val e=z.nextEntry ?: break;entries[e.name]=z.readBytes()} }
+        val gson=com.google.gson.GsonBuilder().serializeNulls().disableHtmlEscaping().create()
+        fun digest(bytes:ByteArray)=java.security.MessageDigest.getInstance("SHA-256").digest(bytes).joinToString(""){"%02x".format(it)}
+        val root=com.google.gson.JsonParser.parseString(entries.getValue("data.json").toString(Charsets.UTF_8)).asJsonObject
+        root.addProperty("schemaVersion",5);root.remove("checksumSha256")
+        listOf("smartSettings","preflightItems","preflightChecks","ocrDrafts").forEach { root.remove(it) }
+        listOf("preflightItems","preflightChecks","ocrDrafts").forEach { root.getAsJsonObject("counts").remove(it) }
+        root.addProperty("checksumSha256",digest(gson.toJson(root).toByteArray(Charsets.UTF_8)))
+        val payload=gson.toJson(root).toByteArray(Charsets.UTF_8);entries["data.json"]=payload
+        val manifest=com.google.gson.JsonParser.parseString(entries.getValue("manifest.json").toString(Charsets.UTF_8)).asJsonObject
+        manifest.getAsJsonObject("data").addProperty("bytes",payload.size);manifest.getAsJsonObject("data").addProperty("sha256",digest(payload));entries["manifest.json"]=gson.toJson(manifest).toByteArray(Charsets.UTF_8)
+        val parsed=read(archive(entries.entries.map { it.key to it.value }))
+        try {assertEquals(data.copy(sourceSchemaVersion=5),parsed.data);assertArrayEquals(image.readBytes(),parsed.image(data.attachments.single()).readBytes())}finally {parsed.close()}
+    }
     @Test fun missingOrTamperedImageCannotBeSilentlyOmittedFromExport() {
         val (data,image)=fixture();image.writeBytes(byteArrayOf(9));assertThrows(IllegalArgumentException::class.java){FullZipArchive.write(data,{image},tmp.newFile())};image.delete()
         assertThrows(IllegalArgumentException::class.java){FullZipArchive.write(data,{image},tmp.newFile())}

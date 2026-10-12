@@ -11,7 +11,7 @@ import com.tradereview.app.data.CatalogSeeds
 class TradeReviewApplication : Application() {
     val database: TradeDatabase by lazy {
         Room.databaseBuilder(this, TradeDatabase::class.java, "trade-review.db")
-            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, com.tradereview.app.data.MIGRATION_4_5, com.tradereview.app.data.MIGRATION_5_6).addCallback(CatalogSeeds.callback).build()
+            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, com.tradereview.app.data.MIGRATION_4_5, com.tradereview.app.data.MIGRATION_5_6, com.tradereview.app.data.MIGRATION_6_7).addCallback(CatalogSeeds.callback).build()
     }
     val evidenceStore by lazy { com.tradereview.app.evidence.AttachmentStore(java.io.File(filesDir, "trade-evidence")) }
 }

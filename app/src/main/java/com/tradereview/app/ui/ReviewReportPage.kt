@@ -75,6 +75,7 @@ fun ReviewReportPage(kind: String,state: JournalState,currency: String,onCurrenc
                 if(report.errors.isEmpty())Text("没有已记录的错误标签，不能据此认定已遵守全部纪律。")
                 report.errors.forEach { (id,count) -> TextButton(onClick={onTrades(report.trades.filter { id in it.mistakes },catalog.label("mistake",id))}){Text("${catalog.label("mistake",id)}：$count 笔 · 上期 ${report.previousErrors[id] ?: 0} 笔")} }
             } }
+            item { ReportInsights(state,period,onTrades) }
             item { SectionCard("图表币种") { SingleChoice(Presets.currencies,currency,onCurrency) } }
             val c=report.currencies.first { it.currency==currency }
             item { SectionCard("每日净盈亏趋势 · $currency") { AmountBarChart(c.analysis.daily,currency,onDay={day -> onTrades(report.trades.filter { it.date==day && it.currency==currency },dayLabel(day))}) } }

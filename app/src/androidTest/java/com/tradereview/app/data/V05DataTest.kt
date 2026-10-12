@@ -86,6 +86,6 @@ class V05DataTest {
         assertEquals("935070b335dad76a94d1d3bcd8615268260bb46adffd97fdebc1f1b622cea78a",com.google.gson.JsonParser.parseString(source).asJsonObject["checksumSha256"].asString)
         val old=BackupCodec.decode(source);val upgraded=BackupCodec.encode(old)
         assertNotEquals(com.google.gson.JsonParser.parseString(source).asJsonObject["checksumSha256"],com.google.gson.JsonParser.parseString(upgraded).asJsonObject["checksumSha256"])
-        assertEquals(old.copy(sourceSchemaVersion=5),BackupCodec.decode(upgraded))
+        assertEquals(old.copy(sourceSchemaVersion=BackupCodec.SCHEMA_VERSION),BackupCodec.decode(upgraded))
     }
 }

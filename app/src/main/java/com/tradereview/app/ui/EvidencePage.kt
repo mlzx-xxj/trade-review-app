@@ -79,7 +79,7 @@ fun EvidenceThumbnails(values: List<Attachment>,store: AttachmentStore?,onClick:
 }
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EvidencePage(key: String,state: JournalState,model: TradeViewModel,busy: Boolean,onDismiss: ()->Unit) {
+fun EvidencePage(key: String,state: JournalState,model: TradeViewModel,busy: Boolean,onOcr:(Attachment)->Unit = {},onDismiss: ()->Unit) {
     val rows=state.attachments.filter { it.recordKey==key }
     val context=LocalContext.current
     val feedback by model.message.collectAsStateWithLifecycle()
@@ -107,6 +107,7 @@ fun EvidencePage(key: String,state: JournalState,model: TradeViewModel,busy: Boo
                 } }
                 items(rows,key={it.id}) { a -> SectionCard(Presets.label(EvidenceOptions.kinds,a.kind)) {
                     LocalEvidenceImage(a,model.evidenceStore,Modifier.fillMaxWidth().height(180.dp).clickable { viewer=a.id }.testTag("evidence-image-${a.id}"),512)
+                    OutlinedButton(enabled=!busy,onClick={onOcr(a)},modifier=Modifier.fillMaxWidth().testTag("evidence-ocr-${a.id}")){Text("从此附件识别交易")}
                     Text(a.caption.ifBlank { "未填写说明" });Text("${a.width} × ${a.height} · ${a.byteCount/1024} KiB",style=MaterialTheme.typography.bodySmall)
                     Row { TextButton(onClick={viewer=a.id},modifier=Modifier.testTag("view-evidence-${a.id}")){Text("查看大图")}
                         TextButton(enabled=!busy,onClick={editing=a}){Text("修改说明")}
@@ -123,7 +124,7 @@ fun EvidencePage(key: String,state: JournalState,model: TradeViewModel,busy: Boo
 }
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun EvidenceViewer(values: List<Attachment>,initial: Int,store: AttachmentStore?,onDismiss: ()->Unit) {
+internal fun EvidenceViewer(values: List<Attachment>,initial: Int,store: AttachmentStore?,onDismiss: ()->Unit) {
     val pager=rememberPagerState(initialPage=initial,pageCount={values.size});val scope=rememberCoroutineScope()
     LocalFullScreenDialog(onDismiss) { Scaffold(topBar={TopAppBar(title={Text("截图大图 ${pager.currentPage+1} / ${values.size}",modifier=Modifier.testTag("evidence-viewer-count"))},navigationIcon={IconButton(onClick=onDismiss){Icon(Icons.AutoMirrored.Filled.ArrowBack,"关闭大图")}}) }) { padding ->
         Column(Modifier.fillMaxSize().padding(padding).padding(12.dp),verticalArrangement=Arrangement.spacedBy(12.dp)) {

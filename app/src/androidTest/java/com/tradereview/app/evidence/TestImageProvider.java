@@ -25,7 +25,7 @@ public final class TestImageProvider extends ContentProvider {
     public static Uri uri(String name) { return Uri.parse("content://com.tradereview.app.test.images/" + name); }
     @Override public boolean onCreate() { return true; }
     private File fixture(String name) throws FileNotFoundException {
-        if (!Arrays.asList("good.png", "second.png", "gps.jpg", "odd.png", "bad.jpg", "huge.png", "missing.png", "denied.png").contains(name)) throw new FileNotFoundException("Unknown fixture");
+        if (!Arrays.asList("good.png", "second.png", "gps.jpg", "odd.png", "ocr.png", "bad.jpg", "huge.png", "missing.png", "denied.png").contains(name)) throw new FileNotFoundException("Unknown fixture");
         if (name.equals("denied.png")) throw new SecurityException("Synthetic revoked permission");
         if (name.equals("missing.png")) throw new FileNotFoundException("Synthetic missing image");
         File root = new File(getContext().getCacheDir(), "synthetic-images"); root.mkdirs();
@@ -33,7 +33,17 @@ public final class TestImageProvider extends ContentProvider {
         try {
             if (name.equals("bad.jpg")) { try (FileOutputStream out = new FileOutputStream(file)) { out.write(new byte[]{1,2,3}); } }
             else if (name.equals("huge.png")) { try (FileOutputStream out = new FileOutputStream(file)) { for (int i=0; i<6; i++) out.write(new byte[1024*1024]); } }
-            else {
+            else if (name.equals("ocr.png")) {
+                Bitmap bitmap=Bitmap.createBitmap(1280,1440,Bitmap.Config.ARGB_8888);
+                try {
+                    Canvas canvas=new Canvas(bitmap);canvas.drawColor(Color.WHITE);
+                    Paint paint=new Paint(Paint.ANTI_ALIAS_FLAG);paint.setColor(Color.BLACK);paint.setTextSize(48f);
+                    String[] lines={"交易日期: 2024-02-29","市场: 国内期货","品种: 螺纹钢","合约: rb2701","方向: 做空","币种: CNY",
+                        "Entry price: 3500.25","Exit price: 3490.125","Lots: 2.5","Fees: 3.25","Realized net P&L: -25.35","合成样本，不含个人信息"};
+                    for(int i=0;i<lines.length;i++)canvas.drawText(lines[i],40f,90f+i*100f,paint);
+                    try(FileOutputStream out=new FileOutputStream(file)){bitmap.compress(Bitmap.CompressFormat.PNG,100,out);}
+                } finally {bitmap.recycle();}
+            } else {
                 Bitmap bitmap = Bitmap.createBitmap(name.equals("odd.png") ? 4097 : 640, name.equals("odd.png") ? 100 : 400, Bitmap.Config.ARGB_8888);
                 try {
                     Canvas canvas = new Canvas(bitmap); canvas.drawColor(Color.WHITE);

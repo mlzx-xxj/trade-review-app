@@ -36,6 +36,10 @@ data class JournalState(
     val attachments: List<Attachment> = emptyList(),
     val goals: List<ReviewGoal> = emptyList(),
     val evidenceSettings: EvidenceSettings = EvidenceSettings(),
+    val smartSettings: SmartSettings = SmartSettings(),
+    val preflightItems: List<PreflightItem> = emptyList(),
+    val preflightChecks: List<PreflightCheck> = emptyList(),
+    val ocrDrafts: List<OcrDraft> = emptyList(),
     val loading: Boolean = true,
     val error: String? = null,
 )
@@ -61,7 +65,9 @@ class TradeViewModel(private val database: TradeDatabase, private val savedState
     }
     private val riskSettings = combine(dao.observeRiskRules(), dao.observeTemplates()) { rules, templates -> rules to templates }
     private val evidence = combine(dao.observeAttachments(),dao.observeGoals(),dao.observeEvidenceSettings()) { a,g,s -> Triple(a,g,s ?: EvidenceSettings()) }
-    val state = combine(journal, catalog, dao.observeFilters(), riskSettings,evidence) { (trades, reviews), catalog, filters, risk,e -> catalog.copy(trades = trades, reviews = reviews, savedFilters = filters, riskRules = risk.first, contractTemplates = risk.second,attachments=e.first,goals=e.second,evidenceSettings=e.third) }
+    private val smart=combine(dao.observeSmartSettings(),dao.observePreflightItems(),dao.observePreflightChecks(),dao.observeOcrDrafts()) { s,i,c,d->JournalState(smartSettings=s ?: SmartSettings(),preflightItems=i,preflightChecks=c,ocrDrafts=d) }
+    private val base=combine(journal, catalog, dao.observeFilters(), riskSettings,evidence) { (trades, reviews), catalog, filters, risk,e -> catalog.copy(trades = trades, reviews = reviews, savedFilters = filters, riskRules = risk.first, contractTemplates = risk.second,attachments=e.first,goals=e.second,evidenceSettings=e.third) }
+    val state = combine(base,smart) { b,s->b.copy(smartSettings=s.smartSettings,preflightItems=s.preflightItems,preflightChecks=s.preflightChecks,ocrDrafts=s.ocrDrafts) }
         .catch { error ->
             if (error is CancellationException) throw error
             emit(JournalState(loading = false, error = "本地数据库读取失败，请重启应用后重试。"))
@@ -121,6 +127,41 @@ class TradeViewModel(private val database: TradeDatabase, private val savedState
     fun deleteAttachment(value: Attachment) = write("截图附件已删除") { requireNotNull(images).delete(value) }
     fun updateCaption(value: Attachment,caption: String) = write("截图说明已保存") { requireNotNull(images).caption(value,caption) }
     fun imageLimit(value: Int) = write("图片大小上限已保存") { val s=EvidenceSettings(maxInputMiB=value);EvidenceLimits.settings(s);dao.saveEvidenceSettings(s) }
+    fun smartSettings(value:SmartSettings)=write("本地洞察规则已保存") { SmartJson.validate(value);dao.saveSmartSettings(value) }
+    fun preflightItem(value:PreflightItem,onSuccess:()->Unit={})=write("个人盘前项目已保存",onSuccess) { database.withTransaction {
+        SmartJson.validate(value);require(dao.allPreflightItems().size<100 || dao.allPreflightItems().any { it.id==value.id }) { "最多 100 个个人项目" };dao.savePreflightItem(value)
+    } }
+    fun preflightCheck(value:PreflightCheck)=write("盘前检查已记录") { database.withTransaction {
+        SmartJson.validate(value);val checks=dao.allPreflightChecks();require(checks.size<10000 || checks.any { it.date==value.date && it.itemKey==value.itemKey }) { "检查历史已达上限，请先备份" };dao.savePreflightCheck(value)
+    } }
+    fun ocrDraft(candidate:OcrCandidate,id:String?=null,onSuccess:()->Unit={})=write("待核实 OCR 草稿已保存，尚未创建交易",onSuccess) { database.withTransaction {
+        val d=OcrDraft(id=id ?: newKey(),fields=SmartJson.fields(candidate.fields),blocked=candidate.blocked,closedEvidence=candidate.closedEvidence,createdDay=java.time.LocalDate.now().toEpochDay())
+        SmartJson.validate(d);require(dao.allOcrDrafts().size<100 || dao.allOcrDrafts().any { it.id==d.id }) { "最多 100 份 OCR 草稿" };dao.saveOcrDraft(d)
+    } }
+    fun deleteOcrDraft(value:OcrDraft)=write("OCR 草稿已删除") { dao.deleteOcrDraft(value) }
+    fun saveOcr(candidate:OcrCandidate,verified:Set<String>,closedConfirmed:Boolean,strategy:String,position:Int,key:String,
+        session:OcrSession,keepImage:Boolean,approvedDuplicates:Set<String>,approvedRisk:String?,emotion:String="calm",onSuccess:()->Unit)=write("已核实交易已创建",onSuccess) {
+        require(OcrTradeParser.canCreate(candidate,verified,closedConfirmed)) { "所有识别字段和已平仓净盈亏需逐项核实；委托/持仓只能存草稿" }
+        val draft=OcrTradeParser.draft(candidate,strategy,position,key).copy(key=key,emotion=emotion)
+        com.tradereview.app.evidence.EvidenceLock.mutex.lock()
+        try { withContext(Dispatchers.IO) {
+            val image=if(keepImage) {
+                val source=requireNotNull(session.image) { "原图不在本次会话中，请重新选择" };val sourceStore=requireNotNull(session.store)
+                requireNotNull(evidenceStore).ensureSpace(source.byteCount)
+                source.copy(id=newKey(),recordKey=key,caption="用户核实的 OCR 交易证据",sortOrder=0).also { evidenceStore.publish(sourceStore.file(source),it) }
+            }else null
+            database.withTransaction {
+                require(dao.findTradeByKey(key)==null) { "本候选已保存，请选择下一条" }
+                require(OcrTradeParser.duplicates(candidate,dao.allTrades()).all { it.recordKey in approvedDuplicates }) { "疑似重复记录已变化，请重新核对" }
+                entries.save(draft,approvedRisk)
+                image?.let { dao.saveAttachment(it) }
+                session.draftId?.let { id->dao.allOcrDrafts().firstOrNull { it.id==id }?.let { dao.deleteOcrDraft(it) } }
+            }
+        } } finally {
+            try { withContext(kotlinx.coroutines.NonCancellable+Dispatchers.IO) { runCatching { evidenceStore?.cleanup(dao.allAttachments()) } } }
+            finally { com.tradereview.app.evidence.EvidenceLock.mutex.unlock() }
+        }
+    }
     fun saveGoal(value: ReviewGoal,onSuccess: ()->Unit = {}) = write("改善目标已保存",onSuccess) { database.withTransaction {
         val goals=dao.allGoals();require(goals.size<500 || goals.any { it.id==value.id }) { "最多 500 个目标" }
         ReviewGoals.validate(value,dao.allTags());require(goals.none { it.id==value.id }) { "已保存目标规则保持稳定，请创建新目标" };dao.saveGoal(value)

@@ -72,7 +72,7 @@ private data class RiskPreview(val trade: Trade, val rules: List<RiskRules>, val
 fun TradeEditor(original: Trade?, state: JournalState, busy: Boolean, saveError: String?, onDismiss: () -> Unit,
     onDraft: (EntryDraft) -> Unit, onSave: (EntryDraft, String?, () -> Unit) -> Unit, onDelete: (Trade) -> Unit,
     notify: (String) -> Unit, onTemplate: (ContractTemplate) -> Unit = {},
-    evidenceStore: com.tradereview.app.evidence.AttachmentStore? = null,onEvidence: (Trade)->Unit = {}) {
+    evidenceStore: com.tradereview.app.evidence.AttachmentStore? = null,onEvidence: (Trade)->Unit = {},onOcr:()->Unit = {}) {
     val draftKey = original?.recordKey ?: "new"
     val restored = state.drafts.firstOrNull { it.key == draftKey }
     val initial = remember(draftKey) {
@@ -149,6 +149,7 @@ fun TradeEditor(original: Trade?, state: JournalState, busy: Boolean, saveError:
                     if (original == null && state.trades.isNotEmpty()) OutlinedButton(enabled = !busy, onClick = {
                         draft = EntryDraft.copyReusable(state.trades.maxBy { it.id }); feedback = "已复制上一笔，盈亏及复盘状态已清空"; notify("已复制上一笔交易")
                     }, modifier = Modifier.fillMaxWidth()) { Text("复制上一笔交易") }
+                    OutlinedButton(enabled=!busy,onClick=onOcr,modifier=Modifier.fillMaxWidth().testTag("editor-ocr")){Text("识别截图（保留当前草稿）")}
                     SectionCard("快速录入") {
                         DateControl(draft.date, { draft = draft.copy(date = it) })
                         Text("市场")
