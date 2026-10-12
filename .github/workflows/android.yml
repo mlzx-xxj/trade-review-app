@@ -144,7 +144,7 @@ jobs:
                   if not chunk:
                       break
                   (out / f'part-{index:02}.bin').write_bytes(chunk)
-          assert not (out / 'part-03.bin').exists(), 'Add bounded copy support before APK exceeds 48 MiB'
+          assert not (out / 'part-07.bin').exists(), 'APK verification copies exceed 144 MiB bound'
           (out / 'original-apk-name.txt').write_text(apk.name + '\n', encoding='utf-8')
           PYPARTS
       - name: Upload signature metadata for independent verification
@@ -169,6 +169,38 @@ jobs:
         with:
           name: apk-verification-part-2
           path: apk-verification/part-02.bin
+          if-no-files-found: error
+          retention-days: 30
+      - name: Upload bounded verification part 3
+        if: hashFiles('apk-verification/part-03.bin') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: apk-verification-part-3
+          path: apk-verification/part-03.bin
+          if-no-files-found: error
+          retention-days: 30
+      - name: Upload bounded verification part 4
+        if: hashFiles('apk-verification/part-04.bin') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: apk-verification-part-4
+          path: apk-verification/part-04.bin
+          if-no-files-found: error
+          retention-days: 30
+      - name: Upload bounded verification part 5
+        if: hashFiles('apk-verification/part-05.bin') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: apk-verification-part-5
+          path: apk-verification/part-05.bin
+          if-no-files-found: error
+          retention-days: 30
+      - name: Upload bounded verification part 6
+        if: hashFiles('apk-verification/part-06.bin') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: apk-verification-part-6
+          path: apk-verification/part-06.bin
           if-no-files-found: error
           retention-days: 30
       - name: Upload complete Gradle wrapper

@@ -30,6 +30,15 @@ class V07DataTest {
         db.trades().saveOcrDraft(OcrDraft(fields=SmartJson.fields(mapOf("quantity" to "2.","symbol" to "螺纹钢")),blocked=true,closedEvidence=false,createdDay=today))
     }
     private suspend fun waitWrite(model:TradeViewModel){withTimeout(15000){while(model.busy.value)delay(25)}}
+    @Test fun damagedOcrInputShowsErrorAndCannotChangeAnyHistoryOrEvidence()=runBlocking {
+        seed();val repository=BackupRepository(db,store);val before=repository.export(full=true);val ocr=OcrViewModel(context)
+        try {
+            ocr.read(TestImageProvider.uri("bad.jpg"),EvidenceSettings())
+            withTimeout(15000){while(ocr.state.value.busy)delay(25)}
+            assertNotNull(ocr.state.value.error);assertTrue(ocr.state.value.candidates.isEmpty());assertEquals("",ocr.state.value.raw)
+            val after=repository.export(full=true);assertEquals(before.copy(exportedAt=after.exportedAt),after);store.verifyAll(after.attachments)
+        }finally {ocr.clear()}
+    }
     @Test fun unverifiedOcrCannotSaveAndVerifiedNewTradePreservesExistingQuickDraftAndHistory()=runBlocking {
         val old=Trade(netPnl="100.00");db.trades().insert(old);val quick=EntryDraft(amount="12.");db.trades().saveDraft(quick)
         val c=OcrTradeParser.parse("Date: 2024-02-29\nMarket: futures\nSymbol: 螺纹钢\nDirection: short\nCurrency: CNY\nRealized P&L: -25.35").single()
