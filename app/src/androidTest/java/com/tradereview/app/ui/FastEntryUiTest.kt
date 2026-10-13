@@ -51,15 +51,22 @@ class FastEntryUiTest {
         compose.onNodeWithText("保存并继续").performClick()
         // Room can publish the new row before the save callback updates the editor.
         // Require the visible completion feedback and the actual cleared field too.
-        compose.waitUntil(10000) { !model.busy.value && model.state.value.trades.size == 1 &&
+        try { compose.waitUntil(10000) { !model.busy.value && model.state.value.trades.size == 1 &&
             compose.onAllNodesWithText("交易已保存，可以继续记录下一笔").fetchSemanticsNodes().isNotEmpty() &&
-            compose.onAllNodes(hasTestTag("entry-amount") and SemanticsMatcher.expectValue(SemanticsProperties.EditableText, AnnotatedString(""))).fetchSemanticsNodes().isNotEmpty() }
+            compose.onAllNodes(hasTestTag("entry-amount") and SemanticsMatcher.expectValue(SemanticsProperties.EditableText, AnnotatedString(""))).fetchSemanticsNodes().isNotEmpty() } }
+        catch(failure:Throwable) {
+            val instrumentation=androidx.test.platform.app.InstrumentationRegistry.getInstrumentation()
+            val out=File(requireNotNull(androidx.test.platform.app.InstrumentationRegistry.getArguments().getString("additionalTestOutputDir")))
+            File(out,"v100-continue-failure.txt").writeText("Synthetic fixture only\nmessage=${model.message.value}\nbusy=${model.busy.value}\ntrades=${model.state.value.trades}\ndrafts=${model.state.value.drafts}\n"+compose.onRoot(useUnmergedTree=true).printToString())
+            instrumentation.uiAutomation.takeScreenshot()?.let { bitmap->File(out,"v100-continue-failure.png").outputStream().use{bitmap.compress(android.graphics.Bitmap.CompressFormat.PNG,100,it)};bitmap.recycle() }
+            throw failure
+        }
         compose.onNodeWithTag("entry-amount").assert(SemanticsMatcher.expectValue(SemanticsProperties.EditableText, AnnotatedString("")))
         compose.onNodeWithText("保存交易").performClick(); compose.onNodeWithTag("entry-error").assertIsDisplayed()
         compose.onNodeWithText("亏损").performScrollTo().performClick()
         compose.onNodeWithTag("entry-amount").performTextInput("5")
         compose.onNodeWithText("保存交易").performClick(); saved()
-        runBlocking { assertEquals(2, db.trades().allTrades().size) }
+        runBlocking { val rows=db.trades().allTrades();assertEquals(2, rows.size);assertEquals(setOf("123.45","-5.00"),rows.map{it.netPnl}.toSet()) }
     }
     @Test fun copyPreviousClearsAmountAndCompletionWithVisibleFeedback() {
         runBlocking { db.trades().insert(Trade(date = 20000, netPnl = "99.00", reviewed = true)) }

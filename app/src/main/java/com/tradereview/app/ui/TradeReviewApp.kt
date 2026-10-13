@@ -163,6 +163,10 @@ fun TradeReviewApp(model: TradeViewModel, backup: BackupViewModel, ocrModel: Ocr
                     3 -> StatisticsPage(state, analytics, currency, filter, model, busy, onDay = { selectedDay = it }, onDrill = { model.updateFilter(it); page = 1 }, modifier = Modifier.padding(pagePadding),onReports={reports=it;reportReturn="week"})
                     4 -> CalendarPage(state, analytics.calendar, currency, model::selectCurrency, { selectedDay = it }, Modifier.padding(pagePadding))
                 } }
+            }
+            // Derived statistics invalidate independently of Room writes. Keep an open editor/viewer
+            // mounted while they recalculate, so save callbacks and local input keep their state.
+            if (!state.loading && state.error == null) {
                 if (editorId != null) {
                     val original = state.trades.firstOrNull { it.id == editorId }
                     TradeEditor(original, state, busy, saveError = message?.takeIf { it.startsWith("保存失败") }, onDismiss = { editorId = null },

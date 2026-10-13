@@ -35,6 +35,8 @@
 
 [Actions 38329297307](https://github.com/mlzx-xxj/trade-review-app/actions/runs/38329297307)实际发现新增测试的编译错误：`performTextInput`返回Unit，不能继续链式调用`performImeAction`。拆分为两次操作同一输入节点，保留搜索/键盘动作与结果可见性断言；该失败运行没有执行模拟器测试，未记为通过。
 
+[Actions 38329863912](https://github.com/mlzx-xxj/trade-review-app/actions/runs/38329863912)，源提交`2829081dc8e0f131f346f54e5fbbda0189602993`：构建/JVM/Lint通过；API35实际103项全部通过，0失败/错误/跳过，完整ZIP链与不可调试RC安装/重启通过，十六表及附件校验一致。API29实际103项、102通过/1失败，0跳过，完整ZIP链已通过，剩余保存并继续的清空/反馈等待超时。代码审查发现编辑器与证据查看器位于派生统计加载条件分支内，Room写入后统计失效可卸载这些组件，导致本地状态及保存回调丢失；将两者保持挂载，独立于派生统计重算。保留清空与反馈断言，增加两笔真实净盈亏精确断言和失败时的合成状态/界面诊断。财务公式、存储事务与数据库结构未变，重新执行完整CI。
+
 Base独立下载本次真实APK，用官方apksigner和二进制Manifest读取器核对证书、包名、non-debuggable、版本/权限/摘要；四份中文/Latin OCR模型与全部原ABI实际存在。实际SIGNING-STATUS仍configured=false，不产生固定签名包。交付报告门禁还已用上一轮真实失败XML检查，正确拒绝API29的1失败和API35的4失败，不把成功安装探针冒充全套成功。
 
 ## 最终提交的验证与交付入口
