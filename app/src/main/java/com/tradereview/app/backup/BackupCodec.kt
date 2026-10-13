@@ -25,19 +25,19 @@ class BackupException(message: String) : IllegalArgumentException(message)
 
 data class BackupData(val exportedAt: String, val trades: List<Trade>, val dailyReviews: List<DailyReview>,
     val tags: List<ManagedTag> = CatalogSeeds.tags, val instruments: List<Instrument> = CatalogSeeds.instruments,
-    val settings: AppSettings = AppSettings(), val drafts: List<EntryDraft> = emptyList(), val sourceSchemaVersion: Int = 6,
+    val settings: AppSettings = AppSettings(), val drafts: List<EntryDraft> = emptyList(), val sourceSchemaVersion: Int = 7,
     val savedFilters: List<SavedFilter> = emptyList(), val riskRules: List<RiskRules> = emptyList(),
     val contractTemplates: List<ContractTemplate> = emptyList(), val attachments: List<Attachment> = emptyList(),
     val goals: List<ReviewGoal> = emptyList(), val evidenceSettings: EvidenceSettings = EvidenceSettings(),
     val backupScope: String = "structured-data-only", val smartSettings: SmartSettings = SmartSettings(),
-    val preflightItems: List<PreflightItem> = emptyList(), val preflightChecks: List<PreflightCheck> = emptyList(), val ocrDrafts: List<OcrDraft> = emptyList()) {
+    val preflightItems: List<PreflightItem> = emptyList(), val preflightChecks: List<PreflightCheck> = emptyList(), val ocrDrafts: List<OcrDraft> = emptyList(), val ledger:com.tradereview.app.v200.LedgerSnapshot?=null) {
     val planCount get() = dailyReviews.count { it.planSaved }
     val reviewCount get() = dailyReviews.count { it.reviewSaved }
 }
 
 /** Schema version is the interchange format version, independent of Room's version. */
 object BackupCodec {
-    const val SCHEMA_VERSION = 6
+    const val SCHEMA_VERSION = 7
     const val MAX_BYTES = 16 * 1024 * 1024
     const val MAX_RECORDS = 10_000
     private val gson = GsonBuilder().serializeNulls().disableHtmlEscaping().create()
@@ -92,7 +92,7 @@ object BackupCodec {
             val version = rawVersion.toInt()
             requireBackup(version in 1..SCHEMA_VERSION, "不支持此备份版本，请使用匹配版本的应用")
             if (version == 1) root.fields("format", "schemaVersion", "exportedAt", "counts", "trades", "dailyReviews", "checksumSha256")
-            else root.fields(*(listOf("format", "schemaVersion", "exportedAt", "counts", "trades", "dailyReviews", "tags", "instruments", "settings", "drafts", "checksumSha256") + (if (version >= 3) listOf("savedFilters") else emptyList()) + (if (version >= 4) listOf("riskRules", "contractTemplates") else emptyList()) + (if(version>=5)listOf("backupScope","attachments","goals","evidenceSettings")else emptyList()) + (if(version>=6)listOf("smartSettings","preflightItems","preflightChecks","ocrDrafts")else emptyList())).toTypedArray())
+            else root.fields(*(listOf("format", "schemaVersion", "exportedAt", "counts", "trades", "dailyReviews", "tags", "instruments", "settings", "drafts", "checksumSha256") + (if (version >= 3) listOf("savedFilters") else emptyList()) + (if (version >= 4) listOf("riskRules", "contractTemplates") else emptyList()) + (if(version>=5)listOf("backupScope","attachments","goals","evidenceSettings")else emptyList()) + (if(version>=6)listOf("smartSettings","preflightItems","preflightChecks","ocrDrafts")else emptyList()) + (if(version>=7)listOf("ledger")else emptyList())).toTypedArray())
             requireBackup(root.string("format") == "trade-review-backup", "不是交易复盘备份文件")
             val data = BackupData(root.string("exportedAt"), root.array("trades").map { parseTrade(it.obj(), version) },
                 root.array("dailyReviews").map { parseReview(it.obj()) },
@@ -110,12 +110,12 @@ object BackupCodec {
                 smartSettings=if(version<6)SmartSettings()else SmartJson.settings(root["smartSettings"]),
                 preflightItems=if(version<6)emptyList()else root.array("preflightItems").map(SmartJson::item),
                 preflightChecks=if(version<6)emptyList()else root.array("preflightChecks").map(SmartJson::check),
-                ocrDrafts=if(version<6)emptyList()else root.array("ocrDrafts").map(SmartJson::draft))
+                ocrDrafts=if(version<6)emptyList()else root.array("ocrDrafts").map(SmartJson::draft), ledger=if(version<7 || root["ledger"].isJsonNull)null else com.tradereview.app.v200.LedgerJson.parse(root["ledger"]))
             validate(data)
             val counts = root.getAsJsonObject("counts") ?: throw BackupException("缺少数量校验")
             if (version == 1) counts.fields("trades", "dailyReviews", "plans", "reviews")
             else {
-                counts.fields(*(listOf("trades", "dailyReviews", "plans", "reviews", "tags", "instruments", "drafts") + (if (version >= 3) listOf("savedFilters") else emptyList()) + (if (version >= 4) listOf("riskRules", "contractTemplates") else emptyList()) + (if(version>=5)listOf("attachments","goals")else emptyList()) + (if(version>=6)listOf("preflightItems","preflightChecks","ocrDrafts")else emptyList())).toTypedArray())
+                counts.fields(*(listOf("trades", "dailyReviews", "plans", "reviews", "tags", "instruments", "drafts") + (if (version >= 3) listOf("savedFilters") else emptyList()) + (if (version >= 4) listOf("riskRules", "contractTemplates") else emptyList()) + (if(version>=5)listOf("attachments","goals")else emptyList()) + (if(version>=6)listOf("preflightItems","preflightChecks","ocrDrafts")else emptyList()) + (if(version>=7)listOf("ledgerRecords")else emptyList())).toTypedArray())
                 requireBackup(counts.integer("tags") == data.tags.size.toLong() && counts.integer("instruments") == data.instruments.size.toLong() && counts.integer("drafts") == data.drafts.size.toLong(), "目录或草稿数量不一致")
                 if (version >= 3) requireBackup(counts.integer("savedFilters") == data.savedFilters.size.toLong(), "筛选方案数量不一致")
                 if(version >= 4) requireBackup(counts.integer("riskRules") == data.riskRules.size.toLong() && counts.integer("contractTemplates") == data.contractTemplates.size.toLong(), "风险规则或模板数量不一致")
@@ -125,6 +125,7 @@ object BackupCodec {
             requireBackup(counts.integer("trades") == data.trades.size.toLong() &&
                 counts.integer("dailyReviews") == data.dailyReviews.size.toLong() &&
                 counts.integer("plans") == data.planCount.toLong() && counts.integer("reviews") == data.reviewCount.toLong(), "数量不一致，备份可能不完整")
+            if(version>=7)requireBackup(counts.integer("ledgerRecords")==ledgerRecords(data).toLong(),"新账本数量校验不一致")
             val checksum = root.string("checksumSha256")
             val canonical = digest(gson.toJson(payload(data, version)))
             // V0.3 used reflection for catalog/draft objects: ART sorts declared fields,
@@ -138,6 +139,7 @@ object BackupCodec {
     }
 
     fun validate(data: BackupData, today: Long = LocalDate.now().toEpochDay()) {
+        try { data.ledger?.let(com.tradereview.app.v200.LedgerValidation::snapshot) } catch(e:Exception) { throw BackupException(e.message?:"成交账本无效") }
         requireBackup(data.exportedAt.length <= 40 && runCatching { Instant.parse(data.exportedAt) }.isSuccess, "导出时间无效")
         requireBackup(data.trades.size <= MAX_RECORDS && data.dailyReviews.size <= MAX_RECORDS, "记录数超过 10000 上限")
         requireBackup(data.trades.map { it.id }.toSet().size == data.trades.size, "交易编号重复")
@@ -239,6 +241,7 @@ object BackupCodec {
             if(version>=5) { addProperty("attachments",data.attachments.size);addProperty("goals",data.goals.size) }
             if(version>=6) { addProperty("preflightItems",data.preflightItems.size);addProperty("preflightChecks",data.preflightChecks.size);addProperty("ocrDrafts",data.ocrDrafts.size) }
         })
+        if(version>=7){rootLedger(this,data);getAsJsonObject("counts").addProperty("ledgerRecords",ledgerRecords(data))}
         add("trades", JsonArray().apply { data.trades.forEach { add(tradeJson(it, version)) } })
         add("dailyReviews", JsonArray().apply { data.dailyReviews.forEach { add(reviewJson(it)) } })
         if (version >= 2) {
@@ -270,6 +273,8 @@ object BackupCodec {
             }
         }
     }
+    private fun rootLedger(root:JsonObject,data:BackupData){root.add("ledger",data.ledger?.let(com.tradereview.app.v200.LedgerJson::element)?:JsonNull.INSTANCE)}
+    private fun ledgerRecords(data:BackupData):Int=data.ledger?.let{it.accounts.size+it.strategies.size+it.risks.size+it.rules.size+it.plans.size+it.executions.size+it.cycles.size+it.lots.size+it.matches.size+it.reviews.size+it.cashFlows.size+it.audits.size}?:0
     private fun tagObject(t: ManagedTag) = JsonObject().apply {
         addProperty("kind", t.kind); addProperty("id", t.id); addProperty("name", t.name); addProperty("sortOrder", t.sortOrder)
         addProperty("favorite", t.favorite); addProperty("hidden", t.hidden); addProperty("lastUsed", t.lastUsed)

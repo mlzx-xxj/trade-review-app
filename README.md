@@ -1,3 +1,15 @@
+# 交易复盘 V2.0 候选版
+
+基于已合并V1.0的现有工程，重组为国内期货与普通A股个人交易管理：真实成交 → FIFO开平配对 → 当前持仓 → 独立风险金/策略 → 标的计划及持仓复盘 → 周月已实现盈亏。五页首页/交易/复盘/统计/账户；风险与策略固定顶部入口，备份设置仅ZIP/恢复/CSV。离线CNY新账本，无INTERNET、行情、浮盈亏、在线AI或CSV批量成交导入。
+
+2.0.0/code20/com.tradereview.app；Room v8正式保留v1→v8迁移，JSON7/ZIP1兼容旧格式。旧16表、原盈亏/币种/recordKey/截图/其他业务原样保留，不推断旧持仓、不重复进入V2统计。金额用BigDecimal，费用分摊守恒，风险金不当现金。
+
+[PR #10](https://github.com/mlzx-xxj/trade-review-app/pull/10)，不自动合并。原长期签名未验证成功时，仅独立com.tradereview.app.rc.v200、2.0.0-rc.1非调试RC，不保证长期覆盖原应用。正式版需原V0.3私钥及所有者真机验收，不生成替代身份。
+
+[实施计划](docs/V200-PLAN.md) · [实际验证/失败记录](docs/V200-VALIDATION.md) · [模型/计算/迁移/备份](docs/V200-DATA-AND-CALCULATIONS.md) · [手机签名配置](docs/V200-PHONE-SIGNING.md) · [手机验收](docs/V200-PHONE-ACCEPTANCE.md)
+
+以下内容为历史版本，不代表V2页面或本轮CI结果。
+
 # 交易复盘 V1.0 候选版
 
 基于已合并 V0.8 的原生离线工程，保留全部交易、复盘、风险/R、日历筛选、截图、离线 OCR、智能洞察、周月报、目标、CSV 导出与 JSON/ZIP 恢复。不开发原 V0.9 CSV 成交导入、映射、自动配对。

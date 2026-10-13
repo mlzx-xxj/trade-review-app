@@ -74,6 +74,9 @@ class BackupViewModel(database: TradeDatabase, private val resolver: ContentReso
         write(uri, repository.export().let { TradeCsv.encode(it.trades, com.tradereview.app.data.Catalog(it.tags)) })
         _message.value = "交易明细 CSV 已保存（UTF-8 中文）"
     }
+    fun exportLedgerCsv(uri:Uri)=operation("V2成交CSV导出失败，未上传任何数据"){
+        val snapshot=repository.export();write(uri,com.tradereview.app.v200.LedgerCsv.encode(requireNotNull(snapshot.ledger)));_message.value="V2成交CSV已保存；开仓不伪造已实现盈亏"
+    }
     private fun write(uri: Uri, text: String) {
         val output = resolver.openOutputStream(uri, "wt") ?: throw java.io.IOException("无法打开目标文件")
         output.bufferedWriter(Charsets.UTF_8).use { it.write(text) }

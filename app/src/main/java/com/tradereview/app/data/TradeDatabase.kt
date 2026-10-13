@@ -176,8 +176,9 @@ val MIGRATION_6_7 = object : Migration(6,7) {
         db.execSQL("CREATE TABLE IF NOT EXISTS ocr_drafts (id TEXT NOT NULL PRIMARY KEY, fields TEXT NOT NULL, blocked INTEGER NOT NULL, closedEvidence INTEGER NOT NULL, createdDay INTEGER NOT NULL)")
     }
 }
-@Database(entities = [Trade::class, DailyReview::class, ManagedTag::class, Instrument::class, AppSettings::class, EntryDraft::class, SavedFilter::class, RiskRules::class, ContractTemplate::class, Attachment::class, ReviewGoal::class, EvidenceSettings::class, SmartSettings::class, PreflightItem::class, PreflightCheck::class, OcrDraft::class], version = 7, exportSchema = true)
+@Database(entities = [Trade::class, DailyReview::class, ManagedTag::class, Instrument::class, AppSettings::class, EntryDraft::class, SavedFilter::class, RiskRules::class, ContractTemplate::class, Attachment::class, ReviewGoal::class, EvidenceSettings::class, SmartSettings::class, PreflightItem::class, PreflightCheck::class, OcrDraft::class, com.tradereview.app.v200.LedgerAccount::class, com.tradereview.app.v200.LedgerStrategy::class, com.tradereview.app.v200.MarketRisk::class, com.tradereview.app.v200.LedgerContractRule::class, com.tradereview.app.v200.LedgerPlan::class, com.tradereview.app.v200.LedgerExecution::class, com.tradereview.app.v200.LedgerCycle::class, com.tradereview.app.v200.LedgerLot::class, com.tradereview.app.v200.LedgerMatch::class, com.tradereview.app.v200.LedgerReview::class, com.tradereview.app.v200.LedgerCashFlow::class, com.tradereview.app.v200.ExecutionAudit::class], version = 8, exportSchema = true)
 @TypeConverters(TagConverters::class, FilterConverters::class, ProfessionalConverters::class)
 abstract class TradeDatabase : RoomDatabase() {
     abstract fun trades(): TradeDao
+    abstract fun ledger(): com.tradereview.app.v200.LedgerDao
 }

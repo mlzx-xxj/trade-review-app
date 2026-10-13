@@ -63,7 +63,7 @@ object CatalogSeeds {
         instruments.forEach { db.execSQL("INSERT OR IGNORE INTO instruments(id,market,name,code,sortOrder,favorite,lastUsed) VALUES(?,?,?,?,?,?,?)", arrayOf<Any>(it.id, it.market, it.name, it.code, it.sortOrder, if(it.favorite) 1 else 0, 0)) }
         db.execSQL("INSERT OR IGNORE INTO app_settings(id,lastMarket,theme) VALUES(1,'stock','system')")
     }
-    val callback = object : RoomDatabase.Callback() { override fun onCreate(db: SupportSQLiteDatabase) { insert(db) } }
+    val callback = object : RoomDatabase.Callback() { override fun onCreate(db: SupportSQLiteDatabase) { insert(db); com.tradereview.app.v200.LedgerSchema.seed(db) } }
 }
 
 class Catalog(val tags: List<ManagedTag> = CatalogSeeds.tags) {

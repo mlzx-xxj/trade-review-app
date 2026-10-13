@@ -28,8 +28,8 @@ class FullZipArchiveTest {
         fun digest(bytes:ByteArray)=java.security.MessageDigest.getInstance("SHA-256").digest(bytes).joinToString(""){"%02x".format(it)}
         val root=com.google.gson.JsonParser.parseString(entries.getValue("data.json").toString(Charsets.UTF_8)).asJsonObject
         root.addProperty("schemaVersion",5);root.remove("checksumSha256")
-        listOf("smartSettings","preflightItems","preflightChecks","ocrDrafts").forEach { root.remove(it) }
-        listOf("preflightItems","preflightChecks","ocrDrafts").forEach { root.getAsJsonObject("counts").remove(it) }
+        listOf("smartSettings","preflightItems","preflightChecks","ocrDrafts","ledger").forEach { root.remove(it) }
+        listOf("preflightItems","preflightChecks","ocrDrafts","ledgerRecords").forEach { root.getAsJsonObject("counts").remove(it) }
         root.addProperty("checksumSha256",digest(gson.toJson(root).toByteArray(Charsets.UTF_8)))
         val payload=gson.toJson(root).toByteArray(Charsets.UTF_8);entries["data.json"]=payload
         val manifest=com.google.gson.JsonParser.parseString(entries.getValue("manifest.json").toString(Charsets.UTF_8)).asJsonObject

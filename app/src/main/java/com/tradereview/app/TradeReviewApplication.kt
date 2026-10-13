@@ -11,7 +11,18 @@ import com.tradereview.app.data.CatalogSeeds
 class TradeReviewApplication : Application() {
     val database: TradeDatabase by lazy {
         Room.databaseBuilder(this, TradeDatabase::class.java, "trade-review.db")
-            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, com.tradereview.app.data.MIGRATION_4_5, com.tradereview.app.data.MIGRATION_5_6, com.tradereview.app.data.MIGRATION_6_7).addCallback(CatalogSeeds.callback).build()
+            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, com.tradereview.app.data.MIGRATION_4_5, com.tradereview.app.data.MIGRATION_5_6, com.tradereview.app.data.MIGRATION_6_7, com.tradereview.app.v200.MIGRATION_7_8).addCallback(CatalogSeeds.callback).build()
+    }
+    private val storageInitialization=kotlinx.coroutines.sync.Mutex()
+    @Volatile private var storageInitialized=false
+    /** Once per process, before file UI opens. Rotation must not erase a staged restore preview. */
+    suspend fun initializeEvidenceStorage(){
+        storageInitialization.lock()
+        try{if(!storageInitialized){
+            com.tradereview.app.evidence.EvidenceLock.mutex.lock()
+            try{evidenceStore.cleanup(database.trades().allAttachments(),clearWork=true);storageInitialized=true}
+            finally{com.tradereview.app.evidence.EvidenceLock.mutex.unlock()}
+        }}finally{storageInitialization.unlock()}
     }
     private val evidence=lazy { com.tradereview.app.evidence.AttachmentStore(java.io.File(filesDir, "trade-evidence")) }
     val evidenceStore by evidence
