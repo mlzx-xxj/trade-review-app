@@ -71,6 +71,7 @@ jobs:
           python3 scripts/tests/test_publication.py
           python3 scripts/tests/test_stability_probes.py
           python3 scripts/tests/test_v100_identity.py
+          python3 scripts/tests/test_boot_health.py
           python3 -m py_compile scripts/run-v100-package-probes.py scripts/v100-identity.py
       - name: Compile, run JVM tests and Android lint
         id: compilation
@@ -213,6 +214,7 @@ jobs:
     env:
       V08_STABILITY_PROBES: 'true'
       V100_PACKAGE_PROBES: 'true'
+      V100_CHECK_BOOT: 'true'
     strategy:
       fail-fast: false
       matrix:
