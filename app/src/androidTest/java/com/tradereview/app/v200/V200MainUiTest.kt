@@ -28,6 +28,7 @@ import java.time.LocalDate
 @RunWith(AndroidJUnit4::class)
 class V200MainUiTest {
     @get:Rule val compose=createAndroidComposeRule<MainActivity>()
+    @get:Rule(order=1) val failureEvidence=object:org.junit.rules.TestWatcher(){override fun failed(error:Throwable,description:org.junit.runner.Description){runCatching{val root=File(requireNotNull(InstrumentationRegistry.getArguments().getString("additionalTestOutputDir")),"v200-failures").apply{mkdirs()};File(root,"${description.methodName}.txt").writeText("Synthetic fixtures only\n"+error.stackTraceToString()+"\n"+compose.onRoot(useUnmergedTree=true).printToString());val image=InstrumentationRegistry.getInstrumentation().uiAutomation.takeScreenshot();image?.let{File(root,"${description.methodName}.png").outputStream().use{out->it.compress(android.graphics.Bitmap.CompressFormat.PNG,100,out)};it.recycle()}}}}
     private val app get()=compose.activity.application as TradeReviewApplication
     private val db get()=app.database
     private lateinit var model:V200ViewModel
@@ -38,7 +39,6 @@ class V200MainUiTest {
     private fun wait(predicate:()->Boolean)=compose.waitUntil(30000){predicate()}
     private fun page(n:Int){compose.onNodeWithTag("v2-main-page-$n").performClick()}
     private fun field(tag:String,text:String){compose.onNodeWithTag(tag).performScrollTo().performTextReplacement(text)}
-    private fun hideKeyboard(){compose.onNodeWithTag("save-execution").performClick() /* callers use only for explicit save */}
     private fun start(){page(1);compose.onNodeWithTag("new-execution").performClick();compose.onNodeWithTag("execution-code").assertExists()}
     private fun fill(price:String="10",quantity:String="100"){field("execution-code","600000");field("execution-name","合成股票");field("execution-price",price);field("execution-quantity",quantity)}
     private suspend fun save(e:LedgerExecution){val p=model.repository.preview(e);model.repository.confirm(p,true)}

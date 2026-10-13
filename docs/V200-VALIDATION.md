@@ -17,3 +17,5 @@ Room v8生成schema仍待CI核对；不把静态SQL检查当成迁移通过。
 后端阶段Actions [38368451775](https://github.com/mlzx-xxj/trade-review-app/actions/runs/38368451775)，源20b9992：构建/JVM/Lint任务成功，API35全任务成功。API29实际114项113通过/1失败：旧周报UI在后台派生结果尚未就绪时开始滚动，找不到report-net-CNY，整体失败；保留原金额断言，增加实际报告就绪语义及等待，未关闭异步计算或删测试。此运行仍为旧主UI，不代表V2界面验证。
 
 V2实际MainActivity首轮Actions [38381713696](https://github.com/mlzx-xxj/trade-review-app/actions/runs/38381713696)，源1890863：Compose编译因dp/drawIntoCanvas缺少导入及ReceiptLong图标接收者错误失败；已修复。不把本地47项Python成功当作Android成功，本轮JVM及模拟器未执行。
+
+界面修复后Actions [38382269969](https://github.com/mlzx-xxj/trade-review-app/actions/runs/38382269969)，源6b72c6a：主Compose代码编译冲突消除，测试APK编译发现新增往返测试对String调用inputStream而非byteInputStream；已改正并保留往返断言。本轮完整任务失败，模拟器未执行。新增实际Main失败截图/界面树采集，不删失败测试。
