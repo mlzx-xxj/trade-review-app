@@ -26,6 +26,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import com.google.gson.Gson
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.luminance
+import androidx.core.view.WindowCompat
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -118,10 +120,12 @@ fun TradeEditor(original: Trade?, state: JournalState, busy: Boolean, saveError:
     }
     Dialog(onDismissRequest = { if (!busy) leave() }, properties = DialogProperties(usePlatformDefaultWidth = false, dismissOnBackPress = !busy, decorFitsSystemWindows = false)) {
         val dialogView = LocalView.current
+        val lightStatusBars=MaterialTheme.colorScheme.background.luminance()>.5f
         SideEffect {
             (dialogView.parent as? DialogWindowProvider)?.window?.apply {
                 setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT)
                 setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+                WindowCompat.getInsetsController(this,decorView).isAppearanceLightStatusBars=lightStatusBars
             }
         }
         BackHandler(busy) { }

@@ -14,6 +14,7 @@ import kotlinx.coroutines.runBlocking
 import org.junit.*
 import org.junit.Assert.*
 import org.junit.runner.RunWith
+import java.io.File
 
 @RunWith(AndroidJUnit4::class)
 class FastEntryUiTest {
@@ -49,13 +50,24 @@ class FastEntryUiTest {
         entry(); compose.onNodeWithText("已恢复未保存草稿").assertIsDisplayed()
         compose.onNodeWithTag("entry-amount").performScrollTo().assertTextContains("123.45")
         compose.onNodeWithText("保存并继续").performClick()
-        compose.waitUntil(10000) { !model.busy.value && model.state.value.trades.size == 1 }
+        // Room can publish the new row before the save callback updates the editor.
+        // Require the visible completion feedback and the actual cleared field too.
+        try { compose.waitUntil(10000) { !model.busy.value && model.state.value.trades.size == 1 &&
+            compose.onAllNodesWithText("交易已保存，可以继续记录下一笔").fetchSemanticsNodes().isNotEmpty() &&
+            compose.onAllNodes(hasTestTag("entry-amount") and SemanticsMatcher.expectValue(SemanticsProperties.EditableText, AnnotatedString(""))).fetchSemanticsNodes().isNotEmpty() } }
+        catch(failure:Throwable) {
+            val instrumentation=androidx.test.platform.app.InstrumentationRegistry.getInstrumentation()
+            val out=File(requireNotNull(androidx.test.platform.app.InstrumentationRegistry.getArguments().getString("additionalTestOutputDir"))).apply{mkdirs()}
+            File(out,"v100-continue-failure.txt").writeText("Synthetic fixture only\nmessage=${model.message.value}\nbusy=${model.busy.value}\ntrades=${model.state.value.trades}\ndrafts=${model.state.value.drafts}\n"+compose.onRoot(useUnmergedTree=true).printToString())
+            instrumentation.uiAutomation.takeScreenshot()?.let { bitmap->File(out,"v100-continue-failure.png").outputStream().use{bitmap.compress(android.graphics.Bitmap.CompressFormat.PNG,100,it)};bitmap.recycle() }
+            throw failure
+        }
         compose.onNodeWithTag("entry-amount").assert(SemanticsMatcher.expectValue(SemanticsProperties.EditableText, AnnotatedString("")))
         compose.onNodeWithText("保存交易").performClick(); compose.onNodeWithTag("entry-error").assertIsDisplayed()
         compose.onNodeWithText("亏损").performScrollTo().performClick()
         compose.onNodeWithTag("entry-amount").performTextInput("5")
         compose.onNodeWithText("保存交易").performClick(); saved()
-        runBlocking { assertEquals(2, db.trades().allTrades().size) }
+        runBlocking { val rows=db.trades().allTrades();assertEquals(2, rows.size);assertEquals(setOf("123.45","-5.00"),rows.map{it.netPnl}.toSet()) }
     }
     @Test fun copyPreviousClearsAmountAndCompletionWithVisibleFeedback() {
         runBlocking { db.trades().insert(Trade(date = 20000, netPnl = "99.00", reviewed = true)) }
@@ -89,7 +101,9 @@ class FastEntryUiTest {
         compose.onNodeWithText("管理常用品种").performClick()
         compose.onNodeWithTag("favorite-symbol-preset_stock_0").performScrollTo().performClick()
         compose.waitUntil(10000) { !model.busy.value && model.state.value.instruments.any { it.id == "preset_stock_0" && !it.favorite } }
-        compose.onNodeWithText("搜索名称或代码").performTextInput("NVDA")
-        compose.onNodeWithText("NVDA · NVDA").assertIsDisplayed()
+        compose.onNodeWithTag("symbol-search").performTextInput("NVDA")
+        compose.onNodeWithTag("symbol-search").performImeAction()
+        compose.onNodeWithTag("symbol-list").performScrollToNode(hasText("NVDA · NVDA"))
+        compose.onNodeWithText("NVDA · NVDA").performScrollTo().assertIsDisplayed()
     }
 }

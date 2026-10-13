@@ -65,7 +65,7 @@ class ReviewEvidenceUiTest {
         compose.waitUntil(15000){!model.state.value.loading && !model.analytics.value.loading}
     }
     @After fun close(){db.close();root.deleteRecursively()}
-    private fun nav(label:String){compose.onAllNodesWithText(label).onFirst().performClick()}
+    private fun nav(label:String){val index=mapOf("首页" to 0,"交易记录" to 1,"勾选复盘" to 2,"统计分析" to 3).getValue(label);compose.onNodeWithTag("main-page-$index").performClick()}
     private fun openImages() {
         nav("交易记录");compose.onNodeWithTag("trades-list").performScrollToNode(hasText("+400.00"))
         compose.onNodeWithText("+400.00").performClick();compose.onNodeWithTag("open-trade-evidence").performScrollTo().performClick()
@@ -74,11 +74,20 @@ class ReviewEvidenceUiTest {
     private fun hideKeyboard() {
         // Use the actual editor IME action; a delayed system BACK can navigate away after dismissal.
         compose.onNodeWithTag("image-caption").performImeAction()
+        val automation=InstrumentationRegistry.getInstrumentation().uiAutomation
+        val oldFlags=automation.serviceInfo.flags
+        automation.serviceInfo=automation.serviceInfo.apply { flags=flags or android.accessibilityservice.AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS }
+        try { compose.waitUntil(15000) { automation.windows.none { window ->
+            val bounds=android.graphics.Rect();window.getBoundsInScreen(bounds)
+            window.type==android.view.accessibility.AccessibilityWindowInfo.TYPE_INPUT_METHOD && !bounds.isEmpty
+        } } } finally { automation.serviceInfo=automation.serviceInfo.apply { flags=oldFlags } }
         compose.waitForIdle()
     }
     @Test fun systemPickerResultPrivateThumbnailsViewerSwitchCaptionAndDeleteWork() {
         openImages();compose.onNodeWithTag("image-caption").performTextInput("合成入场记录")
-        compose.onNodeWithTag("pick-evidence").performScrollTo().performClick();compose.waitUntil(15000){model.state.value.attachments.size==1 && !model.busy.value}
+        hideKeyboard()
+        compose.onNodeWithTag("pick-evidence").performScrollTo().assertIsDisplayed().assertIsEnabled().performClick();compose.runOnIdle{assertEquals(1,pickerLaunches)};compose.waitUntil(15000){model.state.value.attachments.size==1 && !model.busy.value}
+        assertEquals("合成入场记录",model.state.value.attachments.single().caption)
         nextImage="second.png";compose.onNodeWithText("出场后").performScrollTo().performClick();compose.onNodeWithTag("pick-evidence").performScrollTo().performClick()
         compose.waitUntil(15000){model.state.value.attachments.size==2 && !model.busy.value};assertEquals(2,pickerLaunches);hideKeyboard()
         val a=model.state.value.attachments.first();compose.onNodeWithTag("evidence-list").performScrollToNode(hasTestTag("evidence-image-${a.id}"));capture("14-trade-evidence")

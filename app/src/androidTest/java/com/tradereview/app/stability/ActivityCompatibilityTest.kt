@@ -36,6 +36,7 @@ class ActivityCompatibilityTest {
     private lateinit var model:TradeViewModel
     private fun shell(command:String):String=ParcelFileDescriptor.AutoCloseInputStream(InstrumentationRegistry.getInstrumentation().uiAutomation.executeShellCommand(command)).bufferedReader().use{it.readText()}
     @Before fun seed(){
+        application.deviceExperience.initialize(true);application.deviceExperience.finishOnboarding()
         require(Build.HARDWARE in listOf("ranchu","goldfish")){"This fixture only runs on a disposable emulator"}
         runBlocking {
             db.trades().findTradeByKey(key)?.let{AttachmentRepository(db,application.evidenceStore).deleteTrade(it)}

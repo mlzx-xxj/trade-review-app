@@ -15,6 +15,7 @@ class TradeReviewApplication : Application() {
     }
     private val evidence=lazy { com.tradereview.app.evidence.AttachmentStore(java.io.File(filesDir, "trade-evidence")) }
     val evidenceStore by evidence
+    val deviceExperience by lazy { com.tradereview.app.device.DeviceExperienceStore(this) }
     override fun onTrimMemory(level:Int) {
         super.onTrimMemory(level)
         if(level>=android.content.ComponentCallbacks2.TRIM_MEMORY_RUNNING_LOW && evidence.isInitialized())evidence.value.clearImageCache()

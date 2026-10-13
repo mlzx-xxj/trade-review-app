@@ -50,10 +50,10 @@ class CalendarAnalyticsUiTest {
             val state by model.state.collectAsStateWithLifecycle()
             TradeReviewTheme(darkTheme = state.settings.theme == "dark") { TradeReviewApp(model, backup) }
         }
-        compose.waitUntil(10000) { compose.onAllNodesWithText("让每一笔交易都有收获").fetchSemanticsNodes().isNotEmpty() }
+        compose.waitUntil(10000) { compose.onAllNodesWithText("记录交易，复盘执行").fetchSemanticsNodes().isNotEmpty() }
     }
     @After fun close() { db.close() }
-    private fun nav(title: String) { compose.onAllNodesWithText(title).onFirst().performClick() }
+    private fun nav(title: String) { val index=mapOf("首页" to 0,"交易记录" to 1,"勾选复盘" to 2,"统计分析" to 3).getValue(title);compose.onNodeWithTag("main-page-$index").performClick() }
     private fun calendar() { compose.onNodeWithContentDescription("打开交易日历").performClick() }
     private fun openDay(day: LocalDate) {
         val month = YearMonth.from(day)
@@ -185,7 +185,7 @@ class CalendarAnalyticsUiTest {
         // contain the previous screen on the emulator's asynchronous renderer.
         // Dialogs have their own roots; registry order is not window z-order.
         val content = when (name) {
-            "01-home" -> hasText("让每一笔交易都有收获")
+            "01-home" -> hasText("记录交易，复盘执行")
             "02-calendar-heatmap", "08-dark-red-calendar" -> hasTestTag("calendar-list")
             "03-daily-details" -> hasTestTag("day-details-list")
             "04-combined-filters" -> hasTestTag("filter-options")

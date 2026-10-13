@@ -22,6 +22,8 @@ class TagConverters {
 
 @Dao
 interface TradeDao {
+    @Query("SELECT EXISTS(SELECT 1 FROM trades LIMIT 1) OR EXISTS(SELECT 1 FROM daily_reviews LIMIT 1) OR EXISTS(SELECT 1 FROM review_goals LIMIT 1) OR EXISTS(SELECT 1 FROM ocr_drafts LIMIT 1) OR EXISTS(SELECT 1 FROM entry_drafts LIMIT 1) OR EXISTS(SELECT 1 FROM preflight_checks LIMIT 1)")
+    suspend fun hasUserRecords():Boolean
     @Query("SELECT * FROM trades ORDER BY date DESC, id DESC")
     fun observeTrades(): Flow<List<Trade>>
 

@@ -1,3 +1,15 @@
+# 交易复盘 V1.0 候选版
+
+基于已合并 V0.8 的原生离线工程，保留全部交易、复盘、风险/R、日历筛选、截图、离线 OCR、智能洞察、周月报、目标、CSV 导出与 JSON/ZIP 恢复。不开发原 V0.9 CSV 成交导入、映射、自动配对。
+
+正式目标 1.0.0 / code10 / com.tradereview.app；Room 仍 v7、JSON 6、ZIP 1，历史 recordKey、盈亏与完整迁移链不变。优化首页直接操作、可跳过引导、专业自适应/单色图标、48dp 操作和隐私说明。完整 ZIP 为主入口，真实导出后尽可能 SHA-256 回读；无法回读如实标注，取消选择不冒充完成。
+
+同工程隔离 RC：com.tradereview.app.rc / 1.0.0-rc.1，非 debuggable、临时测试签名、数据独立，不保证长期覆盖更新。真正 Release 只允许原 V0.3 pin 的既有私钥，未配置不能回退随机 Debug 签名。稳定签名、必要验证与所有者真机验收未齐备时不能声称正式稳定发布。
+
+[实施计划](docs/V100-PLAN.md) · [实际验证](docs/V100-VALIDATION.md) · [数据与备份](docs/V100-DATA-AND-BACKUP.md) · [手机配置原签名](docs/V100-PHONE-SIGNING.md) · [手机验收](docs/V100-PHONE-ACCEPTANCE.md)
+
+以下为历史版本背景；历史测试和签名状态仅代表对应版本。
+
 # V0.8 稳定性与长期升级
 
 基于已合并 V0.7，保留全部离线交易、风险/R、截图、ZIP、报告、目标、OCR 和洞察功能。版本 0.8.0 / code 8 / com.tradereview.app；compile/target SDK 35，Room 仍 v7、JSON 6/ZIP 1，没有为了应用版本号改变数据库结构。
@@ -20,7 +32,7 @@
 
 以下保留已有功能和此前版本背景，历史验证/签名状态仅代表当时情况。
 
-# 交易复盘 Android App
+# V0.1–V0.6 历史功能背景
 
 V0.6：Kotlin + Jetpack Compose + Material 3 + Room，中文卡片界面，离线运行，无 INTERNET 权限。
 
@@ -40,7 +52,7 @@ V0.6：Kotlin + Jetpack Compose + Material 3 + Room，中文卡片界面，离�
 - 本地周报/月报、分币种盈亏与有效 R、前期对照、错误排行、评分趋势；并行纪律目标、明确分母/未知状态、归档与真实历史。
 - Room 正式 v5→v6（保留全部旧链）；完整 ZIP 格式 1 含十二表与全部截图，JSON 格式 5 明确不含图片，兼容 V0.2–V0.5 格式 1/2/3/4，严格预览/二次确认与文件/数据库协调恢复。
 
-工程沿用现有架构与 Wrapper：Gradle 8.11.1、AGP 8.9.2、Kotlin/Compose 插件 2.1.20、Compose BOM 2025.04.01、Room 2.7.2；minSdk 26、compile/targetSdk 35、CI JDK 17。版本 0.7.0，versionCode 7，applicationId com.tradereview.app。
+以下为历史技术配置（当前版本见顶部 V1.0）：Gradle 8.11.1、AGP 8.9.2、Kotlin/Compose 插件 2.1.20、Compose BOM 2025.04.01、Room 2.7.2；minSdk 26、compile/targetSdk 35、CI JDK 17。版本 0.7.0，versionCode 7，applicationId com.tradereview.app。
 
 [V0.6 实施计划](docs/V06-PLAN.md) · [计算、数据与签名配置](docs/V06-DATA-AND-REPORTS.md) · [V0.6 实际验证记录](docs/V06-VALIDATION.md)
 
@@ -48,17 +60,17 @@ Actions 实际执行 Debug/Android 测试 APK 编译、JVM 单元测试、Lint�
 
 V0.3 已有长期证书 pin；本轮没有生成、读取或替换私钥。Secrets/Variables 管理 API 返回 403，最新 main 实际 CI 尚未启用固定签名。V0.6 依据 SIGNING.txt 交付明确标注的临时测试包，不能覆盖固定签名 V0.3；未来自动固定签名仍需所有者配置已有密钥的 Secrets，不能声称已经完成。安装前保存完整 JSON 备份；自行卸载会清空设备数据，随后可导入旧备份。密钥不得进入代码、PR 或日志。
 
-## 构建
+## 当前工程构建
 
 具备 Android SDK 的环境使用 JDK 17：
 
 ```sh
-./gradlew :app:assembleDebug :app:assembleDebugAndroidTest :app:testDebugUnitTest :app:lintDebug
+./gradlew :app:assembleDebug :app:assembleDebugAndroidTest :app:assembleRc :app:assembleRelease :app:testDebugUnitTest :app:lintDebug :app:lintRc :app:lintRelease
 ./gradlew :app:connectedDebugAndroidTest
 ```
 
-Base 缺少 SDK 时用 GitHub Actions，不需要完整 Android Studio。本地可执行 `python3 scripts/tests/test_signing_guard.py`、`python3 scripts/tests/test_signing_config.py`、`python3 scripts/tests/test_signed_payload.py` 与 `python3 scripts/tests/test_device_delivery.py`（共 16 项签名、配置、APK 内容及截图交付门禁测试，不处理私钥）。完整 CI 显式禁用 Gradle 构建缓存，以重新执行编译、测试和 Lint。
+Base 缺少 SDK 时用 GitHub Actions，不需要完整 Android Studio。Base 可执行 `python3 -m unittest discover -s scripts/tests -p 'test_*.py'`（当前 40 项发布/交付/模拟器故障决策回归，不代表 Android 编译或真正 APK 验签）。RC 自动使用临时测试身份；正式 Release 没有原签名配置时只编译 unsigned 输出，绝不作为可安装正式包发布。完整 CI 显式禁用 Gradle 构建缓存，以重新执行编译、测试和 Lint。模拟器启动后保留20秒稳定时间，应用测试前核对平台dumpsys记录的ANR及崩溃日志，两份证据都保留；故障立即失败，不忽略对话框。其他应用自行打印“ANR in”文本不能替代系统实际记录。
 
 JSON 为明文，校验摘要不提供加密或身份认证。模拟器结果不等于真实手机测试；请以本轮 Actions 和验证文档中的实际结果为准。
 
-历史方案与验证记录保留在 docs 中，包括 V0.1–V0.6；历史文档中的签名和版本状态仅描述当时情况。本轮以 V0.7 验证报告、PR #7 及对应 APK 自带的 SIGNING.txt 为准。
+历史方案与验证记录保留在 docs 中，包括 V0.1–V0.6；历史文档中的签名和版本状态仅描述当时情况。当前以 V1.0 验证报告、PR #9 和对应候选 APK 的 SIGNING/RC-IDENTITY/SHA256SUMS 为准。

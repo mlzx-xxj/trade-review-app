@@ -5,4 +5,5 @@
         <item name="android:statusBarColor">#F5F7FB</item>
         <item name="android:navigationBarColor">#F5F7FB</item>
     </style>
+    <style name="Theme.TradeReview.Starting" parent="Theme.TradeReview"><item name="android:windowBackground">@drawable/splash_background</item></style>
 </resources>

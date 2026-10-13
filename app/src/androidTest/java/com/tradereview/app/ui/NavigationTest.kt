@@ -10,6 +10,7 @@ import androidx.compose.ui.test.performTextClearance
 import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onFirst
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.tradereview.app.MainActivity
 import org.junit.Rule
@@ -25,29 +26,31 @@ class NavigationTest {
     @get:Rule val compose = createAndroidComposeRule<MainActivity>()
 
     @Before fun resetData() = runBlocking {
-        val dao = (compose.activity.application as TradeReviewApplication).database.trades()
+        val application=compose.activity.application as TradeReviewApplication
+        application.deviceExperience.initialize(true);application.deviceExperience.finishOnboarding()
+        val dao = application.database.trades()
         dao.clearTrades(); dao.clearDrafts(); dao.saveSettings(AppSettings())
     }
     @Test fun bottomNavigationShowsEachPage() {
-        compose.waitUntil(10_000) { compose.onAllNodesWithText("让每一笔交易都有收获").fetchSemanticsNodes().isNotEmpty() }
-        compose.onNodeWithText("让每一笔交易都有收获").assertIsDisplayed()
-        compose.onAllNodesWithText("交易记录").onFirst().performClick()
+        compose.waitUntil(10_000) { compose.onAllNodesWithText("记录交易，复盘执行").fetchSemanticsNodes().isNotEmpty() }
+        compose.onNodeWithText("记录交易，复盘执行").assertIsDisplayed()
+        compose.onNodeWithTag("main-page-1").performClick()
         compose.onNodeWithText("交易筛选").assertIsDisplayed()
-        compose.onAllNodesWithText("勾选复盘").onFirst().performClick()
+        compose.onNodeWithTag("main-page-2").performClick()
         compose.onNodeWithText("每日交易日志").assertIsDisplayed()
-        compose.onAllNodesWithText("统计分析").onFirst().performClick()
+        compose.onNodeWithTag("main-page-3").performClick()
         compose.onNodeWithText("分析范围").assertIsDisplayed()
-        compose.onAllNodesWithText("首页").onFirst().performClick()
-        compose.onNodeWithText("让每一笔交易都有收获").assertIsDisplayed()
+        compose.onNodeWithTag("main-page-0").performClick()
+        compose.onNodeWithText("记录交易，复盘执行").assertIsDisplayed()
     }
 
     @Test fun userCanCreateEditAndDeleteATrade() {
-        compose.waitUntil(10_000) { compose.onAllNodesWithText("让每一笔交易都有收获").fetchSemanticsNodes().isNotEmpty() }
+        compose.waitUntil(10_000) { compose.onAllNodesWithText("记录交易，复盘执行").fetchSemanticsNodes().isNotEmpty() }
         compose.onNodeWithContentDescription("新增交易").performClick()
         compose.onNodeWithText("净盈亏金额（CNY）").performScrollTo().performTextInput("123.45")
         compose.onNodeWithText("保存交易").performClick()
         compose.waitUntil(10_000) { compose.onAllNodesWithText("快速记录交易").fetchSemanticsNodes().isEmpty() }
-        compose.onAllNodesWithText("交易记录").onFirst().performClick()
+        compose.onNodeWithTag("main-page-1").performClick()
         compose.waitUntil(10_000) { compose.onAllNodesWithText("沪深300").fetchSemanticsNodes().isNotEmpty() }
         compose.onNodeWithText("沪深300").assertIsDisplayed().performClick()
         compose.onNodeWithText("亏损").performScrollTo().performClick()

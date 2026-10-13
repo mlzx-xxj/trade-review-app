@@ -9,6 +9,9 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
 import java.math.BigDecimal
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Shapes
+import androidx.compose.ui.unit.dp
 
 data class PnlColors(val profit: Color, val loss: Color)
 val LocalPnlColors = staticCompositionLocalOf { PnlColors(Color(0xFF086B54), Color(0xFFA82D43)) }
@@ -39,5 +42,6 @@ fun TradeReviewTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Compo
         secondary = Color(0xFF80E3BF), background = Color(0xFF111820),
         surface = Color(0xFF1B2530), surfaceVariant = Color(0xFF29333E),
     )
-    MaterialTheme(colorScheme = if (darkTheme) dark else light, content = content)
+    MaterialTheme(colorScheme = if (darkTheme) dark else light,
+        shapes=Shapes(small=RoundedCornerShape(10.dp),medium=RoundedCornerShape(18.dp),large=RoundedCornerShape(24.dp)),content = content)
 }

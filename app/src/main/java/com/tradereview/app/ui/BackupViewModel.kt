@@ -15,10 +15,12 @@ import kotlinx.coroutines.withContext
 import com.tradereview.app.evidence.AttachmentStore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.ensureActive
 
 private object BackupCleanup { val scope=CoroutineScope(SupervisorJob()+Dispatchers.IO) }
 
-class BackupViewModel(database: TradeDatabase, private val resolver: ContentResolver, store: AttachmentStore? = null) : ViewModel() {
+class BackupViewModel(database: TradeDatabase, private val resolver: ContentResolver, store: AttachmentStore? = null,
+    val experience:com.tradereview.app.device.DeviceExperienceStore?=null) : ViewModel() {
     private val repository = BackupRepository(database,store)
     private val zip = store?.let { FullZipRepository(database,it) }
     private var pendingZip: FullZipPreview? = null
@@ -45,15 +47,29 @@ class BackupViewModel(database: TradeDatabase, private val resolver: ContentReso
 
     fun exportJson(uri: Uri) = operation("导出失败，请检查存储空间与所选位置；不完整文件需重新导出") {
         val text = BackupCodec.encode(repository.export())
-        write(uri, text)
-        _message.value = "结构化 JSON 已保存；不含截图文件，含图片的完整备份请使用 ZIP"
+        val checked=exportChecked(uri,"json"){ output->output.write(text.toByteArray(Charsets.UTF_8)) }
+        _message.value = "结构化 JSON 已保存；不含截图文件。${verificationLabel(checked)}"
     }
     fun exportZip(uri: Uri) = operation("完整 ZIP 导出失败，图片可能缺失、损坏或空间不足；请重新导出") {
         val service=requireNotNull(zip) { "私有图片存储未初始化" }
-        val output=resolver.openOutputStream(uri,"wt") ?: throw java.io.IOException("无法打开目标文件")
-        output.use { service.export(it) }
-        _message.value="完整 ZIP 已保存，包含结构化数据、全部截图和逐文件校验清单"
+        val checked=exportChecked(uri,"zip"){output->service.export(output)}
+        _message.value="完整 ZIP 已保存，包含交易、业务设置及全部截图。${verificationLabel(checked)}"
     }
+    private fun verificationLabel(result:Readback)=if(result==Readback.VERIFIED)"已重新读取并通过 SHA-256 完整性校验。" else "文件已写出；所选保存位置无法回读，尚未验证完整性，请手动打开确认。"
+    private suspend fun exportChecked(uri:Uri,kind:String,write:suspend(java.io.OutputStream)->Unit):Readback {
+        val output=resolver.openOutputStream(uri,"wt") ?: throw java.io.IOException("无法打开目标文件")
+        val digest=ExportDigest(output)
+        digest.use {write(it);it.flush()}
+        kotlinx.coroutines.currentCoroutineContext().ensureActive()
+        val result=ExportReadback.verify({resolver.openInputStream(uri)},digest.bytes,digest.finish())
+        kotlinx.coroutines.currentCoroutineContext().ensureActive()
+        try{experience?.exported(kind,result==Readback.VERIFIED)}catch(e:Exception){
+            throw BackupException("备份文件已写出${if(result==Readback.VERIFIED)"且校验通过"else"，但未能回读校验"}；本机备份时间保存失败，请手动确认文件")
+        }
+        return result
+    }
+    fun backupReminders(enabled:Boolean)=operation("提醒设置保存失败"){experience?.reminders(enabled);_message.value=if(enabled)"已开启本机备份建议"else"已关闭本机备份建议"}
+    fun snoozeBackup(days:Int)=operation("延后提醒保存失败"){experience?.snooze(days);_message.value="备份建议已延后 $days 天"}
     fun exportCsv(uri: Uri) = operation("CSV 导出失败，请检查所选位置后重新导出") {
         write(uri, repository.export().let { TradeCsv.encode(it.trades, com.tradereview.app.data.Catalog(it.tags)) })
         _message.value = "交易明细 CSV 已保存（UTF-8 中文）"
