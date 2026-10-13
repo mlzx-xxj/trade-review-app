@@ -35,3 +35,7 @@ Actions [38386967794](https://github.com/mlzx-xxj/trade-review-app/actions/runs/
 Actions [38387969242](https://github.com/mlzx-xxj/trade-review-app/actions/runs/38387969242)，源a19a968：构建/JVM/Lint任务成功；API29及35各实际123项，122通过/1失败/0跳过，均为新主UI链在LazyColumn尚未创建new-cashflow按钮时直接performScrollTo。保留资金/恢复全部断言，改用父列表滚动找到按钮后点击。12项账本Repository（含新ZIP整体回滚、规则唯一性/旧费不重价）、2项迁移、另外5项实际Main UI全部通过。API35进程探针三次重启验证28表全部不变/图片SHA不变，实际非调试RC安装重启成功；原固定签名及真机仍未执行。整个任务失败，发布拒绝，不能标为全套成功。
 
 下一提交同时完成：周月结果绑定对应周期/市场/数据后才显示，旧策略历史关联只读档案，合成月图包含正负/持平/空日期及旧USD截图且不混入CNY；单笔乘数核实不能升级未核实手续费规则，规则生效日晚于交易日拒绝自动费用；同秒也须确认序号，不丢弃其他已知秒的实际排序。新增纯/JVM及设备断言，要求下一209 JVM及124设备全量验证。
+
+Actions [38395312906](https://github.com/mlzx-xxj/trade-review-app/actions/runs/38395312906)，源54efbfa：原始XML确认209 JVM全部通过（含Matching37、LedgerBackup7、ChartScale11、LedgerCsv3，0失败/错误/跳过）；Debug/RC/Release编译成功，Lint0错误，Debug20警告、RC/Release各21。实际configured=false，原pin/真实旧签名升级/手机验收未执行。最后截图调整提交触发最终全CI，此阶段尚未执行的模拟器不记为通过。
+
+最终取证调整仅测试滚动位置：月图保留持平/无交易截图57，并把截图48滚动到真实合成盈亏日期；品种图截图49滚动到包含负值的行。金额和算法不改。每次最终提交都执行完整CI，没有skip ci；最终证据以精确HEAD的Actions、Release CI-RESULTS.txt及真实PNG为准。
