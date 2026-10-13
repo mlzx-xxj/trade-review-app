@@ -41,6 +41,10 @@
 
 [Actions 38335765567](https://github.com/mlzx-xxj/trade-review-app/actions/runs/38335765567)发现runner缺少rg，新增启动门禁的合成检查因证据读取工具不可用而失败，未继续Android编译/模拟器。改用标准grep并保留工具可用性、日志存在检查，增强合成检查失败信息；Base39项重新通过，随后完整CI继续核对。
 
+[Actions 38336114233](https://github.com/mlzx-xxj/trade-review-app/actions/runs/38336114233)的API29启动检查发现误判：Google搜索进程以ActivityManager标签自行记录“ANR in”，但系统`dumpsys activity lastanr`明确显示`<no ANR has occurred since boot>`。该轮应用测试未执行，没有记为通过。改用平台实际ANR记录，同时保留原日志和崩溃检查；真实SystemUI ANR仍拒绝，已有界面对话框/键盘断言全部保留。新增对应合成故障测试，目前Base40项通过；这不是Android启动实测。
+
+同一运行API35实际完整103项、0失败/跳过及不可调试RC安装/重启通过，十六表与附件校验一致。应用功能回归已分别在两种API实际通过，但不同历史运行不能替代最终提交同一完整CI；判定修正与文档继续一起接受最后完整验证。
+
 Base独立下载本次真实APK，用官方apksigner和二进制Manifest读取器核对证书、包名、non-debuggable、版本/权限/摘要；四份中文/Latin OCR模型与全部原ABI实际存在。实际SIGNING-STATUS仍configured=false，不产生固定签名包。交付报告门禁还已用上一轮真实失败XML检查，正确拒绝API29的1失败和API35的4失败，不把成功安装探针冒充全套成功。
 
 ## 最终提交的验证与交付入口

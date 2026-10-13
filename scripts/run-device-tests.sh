@@ -7,9 +7,11 @@ if [[ "${V100_CHECK_BOOT:-false}" == true ]]; then
   # Finish SystemUI/keyguard startup before Gradle competes for the runner CPU.
   sleep 20
   adb logcat -d -s ActivityManager:I ActivityTaskManager:I AndroidRuntime:E > ci-stability/boot-logcat.txt || exit 1
-  [[ -s ci-stability/boot-logcat.txt ]] && command -v grep >/dev/null || { echo 'Boot health evidence unavailable' >&2; exit 1; }
-  if grep -Eq 'ANR in |FATAL EXCEPTION' ci-stability/boot-logcat.txt; then
-    adb shell dumpsys activity lastanr > ci-stability/boot-last-anr.txt || true
+  adb shell dumpsys activity lastanr > ci-stability/boot-last-anr.txt || exit 1
+  [[ -s ci-stability/boot-logcat.txt && -s ci-stability/boot-last-anr.txt ]] && command -v grep >/dev/null || { echo 'Boot health evidence unavailable' >&2; exit 1; }
+  # A Google app can log its own "ANR in" text using the ActivityManager tag.
+  # Use the platform's recorded ANR state, retaining both sources for inspection.
+  if ! grep -Fq '<no ANR has occurred since boot>' ci-stability/boot-last-anr.txt || grep -Fq 'FATAL EXCEPTION' ci-stability/boot-logcat.txt; then
     adb exec-out screencap -p > ci-stability/boot-failure.png || true
     echo 'Emulator boot ANR/crash detected before app tests; logs retained, no dialog dismissed and no tests claimed passed' >&2
     exit 1

@@ -69,7 +69,7 @@ V0.3 已有长期证书 pin；本轮没有生成、读取或替换私钥。Secre
 ./gradlew :app:connectedDebugAndroidTest
 ```
 
-Base 缺少 SDK 时用 GitHub Actions，不需要完整 Android Studio。Base 可执行 `python3 -m unittest discover -s scripts/tests -p 'test_*.py'`（当前 39 项发布/交付/模拟器故障决策回归，不代表 Android 编译或真正 APK 验签）。RC 自动使用临时测试身份；正式 Release 没有原签名配置时只编译 unsigned 输出，绝不作为可安装正式包发布。完整 CI 显式禁用 Gradle 构建缓存，以重新执行编译、测试和 Lint。模拟器启动后保留20秒稳定时间，应用测试前核对系统ANR/崩溃日志；故障立即保留证据并失败，不忽略对话框。
+Base 缺少 SDK 时用 GitHub Actions，不需要完整 Android Studio。Base 可执行 `python3 -m unittest discover -s scripts/tests -p 'test_*.py'`（当前 40 项发布/交付/模拟器故障决策回归，不代表 Android 编译或真正 APK 验签）。RC 自动使用临时测试身份；正式 Release 没有原签名配置时只编译 unsigned 输出，绝不作为可安装正式包发布。完整 CI 显式禁用 Gradle 构建缓存，以重新执行编译、测试和 Lint。模拟器启动后保留20秒稳定时间，应用测试前核对平台dumpsys记录的ANR及崩溃日志，两份证据都保留；故障立即失败，不忽略对话框。其他应用自行打印“ANR in”文本不能替代系统实际记录。
 
 JSON 为明文，校验摘要不提供加密或身份认证。模拟器结果不等于真实手机测试；请以本轮 Actions 和验证文档中的实际结果为准。
 
