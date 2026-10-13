@@ -31,6 +31,10 @@
 
 API29/35 全回归、新手引导/备份故障/完整操作链、实际交付 RC 安装及重启、截图和发布验证正在执行；结果完成后补充。最终提交必须另有完整绿色 CI，见 PR Checks，不使用 skip ci。
 
+[Actions 38327162890](https://github.com/mlzx-xxj/trade-review-app/actions/runs/38327162890)，源提交 `731ec228299853ad74775790fa6695e78b752944`：编译、151 JVM、三种 Lint 再次通过，Room7 schema 字节一致。API35实际103项、101通过/2失败、0跳过：新链已通过月报，恢复预览超高卡片内的按钮虽有语义节点但尚未进入可点击视野；补充精确子节点滚动与显示/enabled断言，并在截取恢复截图前断言二次确认对话框已出现。品种搜索结果被真实键盘和滚动位置挡住，测试执行已存在的 Search IME 操作后滚到结果，保留实际可见性断言。该轮大字体/深色/键盘/横屏、保存并继续均已通过，没有删除这些检查。恢复交易、recordKey、净盈亏与私有图片校验断言全部保留。
+
+Base独立下载本次真实APK，用官方apksigner和二进制Manifest读取器核对证书、包名、non-debuggable、版本/权限/摘要；四份中文/Latin OCR模型与全部原ABI实际存在。实际SIGNING-STATUS仍configured=false，不产生固定签名包。交付报告门禁还已用上一轮真实失败XML检查，正确拒绝API29的1失败和API35的4失败，不把成功安装探针冒充全套成功。
+
 ## 正式发布阻塞
 
 首轮实际 SIGNING-STATUS.json：configured=false、originalPinVerified=false。管理 Secrets/Variables API 权限不足，不能读取其值；实际工作流尚无法使用原私钥。没有读取、生成或替换长期私钥。
