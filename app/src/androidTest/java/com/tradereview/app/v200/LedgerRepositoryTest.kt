@@ -34,4 +34,26 @@ class LedgerRepositoryTest {
     @Test fun legacyJsonReplacementPreservesNewLedgerItDoesNotContain()=runBlocking{save(buy());val before=repo.read();val backup=BackupRepository(db);val old=BackupCodec.read(androidx.test.platform.app.InstrumentationRegistry.getInstrumentation().context.assets.open("v02-backup.json"));backup.restore(backup.preview(old),RestoreMode.REPLACE);assertEquals(before,repo.read());assertEquals(old.trades.map{it.recordKey}.toSet(),db.trades().allTrades().map{it.recordKey}.toSet())}
     @Test fun completeZipRestoresNewLedgerAndOldPrivateScreenshotsTogether()=runBlocking{save(buy());val root=File(context.cacheDir,"v200-evidence-${newKey()}");val store=AttachmentStore(root);try{val trade=Trade(recordKey="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",date=day,netPnl="12.34");db.trades().insert(trade);AttachmentRepository(db,store).importImage(context.contentResolver,TestImageProvider.uri(),trade.recordKey,"before","合成旧截图");val service=FullZipRepository(db,store);val bytes=ByteArrayOutputStream();service.export(bytes);val before=BackupRepository(db,store).export(true);val preview=service.read(bytes.toByteArray().inputStream());service.restore(preview,RestoreMode.REPLACE);preview.archive.close();val after=BackupRepository(db,store).export(true);assertEquals(before.copy(exportedAt=after.exportedAt),after);store.verifyAll(db.trades().allAttachments());assertEquals("0.1",repo.read().executions.single().fees)}finally{root.deleteRecursively()}}
     @Test fun sameMinuteUnknownOrderRequiresConfirmationAndKeepsStableOrderInBackup()=runBlocking{save(buy());val preview=repo.preview(buy("second"));assertTrue(preview.orderWarning);val before=repo.read();try{repo.confirm(preview);fail("unknown order was silently accepted")}catch(_:IllegalArgumentException){};assertEquals(before,repo.read());repo.confirm(preview,true);val after=repo.read();assertTrue(after.executions.first{it.id=="second"}.orderConfirmed);assertEquals(listOf("buy","second"),MatchingEngine.ordered(after.executions).map{it.id});val data=BackupRepository(db).export();assertEquals(after,BackupCodec.read(BackupCodec.encode(data).byteInputStream()).ledger)}
+    @Test fun failedZipReplacementRollsBackNewLedgerLegacyFactsAndBothExistingImageReferences()=runBlocking{
+        save(buy());repo.cash(LedgerCashFlow("source_cash","stock",day,"in","500"))
+        val root=File(context.cacheDir,"v200-zip-rollback-${newKey()}");val store=AttachmentStore(root)
+        try{
+            val key="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";db.trades().insert(Trade(recordKey=key,date=day,netPnl="12.34"))
+            AttachmentRepository(db,store).importImage(context.contentResolver,TestImageProvider.uri(),key,"before","源合成截图")
+            val service=FullZipRepository(db,store);val bytes=ByteArrayOutputStream();service.export(bytes)
+            db.ledger().clearCashFlows();db.trades().save(db.trades().findTradeByKey(key)!!.copy(netPnl="25.00"))
+            val extra="bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb";db.trades().insert(Trade(recordKey=extra,date=day,netPnl="-4.5"))
+            AttachmentRepository(db,store).importImage(context.contentResolver,TestImageProvider.uri(),extra,"after","本机合成截图")
+            val backup=BackupRepository(db,store);val before=backup.export(true);val pending=service.read(bytes.toByteArray().inputStream())
+            try{db.openHelper.writableDatabase.execSQL("CREATE TRIGGER reject_zip_cash BEFORE INSERT ON ledger_cashflows BEGIN SELECT RAISE(ABORT,'synthetic ZIP storage failure'); END");try{service.restore(pending,RestoreMode.REPLACE);fail("half-restored ZIP accepted")}catch(_:Exception){};val after=backup.export(true);assertEquals(before.copy(exportedAt=after.exportedAt),after);assertEquals(2,after.attachments.size);store.verifyAll(after.attachments)}finally{pending.archive.close()}
+        }finally{root.deleteRecursively()}
+    }
+    @Test fun ambiguousSameDayContractRulesAreRejectedAndChangingRulesNeverRepricesHistoricalFees()=runBlocking{
+        val r=LedgerContractRule("rule","rb2701","合成规则",multiplier="10",openFee="2",closeFee="3",todayFee="10",effectiveDay=day,verified=true);repo.rule(r)
+        val e=LedgerExecution("future","futures","rb2701","合成期货",day,600,day,0,"buy","open","3500","2","0",feeSource="rule",second=1);save(e)
+        val original=repo.read().executions.single();assertEquals("4",original.fees)
+        try{repo.rule(r.copy(id="ambiguous",openFee="8"));fail("ambiguous rule silently selected")}catch(_:IllegalArgumentException){}
+        assertEquals(listOf(r),repo.read().rules);repo.rule(r.copy(openFee="5"));assertEquals(original,repo.read().executions.single());assertEquals("2",LedgerJson.rule(original.ruleSnapshot!!).openFee)
+        save(e.copy(id="future2",date=day+1,tradingDay=day+1));assertEquals("10",repo.read().executions.first{it.id=="future2"}.fees);LedgerValidation.snapshot(repo.read())
+    }
 }

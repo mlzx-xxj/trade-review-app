@@ -32,7 +32,7 @@ public final class LegacyUpgradeInstrumentation extends Instrumentation {
                         db.setTransactionSuccessful();
                     }finally{db.endTransaction();}
                 }else if("verify".equals(phase)){
-                    if(version!=7)throw new IllegalStateException("V1.0 schema7 required");
+                    int expected=Integer.parseInt(arguments.getString("target_schema","7"));if((expected!=7 && expected!=8)||version!=expected)throw new IllegalStateException("Expected target Room schema required");
                     try(Cursor t=db.rawQuery("SELECT netPnl,note FROM trades WHERE recordKey=?",new String[]{KEY})){
                         if(!t.moveToFirst()||!"456.78".equals(t.getString(0))||!"synthetic same-certificate installation upgrade only".equals(t.getString(1))||t.moveToNext())throw new IllegalStateException("Stable trade facts not preserved");
                     }

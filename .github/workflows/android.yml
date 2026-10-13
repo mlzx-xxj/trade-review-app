@@ -31,6 +31,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     outputs:
+      artifact_attempt: ${{ github.run_attempt }}
       validation_ready: ${{ steps.compilation.outcome == 'success' }}
       fixed_ready: ${{ steps.signing.outputs.configured }}
     permissions:
@@ -72,6 +73,7 @@ jobs:
           python3 scripts/tests/test_stability_probes.py
           python3 scripts/tests/test_v100_identity.py
           python3 scripts/tests/test_v200_identity.py
+          python3 scripts/tests/test_v200_attempts.py
           python3 scripts/tests/test_boot_health.py
           python3 -m py_compile scripts/run-v200-package-probes.py scripts/v200-identity.py
       - name: Compile, run JVM tests and Android lint
@@ -85,13 +87,13 @@ jobs:
       - name: Upload RC independently of fixed-key availability
         uses: actions/upload-artifact@v4
         with:
-          name: TradeReview-v2.0-RC-${{ github.run_number }}
+          name: TradeReview-v2.0-RC-${{ github.run_number }}-attempt${{ github.run_attempt }}
           path: |
             dist/TradeReview-v2.0-RC.apk
             dist/RC-IDENTITY.json
           if-no-files-found: error
           retention-days: 30
-      - name: Sign real Release with existing V0.3 key and verify original pin
+      - name: Check existing V0.3 signing and sign Release only when configured
         id: signing
         env:
           EXISTING_KEY_BASE64: ${{ secrets.TRADE_REVIEW_KEYSTORE_BASE64 }}
@@ -104,7 +106,7 @@ jobs:
         if: steps.signing.outputs.configured == 'true'
         uses: actions/upload-artifact@v4
         with:
-          name: original-pin-candidate
+          name: original-pin-candidate-attempt${{ github.run_attempt }}
           path: |
             dist/TradeReview-v2.0-fixed-candidate.apk
             dist/FIXED-IDENTITY.json
@@ -131,7 +133,7 @@ jobs:
       - name: Upload signature metadata for independent verification
         uses: actions/upload-artifact@v4
         with:
-          name: signing-metadata
+          name: signing-metadata-attempt${{ github.run_attempt }}
           path: |
             dist/*.txt
             dist/*.json
@@ -141,7 +143,7 @@ jobs:
       - name: Upload bounded verification part 1
         uses: actions/upload-artifact@v4
         with:
-          name: apk-verification-part-1
+          name: apk-verification-part-1-attempt${{ github.run_attempt }}
           path: apk-verification/part-01.bin
           if-no-files-found: error
           retention-days: 30
@@ -149,7 +151,7 @@ jobs:
         if: hashFiles('apk-verification/part-02.bin') != ''
         uses: actions/upload-artifact@v4
         with:
-          name: apk-verification-part-2
+          name: apk-verification-part-2-attempt${{ github.run_attempt }}
           path: apk-verification/part-02.bin
           if-no-files-found: error
           retention-days: 30
@@ -157,7 +159,7 @@ jobs:
         if: hashFiles('apk-verification/part-03.bin') != ''
         uses: actions/upload-artifact@v4
         with:
-          name: apk-verification-part-3
+          name: apk-verification-part-3-attempt${{ github.run_attempt }}
           path: apk-verification/part-03.bin
           if-no-files-found: error
           retention-days: 30
@@ -165,7 +167,7 @@ jobs:
         if: hashFiles('apk-verification/part-04.bin') != ''
         uses: actions/upload-artifact@v4
         with:
-          name: apk-verification-part-4
+          name: apk-verification-part-4-attempt${{ github.run_attempt }}
           path: apk-verification/part-04.bin
           if-no-files-found: error
           retention-days: 30
@@ -173,7 +175,7 @@ jobs:
         if: hashFiles('apk-verification/part-05.bin') != ''
         uses: actions/upload-artifact@v4
         with:
-          name: apk-verification-part-5
+          name: apk-verification-part-5-attempt${{ github.run_attempt }}
           path: apk-verification/part-05.bin
           if-no-files-found: error
           retention-days: 30
@@ -181,7 +183,7 @@ jobs:
         if: hashFiles('apk-verification/part-06.bin') != ''
         uses: actions/upload-artifact@v4
         with:
-          name: apk-verification-part-6
+          name: apk-verification-part-6-attempt${{ github.run_attempt }}
           path: apk-verification/part-06.bin
           if-no-files-found: error
           retention-days: 30
@@ -189,7 +191,7 @@ jobs:
         if: always() && hashFiles('gradle/wrapper/gradle-wrapper.jar') != ''
         uses: actions/upload-artifact@v4
         with:
-          name: gradle-wrapper
+          name: gradle-wrapper-attempt${{ github.run_attempt }}
           path: |
             gradlew
             gradlew.bat
@@ -199,7 +201,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: verification-reports
+          name: verification-reports-attempt${{ github.run_attempt }}
           path: |
             app/build/reports/
             app/build/test-results/
@@ -251,24 +253,24 @@ jobs:
       - name: Download verified wrapper from build job
         uses: actions/download-artifact@v4
         with:
-          name: gradle-wrapper
+          name: gradle-wrapper-attempt${{ needs.build.outputs.artifact_attempt }}
       - name: Download generated Room schemas from build job
         uses: actions/download-artifact@v4
         with:
-          name: verification-reports
+          name: verification-reports-attempt${{ needs.build.outputs.artifact_attempt }}
           path: ci-reports
       - name: Install generated schemas as migration test assets
         run: cp -R ci-reports/schemas/. app/schemas/
       - name: Download actual RC package for installation checks
         uses: actions/download-artifact@v4
         with:
-          name: TradeReview-v2.0-RC-${{ github.run_number }}
+          name: TradeReview-v2.0-RC-${{ github.run_number }}-attempt${{ needs.build.outputs.artifact_attempt }}
           path: delivered-packages
       - name: Download original-pin Release candidate when genuinely signed
         if: needs.build.outputs.fixed_ready == 'true'
         uses: actions/download-artifact@v4
         with:
-          name: original-pin-candidate
+          name: original-pin-candidate-attempt${{ needs.build.outputs.artifact_attempt }}
           path: original-candidate
       - name: Prepare optional real original-identity old APK
         env:
@@ -310,7 +312,7 @@ jobs:
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: v200-emulator-screenshots-api${{ matrix.api }}
+          name: v200-emulator-screenshots-api${{ matrix.api }}-attempt${{ github.run_attempt }}
           path: ci-screenshots/
           if-no-files-found: error
           retention-days: 30
@@ -318,7 +320,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: android-test-reports-api${{ matrix.api }}
+          name: android-test-reports-api${{ matrix.api }}-attempt${{ github.run_attempt }}
           path: |
             app/build/reports/androidTests/
             app/build/outputs/androidTest-results/
@@ -347,18 +349,18 @@ jobs:
       - run: sdkmanager 'build-tools;35.0.0'
       - uses: actions/download-artifact@v4
         with:
-          name: TradeReview-v2.0-RC-${{ github.run_number }}
+          name: TradeReview-v2.0-RC-${{ github.run_number }}-attempt${{ needs.build.outputs.artifact_attempt }}
           path: dist
       - uses: actions/download-artifact@v4
         with:
-          name: signing-metadata
+          name: signing-metadata-attempt${{ needs.build.outputs.artifact_attempt }}
           path: signing-metadata
       - run: cp signing-metadata/dist/*.json dist/
       - name: Download original Release when original signer passed
         if: needs.build.outputs.fixed_ready == 'true'
         uses: actions/download-artifact@v4
         with:
-          name: original-pin-candidate
+          name: original-pin-candidate-attempt${{ needs.build.outputs.artifact_attempt }}
           path: original-candidate
       - name: Include only app Release, not emulator instrumentation
         if: needs.build.outputs.fixed_ready == 'true'
@@ -366,17 +368,20 @@ jobs:
       - name: Download verified emulator screenshots
         uses: actions/download-artifact@v4
         with:
-          pattern: v200-emulator-screenshots-api*
-          path: screenshots
-      - run: zip -r dist/TradeReview-v2.0-emulator-screenshots.zip screenshots
+          pattern: v200-emulator-screenshots-api*-attempt*
+          path: raw-screenshots
       - uses: actions/download-artifact@v4
         with:
-          name: verification-reports
+          name: verification-reports-attempt${{ needs.build.outputs.artifact_attempt }}
           path: verified-reports/build
       - uses: actions/download-artifact@v4
         with:
-          pattern: android-test-reports-api*
-          path: verified-reports/devices
+          pattern: android-test-reports-api*-attempt*
+          path: raw-device-reports
+      - name: Select latest emulator attempt without overwriting failed artifacts
+        run: |
+          python3 scripts/select-v200-attempts.py --reports raw-device-reports --screenshots raw-screenshots --output-reports verified-reports/devices --output-screenshots screenshots
+          zip -r dist/TradeReview-v2.0-emulator-screenshots.zip screenshots
       - name: Independently verify actual APK package, certificate, permissions and build source
         run: python3 scripts/v200-identity.py --verify --directory dist --apksigner "$ANDROID_HOME/build-tools/35.0.0/apksigner" --aapt "$ANDROID_HOME/build-tools/35.0.0/aapt" --source "$SOURCE_COMMIT"
       - name: Derive candidate report from actual tests, screenshots and installed-package probes

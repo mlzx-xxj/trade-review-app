@@ -19,3 +19,13 @@ Room v8生成schema仍待CI核对；不把静态SQL检查当成迁移通过。
 V2实际MainActivity首轮Actions [38381713696](https://github.com/mlzx-xxj/trade-review-app/actions/runs/38381713696)，源1890863：Compose编译因dp/drawIntoCanvas缺少导入及ReceiptLong图标接收者错误失败；已修复。不把本地47项Python成功当作Android成功，本轮JVM及模拟器未执行。
 
 界面修复后Actions [38382269969](https://github.com/mlzx-xxj/trade-review-app/actions/runs/38382269969)，源6b72c6a：主Compose代码编译冲突消除，测试APK编译发现新增往返测试对String调用inputStream而非byteInputStream；已改正并保留往返断言。本轮完整任务失败，模拟器未执行。新增实际Main失败截图/界面树采集，不删失败测试。
+
+V2编译与领域完整阶段Actions [38383179786](https://github.com/mlzx-xxj/trade-review-app/actions/runs/38383179786)，源0661583：原始XML确认207 JVM全部通过（0失败/错误/跳过），含Matching35、ChartScale11、LedgerBackup7、LedgerCsv3；Debug/RC/Release全部编译，Lint错误0，Debug警告24、RC/Release各25。
+
+同轮下载RC独立apksigner/BinaryManifest复核：2.0.0-rc.1/code20/com.tradereview.app.rc.v200/non-debuggable；仅自有DYNAMIC_RECEIVER_NOT_EXPORTED权限，无INTERNET/存储媒体权限。APK53012944字节，SHA-256 6b918c25ece0a1176230e7d22dfdd54a7383f74a8805d2750f6053dd2c342861，临时证书1c73196dae5b31835d2e2d74a112057c2515f055d48222fb5206bdcdf1bac31d。实际SIGNING-STATUS configured=false，原pin未验证、原固定签名升级未执行。以上仅此提交，API29/35仍待完整结果。
+
+在途完善：保留失败artifact、按每个API最新尝试选择原始证据且禁止回退旧绿色；ZIP新旧数据及两张截图的事务故障测试；同合约同生效日规则拒绝及旧费快照不重定价测试；移除新关键价位可变集合警告的ListSaver；账户/CSV以索引复用匹配，不改变财务公式。均需下一完整CI验证。
+
+同轮API29/35均实际121项，116通过/5失败/0跳过：旧NavigationTest两项仍绑定新Main，与另一个旧Activity兼容宿主不一致；新主UI两项合成成交ID用连字符，稳定ID校验正确拒绝；一项策略表单字段调用滚动但对话框没有滚动布局。保留全部原断言，原导航绑定Debug兼容宿主、合成ID改合法下划线、策略与账户弹窗加实际滚动。新增10项Repository、2项完整迁移及其他主UI三项通过，不能记为全套成功。
+
+随后进程探针因Main未传clearWork=true而拒绝遗留暂存文件；修复为Application按进程初始化一次，完成前阻止文件UI操作，旋转不清除正在预览的ZIP，失败显示可恢复入口。原V1升级Java探针加显式target_schema=8参数，原V1脚本仍默认7；原长期密钥缺失，真实固定签名升级依然未执行。重新完整CI，保留失败原始XML/日志/截图。

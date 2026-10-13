@@ -81,6 +81,7 @@ object LedgerValidation {
         ledgerRequire(s.accounts.map{it.id}.toSet()==setOf("stock","futures") && s.accounts.size==2 && s.risks.map{it.id}.toSet()==setOf("stock","futures") && s.risks.size==2,"备份须包含两账户和两套风险配置")
         fun <T> unique(list:List<T>,key:(T)->String){ledgerRequire(list.size<=10000 && list.map(key).distinct().size==list.size,"数据过多或稳定ID重复")}
         unique(s.strategies){it.id};unique(s.rules){it.id};unique(s.plans){it.id};unique(s.executions){it.id};unique(s.cycles){it.id};unique(s.lots){it.id};unique(s.matches){it.id};unique(s.reviews){it.id};unique(s.cashFlows){it.id};unique(s.audits){it.id}
+        ledgerRequire(s.rules.map{it.code to it.effectiveDay}.distinct().size==s.rules.size,"同一合约同一生效日期的规则重复，不能任意猜选费用")
         s.accounts.forEach(::account);s.risks.forEach(::risk);s.strategies.forEach(::strategy);s.rules.forEach(::rule);s.plans.forEach(::plan);s.reviews.forEach(::review);s.cashFlows.forEach(::cash)
         val strategies=s.strategies.map{it.id}.toSet();val plans=s.plans.associateBy{it.id}
         s.plans.forEach{ledgerRequire(it.strategyId==null || it.strategyId in strategies,"计划策略不存在")}

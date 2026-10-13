@@ -23,6 +23,7 @@ class LedgerRepository(private val db:TradeDatabase) {
             val account=before.accounts.firstOrNull{it.id==input.accountId}?:throw LedgerException("账户不存在")
             ledgerRequire(input.strategyId==null || before.strategies.any{it.id==input.strategyId && (it.active || existing?.strategyId==it.id)},"策略已停用，请选择有效策略")
             val ordinal=if(input.ordinal>0)input.ordinal else existing?.ordinal?:((before.executions.maxOfOrNull{it.ordinal}?:0)+1)
+            LedgerValidation.number(input.price,true);LedgerValidation.number(input.quantity,true);input.stopLoss?.let{LedgerValidation.number(it,true)}
             var prepared=input.copy(ordinal=ordinal)
             if(prepared.feeSource=="rule") {
                 if(input.accountId=="stock") {
@@ -76,7 +77,7 @@ class LedgerRepository(private val db:TradeDatabase) {
     suspend fun account(a:LedgerAccount){LedgerValidation.account(a);dao.save(a)}
     suspend fun risk(r:MarketRisk){LedgerValidation.risk(r);dao.save(r)}
     suspend fun strategy(s:LedgerStrategy){LedgerValidation.strategy(s);dao.save(s)}
-    suspend fun rule(r:LedgerContractRule){LedgerValidation.rule(r);dao.save(r)}
+    suspend fun rule(r:LedgerContractRule){LedgerValidation.rule(r);db.withTransaction{ledgerRequire(dao.rules().none{it.id!=r.id && it.code==r.code && it.effectiveDay==r.effectiveDay},"同一合约同一生效日已有规则，请编辑原规则或选择不同生效日");dao.save(r)}}
     suspend fun plan(p:LedgerPlan){LedgerValidation.plan(p);dao.save(p)}
     suspend fun review(r:LedgerReview){LedgerValidation.review(r);dao.save(r)}
     suspend fun cash(f:LedgerCashFlow){LedgerValidation.cash(f);dao.save(f)}

@@ -12,7 +12,7 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.tradereview.app.MainActivity
+import com.tradereview.app.LegacyCompatibilityActivity
 import org.junit.Rule
 import org.junit.Before
 import kotlinx.coroutines.runBlocking
@@ -21,9 +21,10 @@ import com.tradereview.app.data.AppSettings
 import org.junit.Test
 import org.junit.runner.RunWith
 
+/** Original UI assertions retained on the Debug compatibility host; V200MainUiTest covers real Main. */
 @RunWith(AndroidJUnit4::class)
 class NavigationTest {
-    @get:Rule val compose = createAndroidComposeRule<MainActivity>()
+    @get:Rule val compose = createAndroidComposeRule<LegacyCompatibilityActivity>()
 
     @Before fun resetData() = runBlocking {
         val application=compose.activity.application as TradeReviewApplication

@@ -48,7 +48,7 @@ class V200ViewModel(val database:TradeDatabase,val handle:SavedStateHandle):View
     fun review(value:LedgerReview)=action("持仓复盘已保存，成交事实未变"){repository.review(value)}
     fun cash(value:LedgerCashFlow)=action("资金流水已保存，未计入交易盈亏"){repository.cash(value)}
     fun favorite(account:String,code:String,name:String)=action("已保存为常用，可搜索复用"){
-        LedgerValidation.code(account,code);val old=database.trades().allInstruments().firstOrNull{it.market==account && it.code==code}
+        LedgerValidation.code(account,code);LedgerValidation.word(name);val old=database.trades().allInstruments().firstOrNull{it.market==account && it.code==code}
         database.trades().saveInstrument(old?.copy(favorite=true,lastUsed=System.currentTimeMillis())?:Instrument("ledger_${newKey()}",account,"${name.take(16)} $code",code,1000,true,System.currentTimeMillis()))
     }
     fun draft(values:Map<String,String>){handle["v2-entry-fields"]=HashMap(values)}

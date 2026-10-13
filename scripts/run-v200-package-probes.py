@@ -76,7 +76,7 @@ def main():
             assert "Success" in adb("install","-r",a.upgrade_fixture).stdout
             start("com.tradereview.app");window("com.tradereview.app","快捷记账","old-fixed-ready")
             def fixture(phase):
-                result=adb("shell","am","instrument","-w","-e","phase",phase,"com.tradereview.app.test/com.tradereview.app.release.LegacyUpgradeInstrumentation",timeout=120)
+                result=adb("shell","am","instrument","-w","-e","phase",phase,"-e","target_schema","8","com.tradereview.app.test/com.tradereview.app.release.LegacyUpgradeInstrumentation",timeout=120)
                 (ROOT/("old-fixed-"+phase+".txt")).write_text(result.stdout+result.stderr)
                 assert "V100_UPGRADE_FIXTURE_OK="+phase in result.stdout
             fixture("prepare");adb("shell","am","force-stop","com.tradereview.app")

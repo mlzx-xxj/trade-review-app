@@ -30,9 +30,11 @@ fun sellable(state:LedgerSnapshot,cycle:LedgerCycle,day:Long):String {val facts=
             Row(Modifier.horizontalScroll(rememberScrollState()),horizontalArrangement=Arrangement.spacedBy(4.dp)){(epoch-6..epoch).forEach{day->DayCell(day,state.daily[day],onDay)}}
             TextButton(onClick={expanded=!expanded},modifier=Modifier.heightIn(min=48.dp).testTag("calendar-expand")){Text(if(expanded)"收起日历"else"展开月历")}
             if(expanded){val selected=YearMonth.from(today).plusMonths(offset.toLong());Row(horizontalArrangement=Arrangement.SpaceBetween,modifier=Modifier.fillMaxWidth()){TextButton({offset--},modifier=Modifier.heightIn(min=48.dp)){Text("上月")};Text("${selected.year}年${selected.monthValue}月",Modifier.padding(top=14.dp));TextButton({offset++},modifier=Modifier.heightIn(min=48.dp)){Text("下月")}}
+                BoxWithConstraints(Modifier.fillMaxWidth()){val gridWidth=maxOf(maxWidth,336.dp);Row(Modifier.horizontalScroll(rememberScrollState())){Column(Modifier.width(gridWidth)){
                 Row{listOf("一","二","三","四","五","六","日").forEach{Text(it,Modifier.weight(1f),style=MaterialTheme.typography.labelMedium)}}
                 val start=selected.atDay(1).dayOfWeek.value-1;val count=selected.lengthOfMonth()
                 repeat((start+count+6)/7){row->Row{repeat(7){col->val index=row*7+col-start;Box(Modifier.weight(1f)){if(index in 0 until count){val day=selected.atDay(index+1).toEpochDay();DayCell(day,state.daily[day],onDay,compact=true)}}}}}
+                }}}
             }
         }}
         item{Text("当前持仓",style=MaterialTheme.typography.titleLarge)}
