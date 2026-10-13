@@ -31,13 +31,13 @@ class BackupCodecTest {
     }
     @Test fun rejectsUnsupportedVersionMissingUnknownAndIncorrectlyTypedFields() {
         val json = BackupCodec.encode(fixture())
-        reject(json.replace("\"schemaVersion\": 6", "\"schemaVersion\": 7"))
-        reject(json.replace("\"schemaVersion\": 6", "\"schemaVersion\": \"1\""))
-        reject(json.replace("\"schemaVersion\": 6,", ""))
-        reject(json.replace("\"schemaVersion\": 6", "\"schemaVersion\": 6, \"unknown\": 5"))
+        reject(json.replace("\"schemaVersion\": ${BackupCodec.SCHEMA_VERSION}", "\"schemaVersion\": ${BackupCodec.SCHEMA_VERSION + 1}"))
+        reject(json.replace("\"schemaVersion\": ${BackupCodec.SCHEMA_VERSION}", "\"schemaVersion\": \"1\""))
+        reject(json.replace("\"schemaVersion\": ${BackupCodec.SCHEMA_VERSION},", ""))
+        reject(json.replace("\"schemaVersion\": ${BackupCodec.SCHEMA_VERSION}", "\"schemaVersion\": ${BackupCodec.SCHEMA_VERSION}, \"unknown\": 5"))
         reject(json.replace("\"reviewed\": true", "\"reviewed\": \"true\""))
         reject(json.replace("\"positionPercent\": 10", "\"positionPercent\": 4294967306"))
-        reject(json.replace("\"schemaVersion\": 6", "\"schemaVersion\": 6e0"))
+        reject(json.replace("\"schemaVersion\": ${BackupCodec.SCHEMA_VERSION}", "\"schemaVersion\": ${BackupCodec.SCHEMA_VERSION}e0"))
     }
     @Test fun rejectsTruncatedWrongChecksumOrCountAndChangedPayload() {
         val json = BackupCodec.encode(fixture())
@@ -51,9 +51,9 @@ class BackupCodecTest {
     }
     @Test fun rejectsDuplicateJsonKeysLenientSyntaxNullAndDeepNesting() {
         val json = BackupCodec.encode(fixture())
-        reject(json.replace("\"schemaVersion\": 6", "\"schemaVersion\": 6, \"schemaVersion\": 6"))
-        reject(json.replace("\"schemaVersion\": 6", "'schemaVersion': 1"))
-        reject("/* comment */" + json); reject(json.replace("\"schemaVersion\": 6", "\"schemaVersion\": null"))
+        reject(json.replace("\"schemaVersion\": ${BackupCodec.SCHEMA_VERSION}", "\"schemaVersion\": ${BackupCodec.SCHEMA_VERSION}, \"schemaVersion\": ${BackupCodec.SCHEMA_VERSION}"))
+        reject(json.replace("\"schemaVersion\": ${BackupCodec.SCHEMA_VERSION}", "'schemaVersion': 1"))
+        reject("/* comment */" + json); reject(json.replace("\"schemaVersion\": ${BackupCodec.SCHEMA_VERSION}", "\"schemaVersion\": null"))
         reject("[".repeat(20) + "0" + "]".repeat(20))
     }
     @Test fun rejectsInvalidOptionsDatesAmountsPositionsRatingsAndTags() {
