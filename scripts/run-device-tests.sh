@@ -28,13 +28,13 @@ if [[ "${V08_STABILITY_PROBES:-false}" == true ]]; then
   python3 scripts/run-stability-probes.py || probe_status=$?
   if [[ "$device_test_status" == 0 ]]; then device_test_status=$probe_status; fi
 fi
-if [[ "${V100_PACKAGE_PROBES:-false}" == true ]]; then
+if [[ "${V200_PACKAGE_PROBES:-false}" == true ]]; then
   package_status=0
   args=(--directory delivered-packages --aapt "$ANDROID_HOME/build-tools/35.0.0/aapt" --apksigner "$ANDROID_HOME/build-tools/35.0.0/apksigner")
   if [[ -f delivered-packages/old-fixed.apk ]]; then
     args+=(--old-apk delivered-packages/old-fixed.apk --upgrade-fixture delivered-packages/upgrade-fixture.apk)
   fi
-  python3 scripts/run-v100-package-probes.py "${args[@]}" || package_status=$?
+  python3 scripts/run-v200-package-probes.py "${args[@]}" || package_status=$?
   if [[ "$device_test_status" == 0 ]]; then device_test_status=$package_status; fi
 fi
 mkdir -p ci-screenshots
@@ -48,7 +48,7 @@ if command -v adb >/dev/null; then
 fi
 while IFS= read -r screenshot_path; do
   cp "$screenshot_path" "ci-screenshots/${screenshot_path##*/}" || exit 1
-done < <(if command -v rg >/dev/null; then rg --files --no-ignore app/build/outputs ci-v100 ci-device-screenshots ci-v05-device-screenshots ci-v06-device-screenshots ci-v07-device-screenshots -g '*.png' 2>/dev/null || true; else find app/build/outputs ci-v100 ci-device-screenshots ci-v05-device-screenshots ci-v06-device-screenshots ci-v07-device-screenshots -type f -name '*.png' 2>/dev/null; fi)
+done < <(if command -v rg >/dev/null; then rg --files --no-ignore app/build/outputs ci-v200 ci-device-screenshots ci-v05-device-screenshots ci-v06-device-screenshots ci-v07-device-screenshots -g '*.png' 2>/dev/null || true; else find app/build/outputs ci-v200 ci-device-screenshots ci-v05-device-screenshots ci-v06-device-screenshots ci-v07-device-screenshots -type f -name '*.png' 2>/dev/null; fi)
 if [[ -s ci-stability/26-v08-process-restart-font.png ]]; then
   cp ci-stability/26-v08-process-restart-font.png ci-screenshots/
 fi
@@ -59,9 +59,9 @@ if [[ "$device_test_status" == 0 ]]; then
       exit 1
     fi
   done
-  if [[ "${V100_PACKAGE_PROBES:-false}" == true ]]; then
-    for prefix in {27..34}; do
-      compgen -G "ci-screenshots/${prefix}-*.png" >/dev/null || { echo "Missing V1.0 screenshot $prefix" >&2; exit 1; }
+  if [[ "${V200_PACKAGE_PROBES:-false}" == true ]]; then
+    for prefix in {27..32} {40..55}; do
+      compgen -G "ci-screenshots/${prefix}-*.png" >/dev/null || { echo "Missing V2.0 screenshot $prefix" >&2; exit 1; }
     done
   fi
 fi

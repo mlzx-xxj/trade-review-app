@@ -37,20 +37,21 @@ class MainActivity : ComponentActivity() {
                 // Existing empty installations also skip: package metadata survives an in-place upgrade.
                 val returning=install.lastUpdateTime>install.firstInstallTime || dao.hasUserRecords()
                 experience.initialize(returning)
+                com.tradereview.app.evidence.EvidenceLock.mutex.lock()
+                try{evidence.cleanup(dao.allAttachments())}finally{com.tradereview.app.evidence.EvidenceLock.mutex.unlock()}
             }}catch(e:Exception){if(e is kotlinx.coroutines.CancellationException)throw e;experience.initializationFailed()}
         }
         setContent {
-                val model: TradeViewModel = viewModel(factory = viewModelFactory {
-                    initializer { TradeViewModel(database, createSavedStateHandle(),evidence) }
+                val model: com.tradereview.app.v200.V200ViewModel = viewModel(factory = viewModelFactory {
+                    initializer { com.tradereview.app.v200.V200ViewModel(database, createSavedStateHandle()) }
                 })
                 val backup: BackupViewModel = viewModel(factory = viewModelFactory {
                     initializer { BackupViewModel(database, application.contentResolver,evidence,experience) }
                 })
-                val state by model.state.collectAsStateWithLifecycle()
-                val darkTheme=when (state.settings.theme) { "dark" -> true; "light" -> false; else -> isSystemInDarkTheme() }
+                val darkTheme=isSystemInDarkTheme()
                 SideEffect { WindowCompat.getInsetsController(window,window.decorView).isAppearanceLightStatusBars=!darkTheme }
                 TradeReviewTheme(darkTheme = darkTheme) {
-                    TradeReviewApp(model, backup,experience=experience)
+                    com.tradereview.app.v200.V200App(model,backup,evidence)
                 }
         }
     }

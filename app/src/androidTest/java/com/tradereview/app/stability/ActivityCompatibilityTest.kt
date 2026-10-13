@@ -26,10 +26,10 @@ import org.junit.runner.RunWith
 import java.io.File
 import java.time.LocalDate
 
-/** Actual exported MainActivity and its persistent database; disposable emulator only. */
+/** Preserved V1 UI assertions on a Debug-only compatibility host. V200 UI tests cover actual MainActivity. */
 @RunWith(AndroidJUnit4::class)
 class ActivityCompatibilityTest {
-    @get:Rule val compose=createAndroidComposeRule<MainActivity>()
+    @get:Rule val compose=createAndroidComposeRule<LegacyCompatibilityActivity>()
     private val application get()=compose.activity.application as TradeReviewApplication
     private val db get()=application.database
     private val key="00000000000000000000000000000808"

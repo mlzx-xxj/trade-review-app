@@ -18,7 +18,12 @@ object MatchingEngine {
     private data class Lot(val open:LedgerExecution,val cycle:String,var remaining:BigDecimal,var allocated:BigDecimal=ZERO)
     private fun direction(e:LedgerExecution)=if(e.effect=="open") {if(e.side=="buy")"long"else"short"}else if(e.side=="sell")"long"else"short"
     private fun key(e:LedgerExecution)=listOf(e.accountId,e.code,direction(e))
-    fun ordered(values:List<LedgerExecution>)=values.sortedWith(compareBy<LedgerExecution>{it.date}.thenBy{it.minute}.thenBy{it.ordinal}.thenBy{it.id})
+    fun timeBucket(e:LedgerExecution)=listOf(e.date.toString(),e.minute.toString(),e.accountId,e.code)
+    fun uncertainTimes(values:List<LedgerExecution>)=values.groupBy(::timeBucket).values.filter{it.size>1 && it.any{e->e.second==null}}
+    fun ordered(values:List<LedgerExecution>):List<LedgerExecution>{
+        val unknown=uncertainTimes(values).flatMap{it}.map(::timeBucket).toSet()
+        return values.sortedWith(compareBy<LedgerExecution>{it.date}.thenBy{it.minute}.thenBy{if(timeBucket(it) in unknown)it.ordinal else (it.second?:0).toLong()}.thenBy{it.ordinal}.thenBy{it.id})
+    }
     fun replay(executions:List<LedgerExecution>):MatchResult {
         ledgerRequire(executions.map{it.id}.distinct().size==executions.size,"成交ID重复")
         val lots=mutableListOf<Lot>();val groups=mutableMapOf<List<String>,MutableList<Lot>>();val matches=mutableListOf<LedgerMatch>();val cycleFacts=linkedMapOf<String,MutableList<LedgerExecution>>()
@@ -89,19 +94,23 @@ object LedgerRisk {
 
 object LedgerFees {
     fun stock(price:String,quantity:String,rate:String)=exact(decimal(price)*decimal(quantity)*decimal(rate))
-    fun futures(rule:LedgerContractRule,e:LedgerExecution,prior:List<LedgerExecution>):String {
-        LedgerValidation.rule(rule);ledgerRequire(rule.verified && rule.multiplier!=null,"合约参数未核实，不能自动推算手续费")
-        fun cost(q:BigDecimal,rate:String?):BigDecimal {
-            ledgerRequire(rate!=null,"本次开平手续费规则缺失")
-            val value=decimal(rate!!);val turnover=decimal(e.price)*q*decimal(rule.multiplier!!)
-            val base=if(rule.feeMode=="per_lot")value*q else value*turnover
-            val additional=when(rule.addMode){"per_lot"->decimal(requireNotNull(rule.addValue))*q;"turnover_rate"->decimal(requireNotNull(rule.addValue))*turnover;else->ZERO}
-            return base+additional
-        }
-        if(e.effect=="open")return exact(cost(decimal(e.quantity),rule.openFee))
-        val probe=MatchingEngine.replay(prior+e.copy(fees="0"));val open=prior.associateBy{it.id}
-        return exact(sum(probe.matches.filter{it.closeExecutionId==e.id}.map { m->cost(decimal(m.quantity),if(open.getValue(m.openExecutionId).tradingDay==e.tradingDay)rule.todayFee else rule.closeFee) }))
+    private fun cost(rule:LedgerContractRule,e:LedgerExecution,q:BigDecimal,rate:String?):BigDecimal {
+        ledgerRequire(rate!=null,"本次开平手续费规则缺失")
+        val turnover=decimal(e.price)*q*decimal(requireNotNull(rule.multiplier))
+        val base=if(rule.feeMode=="per_lot")decimal(rate!!)*q else decimal(rate!!)*turnover
+        val additional=when(rule.addMode){"per_lot"->decimal(requireNotNull(rule.addValue))*q;"turnover_rate"->decimal(requireNotNull(rule.addValue))*turnover;else->ZERO}
+        return base+additional
     }
+    fun fromMatches(rule:LedgerContractRule,e:LedgerExecution,matches:List<LedgerMatch>,facts:Map<String,LedgerExecution>):String {
+        LedgerValidation.rule(rule);ledgerRequire(rule.verified && rule.multiplier!=null,"合约参数未核实，不能自动推算手续费")
+        if(e.effect=="open")return exact(cost(rule,e,decimal(e.quantity),rule.openFee))
+        return exact(sum(matches.map{m->cost(rule,e,decimal(m.quantity),if(facts.getValue(m.openExecutionId).tradingDay==e.tradingDay)rule.todayFee else rule.closeFee)}))
+    }
+    fun futures(rule:LedgerContractRule,e:LedgerExecution,prior:List<LedgerExecution>):String {
+        val matches=if(e.effect=="open")emptyList()else MatchingEngine.replay(prior+e.copy(fees="0")).matches.filter{it.closeExecutionId==e.id}
+        return fromMatches(rule,e,matches,prior.associateBy{it.id})
+    }
+
 }
 
 data class ClosedEvent(val execution:LedgerExecution,val net:BigDecimal)

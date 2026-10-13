@@ -68,7 +68,11 @@ class BackupRepository(private val database: TradeDatabase, private val store: A
         val restoreContext=kotlinx.coroutines.currentCoroutineContext()
         restoreContext.ensureActive()
         BackupCodec.validate(preview.backup)
-        val targetLedger=preview.backup.ledger?.let{if(mode==RestoreMode.REPLACE)it else com.tradereview.app.v200.LedgerRepository.merge(requireNotNull(preview.before.ledger),it)}
+        val targetLedger=try {preview.backup.ledger?.let{if(mode==RestoreMode.REPLACE)it else com.tradereview.app.v200.LedgerRepository.merge(requireNotNull(preview.before.ledger),it)}?:preview.before.ledger?.let{local->
+            val ids=local.strategies.map{it.id}.toSet()
+            val reliable=preview.backup.tags.filter{it.kind=="strategy" && it.id !in ids}.map{com.tradereview.app.v200.LedgerStrategy(it.id,it.name,"旧备份策略，稳定身份保留",it.sortOrder,!it.hidden)}
+            local.copy(strategies=(local.strategies+reliable).sortedBy{it.id})
+        }} catch(e:com.tradereview.app.v200.LedgerException){throw BackupException(e.message?:"合并账本不符合配对规则，未恢复")}
         val incoming=incomingAttachments(preview,mode)
         val finalAttachments=if(mode==RestoreMode.REPLACE)incoming else preview.before.attachments+incoming
         require(finalAttachments.size<=EvidenceLimits.MAX_IMAGES && finalAttachments.groupBy { it.recordKey }.values.all { it.size<=10 }) { "合并后图片超过上限，未恢复；可核对后选择覆盖" }

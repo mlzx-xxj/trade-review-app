@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.ensureActive
 
-data class LedgerChange(val before:LedgerSnapshot,val after:LedgerSnapshot,val executionId:String?,val deleting:Boolean,val risk:RiskDecision?,val impact:String)
+data class LedgerChange(val before:LedgerSnapshot,val after:LedgerSnapshot,val executionId:String?,val deleting:Boolean,val risk:RiskDecision?,val impact:String,val orderWarning:Boolean=false,val affectsHistory:Boolean=false)
 class LedgerRepository(private val db:TradeDatabase) {
     private val dao get()=db.ledger()
     suspend fun read()=LedgerSnapshot(dao.accounts(),dao.strategies(),dao.risks(),dao.rules(),dao.plans(),dao.executions(),dao.cycles(),dao.lots(),dao.matches(),dao.reviews(),dao.cashFlows(),dao.audits())
@@ -22,7 +22,7 @@ class LedgerRepository(private val db:TradeDatabase) {
         val candidate=e?.let { input->
             val account=before.accounts.firstOrNull{it.id==input.accountId}?:throw LedgerException("账户不存在")
             ledgerRequire(input.strategyId==null || before.strategies.any{it.id==input.strategyId && (it.active || existing?.strategyId==it.id)},"策略已停用，请选择有效策略")
-            val ordinal=existing?.ordinal?:((before.executions.maxOfOrNull{it.ordinal}?:0)+1)
+            val ordinal=if(input.ordinal>0)input.ordinal else existing?.ordinal?:((before.executions.maxOfOrNull{it.ordinal}?:0)+1)
             var prepared=input.copy(ordinal=ordinal)
             if(prepared.feeSource=="rule") {
                 if(input.accountId=="stock") {
@@ -36,7 +36,7 @@ class LedgerRepository(private val db:TradeDatabase) {
             }
             val config=before.risks.firstOrNull{it.id==input.accountId}?:MarketRisk(input.accountId)
             val risk=LedgerRisk.evaluate(prepared,config)
-            prepared.copy(riskAmount=risk.amount,riskFundSnapshot=risk.fund,riskLimitSnapshot=risk.limit,riskExceeded=risk.exceeded,riskWarningEnabled=config.warnEnabled,riskConfirmed=if(existing==input)existing?.riskConfirmed?:false else false)
+            prepared.copy(orderConfirmed=false,riskAmount=risk.amount,riskFundSnapshot=risk.fund,riskLimitSnapshot=risk.limit,riskExceeded=risk.exceeded,riskWarningEnabled=config.warnEnabled,riskConfirmed=if(existing==input)existing?.riskConfirmed?:false else false)
         }
         val facts=(prior+listOfNotNull(candidate)).sortedBy{it.id};val result=MatchingEngine.replay(facts)
         ledgerRequire(before.reviews.all{r->result.cycles.any{it.id==r.cycleId}},"此次更改会使已有持仓复盘失去关联，请先处理该复盘；未修改任何成交")
@@ -47,14 +47,18 @@ class LedgerRepository(private val db:TradeDatabase) {
         val byExecution=after.executions.associateBy{it.id}
         val cash=after.accounts.joinToString("\n"){a->"${a.name}：已实现 ${exact(sum(after.matches.filter{m->byExecution.getValue(m.closeExecutionId).accountId==a.id}.map{decimal(it.net)}))}；${if(a.id=="stock")"参考现金 ${LedgerStatistics.cash(after,a)?:"未知（期初/历史未完整确认）"}"else "不推算真实可用资金"}"}
         val risk=candidate?.let{LedgerRisk.evaluate(it,before.risks.first{r->r.id==it.accountId})}
-        LedgerChange(before,after,candidate?.id,deleteId!=null,risk,"影响 $changed 个持仓周期、${after.matches.count{m->before.matches.firstOrNull{it.id==m.id}!=m}} 项匹配。\n已实现净盈亏：${exact(oldNet)} → ${exact(newNet)}\n$cash\n费用不会重复扣除；确认后事务重算。")
+        val uncertain=MatchingEngine.uncertainTimes(facts).any{group->group.any{it.id==candidate?.id}}
+        val historyChanged=before.matches.any{m->after.matches.firstOrNull{it.id==m.id}!=m}
+        LedgerChange(before,after,candidate?.id,deleteId!=null,risk,(if(uncertain)"本组秒数不完整，按明确成交序号FIFO；请核对并确认先后顺序。\n"else "")+"影响 $changed 个持仓周期、${after.matches.count{m->before.matches.firstOrNull{it.id==m.id}!=m}} 项匹配。\n已实现净盈亏：${exact(oldNet)} → ${exact(newNet)}\n$cash\n费用不会重复扣除；确认后事务重算。",uncertain,historyChanged)
     }
     suspend fun confirm(change:LedgerChange,riskAcknowledged:Boolean=false)=withContext(Dispatchers.IO) {
         val context=kotlinx.coroutines.currentCoroutineContext()
         db.withTransaction {
             ledgerRequire(read()==change.before,"数据在预览后变化，请重新预览；未保存")
             val executions=change.after.executions.map{if(it.id==change.executionId && riskAcknowledged)it.copy(riskConfirmed=true)else it}
-            val after=change.after.copy(executions=executions,audits=change.after.audits.map{a->if(a.id !in change.before.audits.map{it.id} && a.operation=="edit")a.copy(afterJson=LedgerJson.text(executions.first{it.id==a.executionId}))else a})
+            ledgerRequire(!change.orderWarning || riskAcknowledged,"同分钟成交顺序尚未确认，未保存")
+            val confirmedExecutions=executions.map{if(it.id==change.executionId && riskAcknowledged)it.copy(orderConfirmed=true)else it}
+            val after=change.after.copy(executions=confirmedExecutions,audits=change.after.audits.map{a->if(a.id !in change.before.audits.map{it.id} && a.operation=="edit")a.copy(afterJson=LedgerJson.text(confirmedExecutions.first{it.id==a.executionId}))else a})
             LedgerValidation.snapshot(after)
             write(after,clear=false,before=change.before);context.ensureActive()
         }

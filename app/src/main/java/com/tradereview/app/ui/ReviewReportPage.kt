@@ -6,6 +6,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.testTag
@@ -28,7 +30,7 @@ fun ReviewReportPage(kind: String,state: JournalState,currency: String,onCurrenc
         value=withContext(Dispatchers.Default) { CalculatedPeriod(period,state.trades,state.reviews,ReviewReports.calculate(state.trades,state.reviews,period,today.toEpochDay())) }
     }
     val report=calculated?.takeIf { it.period==period && it.trades===state.trades && it.reviews===state.reviews }?.report
-    LazyColumn(modifier.fillMaxSize().testTag("period-report-list"),contentPadding=PaddingValues(16.dp),verticalArrangement=Arrangement.spacedBy(16.dp)) {
+    LazyColumn(modifier.fillMaxSize().testTag("period-report-list").semantics { contentDescription=if(report==null)"复盘报告计算中"else"复盘报告已就绪" },contentPadding=PaddingValues(16.dp),verticalArrangement=Arrangement.spacedBy(16.dp)) {
         item { SectionCard(if(kind=="week")"每周复盘报告"else "每月复盘报告","本地规则汇总，不接 AI；不作盈利预测或因果推断。") {
             SingleChoice(listOf(Option("week","周报"),Option("month","月报")),kind,onKind)
             Text("${dayLabel(period.start)} — ${dayLabel(period.end)}",modifier=Modifier.testTag("report-period"))

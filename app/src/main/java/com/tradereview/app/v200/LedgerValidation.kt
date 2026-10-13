@@ -50,14 +50,15 @@ object LedgerValidation {
     private fun optional(v:String?,positive:Boolean=false){v?.let{number(it,positive)}}
     fun code(account:String,code:String) {
         ledgerRequire(account in listOf("stock","futures"),"仅支持A股与国内期货账户")
-        ledgerRequire(if(account=="stock")Regex("(?:60[0135]|00[0123]|30[01]|688)[0-9]{3}").matches(code)else Regex("[a-z]{1,4}[0-9]{3,4}").matches(code),if(account=="stock")"仅支持普通A股六位代码；不支持ETF、债券、B股和T+0品种"else"合约代码应包含品种与到期年月，如rb2701（不自动推测合约参数）")
+        ledgerRequire(if(account=="stock")Regex("(?:60[0135]|00[0123]|30[01]|688|920)[0-9]{3}").matches(code)else Regex("[a-z]{1,4}[0-9]{3,4}").matches(code),if(account=="stock")"仅支持普通A股六位代码；不支持ETF、债券、B股和T+0品种"else"合约代码应包含品种与到期年月，如rb2701（不自动推测合约参数）")
     }
     fun account(a:LedgerAccount){ledgerRequire(a.id==a.market && a.id in listOf("stock","futures"),"账户身份无效");word(a.name);optional(a.initialCapital);number(a.buyRate);number(a.sellRate);ledgerRequire(decimal(a.buyRate)<=BigDecimal.ONE && decimal(a.sellRate)<=BigDecimal.ONE,"股票综合费率应在0至1之间")}
     fun strategy(s:LedgerStrategy){id(s.id);word(s.name);note(s.description);ledgerRequire(s.sortOrder in 0..100000,"策略排序范围无效")}
     fun risk(r:MarketRisk){ledgerRequire(r.id in listOf("stock","futures") && r.limitMode in listOf("amount","percent"),"风险配置无效");optional(r.riskFund,true);optional(r.limitValue,true);optional(r.defaultLimit,true);if(r.limitMode=="percent" && r.limitValue!=null)ledgerRequire(decimal(r.limitValue)<=BigDecimal(100),"风险金比例应大于0且不超过100%")}
     fun rule(r:LedgerContractRule){id(r.id);code("futures",r.code);word(r.name);day(r.effectiveDay);optional(r.multiplier,true);optional(r.marginRate);ledgerRequire(r.marginRate==null || decimal(r.marginRate)<=BigDecimal.ONE,"保证金率应在0至1之间");ledgerRequire(r.feeMode in listOf("per_lot","turnover_rate") && r.addMode in listOf("none","per_lot","turnover_rate"),"必须明确按手金额或成交额费率，不能猜测+0.01单位");listOf(r.openFee,r.closeFee,r.todayFee,r.addValue).forEach{optional(it)};ledgerRequire(r.addMode=="none" && r.addValue==null || r.addMode!="none" && r.addValue!=null,"手续费加收单位及金额不完整");if(r.feeMode=="turnover_rate")listOf(r.openFee,r.closeFee,r.todayFee).forEach{ledgerRequire(it==null || decimal(it)<=BigDecimal.ONE,"成交额费率应在0至1之间")};if(r.addMode=="turnover_rate")ledgerRequire(decimal(r.addValue!!)<=BigDecimal.ONE,"加收费率应在0至1之间");if(r.verified)ledgerRequire(r.multiplier!=null,"核实的合约规则必须包含乘数")}
     fun execution(e:LedgerExecution) {
-        id(e.id);code(e.accountId,e.code);word(e.name);day(e.date);day(e.tradingDay)
+        id(e.id);code(e.accountId,e.code);word(e.name);day(e.date);day(e.tradingDay);ledgerRequire(e.date<=LocalDate.now().toEpochDay(),"真实成交自然日期不能晚于今天")
+        ledgerRequire(e.second==null || e.second in 0..59,"成交秒必须在0至59，未知保持空")
         ledgerRequire(e.minute in 0..1439 && e.ordinal in 0..Long.MAX_VALUE,"成交时间/顺序无效")
         ledgerRequire(e.side in listOf("buy","sell") && e.effect in listOf("open","close","close_today","close_yesterday"),"买卖及开平选项无效")
         if(e.accountId=="stock")ledgerRequire(e.tradingDay==e.date && (e.side=="buy" && e.effect=="open" || e.side=="sell" && e.effect=="close"),"A股只支持买入/卖出，不允许卖空或期货开平类型")
@@ -75,7 +76,7 @@ object LedgerValidation {
     }
     fun plan(p:LedgerPlan){id(p.id);code(p.accountId,p.code);word(p.name);day(p.day);p.strategyId?.let(::id);listOf(p.entryPrice,p.takeProfit,p.stopLoss).forEach{optional(it,true)};LedgerJson.levels(p.levels);note(p.note)}
     fun review(r:LedgerReview){id(r.id);id(r.cycleId);day(r.day);listOf(r.takeProfit,r.stopLoss).forEach{optional(it,true)};LedgerJson.levels(r.levels);note(r.note)}
-    fun cash(f:LedgerCashFlow){id(f.id);ledgerRequire(f.accountId in listOf("stock","futures") && f.kind in listOf("in","out"),"出入金类型无效");day(f.day);number(f.amount,true);note(f.note)}
+    fun cash(f:LedgerCashFlow){id(f.id);ledgerRequire(f.accountId in listOf("stock","futures") && f.kind in listOf("in","out"),"出入金类型无效");day(f.day);ledgerRequire(f.day<=LocalDate.now().toEpochDay(),"实际资金流水日期不能晚于今天");number(f.amount,true);note(f.note)}
     fun snapshot(s:LedgerSnapshot) {
         ledgerRequire(s.accounts.map{it.id}.toSet()==setOf("stock","futures") && s.accounts.size==2 && s.risks.map{it.id}.toSet()==setOf("stock","futures") && s.risks.size==2,"备份须包含两账户和两套风险配置")
         fun <T> unique(list:List<T>,key:(T)->String){ledgerRequire(list.size<=10000 && list.map(key).distinct().size==list.size,"数据过多或稳定ID重复")}
@@ -84,7 +85,25 @@ object LedgerValidation {
         val strategies=s.strategies.map{it.id}.toSet();val plans=s.plans.associateBy{it.id}
         s.plans.forEach{ledgerRequire(it.strategyId==null || it.strategyId in strategies,"计划策略不存在")}
         s.executions.forEach{e->execution(e);ledgerRequire(!e.riskExceeded || !e.riskWarningEnabled || e.riskConfirmed,"超风险真实成交需要二次确认");ledgerRequire(e.strategyId==null || e.strategyId in strategies,"成交策略不存在");e.planId?.let{p->ledgerRequire(plans[p]?.let{it.accountId==e.accountId && it.code==e.code}==true,"关联计划的账户或标的不一致")}}
+        MatchingEngine.uncertainTimes(s.executions).forEach{group->ledgerRequire(group.any{it.orderConfirmed},"秒不完整的同分钟成交必须明确确认顺序");ledgerRequire(group.map{it.ordinal}.distinct().size==group.size,"同分钟成交顺序号重复")}
         val replay=MatchingEngine.replay(s.executions)
+        val byId=s.executions.associateBy{it.id};val byClose=replay.matches.groupBy{it.closeExecutionId}
+        s.executions.forEach{e->
+            if(e.feeSource=="rule"){
+                val expected=if(e.accountId=="stock"){
+                    ledgerRequire(e.feeRateSnapshot!=null && decimal(e.feeRateSnapshot)<=BigDecimal.ONE,"缺少有效的当笔股票费率快照")
+                    LedgerFees.stock(e.price,e.quantity,e.feeRateSnapshot!!)
+                }else{
+                    ledgerRequire(e.ruleSnapshot!=null,"缺少当笔期货规则快照")
+                    val r=LedgerJson.rule(e.ruleSnapshot!!);ledgerRequire(r.code==e.code && r.multiplier!=null && decimal(r.multiplier).compareTo(decimal(e.multiplier!!))==0,"合约参数快照与成交不一致")
+                    LedgerFees.fromMatches(r,e,byClose[e.id].orEmpty(),byId)
+                }
+                ledgerRequire(decimal(expected).compareTo(decimal(e.fees))==0,"手续费与保存的当笔规则不一致，不自动改写真实费用")
+            }
+            val expectedExceeded=e.riskAmount!=null && e.riskLimitSnapshot!=null && decimal(e.riskAmount)>decimal(e.riskLimitSnapshot)
+            ledgerRequire(e.riskExceeded==expectedExceeded,"风险标记与保存的风险口径不一致")
+        }
+
         ledgerRequire(s.lots.sortedBy{it.id}==replay.lots && s.matches.sortedBy{it.id}==replay.matches && s.cycles.sortedBy{it.id}==replay.cycles,"持仓/匹配缓存与真实成交不一致，拒绝恢复")
         s.audits.forEach{a->id(a.id);id(a.executionId);ledgerRequire(a.operation in listOf("edit","delete") && a.createdAt in 0..4133980799999L,"修订信息无效");ledgerRequire(LedgerJson.execution(a.beforeJson).id==a.executionId,"修订事实ID不一致");if(a.operation=="delete")ledgerRequire(a.afterJson==null,"删除修订不应含新成交");else ledgerRequire(a.afterJson!=null && LedgerJson.execution(a.afterJson).id==a.executionId,"编辑修订缺少相同ID事实")}
         val cycles=s.cycles.map{it.id}.toSet();s.reviews.forEach{ledgerRequire(it.cycleId in cycles,"复盘关联持仓不存在")}
