@@ -49,7 +49,11 @@ class FastEntryUiTest {
         entry(); compose.onNodeWithText("已恢复未保存草稿").assertIsDisplayed()
         compose.onNodeWithTag("entry-amount").performScrollTo().assertTextContains("123.45")
         compose.onNodeWithText("保存并继续").performClick()
-        compose.waitUntil(10000) { !model.busy.value && model.state.value.trades.size == 1 }
+        // Room can publish the new row before the save callback updates the editor.
+        // Require the visible completion feedback and the actual cleared field too.
+        compose.waitUntil(10000) { !model.busy.value && model.state.value.trades.size == 1 &&
+            compose.onAllNodesWithText("交易已保存，可以继续记录下一笔").fetchSemanticsNodes().isNotEmpty() &&
+            compose.onAllNodes(hasTestTag("entry-amount") and SemanticsMatcher.expectValue(SemanticsProperties.EditableText, AnnotatedString(""))).fetchSemanticsNodes().isNotEmpty() }
         compose.onNodeWithTag("entry-amount").assert(SemanticsMatcher.expectValue(SemanticsProperties.EditableText, AnnotatedString("")))
         compose.onNodeWithText("保存交易").performClick(); compose.onNodeWithTag("entry-error").assertIsDisplayed()
         compose.onNodeWithText("亏损").performScrollTo().performClick()
