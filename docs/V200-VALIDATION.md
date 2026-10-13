@@ -29,3 +29,5 @@ V2编译与领域完整阶段Actions [38383179786](https://github.com/mlzx-xxj/t
 同轮API29/35均实际121项，116通过/5失败/0跳过：旧NavigationTest两项仍绑定新Main，与另一个旧Activity兼容宿主不一致；新主UI两项合成成交ID用连字符，稳定ID校验正确拒绝；一项策略表单字段调用滚动但对话框没有滚动布局。保留全部原断言，原导航绑定Debug兼容宿主、合成ID改合法下划线、策略与账户弹窗加实际滚动。新增10项Repository、2项完整迁移及其他主UI三项通过，不能记为全套成功。
 
 随后进程探针因Main未传clearWork=true而拒绝遗留暂存文件；修复为Application按进程初始化一次，完成前阻止文件UI操作，旋转不清除正在预览的ZIP，失败显示可恢复入口。原V1升级Java探针加显式target_schema=8参数，原V1脚本仍默认7；原长期密钥缺失，真实固定签名升级依然未执行。重新完整CI，保留失败原始XML/日志/截图。
+
+Actions [38386967794](https://github.com/mlzx-xxj/trade-review-app/actions/runs/38386967794)，源1b4c01d：主代码编译通过，新增可访问性数值测试把CustomActions写在SemanticsProperties而非本Compose版本的SemanticsActions，测试APK编译失败；已修正命名空间，保留准确值及空日期断言。模拟器及发布未执行，本地50 Python通过不冒充本轮Android通过。
