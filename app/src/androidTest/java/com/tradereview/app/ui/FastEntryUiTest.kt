@@ -93,7 +93,8 @@ class FastEntryUiTest {
         compose.onNodeWithText("管理常用品种").performClick()
         compose.onNodeWithTag("favorite-symbol-preset_stock_0").performScrollTo().performClick()
         compose.waitUntil(10000) { !model.busy.value && model.state.value.instruments.any { it.id == "preset_stock_0" && !it.favorite } }
-        compose.onNodeWithTag("symbol-search").performTextInput("NVDA").performImeAction()
+        compose.onNodeWithTag("symbol-search").performTextInput("NVDA")
+        compose.onNodeWithTag("symbol-search").performImeAction()
         compose.onNodeWithTag("symbol-list").performScrollToNode(hasText("NVDA · NVDA"))
         compose.onNodeWithText("NVDA · NVDA").performScrollTo().assertIsDisplayed()
     }

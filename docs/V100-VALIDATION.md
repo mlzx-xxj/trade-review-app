@@ -33,6 +33,8 @@
 
 该轮API29在新提交启动后被并发策略取消，没有将未完成结果标为通过。中间被后续提交取代的运行同样不能代表最终提交验证。
 
+[Actions 38329297307](https://github.com/mlzx-xxj/trade-review-app/actions/runs/38329297307)实际发现新增测试的编译错误：`performTextInput`返回Unit，不能继续链式调用`performImeAction`。拆分为两次操作同一输入节点，保留搜索/键盘动作与结果可见性断言；该失败运行没有执行模拟器测试，未记为通过。
+
 Base独立下载本次真实APK，用官方apksigner和二进制Manifest读取器核对证书、包名、non-debuggable、版本/权限/摘要；四份中文/Latin OCR模型与全部原ABI实际存在。实际SIGNING-STATUS仍configured=false，不产生固定签名包。交付报告门禁还已用上一轮真实失败XML检查，正确拒绝API29的1失败和API35的4失败，不把成功安装探针冒充全套成功。
 
 ## 最终提交的验证与交付入口
