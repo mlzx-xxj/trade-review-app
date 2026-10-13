@@ -39,6 +39,8 @@
 
 [Actions 38332817128](https://github.com/mlzx-xxj/trade-review-app/actions/runs/38332817128)，源提交`15f70e14193e7ee0298b48ea66c5333dc2c0856e`：构建、151 JVM、三种Lint通过；API29完整103项及实际RC安装/重启通过，保存并继续清空、反馈及两笔精确净盈亏断言通过，十六表和附件校验一致。API35完成103项、101通过/2失败，均为真实键盘未显示；其余包括完整ZIP链、保存并继续通过。系统日志在01:48:55记录SystemUI keyguard服务ANR，应用到01:52:21才首次启动，随后安装探针也拒绝ANR对话框。没有删除键盘断言或关闭ANR检测。新增启动后20秒稳定等待与应用测试前的系统日志门禁，出现ANR/崩溃即保留日志、lastanr和截图并失败，不把未执行测试标为通过；重新在新模拟器执行完整CI。Base新增3项合成启动故障决策检查，当前共39项Python测试；这些不是Android启动或键盘实测。
 
+[Actions 38335765567](https://github.com/mlzx-xxj/trade-review-app/actions/runs/38335765567)发现runner缺少rg，新增启动门禁的合成检查因证据读取工具不可用而失败，未继续Android编译/模拟器。改用标准grep并保留工具可用性、日志存在检查，增强合成检查失败信息；Base39项重新通过，随后完整CI继续核对。
+
 Base独立下载本次真实APK，用官方apksigner和二进制Manifest读取器核对证书、包名、non-debuggable、版本/权限/摘要；四份中文/Latin OCR模型与全部原ABI实际存在。实际SIGNING-STATUS仍configured=false，不产生固定签名包。交付报告门禁还已用上一轮真实失败XML检查，正确拒绝API29的1失败和API35的4失败，不把成功安装探针冒充全套成功。
 
 ## 最终提交的验证与交付入口

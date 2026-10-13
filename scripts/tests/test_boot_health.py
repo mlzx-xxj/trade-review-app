@@ -30,14 +30,14 @@ exit 0
 
     def test_clean_boot_reaches_real_test_command_and_keeps_its_failure(self):
         root,result=self.invoke('I ActivityManager: Starting healthy synthetic emulator\n')
-        self.assertTrue((root/'gradle-invoked').exists());self.assertEqual(7,result.returncode)
+        self.assertTrue((root/'gradle-invoked').exists(),result.stderr);self.assertEqual(7,result.returncode)
 
     def test_pre_app_systemui_anr_is_rejected_with_evidence_and_no_native_test_claim(self):
         text='E ActivityManager: ANR in com.android.systemui\nReason: synthetic keyguard service timeout\n'
         root,result=self.invoke(text)
         self.assertEqual(1,result.returncode);self.assertFalse((root/'gradle-invoked').exists())
         self.assertEqual(text,(root/'ci-stability/boot-logcat.txt').read_text())
-        self.assertTrue((root/'ci-stability/boot-last-anr.txt').is_file());self.assertTrue((root/'ci-stability/boot-failure.png').is_file())
+        self.assertTrue((root/'ci-stability/boot-last-anr.txt').is_file(),result.stderr);self.assertTrue((root/'ci-stability/boot-failure.png').is_file(),result.stderr)
         self.assertIn('no dialog dismissed',result.stderr)
 
     def test_platform_crash_is_rejected_before_native_tests(self):
