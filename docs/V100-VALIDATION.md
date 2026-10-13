@@ -23,17 +23,32 @@
 
 [Actions 38317583127](https://github.com/mlzx-xxj/trade-review-app/actions/runs/38317583127)，源提交 `44d160caf3571c0897ef5b6f445846fe48c7af03`：API35 实际103项、102通过/1失败、0跳过。盘后保存已通过并进入日历；实际金额节点是 `CNY：+123.45 · 1 笔`，计算正确。新测试误将 assertTextContains 默认参数当作子串匹配，实际默认要求完整 Text 值。改为精确断言当日币种/金额/笔数，并精确断言周/月报同样数据；不修改金额或统计公式。
 
-## 正在执行
+## 后续真实失败与修复
 
 [Actions 38319722827](https://github.com/mlzx-xxj/trade-review-app/actions/runs/38319722827)，源提交 `a748f889515d4ccdf9e0cc8e580c69661b031c82`：编译、151 JVM 和三种 Lint 再次通过。API29 完成103项、102通过/1失败；API35 完成103项、99通过/4失败，均0跳过。新增链的当日/周报金额精确断言已通过，月报失败为等待尚未滚入视野的 LazyColumn 节点，改为确认月报页面和计算完成后从父列表搜索滚动。保存并继续的回归等待还需同时确认 UI 保存回调及实际清空的金额，而不是只等待 Room 新行可见；清空断言保留。
 
 该轮 API35 的系统日志在交易测试开始前已记录 Launcher 和 system_server 输入分发 ANR，随后实际键盘未显示，键盘断言失败并使交付探针拒绝继续。没有关闭键盘断言或忽略/清除 ANR；完整日志保留在失败运行产物，下一提交重新在新模拟器运行全部测试。
 
-API29/35 全回归、新手引导/备份故障/完整操作链、实际交付 RC 安装及重启、截图和发布验证正在执行；结果完成后补充。最终提交必须另有完整绿色 CI，见 PR Checks，不使用 skip ci。
-
 [Actions 38327162890](https://github.com/mlzx-xxj/trade-review-app/actions/runs/38327162890)，源提交 `731ec228299853ad74775790fa6695e78b752944`：编译、151 JVM、三种 Lint 再次通过，Room7 schema 字节一致。API35实际103项、101通过/2失败、0跳过：新链已通过月报，恢复预览超高卡片内的按钮虽有语义节点但尚未进入可点击视野；补充精确子节点滚动与显示/enabled断言，并在截取恢复截图前断言二次确认对话框已出现。品种搜索结果被真实键盘和滚动位置挡住，测试执行已存在的 Search IME 操作后滚到结果，保留实际可见性断言。该轮大字体/深色/键盘/横屏、保存并继续均已通过，没有删除这些检查。恢复交易、recordKey、净盈亏与私有图片校验断言全部保留。
 
+该轮API29在新提交启动后被并发策略取消，没有将未完成结果标为通过。中间被后续提交取代的运行同样不能代表最终提交验证。
+
 Base独立下载本次真实APK，用官方apksigner和二进制Manifest读取器核对证书、包名、non-debuggable、版本/权限/摘要；四份中文/Latin OCR模型与全部原ABI实际存在。实际SIGNING-STATUS仍configured=false，不产生固定签名包。交付报告门禁还已用上一轮真实失败XML检查，正确拒绝API29的1失败和API35的4失败，不把成功安装探针冒充全套成功。
+
+## 最终提交的验证与交付入口
+
+以[PR #9 当前提交 Checks](https://github.com/mlzx-xxj/trade-review-app/pull/9/checks)核对最终head的完整Actions；源码、文档改动都必须重新通过完整工作流，无skip ci。运行中的任务、被取消的运行及失败的历史运行不能用于声称最终通过。
+
+工作流只有在构建与API29/35全部成功后才创建[手机浏览器候选下载页](https://github.com/mlzx-xxj/trade-review-app/releases)。每个V1.0候选页随实际APK提供：
+
+- `CI-RESULTS.txt`：从真实JUnit XML与Lint XML生成的151项JVM、各103项API29/35及三种Lint统计，拒绝任何失败、错误、跳过或缺少新测试。
+- `RC-IDENTITY.json`、`SIGNING.txt`、`SHA256SUMS.txt`、`PUBLICATION-CHECK.json`：实际apksigner/aapt验证的证书、包名、版本、non-debuggable、权限约束、完整离线模型、APK摘要及40位来源提交。最终交付以该候选文件为准，临时证书可能随构建变化。
+- `PERFORMANCE-AND-OCR.json`：两种API的实际列表/计算/图片/OCR评估、十六张表进程重启一致性和交付APK安装探针；共享runner数据不是手机性能结论。
+- `TradeReview-v1.0-emulator-screenshots.zip`：各API的34个页面/状态截图，全部使用合成记录和图片。首页、引导、回读、隐私、证据、恢复确认及实际RC首次启动/重启截图另提供API35 PNG。
+
+API29/35回归包括Room完整升级链、旧JSON/ZIP与事务/文件回滚、OCR误识别防护、风险/R/多币种、草稿/标签/品种、日历/洞察/周月报、真实键盘/大字体/深色/横屏，以及新增的手工交易→截图→盘后复盘→日历→周月报→完整ZIP→删除合成记录→预览与二次确认→恢复稳定ID、金额、图片和日志。额外探针实际安装交付的不可调试RC，跳过引导、结束进程并重启确认状态。
+
+最终运行链接、APK链接、摘要与Ready状态在PR正文及交付回复登记；核对`sourceCommit`与PR最终head一致。这里保留失败和修复证据，最终成功结果直接来自对应运行报告，不通过预填成功数字代替执行。
 
 ## 正式发布阻塞
 
