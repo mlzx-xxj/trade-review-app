@@ -181,6 +181,4 @@ val MIGRATION_6_7 = object : Migration(6,7) {
 abstract class TradeDatabase : RoomDatabase() {
     abstract fun trades(): TradeDao
     abstract fun ledger(): com.tradereview.app.v200.LedgerDao
-    abstract fun ledger(): com.tradereview.app.v200.LedgerDao
-    abstract fun ledger(): com.tradereview.app.v200.LedgerDao
 }
