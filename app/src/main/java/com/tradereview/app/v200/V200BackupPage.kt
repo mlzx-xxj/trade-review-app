@@ -42,8 +42,15 @@ import java.time.LocalDate
             Text("当前：V2成交${local?.executions?.size?:0}、旧交易${p.before.trades.size}、旧截图${p.before.attachments.size}")
             ChoiceRow(mode,listOf("merge" to "去重合并","replace" to "覆盖备份范围"),{mode=it})
             Text(if(mode=="replace")"将替换备份覆盖的本机数据；JSON覆盖旧档案时旧截图可能被清除。请先保存当前完整ZIP。"else"冲突保留本地。合并后如违反T+1、超量平仓或复盘关联规则，会整体拒绝。",color=MaterialTheme.colorScheme.error)
-            Row{TextButton({backup.refreshPreview()},enabled=!busy,modifier=Modifier.heightIn(min=48.dp)){Text("重新核对")};TextButton({backup.cancelPreview()},enabled=!busy,modifier=Modifier.heightIn(min=48.dp)){Text("取消")};Button({confirming=true},enabled=!busy,modifier=Modifier.heightIn(min=48.dp).testTag("v2-restore-continue")){Text("继续确认恢复")}}
         }}}
+        // Keep actions in their own lazy item: a long preview must not hide the confirmation controls.
+        if(preview!=null)item{Column(verticalArrangement=Arrangement.spacedBy(8.dp)){
+            Button({confirming=true},enabled=!busy,modifier=Modifier.fillMaxWidth().heightIn(min=52.dp).testTag("v2-restore-continue")){Text("继续确认恢复")}
+            Row(horizontalArrangement=Arrangement.spacedBy(12.dp)){
+                TextButton({backup.refreshPreview()},enabled=!busy,modifier=Modifier.heightIn(min=48.dp)){Text("重新核对")}
+                TextButton({backup.cancelPreview()},enabled=!busy,modifier=Modifier.heightIn(min=48.dp)){Text("取消")}
+            }
+        }}
         item{Text("${BuildConfig.VERSION_NAME} · 本机离线\nZIP/JSON为明文，SHA-256不是加密。CSV仅导出，不能作为完整恢复备份。",style=MaterialTheme.typography.bodySmall)}
     }
     if(exportChoice)AlertDialog(onDismissRequest={exportChoice=false},title={Text("选择备份范围")},text={Column{Text("完整 ZIP 包含新账本、旧档案及全部旧截图；JSON不含图片。");TextButton({exportChoice=false;json.launch("交易复盘-V2-结构化-$date.json")},modifier=Modifier.heightIn(min=48.dp)){Text("仅保存 JSON（不含截图）")}}},confirmButton={Button({exportChoice=false;zip.launch("交易复盘-V2-完整-$date.zip")},Modifier.heightIn(min=48.dp)){Text("完整 ZIP（推荐）")}},dismissButton={TextButton({exportChoice=false}){Text("取消")}})

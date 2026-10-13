@@ -39,3 +39,5 @@ Actions [38387969242](https://github.com/mlzx-xxj/trade-review-app/actions/runs/
 Actions [38395312906](https://github.com/mlzx-xxj/trade-review-app/actions/runs/38395312906)，源54efbfa：原始XML确认209 JVM全部通过（含Matching37、LedgerBackup7、ChartScale11、LedgerCsv3，0失败/错误/跳过）；Debug/RC/Release编译成功，Lint0错误，Debug20警告、RC/Release各21。实际configured=false，原pin/真实旧签名升级/手机验收未执行。最后截图调整提交触发最终全CI，此阶段尚未执行的模拟器不记为通过。
 
 最终取证调整仅测试滚动位置：月图保留持平/无交易截图57，并把截图48滚动到真实合成盈亏日期；品种图截图49滚动到包含负值的行。金额和算法不改。每次最终提交都执行完整CI，没有skip ci；最终证据以精确HEAD的Actions、Release CI-RESULTS.txt及真实PNG为准。
+
+Actions [38396858142](https://github.com/mlzx-xxj/trade-review-app/actions/runs/38396858142)，源c251d648：209 JVM全部通过，编译及Lint成功（0错误，Debug20警告、RC/Release各21）。API29/35各实际124项，123通过/1失败/0跳过；失败发生在恢复流程，长预览Lazy项中的确认操作未进入可触摸视区，未打开二次确认。真实截图55显示仍是预览，不冒充确认完成；图表48/49已确认真实正负柱和零轴。将恢复操作拆成独立Lazy项、全宽52dp按钮，测试保留ZIP前后完整相等断言，并要求确认弹窗实际可见。发布门禁正确拒绝本轮失败结果，重新执行完整CI。
