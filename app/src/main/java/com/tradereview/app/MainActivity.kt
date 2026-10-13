@@ -2,6 +2,8 @@ package com.tradereview.app
 
 import android.os.Bundle
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.SideEffect
+import androidx.core.view.WindowCompat
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.activity.ComponentActivity
@@ -45,7 +47,9 @@ class MainActivity : ComponentActivity() {
                     initializer { BackupViewModel(database, application.contentResolver,evidence,experience) }
                 })
                 val state by model.state.collectAsStateWithLifecycle()
-                TradeReviewTheme(darkTheme = when (state.settings.theme) { "dark" -> true; "light" -> false; else -> isSystemInDarkTheme() }) {
+                val darkTheme=when (state.settings.theme) { "dark" -> true; "light" -> false; else -> isSystemInDarkTheme() }
+                SideEffect { WindowCompat.getInsetsController(window,window.decorView).isAppearanceLightStatusBars=!darkTheme }
+                TradeReviewTheme(darkTheme = darkTheme) {
                     TradeReviewApp(model, backup,experience=experience)
                 }
         }

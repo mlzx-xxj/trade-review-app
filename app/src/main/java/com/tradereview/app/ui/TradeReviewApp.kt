@@ -196,7 +196,7 @@ private fun HomePage(state: JournalState, analytics: AnalyticsState, currency: S
             Button(onClick = onAdd, modifier = Modifier.fillMaxWidth().padding(top = 12.dp).heightIn(min = 56.dp).testTag("home-fast-entry").semantics{contentDescription="新增交易"}) { Text(if(state.drafts.any { it.key == "new" }) "快捷记账 · 恢复草稿" else "快捷记账") }
             Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.spacedBy(8.dp)) {
                 OutlinedButton(onClick=onOcr,modifier=Modifier.weight(1f).heightIn(min=48.dp).testTag("open-ocr")){Text("从截图识别交易")}
-                OutlinedButton(onClick=onSmart,modifier=Modifier.weight(1f).heightIn(min=48.dp).testTag("open-smart-insights")){Text("智能洞察与盘前提醒")}
+                OutlinedButton(onClick=onSmart,modifier=Modifier.weight(1f).heightIn(min=48.dp).testTag("open-smart-insights").semantics{contentDescription="智能洞察与盘前提醒"}){Text("智能洞察")}
             }
         }
         item { SectionCard("今日表现", "按选定币种统计已录入的平仓记录。") {
