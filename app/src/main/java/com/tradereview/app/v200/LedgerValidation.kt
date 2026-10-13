@@ -86,7 +86,7 @@ object LedgerValidation {
         val strategies=s.strategies.map{it.id}.toSet();val plans=s.plans.associateBy{it.id}
         s.plans.forEach{ledgerRequire(it.strategyId==null || it.strategyId in strategies,"计划策略不存在")}
         s.executions.forEach{e->execution(e);ledgerRequire(!e.riskExceeded || !e.riskWarningEnabled || e.riskConfirmed,"超风险真实成交需要二次确认");ledgerRequire(e.strategyId==null || e.strategyId in strategies,"成交策略不存在");e.planId?.let{p->ledgerRequire(plans[p]?.let{it.accountId==e.accountId && it.code==e.code}==true,"关联计划的账户或标的不一致")}}
-        MatchingEngine.uncertainTimes(s.executions).forEach{group->ledgerRequire(group.any{it.orderConfirmed},"秒不完整的同分钟成交必须明确确认顺序");ledgerRequire(group.map{it.ordinal}.distinct().size==group.size,"同分钟成交顺序号重复")}
+        MatchingEngine.uncertainTimes(s.executions).forEach{group->ledgerRequire(group.any{it.orderConfirmed},"秒不完整或同秒成交必须明确确认顺序");ledgerRequire(group.map{it.ordinal}.distinct().size==group.size,"同分钟成交顺序号重复")}
         val replay=MatchingEngine.replay(s.executions)
         val byId=s.executions.associateBy{it.id};val byClose=replay.matches.groupBy{it.closeExecutionId}
         s.executions.forEach{e->

@@ -35,14 +35,14 @@ import java.time.LocalDate
     BackHandler(enabled=route.isNotEmpty() && !editor){back()}
     Scaffold(topBar={Row(Modifier.fillMaxWidth().windowInsetsPadding(WindowInsets.statusBars).padding(horizontal=8.dp),horizontalArrangement=Arrangement.spacedBy(4.dp)){
         if(route.isNotEmpty())IconButton({back()}){Icon(Icons.AutoMirrored.Filled.ArrowBack,"返回主页面")}
-        Text(when(route){"risk"->"风险与策略";"rules"->"合约参数";"backup"->"备份与导出";"position"->"持仓详情";"execution"->"成交详情";"archive"->"兼容历史";"strategy"->"策略关联成交";else->labels.getOrElse(page){"首页"}},Modifier.weight(1f).padding(vertical=14.dp),style=MaterialTheme.typography.titleLarge)
+        Text(when(route){"risk"->"风险与策略";"rules"->"合约参数";"backup"->"备份与导出";"position"->"持仓详情";"execution"->"成交详情";"archive"->"兼容历史";"strategy"->"策略关联历史";else->labels.getOrElse(page){"首页"}},Modifier.weight(1f).padding(vertical=14.dp),style=MaterialTheme.typography.titleLarge)
         FlowRow(Modifier.widthIn(max=250.dp),horizontalArrangement=Arrangement.End){
             if(route!="risk" && route!="rules")TextButton({route="risk"},modifier=Modifier.heightIn(min=48.dp).testTag("open-risk-strategy")){Text("风险与策略")}
             if(route.isEmpty() && page==1)TextButton({editing=null;model.openEditor()},modifier=Modifier.heightIn(min=48.dp).testTag("new-execution")){Text("记一笔")}
             IconButton({route="backup"},modifier=Modifier.testTag("open-backup")){Icon(Icons.Default.Settings,"备份与导出")}
         }
     }},bottomBar={if(route.isEmpty())NavigationBar{labels.forEachIndexed{i,label->NavigationBarItem(selected=page==i,onClick={model.page(i)},icon={when(i){0->Icon(Icons.Default.Home,label);1->Icon(Icons.AutoMirrored.Filled.ReceiptLong,label);2->Icon(Icons.Default.Checklist,label);3->Icon(Icons.Default.Assessment,label);else->Icon(Icons.Default.Person,label)}},label={Text(label)},modifier=Modifier.testTag("v2-main-page-$i"))}}},snackbarHost={SnackbarHost(snack,Modifier.onSizeChanged{snackHeight=it.height})}){padding->Box(Modifier.fillMaxSize().padding(padding).padding(bottom=with(density){snackHeight.toDp()}+if(snackHeight>0)8.dp else 0.dp)){
-        if(screen.error!=null)Text(screen.error!!,Modifier.padding(16.dp))else if(ledger==null)Column(Modifier.padding(16.dp)){LinearProgressIndicator(Modifier.fillMaxWidth());Text("正在读取本机账本")}else holder.SaveableStateProvider(if(route.isEmpty())"page-$page"else"$route-$selected"){
+        if(screen.error!=null)Text(screen.error!!,Modifier.padding(16.dp))else if(ledger==null)Column(Modifier.padding(16.dp)){LinearProgressIndicator(Modifier.fillMaxWidth());Text("正在读取本机账本")}else holder.SaveableStateProvider(if(route.isEmpty())"page-$page"else if(route in listOf("position","execution","strategy"))"$route-$selected"else route){
             when(route){
                 "risk"->V200RiskPage(model,ledger,{route="rules"},{selected=it;route="strategy"})
                 "rules"->ContractRulesPage(model,ledger)
@@ -50,7 +50,7 @@ import java.time.LocalDate
                 "position"->PositionDetails(ledger,selected)
                 "execution"->ledger.executions.firstOrNull{it.id==selected}?.let{e->ExecutionDetails(ledger,e,{editing=e.id;model.openEditor()},{model.deleteExecution(e)})}?:EmptyLedger("成交已不存在")
                 "archive"->LegacyArchive(model,store)
-                "strategy"->{val facts=MatchingEngine.ordered(ledger.executions.filter{it.strategyId==selected}).reversed();LazyColumn(contentPadding=PaddingValues(12.dp)){item{Text(strategyLabel(ledger,selected))};if(facts.isEmpty())item{EmptyLedger("暂无关联成交")};items(facts,key={it.id}){e->TextButton({selected=e.id;route="execution"},modifier=Modifier.fillMaxWidth().heightIn(min=56.dp)){Text("${LocalDate.ofEpochDay(e.date)} ${e.name} ${e.code} ${actionLabel(e)}")}}}}
+                "strategy"->StrategyHistory(model,ledger,selected,{selected=it;route="execution"},{route="archive"})
                 else->when(page){0->V200Home(screen,{selected=it;route="position"},{day=it});1->V200Trades(ledger,{selected=it;route="position"},{selected=it;route="execution"},{route="archive"});2->V200Reviews(model,ledger);3->V200Statistics(screen);else->V200Accounts(model,ledger)}
             }
         }

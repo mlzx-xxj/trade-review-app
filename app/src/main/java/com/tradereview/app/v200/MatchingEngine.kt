@@ -19,9 +19,11 @@ object MatchingEngine {
     private fun direction(e:LedgerExecution)=if(e.effect=="open") {if(e.side=="buy")"long"else"short"}else if(e.side=="sell")"long"else"short"
     private fun key(e:LedgerExecution)=listOf(e.accountId,e.code,direction(e))
     fun timeBucket(e:LedgerExecution)=listOf(e.date.toString(),e.minute.toString(),e.accountId,e.code)
-    fun uncertainTimes(values:List<LedgerExecution>)=values.groupBy(::timeBucket).values.filter{it.size>1 && it.any{e->e.second==null}}
+    fun uncertainTimes(values:List<LedgerExecution>)=values.groupBy(::timeBucket).values.flatMap{group->
+        if(group.size<=1)emptyList()else if(group.any{it.second==null})listOf(group)else group.groupBy{it.second}.values.filter{it.size>1}
+    }
     fun ordered(values:List<LedgerExecution>):List<LedgerExecution>{
-        val unknown=uncertainTimes(values).flatMap{it}.map(::timeBucket).toSet()
+        val unknown=values.groupBy(::timeBucket).filterValues{group->group.size>1 && group.any{it.second==null}}.keys
         return values.sortedWith(compareBy<LedgerExecution>{it.date}.thenBy{it.minute}.thenBy{if(timeBucket(it) in unknown)it.ordinal else (it.second?:0).toLong()}.thenBy{it.ordinal}.thenBy{it.id})
     }
     fun replay(executions:List<LedgerExecution>):MatchResult {
@@ -102,7 +104,7 @@ object LedgerFees {
         return base+additional
     }
     fun fromMatches(rule:LedgerContractRule,e:LedgerExecution,matches:List<LedgerMatch>,facts:Map<String,LedgerExecution>):String {
-        LedgerValidation.rule(rule);ledgerRequire(rule.verified && rule.multiplier!=null,"合约参数未核实，不能自动推算手续费")
+        LedgerValidation.rule(rule);ledgerRequire(rule.effectiveDay<=e.tradingDay,"规则生效日晚于成交交易日，请核实规则或录入实际费用");ledgerRequire(rule.verified && rule.multiplier!=null,"合约参数未核实，不能自动推算手续费")
         if(e.effect=="open")return exact(cost(rule,e,decimal(e.quantity),rule.openFee))
         return exact(sum(matches.map{m->cost(rule,e,decimal(m.quantity),if(facts.getValue(m.openExecutionId).tradingDay==e.tradingDay)rule.todayFee else rule.closeFee)}))
     }

@@ -56,4 +56,11 @@ class LedgerRepositoryTest {
         assertEquals(listOf(r),repo.read().rules);repo.rule(r.copy(openFee="5"));assertEquals(original,repo.read().executions.single());assertEquals("2",LedgerJson.rule(original.ruleSnapshot!!).openFee)
         save(e.copy(id="future2",date=day+1,tradingDay=day+1));assertEquals("10",repo.read().executions.first{it.id=="future2"}.fees);LedgerValidation.snapshot(repo.read())
     }
+    @Test fun confirmingOneExecutionMultiplierDoesNotVerifyAnUnverifiedFeeRule()=runBlocking{
+        val r=LedgerContractRule("unverified","rb2701","合成未核实费率",multiplier="10",openFee="2",closeFee="3",todayFee="10",effectiveDay=day,verified=false);repo.rule(r)
+        val e=LedgerExecution("future","futures","rb2701","合成期货",day,600,day,0,"buy","open","3500","2","0",feeSource="rule",multiplier="10",parametersConfirmed=true,second=1)
+        val before=repo.read();try{repo.preview(e);fail("multiplier confirmation incorrectly promoted fee rule")}catch(_:IllegalArgumentException){};assertEquals(before,repo.read())
+        repo.rule(r.copy(verified=true));try{repo.preview(e.copy(multiplier="20",parametersConfirmed=false));fail("unconfirmed parameter override accepted")}catch(_:IllegalArgumentException){};assertTrue(repo.read().executions.isEmpty())
+        repo.rule(r);save(e.copy(feeSource="actual",fees="4"));assertEquals("4",repo.read().executions.single().fees);assertFalse(repo.read().rules.single().verified)
+    }
 }

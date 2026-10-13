@@ -23,7 +23,7 @@ class LedgerRepository(private val db:TradeDatabase) {
             val account=before.accounts.firstOrNull{it.id==input.accountId}?:throw LedgerException("账户不存在")
             ledgerRequire(input.strategyId==null || before.strategies.any{it.id==input.strategyId && (it.active || existing?.strategyId==it.id)},"策略已停用，请选择有效策略")
             val ordinal=if(input.ordinal>0)input.ordinal else existing?.ordinal?:((before.executions.maxOfOrNull{it.ordinal}?:0)+1)
-            LedgerValidation.number(input.price,true);LedgerValidation.number(input.quantity,true);input.stopLoss?.let{LedgerValidation.number(it,true)}
+            LedgerValidation.number(input.price,true);LedgerValidation.number(input.quantity,true);input.stopLoss?.let{LedgerValidation.number(it,true)};input.multiplier?.let{LedgerValidation.number(it,true)};input.marginRate?.let{LedgerValidation.number(it)}
             var prepared=input.copy(ordinal=ordinal)
             if(prepared.feeSource=="rule") {
                 if(input.accountId=="stock") {
@@ -31,7 +31,11 @@ class LedgerRepository(private val db:TradeDatabase) {
                     prepared=prepared.copy(fees=LedgerFees.stock(input.price,input.quantity,rate),feeRateSnapshot=rate)
                 } else {
                     val rule=input.ruleSnapshot?.let(LedgerJson::rule)?:before.rules.filter{it.code==input.code && it.effectiveDay<=input.tradingDay}.maxWithOrNull(compareBy<LedgerContractRule>{it.effectiveDay}.thenBy{it.id})?:throw LedgerException("先核实合约规则，或逐笔填写实际费用和已确认乘数")
-                    val effective=rule.copy(multiplier=input.multiplier?:rule.multiplier,marginRate=input.marginRate?:rule.marginRate,verified=input.parametersConfirmed || rule.verified)
+                    ledgerRequire(rule.verified,"手续费规则未核实，请先在合约参数确认或录入实际费用")
+                    val changedMultiplier=input.multiplier!=null && (rule.multiplier==null || decimal(input.multiplier).compareTo(decimal(rule.multiplier))!=0)
+                    val changedMargin=input.marginRate!=null && (rule.marginRate==null || decimal(input.marginRate).compareTo(decimal(rule.marginRate))!=0)
+                    ledgerRequire(!(changedMultiplier || changedMargin) || input.parametersConfirmed,"本笔修改的合约参数尚未核实")
+                    val effective=rule.copy(multiplier=input.multiplier?:rule.multiplier,marginRate=input.marginRate?:rule.marginRate)
                     prepared=prepared.copy(multiplier=effective.multiplier,marginRate=effective.marginRate,parametersConfirmed=effective.verified,ruleSnapshot=LedgerJson.text(effective),fees=LedgerFees.futures(effective,prepared.copy(multiplier=effective.multiplier,parametersConfirmed=effective.verified),prior))
                 }
             }
@@ -39,7 +43,7 @@ class LedgerRepository(private val db:TradeDatabase) {
             val risk=LedgerRisk.evaluate(prepared,config)
             prepared.copy(orderConfirmed=false,riskAmount=risk.amount,riskFundSnapshot=risk.fund,riskLimitSnapshot=risk.limit,riskExceeded=risk.exceeded,riskWarningEnabled=config.warnEnabled,riskConfirmed=if(existing==input)existing?.riskConfirmed?:false else false)
         }
-        val facts=(prior+listOfNotNull(candidate)).sortedBy{it.id};val result=MatchingEngine.replay(facts)
+        val facts=(prior+listOfNotNull(candidate)).sortedBy{it.id};MatchingEngine.uncertainTimes(facts).forEach{group->ledgerRequire(group.map{it.ordinal}.distinct().size==group.size,"先后序号重复，请核实同时间成交顺序；未修改记录")};val result=MatchingEngine.replay(facts)
         ledgerRequire(before.reviews.all{r->result.cycles.any{it.id==r.cycleId}},"此次更改会使已有持仓复盘失去关联，请先处理该复盘；未修改任何成交")
         val audit=existing?.takeIf{it!=candidate}?.let{ExecutionAudit(com.tradereview.app.data.newKey(),it.id,if(candidate==null)"delete"else"edit",LedgerJson.text(it),candidate?.let(LedgerJson::text),System.currentTimeMillis())}
         val after=before.copy(executions=facts,lots=result.lots,matches=result.matches,cycles=result.cycles,audits=before.audits+listOfNotNull(audit))
@@ -50,7 +54,7 @@ class LedgerRepository(private val db:TradeDatabase) {
         val risk=candidate?.let{LedgerRisk.evaluate(it,before.risks.first{r->r.id==it.accountId})}
         val uncertain=MatchingEngine.uncertainTimes(facts).any{group->group.any{it.id==candidate?.id}}
         val historyChanged=before.matches.any{m->after.matches.firstOrNull{it.id==m.id}!=m}
-        LedgerChange(before,after,candidate?.id,deleteId!=null,risk,(if(uncertain)"本组秒数不完整，按明确成交序号FIFO；请核对并确认先后顺序。\n"else "")+"影响 $changed 个持仓周期、${after.matches.count{m->before.matches.firstOrNull{it.id==m.id}!=m}} 项匹配。\n已实现净盈亏：${exact(oldNet)} → ${exact(newNet)}\n$cash\n费用不会重复扣除；确认后事务重算。",uncertain,historyChanged)
+        LedgerChange(before,after,candidate?.id,deleteId!=null,risk,(if(uncertain)"本组秒数不完整或同秒无法区分，按明确序号FIFO；请核对先后顺序。\n"else "")+"影响 $changed 个持仓周期、${after.matches.count{m->before.matches.firstOrNull{it.id==m.id}!=m}} 项匹配。\n已实现净盈亏：${exact(oldNet)} → ${exact(newNet)}\n$cash\n费用不会重复扣除；确认后事务重算。",uncertain,historyChanged)
     }
     suspend fun confirm(change:LedgerChange,riskAcknowledged:Boolean=false)=withContext(Dispatchers.IO) {
         val context=kotlinx.coroutines.currentCoroutineContext()

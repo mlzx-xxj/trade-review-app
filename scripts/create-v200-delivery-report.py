@@ -21,7 +21,7 @@ def junit(root, fragment, minimum, required):
 def main():
     p=argparse.ArgumentParser();p.add_argument('--reports',required=True);p.add_argument('--screenshots',required=True);p.add_argument('--dist',required=True);p.add_argument('--run-url',required=True);a=p.parse_args()
     root=Path(a.reports);dist=Path(a.dist)
-    counts={'jvm':junit(root/'build','/test-results/',207,{'ExperiencePolicyTest':3,'ExportReadbackTest':4,'MatchingEngineTest':35,'LedgerBackupTest':7,'ChartScaleTest':11,'LedgerCsvTest':3})}
+    counts={'jvm':junit(root/'build','/test-results/',209,{'ExperiencePolicyTest':3,'ExportReadbackTest':4,'MatchingEngineTest':37,'LedgerBackupTest':7,'ChartScaleTest':11,'LedgerCsvTest':3})}
     for variant in ['debug','rc','release']:
         lint=list((root/'build').rglob('lint-results-'+variant+'.xml'));assert len(lint)==1,variant
         counts['lint-'+variant]=dict(Counter(i.get('severity') for i in ET.parse(lint[0]).getroot().findall('issue')))
@@ -29,7 +29,7 @@ def main():
     metrics={}
     for api in [29,35]:
         directory=root/'devices'/f'android-test-reports-api{api}'
-        counts[f'api{api}']=junit(directory,'/androidTest-results/',123,{'ExperienceDataTest':5,'ReleaseExperienceUiTest':4,'LedgerMigrationTest':2,'LedgerRepositoryTest':12,'V200MainUiTest':6})
+        counts[f'api{api}']=junit(directory,'/androidTest-results/',124,{'ExperienceDataTest':5,'ReleaseExperienceUiTest':4,'LedgerMigrationTest':2,'LedgerRepositoryTest':13,'V200MainUiTest':6})
         names={f.name for f in (Path(a.screenshots)/f'v200-emulator-screenshots-api{api}').rglob('*.png')}
         for prefix in [f'{i:02}-' for i in list(range(1,33))+list(range(40,56))]:assert any(n.startswith(prefix) for n in names),f'Missing API {api} screenshot {prefix}'
         files=[f'{kind}-api{api}.json' for kind in ['performance','images','activity','ocr-evaluation','process-probes','attachment-queries','package-probes']]

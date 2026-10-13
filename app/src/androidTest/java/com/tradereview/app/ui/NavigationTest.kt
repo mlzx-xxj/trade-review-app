@@ -27,6 +27,7 @@ class NavigationTest {
     @get:Rule val compose = createAndroidComposeRule<LegacyCompatibilityActivity>()
 
     @Before fun resetData() = runBlocking {
+        require(android.os.Build.HARDWARE in listOf("ranchu","goldfish")){"Disposable emulator fixtures only"}
         val application=compose.activity.application as TradeReviewApplication
         application.deviceExperience.initialize(true);application.deviceExperience.finishOnboarding()
         val dao = application.database.trades()

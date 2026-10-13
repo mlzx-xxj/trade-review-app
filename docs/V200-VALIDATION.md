@@ -31,3 +31,7 @@ V2编译与领域完整阶段Actions [38383179786](https://github.com/mlzx-xxj/t
 随后进程探针因Main未传clearWork=true而拒绝遗留暂存文件；修复为Application按进程初始化一次，完成前阻止文件UI操作，旋转不清除正在预览的ZIP，失败显示可恢复入口。原V1升级Java探针加显式target_schema=8参数，原V1脚本仍默认7；原长期密钥缺失，真实固定签名升级依然未执行。重新完整CI，保留失败原始XML/日志/截图。
 
 Actions [38386967794](https://github.com/mlzx-xxj/trade-review-app/actions/runs/38386967794)，源1b4c01d：主代码编译通过，新增可访问性数值测试把CustomActions写在SemanticsProperties而非本Compose版本的SemanticsActions，测试APK编译失败；已修正命名空间，保留准确值及空日期断言。模拟器及发布未执行，本地50 Python通过不冒充本轮Android通过。
+
+Actions [38387969242](https://github.com/mlzx-xxj/trade-review-app/actions/runs/38387969242)，源a19a968：构建/JVM/Lint任务成功；API29及35各实际123项，122通过/1失败/0跳过，均为新主UI链在LazyColumn尚未创建new-cashflow按钮时直接performScrollTo。保留资金/恢复全部断言，改用父列表滚动找到按钮后点击。12项账本Repository（含新ZIP整体回滚、规则唯一性/旧费不重价）、2项迁移、另外5项实际Main UI全部通过。API35进程探针三次重启验证28表全部不变/图片SHA不变，实际非调试RC安装重启成功；原固定签名及真机仍未执行。整个任务失败，发布拒绝，不能标为全套成功。
+
+下一提交同时完成：周月结果绑定对应周期/市场/数据后才显示，旧策略历史关联只读档案，合成月图包含正负/持平/空日期及旧USD截图且不混入CNY；单笔乘数核实不能升级未核实手续费规则，规则生效日晚于交易日拒绝自动费用；同秒也须确认序号，不丢弃其他已知秒的实际排序。新增纯/JVM及设备断言，要求下一209 JVM及124设备全量验证。
