@@ -26,6 +26,7 @@ object LedgerJson {
         ledgerRequire(element(value)==canonical(input),"合约快照格式错误")
         LedgerValidation.rule(value);return value
     }
+    fun execution(text:String):LedgerExecution {val input=com.tradereview.app.backup.BackupCodec.strictObject(text);val value=gson.fromJson(input,LedgerExecution::class.java);ledgerRequire(element(value)==canonical(input),"成交修订事实格式无效");LedgerValidation.execution(value);return value}
     fun levels(text:String):List<KeyPrice> {
         val wrapped=com.tradereview.app.backup.BackupCodec.strictObject("{\"levels\":$text}")
         ledgerRequire(wrapped["levels"].isJsonArray && wrapped["levels"].asJsonArray.size()<=30,"关键价位最多30项")
@@ -78,13 +79,14 @@ object LedgerValidation {
     fun snapshot(s:LedgerSnapshot) {
         ledgerRequire(s.accounts.map{it.id}.toSet()==setOf("stock","futures") && s.accounts.size==2 && s.risks.map{it.id}.toSet()==setOf("stock","futures") && s.risks.size==2,"备份须包含两账户和两套风险配置")
         fun <T> unique(list:List<T>,key:(T)->String){ledgerRequire(list.size<=10000 && list.map(key).distinct().size==list.size,"数据过多或稳定ID重复")}
-        unique(s.strategies){it.id};unique(s.rules){it.id};unique(s.plans){it.id};unique(s.executions){it.id};unique(s.cycles){it.id};unique(s.lots){it.id};unique(s.matches){it.id};unique(s.reviews){it.id};unique(s.cashFlows){it.id}
+        unique(s.strategies){it.id};unique(s.rules){it.id};unique(s.plans){it.id};unique(s.executions){it.id};unique(s.cycles){it.id};unique(s.lots){it.id};unique(s.matches){it.id};unique(s.reviews){it.id};unique(s.cashFlows){it.id};unique(s.audits){it.id}
         s.accounts.forEach(::account);s.risks.forEach(::risk);s.strategies.forEach(::strategy);s.rules.forEach(::rule);s.plans.forEach(::plan);s.reviews.forEach(::review);s.cashFlows.forEach(::cash)
         val strategies=s.strategies.map{it.id}.toSet();val plans=s.plans.associateBy{it.id}
         s.plans.forEach{ledgerRequire(it.strategyId==null || it.strategyId in strategies,"计划策略不存在")}
         s.executions.forEach{e->execution(e);ledgerRequire(!e.riskExceeded || !e.riskWarningEnabled || e.riskConfirmed,"超风险真实成交需要二次确认");ledgerRequire(e.strategyId==null || e.strategyId in strategies,"成交策略不存在");e.planId?.let{p->ledgerRequire(plans[p]?.let{it.accountId==e.accountId && it.code==e.code}==true,"关联计划的账户或标的不一致")}}
         val replay=MatchingEngine.replay(s.executions)
         ledgerRequire(s.lots.sortedBy{it.id}==replay.lots && s.matches.sortedBy{it.id}==replay.matches && s.cycles.sortedBy{it.id}==replay.cycles,"持仓/匹配缓存与真实成交不一致，拒绝恢复")
+        s.audits.forEach{a->id(a.id);id(a.executionId);ledgerRequire(a.operation in listOf("edit","delete") && a.createdAt in 0..4133980799999L,"修订信息无效");ledgerRequire(LedgerJson.execution(a.beforeJson).id==a.executionId,"修订事实ID不一致");if(a.operation=="delete")ledgerRequire(a.afterJson==null,"删除修订不应含新成交");else ledgerRequire(a.afterJson!=null && LedgerJson.execution(a.afterJson).id==a.executionId,"编辑修订缺少相同ID事实")}
         val cycles=s.cycles.map{it.id}.toSet();s.reviews.forEach{ledgerRequire(it.cycleId in cycles,"复盘关联持仓不存在")}
     }
 }

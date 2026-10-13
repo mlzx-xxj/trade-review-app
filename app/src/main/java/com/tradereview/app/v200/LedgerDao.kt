@@ -37,7 +37,10 @@ import kotlinx.coroutines.flow.Flow
     @Query("SELECT * FROM ledger_cashflows ORDER BY id") suspend fun cashFlows():List<LedgerCashFlow>
     @Upsert suspend fun save(value:LedgerCashFlow)
     @Query("DELETE FROM ledger_cashflows") suspend fun clearCashFlows()
-    @Query("SELECT id FROM ledger_accounts UNION ALL SELECT id FROM ledger_strategies UNION ALL SELECT id FROM market_risk UNION ALL SELECT id FROM ledger_contract_rules UNION ALL SELECT id FROM ledger_plans UNION ALL SELECT id FROM ledger_executions UNION ALL SELECT id FROM ledger_cycles UNION ALL SELECT id FROM ledger_lots UNION ALL SELECT id FROM ledger_matches UNION ALL SELECT id FROM ledger_reviews UNION ALL SELECT id FROM ledger_cashflows") fun observeChanges():Flow<List<String>>
+    @Query("SELECT * FROM ledger_execution_audits ORDER BY id") suspend fun audits():List<ExecutionAudit>
+    @Upsert suspend fun save(value:ExecutionAudit)
+    @Query("DELETE FROM ledger_execution_audits") suspend fun clearAudits()
+    @Query("SELECT id FROM ledger_accounts UNION ALL SELECT id FROM ledger_strategies UNION ALL SELECT id FROM market_risk UNION ALL SELECT id FROM ledger_contract_rules UNION ALL SELECT id FROM ledger_plans UNION ALL SELECT id FROM ledger_executions UNION ALL SELECT id FROM ledger_cycles UNION ALL SELECT id FROM ledger_lots UNION ALL SELECT id FROM ledger_matches UNION ALL SELECT id FROM ledger_reviews UNION ALL SELECT id FROM ledger_cashflows UNION ALL SELECT id FROM ledger_execution_audits") fun observeChanges():Flow<List<String>>
     @Query("DELETE FROM ledger_executions WHERE id=:id") suspend fun removeExecution(id:String)
     @Query("DELETE FROM ledger_cycles WHERE id NOT IN (:ids)") suspend fun removeCyclesExcept(ids:List<String>)
 }

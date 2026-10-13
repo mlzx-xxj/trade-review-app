@@ -21,15 +21,15 @@ object MatchingEngine {
     fun ordered(values:List<LedgerExecution>)=values.sortedWith(compareBy<LedgerExecution>{it.date}.thenBy{it.minute}.thenBy{it.ordinal}.thenBy{it.id})
     fun replay(executions:List<LedgerExecution>):MatchResult {
         ledgerRequire(executions.map{it.id}.distinct().size==executions.size,"成交ID重复")
-        val lots=mutableListOf<Lot>();val matches=mutableListOf<LedgerMatch>();val cycleFacts=linkedMapOf<String,MutableList<LedgerExecution>>()
+        val lots=mutableListOf<Lot>();val groups=mutableMapOf<List<String>,MutableList<Lot>>();val matches=mutableListOf<LedgerMatch>();val cycleFacts=linkedMapOf<String,MutableList<LedgerExecution>>()
         ordered(executions).forEach { e->
             LedgerValidation.execution(e)
             val qty=decimal(e.quantity);val fee=decimal(e.fees)
             if(e.effect=="open") {
-                val cycle=lots.firstOrNull { it.remaining>ZERO && key(it.open)==key(e) }?.cycle?:"cycle_${e.id}"
-                lots+=Lot(e,cycle,qty);cycleFacts.getOrPut(cycle){mutableListOf()}.add(e)
+                val group=groups.getOrPut(key(e)){mutableListOf()};val cycle=group.firstOrNull()?.cycle?:"cycle_${e.id}"
+                val lot=Lot(e,cycle,qty);lots+=lot;group+=lot;cycleFacts.getOrPut(cycle){mutableListOf()}.add(e)
             } else {
-                val eligible=lots.filter { it.remaining>ZERO && key(it.open)==key(e) && when {
+                val group=groups[key(e)].orEmpty();val eligible=group.filter { it.remaining>ZERO && when {
                     e.accountId=="stock"->it.open.tradingDay<e.tradingDay
                     e.effect=="close_today"->it.open.tradingDay==e.tradingDay
                     e.effect=="close_yesterday"->it.open.tradingDay<e.tradingDay
@@ -53,14 +53,16 @@ object MatchingEngine {
                     lot.remaining-=amount;lot.allocated=cumulative;remaining-=amount;closeAllocated=cumulativeClose
                     cycleFacts.getValue(lot.cycle).let{if(it.none{fact->fact.id==e.id})it.add(e)}
                 }
+                groups[key(e)]?.removeAll{it.remaining.signum()==0}
             }
         }
+        val lotsByCycle=lots.groupBy{it.cycle};val matchesByCycle=matches.groupBy{it.cycleId}
         val cycles=cycleFacts.map { (id,facts)->
-            val own=lots.filter{it.cycle==id};val open=own.filter{it.remaining>ZERO};val remaining=sum(open.map{it.remaining})
+            val own=lotsByCycle.getValue(id);val open=own.filter{it.remaining>ZERO};val remaining=sum(open.map{it.remaining})
             val costs=sum(open.map{decimal(it.open.price)*it.remaining});val average=if(remaining>ZERO)ratio(costs,remaining)else ratio(sum(own.map{decimal(it.open.price)*decimal(it.open.quantity)}),sum(own.map{decimal(it.open.quantity)}))
             val margin=if(open.isNotEmpty() && open.all{it.open.parametersConfirmed && it.open.multiplier!=null && it.open.marginRate!=null})sum(open.map{decimal(it.open.price)*it.remaining*decimal(it.open.multiplier!!)*decimal(it.open.marginRate!!)})else null
             val last=facts.last();val first=facts.first()
-            LedgerCycle(id,first.accountId,first.code,first.name,direction(first),first.tradingDay,if(remaining.signum()==0)last.tradingDay else null,exact(remaining),exact(average),exact(costs+sum(open.map{decimal(it.open.fees)-it.allocated})),exact(sum(facts.map{decimal(it.fees)})),exact(sum(matches.filter{it.cycleId==id}.map{decimal(it.net)})),facts.lastOrNull{it.takeProfit!=null}?.takeProfit,facts.lastOrNull{it.stopLoss!=null}?.stopLoss,margin?.let(::exact))
+            LedgerCycle(id,first.accountId,first.code,first.name,direction(first),first.date,if(remaining.signum()==0)last.date else null,exact(remaining),exact(average),exact(costs+sum(open.map{decimal(it.open.fees)-it.allocated})),exact(sum(facts.map{decimal(it.fees)})),exact(sum(matchesByCycle[id].orEmpty().map{decimal(it.net)})),facts.lastOrNull{it.takeProfit!=null}?.takeProfit,facts.lastOrNull{it.stopLoss!=null}?.stopLoss,margin?.let(::exact))
         }
         return MatchResult(lots.map{LedgerLot("lot_${it.open.id}",it.open.id,it.cycle,it.open.quantity,exact(it.remaining),exact(it.allocated))}.sortedBy{it.id},matches.sortedBy{it.id},cycles.sortedBy{it.id})
     }

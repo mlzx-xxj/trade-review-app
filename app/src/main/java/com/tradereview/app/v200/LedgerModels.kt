@@ -36,6 +36,9 @@ data class LedgerReview(@PrimaryKey val id: String, val cycleId: String, val day
 @Entity(tableName="ledger_cashflows", foreignKeys=[ForeignKey(entity=LedgerAccount::class, parentColumns=["id"], childColumns=["accountId"], onDelete=ForeignKey.RESTRICT)], indices=[Index(value=["accountId"]), Index(value=["accountId", "day"])])
 data class LedgerCashFlow(@PrimaryKey val id: String, val accountId: String, val day: Long, val kind: String, val amount: String, val note: String = "")
 
-data class LedgerSnapshot(val accounts:List<LedgerAccount> = emptyList(), val strategies:List<LedgerStrategy> = emptyList(), val risks:List<MarketRisk> = emptyList(), val rules:List<LedgerContractRule> = emptyList(), val plans:List<LedgerPlan> = emptyList(), val executions:List<LedgerExecution> = emptyList(), val cycles:List<LedgerCycle> = emptyList(), val lots:List<LedgerLot> = emptyList(), val matches:List<LedgerMatch> = emptyList(), val reviews:List<LedgerReview> = emptyList(), val cashFlows:List<LedgerCashFlow> = emptyList()) {
+@Entity(tableName="ledger_execution_audits", indices=[Index(value=["executionId"])])
+data class ExecutionAudit(@PrimaryKey val id: String, val executionId: String, val operation: String, val beforeJson: String, val afterJson: String? = null, val createdAt: Long)
+
+data class LedgerSnapshot(val accounts:List<LedgerAccount> = emptyList(), val strategies:List<LedgerStrategy> = emptyList(), val risks:List<MarketRisk> = emptyList(), val rules:List<LedgerContractRule> = emptyList(), val plans:List<LedgerPlan> = emptyList(), val executions:List<LedgerExecution> = emptyList(), val cycles:List<LedgerCycle> = emptyList(), val lots:List<LedgerLot> = emptyList(), val matches:List<LedgerMatch> = emptyList(), val reviews:List<LedgerReview> = emptyList(), val cashFlows:List<LedgerCashFlow> = emptyList(), val audits:List<ExecutionAudit> = emptyList()) {
     val isEmpty get() = executions.isEmpty() && plans.isEmpty() && reviews.isEmpty() && cashFlows.isEmpty()
 }

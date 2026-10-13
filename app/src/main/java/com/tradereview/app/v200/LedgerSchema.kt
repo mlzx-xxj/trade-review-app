@@ -37,6 +37,8 @@ object LedgerSchema {
         db.execSQL("CREATE TABLE IF NOT EXISTS `ledger_cashflows` (`id` TEXT NOT NULL PRIMARY KEY, `accountId` TEXT NOT NULL, `day` INTEGER NOT NULL, `kind` TEXT NOT NULL, `amount` TEXT NOT NULL, `note` TEXT NOT NULL, FOREIGN KEY(`accountId`) REFERENCES `ledger_accounts`(`id`) ON UPDATE NO ACTION ON DELETE RESTRICT)")
         db.execSQL("CREATE INDEX IF NOT EXISTS `index_ledger_cashflows_accountId` ON `ledger_cashflows` (`accountId`)")
         db.execSQL("CREATE INDEX IF NOT EXISTS `index_ledger_cashflows_accountId_day` ON `ledger_cashflows` (`accountId`, `day`)")
+        db.execSQL("CREATE TABLE IF NOT EXISTS `ledger_execution_audits` (`id` TEXT NOT NULL PRIMARY KEY, `executionId` TEXT NOT NULL, `operation` TEXT NOT NULL, `beforeJson` TEXT NOT NULL, `afterJson` TEXT, `createdAt` INTEGER NOT NULL)")
+        db.execSQL("CREATE INDEX IF NOT EXISTS `index_ledger_execution_audits_executionId` ON `ledger_execution_audits` (`executionId`)")
     }
     fun seed(db:SupportSQLiteDatabase) {
         db.execSQL("INSERT OR IGNORE INTO ledger_accounts(id,market,name,initialCapital,historyComplete,buyRate,sellRate) VALUES('stock','stock','A股账户',NULL,0,'0.0001','0.0006'),('futures','futures','国内期货账户',NULL,0,'0.0001','0.0006')")
