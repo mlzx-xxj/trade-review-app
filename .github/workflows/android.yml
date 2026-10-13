@@ -329,7 +329,8 @@ jobs:
 
   publish:
     name: Publish verified V1.0 candidates; stable release requires owner phone acceptance
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    # V2 staged work is verified but must not publish a V1-labelled intermediate APK.
+    if: (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && github.head_ref != 'codex/v200-rebuild' && github.ref_name != 'codex/v200-rebuild'
     needs: [build, device-tests]
     runs-on: ubuntu-latest
     permissions:
