@@ -14,6 +14,7 @@ import kotlinx.coroutines.runBlocking
 import org.junit.*
 import org.junit.Assert.*
 import org.junit.runner.RunWith
+import java.io.File
 
 @RunWith(AndroidJUnit4::class)
 class FastEntryUiTest {
@@ -56,7 +57,7 @@ class FastEntryUiTest {
             compose.onAllNodes(hasTestTag("entry-amount") and SemanticsMatcher.expectValue(SemanticsProperties.EditableText, AnnotatedString(""))).fetchSemanticsNodes().isNotEmpty() } }
         catch(failure:Throwable) {
             val instrumentation=androidx.test.platform.app.InstrumentationRegistry.getInstrumentation()
-            val out=File(requireNotNull(androidx.test.platform.app.InstrumentationRegistry.getArguments().getString("additionalTestOutputDir")))
+            val out=File(requireNotNull(androidx.test.platform.app.InstrumentationRegistry.getArguments().getString("additionalTestOutputDir"))).apply{mkdirs()}
             File(out,"v100-continue-failure.txt").writeText("Synthetic fixture only\nmessage=${model.message.value}\nbusy=${model.busy.value}\ntrades=${model.state.value.trades}\ndrafts=${model.state.value.drafts}\n"+compose.onRoot(useUnmergedTree=true).printToString())
             instrumentation.uiAutomation.takeScreenshot()?.let { bitmap->File(out,"v100-continue-failure.png").outputStream().use{bitmap.compress(android.graphics.Bitmap.CompressFormat.PNG,100,it)};bitmap.recycle() }
             throw failure
