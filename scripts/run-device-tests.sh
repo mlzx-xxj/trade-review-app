@@ -4,6 +4,8 @@ set -uo pipefail
 if [[ "${V100_CHECK_BOOT:-false}" == true ]]; then
   mkdir -p ci-stability
   [[ "$(adb shell getprop ro.kernel.qemu | tr -d '\r\n')" == 1 ]] || { echo 'Boot checks require a disposable emulator' >&2; exit 1; }
+  adb shell wm size > ci-stability/boot-display.txt || exit 1
+  adb shell wm density >> ci-stability/boot-display.txt || exit 1
   # Finish SystemUI/keyguard startup before Gradle competes for the runner CPU.
   sleep 20
   adb logcat -d -s ActivityManager:I ActivityTaskManager:I AndroidRuntime:E > ci-stability/boot-logcat.txt || exit 1

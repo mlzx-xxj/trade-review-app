@@ -297,7 +297,9 @@ jobs:
           api-level: ${{ matrix.api }}
           target: ${{ matrix.target }}
           arch: x86_64
-          profile: pixel_2
+          # Fewer rendered pixels reduce headless boot contention and cover a 384dp phone layout.
+          profile: Nexus 4
+          heap-size: 512M
           emulator-boot-timeout: 300
           emulator-options: -no-window -gpu swiftshader_indirect -feature -Vulkan -memory 3072 -cores 2 -no-snapshot -noaudio -no-boot-anim -no-metrics -partition-size 2048
           disable-animations: true

@@ -45,6 +45,8 @@
 
 同一运行API35实际完整103项、0失败/跳过及不可调试RC安装/重启通过，十六表与附件校验一致。应用功能回归已分别在两种API实际通过，但不同历史运行不能替代最终提交同一完整CI；判定修正与文档继续一起接受最后完整验证。
 
+[Actions 38338715731](https://github.com/mlzx-xxj/trade-review-app/actions/runs/38338715731)的API35被平台真实记录的Launcher焦点超时ANR拒绝，应用尚未启动，未执行103项回归。两份系统证据和截图保留。CI改用Nexus 4显示配置（768×1280、384dp宽）及512MiB应用堆，减少原Pixel2的1080×1920软渲染像素负担，同时扩大小屏覆盖；API29/35、全部应用/键盘/恢复断言与真实ANR门禁保持。记录实际wm尺寸和密度到`boot-display.txt`；不同配置/共享runner的性能数字不能直接比较，不宣称调整已经解决启动故障，最终效果由完整CI验证。
+
 Base独立下载本次真实APK，用官方apksigner和二进制Manifest读取器核对证书、包名、non-debuggable、版本/权限/摘要；四份中文/Latin OCR模型与全部原ABI实际存在。实际SIGNING-STATUS仍configured=false，不产生固定签名包。交付报告门禁还已用上一轮真实失败XML检查，正确拒绝API29的1失败和API35的4失败，不把成功安装探针冒充全套成功。
 
 ## 最终提交的验证与交付入口
