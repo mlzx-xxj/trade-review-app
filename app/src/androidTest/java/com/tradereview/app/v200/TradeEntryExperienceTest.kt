@@ -39,19 +39,20 @@ class TradeEntryExperienceTest {
     private lateinit var model:V200ViewModel
     private val observations=mutableListOf<Map<String,Any?>>()
     private var taps=0;private var scrolls=0;private val fields=linkedSetOf<String>();private val steps=mutableListOf<String>()
-    private fun waitFor(label:String,p:()->Boolean){try{ui.waitUntil(45000){p()}}catch(e:ComposeTimeoutException){throw AssertionError("$label; busy=${model.busy.value}; problem=${model.problem.value}",e)}}
+    private fun waitFor(label:String,p:()->Boolean){try{ui.waitUntil(45000){p()}}catch(e:ComposeTimeoutException){throw AssertionError("$label; busy=${model.busy.value}; problem=${model.problem.value}; pending=${model.pending.value!=null}",e)}}
     private fun facts()=runBlocking{model.repository.read()}
     private fun visible(node:SemanticsNodeInteraction):SemanticsNodeInteraction {if(runCatching{node.assertIsDisplayed()}.isFailure){node.performScrollTo();scrolls++};return node.assertIsDisplayed()}
     private fun tap(tag:String){visible(ui.onNodeWithTag(tag)).assertIsEnabled().performClick();taps++;steps+=tag}
     private fun text(tag:String,value:String){tap(tag);ui.onNodeWithTag(tag).performTextReplacement(value);fields+=tag}
     private fun selected(tag:String){val n=ui.onNodeWithTag(tag);if(n.fetchSemanticsNode().config.getOrElse(SemanticsProperties.Selected){false}!=true)tap(tag)}
     private fun displayed(tag:String)=ui.onNodeWithTag(tag).fetchSemanticsNode().config[SemanticsProperties.Text].joinToString(""){it.text}
+    private fun numberOnScreen(tag:String):String?=Regex("¥([0-9,]+\\.[0-9]{2})").find(displayed(tag))?.groupValues?.get(1)?.replace(",","")
     private fun equal(expected:String,actual:String)=assertEquals(expected,0,BigDecimal(expected).compareTo(BigDecimal(actual)))
     private fun clock(day:LocalDate){ui.runOnIdle{model.entryClock=Clock.fixed(day.atTime(10,0).atZone(AutomaticEntry.beijing).toInstant(),ZoneOffset.UTC)}}
     private fun page(index:Int){ui.onNodeWithTag("v2-main-page-$index").performClick()}
     private fun screenshot(name:String){ui.waitForIdle();android.os.SystemClock.sleep(150);val bitmap=requireNotNull(instrumentation.uiAutomation.takeScreenshot());File(output(),"$name.png").outputStream().use{assertTrue(bitmap.compress(android.graphics.Bitmap.CompressFormat.PNG,100,it))};bitmap.recycle()}
-    private fun output()=File(requireNotNull(InstrumentationRegistry.getArguments().getString("additionalTestOutputDir"))).apply{mkdirs()}
-    private fun row(e:LedgerExecution){ui.onNodeWithTag("v2-trades").performScrollToNode(hasTestTag("execution-${e.id}"));ui.onNodeWithTag("execution-${e.id}").assertIsDisplayed();ui.onNode(hasText("${e.quantity}${if(e.accountId=="stock")"股"else"手"} × ${e.price} · 费用 ${amount(e.fees)}") and hasAnyAncestor(hasTestTag("execution-${e.id}")),useUnmergedTree=true).assertIsDisplayed()}
+    private fun output()=File(requireNotNull(InstrumentationRegistry.getArguments().getString("additionalTestOutputDir")),"entry-experience").apply{mkdirs()}
+    private fun row(e:LedgerExecution){ui.onNodeWithTag("v2-trades").performScrollToNode(hasTestTag("execution-${e.id}"));ui.onNodeWithTag("execution-${e.id}").assertIsDisplayed();ui.onNode(hasText("${e.quantity}${if(e.accountId=="stock")"股"else"手"} × ${e.price} · 费用 ￥${e.fees}") and hasAnyAncestor(hasTestTag("execution-${e.id}")),useUnmergedTree=true).assertIsDisplayed()}
     private fun begin(market:String,code:String,action:String,price:String,quantity:String){
         page(1);taps=0;scrolls=0;fields.clear();steps.clear();tap("new-execution");selected("entry-market-$market")
         text("execution-code",code)
@@ -60,12 +61,11 @@ class TradeEntryExperienceTest {
         for(tag in listOf("execution-second","execution-sequence","execution-multiplier","execution-margin","execution-trading-day","execution-parameters"))ui.onNodeWithTag(tag).assertDoesNotExist()
         ui.onNodeWithTag("save-execution").assertIsDisplayed()
     }
-    private fun enter(market:String,code:String,action:String,price:String,quantity:String,fee:String,margin:String?,remaining:String,net:String="0",capture:String?=null):LedgerExecution {
+    private fun enter(market:String,code:String,action:String,price:String,quantity:String,fee:String,margin:String?,remaining:String,net:String="0",capture:String?=null,positionMargin:String?=null):LedgerExecution {
         val before=facts();begin(market,code,action,price,quantity)
-        val expectedFee="预计手续费：${AutomaticEntry.money(fee)}"
-        waitFor("实时报价 $code"){displayed("entry-estimated-fee")==expectedFee}
+        waitFor("实时报价 $code"){numberOnScreen("entry-estimated-fee")?.let{BigDecimal(it).compareTo(BigDecimal(fee))==0}==true}
         val shownFee=displayed("entry-estimated-fee")
-        val shownMargin=if(market=="futures"){waitFor("实时保证金"){displayed("entry-estimated-margin").endsWith(AutomaticEntry.money(margin))};displayed("entry-estimated-margin")}else null
+        val shownMargin=if(market=="futures"){waitFor("实时保证金"){numberOnScreen("entry-estimated-margin")?.let{BigDecimal(it).compareTo(BigDecimal(requireNotNull(margin)))==0}==true};displayed("entry-estimated-margin")}else null
         capture?.let(::screenshot)
         tap("save-execution")
         waitFor("无多余确认的正常保存"){!model.busy.value && !model.editor.value && model.state.value.ledger?.executions?.size==before.executions.size+1}
@@ -74,8 +74,23 @@ class TradeEntryExperienceTest {
         equal(fee,e.fees);equal(net,exact(sum(after.matches.filter{it.closeExecutionId==e.id}.map{decimal(it.net)})))
         equal(remaining,exact(sum(after.cycles.filter{it.accountId==market && it.code==code && it.direction==(if(action.startsWith("sell-open") || action.startsWith("buy-close"))"short"else"long")}.map{decimal(it.remaining)})))
         row(e)
+        verifyPositionUi(after,e,remaining,positionMargin)
+        history();row(e)
         observations+=mapOf("id" to e.id,"market" to market,"code" to code,"action" to action,"price" to price,"quantity" to quantity,"expectedFees" to fee,"displayedFees" to shownFee,"savedFees" to e.fees,"expectedMargin" to margin,"displayedMargin" to shownMargin,"expectedRemaining" to remaining,"expectedRealizedNet" to net,"actualRealizedNet" to exact(sum(after.matches.filter{it.closeExecutionId==e.id}.map{decimal(it.net)})),"controlTapsIncludingEntryAndSave" to taps,"fieldsTyped" to fields.toList(),"requiredScrollCommands" to scrolls,"extraConfirmation" to false,"saveVisible" to true,"steps" to steps.toList(),"result" to "PASS")
         return e
+    }
+    private fun verifyPositionUi(after:LedgerSnapshot,e:LedgerExecution,remaining:String,margin:String?){
+        val ids=if(e.effect=="open")after.lots.filter{it.executionId==e.id}.map{it.cycleId}else after.matches.filter{it.closeExecutionId==e.id}.map{it.cycleId}
+        val cycle=after.cycles.single{it.id in ids}
+        page(1);ui.onNodeWithText("当前持仓").performClick()
+        val tag="position-${cycle.id}"
+        if(BigDecimal(remaining).signum()==0){ui.onNodeWithTag(tag).assertDoesNotExist();return}
+        ui.onNodeWithTag("v2-trades").performScrollToNode(hasTestTag(tag))
+        ui.onNodeWithTag(tag).assertIsDisplayed()
+        val direction=if(e.accountId=="stock")"股票"else if(cycle.direction=="long")"多头"else"空头"
+        ui.onNode(hasText(" · $direction",substring=true) and hasAnyAncestor(hasTestTag(tag)),useUnmergedTree=true).assertIsDisplayed()
+        ui.onNode(hasText(" · $remaining${if(e.accountId=="stock")"股"else"手"}",substring=true) and hasAnyAncestor(hasTestTag(tag)),useUnmergedTree=true).assertIsDisplayed()
+        margin?.let{equal(it,requireNotNull(cycle.referenceMargin));ui.onNode(hasText("参考保证金 ￥${BigDecimal(it).stripTrailingZeros().toPlainString()}") and hasAnyAncestor(hasTestTag(tag)),useUnmergedTree=true).assertIsDisplayed()}
     }
     private fun history(){page(1);ui.onNodeWithText("历史成交").performClick()}
     private fun openDetails(e:LedgerExecution){history();row(e);ui.onNodeWithTag("execution-${e.id}").performClick()}
@@ -99,15 +114,15 @@ class TradeEntryExperienceTest {
         waitFor("T+1拒绝"){!model.busy.value && model.problem.value?.contains("T+1")==true}
         assertEquals(1,facts().executions.size);tap("entry-cancel");clock(today)
         enter("stock","600000","sell","10","1000","6.00",null,"0","-7")
-        val a=enter("futures","rb2701","buy-open","3500","2","7.01","4900.00","2",capture="71-entry-futures-filled")
-        val b=enter("futures","rb2701","buy-open","3510","3","10.54","7371.00","5")
-        val close=enter("futures","rb2701","sell-close","3530","4","14.13","2457.00","1","971.833333333333")
+        val a=enter("futures","rb2701","buy-open","3500","2","7.01","4900.00","2",capture="71-entry-futures-filled",positionMargin="4900")
+        val b=enter("futures","rb2701","buy-open","3510","3","10.54","7371.00","5",positionMargin="12271")
+        val close=enter("futures","rb2701","sell-close","3530","4","14.13","2457.00","1","971.833333333333",positionMargin="2457")
         screenshot("72-entry-saved-list")
         page(1);ui.onNodeWithText("当前持仓").performClick();ui.onNodeWithTag("v2-trades").performScrollToNode(hasTestTag("position-cycle_${a.id}"));screenshot("73-entry-partial-position")
         val partial=facts();assertEquals("1",partial.lots.first{it.executionId==b.id}.remaining);assertEquals("0",partial.lots.first{it.executionId==a.id}.remaining)
-        enter("futures","rb2701","sell-open","4000","1","4.01","2800.00","1")
+        enter("futures","rb2701","sell-open","4000","1","4.01","2800.00","1",positionMargin="2800")
         enter("futures","rb2701","buy-close","3990","1","4.00","2457.00","0","91.99")
-        enter("futures","al2701","buy-open","20000","2","6.01","22000.00","2")
+        enter("futures","al2701","buy-open","20000","2","6.01","22000.00","2",positionMargin="22000")
         openDetails(close);ui.onNodeWithTag("edit-execution").performScrollTo().performClick();text("execution-price","3540");text("execution-quantity","3")
         waitFor("修改实时报价"){displayed("entry-estimated-fee")=="预计手续费：¥10.63"}
         tap("save-execution");waitFor("修改影响预览"){model.pending.value!=null && !model.busy.value};assertEquals("3530",facts().executions.first{it.id==close.id}.price)
@@ -153,12 +168,12 @@ class TradeEntryExperienceTest {
         ui.onNodeWithTag("open-backup").performClick();ui.onNodeWithTag("v2-export-backup").performClick();ui.onNodeWithText("完整 ZIP（推荐）").performClick()
         val filename="entry-proof-${Build.VERSION.SDK_INT}-${System.nanoTime()}.zip"
         requireNotNull(device.wait(Until.findObject(By.clazz("android.widget.EditText")),20000)){"系统保存文件名输入框未出现"}.text=filename
-        requireNotNull(device.wait(Until.findObject(By.textMatches("(?i)(save|保存)")),15000)){"系统保存按钮未出现"}.click()
+        requireNotNull(device.wait(Until.findObject(By.text(java.util.regex.Pattern.compile("(?i)(save|保存)"))),15000)){"系统保存按钮未出现"}.click()
         waitFor("真实SAF导出并回读校验"){!backup.busy.value && backup.message.value?.contains("已重新读取并通过 SHA-256")==true}
         back();val removable=before.executions.first{it.code=="al2701"};delete(removable);assertEquals(5,facts().executions.size)
         ui.onNodeWithTag("open-backup").performClick();ui.onNodeWithTag("v2-import-backup").performClick()
         var file=device.wait(Until.findObject(By.text(filename)),15000)
-        if(file==null){requireNotNull(device.findObject(By.descMatches("(?i)(Show roots|Open navigation drawer|显示根目录|打开导航抽屉)"))){"文件选择器根目录入口缺失"}.click();requireNotNull(device.wait(Until.findObject(By.textMatches("(?i)(Downloads|下载)")),10000)).click();file=device.wait(Until.findObject(By.text(filename)),15000)}
+        if(file==null){requireNotNull(device.findObject(By.desc(java.util.regex.Pattern.compile("(?i)(Show roots|Open navigation drawer|显示根目录|打开导航抽屉)")))){"文件选择器根目录入口缺失"}.click();requireNotNull(device.wait(Until.findObject(By.text(java.util.regex.Pattern.compile("(?i)(Downloads|下载)"))),10000)).click();file=device.wait(Until.findObject(By.text(filename)),15000)}
         requireNotNull(file){"未在系统选择器找到刚导出的ZIP"}.click()
         waitFor("ZIP校验预览"){!backup.busy.value && backup.preview.value!=null}
         ui.onNodeWithTag("v2-backup").performScrollToNode(hasText("覆盖备份范围"));ui.onNodeWithText("覆盖备份范围").performClick()
