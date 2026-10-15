@@ -69,16 +69,16 @@ class TradeEntryExperienceTest {
             ui.onNode(hasText("￥$net") and hasAnyAncestor(hasTestTag("execution-${e.id}")),useUnmergedTree=true).assertIsDisplayed()
         }
     }
-    private fun begin(market:String,code:String,action:String,price:String,quantity:String){
+    private fun begin(market:String,code:String,action:String,price:String,quantity:String,symbolSource:String="typed"){
         page(1);taps=0;scrolls=0;fields.clear();steps.clear();tap("new-execution");selected("entry-market-$market")
-        text("execution-code",code)
+        if(symbolSource=="typed")text("execution-code",code)else{tap("entry-instrument-picker");if(symbolSource=="search")text("instrument-search",code);tap("instrument-$code");ui.onNodeWithTag("execution-code").assertTextContains(code)}
         selected(if(market=="stock")"execution-side-$action"else"execution-action-$action")
         text("execution-price",price);text("execution-quantity",quantity)
         for(tag in listOf("execution-second","execution-sequence","execution-multiplier","execution-margin","execution-trading-day","execution-parameters"))ui.onNodeWithTag(tag).assertDoesNotExist()
         ui.onNodeWithTag("save-execution").assertIsDisplayed()
     }
-    private fun enter(market:String,code:String,action:String,price:String,quantity:String,fee:String,margin:String?,remaining:String,net:String="0",capture:String?=null,positionMargin:String?=null):LedgerExecution {
-        val before=facts();begin(market,code,action,price,quantity)
+    private fun enter(market:String,code:String,action:String,price:String,quantity:String,fee:String,margin:String?,remaining:String,net:String="0",capture:String?=null,positionMargin:String?=null,symbolSource:String="typed"):LedgerExecution {
+        val before=facts();begin(market,code,action,price,quantity,symbolSource)
         waitFor("实时报价 $code"){numberOnScreen("entry-estimated-fee")?.let{BigDecimal(it).compareTo(BigDecimal(fee))==0}==true}
         visible(ui.onNodeWithTag("entry-estimated-fee"))
         if(market=="futures")visible(ui.onNodeWithTag("entry-estimated-margin"))
@@ -96,7 +96,7 @@ class TradeEntryExperienceTest {
         row(e)
         verifyPositionUi(after,e,remaining,positionMargin)
         history();row(e)
-        observations+=mapOf("id" to e.id,"market" to market,"code" to code,"action" to action,"savedSide" to e.side,"savedEffect" to e.effect,"price" to price,"quantity" to quantity,"expectedFees" to fee,"displayedFees" to shownFee,"savedFees" to e.fees,"expectedMargin" to margin,"displayedMargin" to shownMargin,"expectedRemaining" to remaining,"expectedRealizedNet" to net,"actualRealizedNet" to exact(sum(after.matches.filter{it.closeExecutionId==e.id}.map{decimal(it.net)})),"controlTapsIncludingEntryAndSave" to taps,"fieldsTyped" to fields.toList(),"requiredScrollCommands" to scrolls,"extraConfirmation" to false,"saveVisible" to true,"steps" to steps.toList(),"result" to "PASS")
+        observations+=mapOf("id" to e.id,"market" to market,"code" to code,"action" to action,"symbolSource" to symbolSource,"savedSide" to e.side,"savedEffect" to e.effect,"price" to price,"quantity" to quantity,"expectedFees" to fee,"displayedFees" to shownFee,"savedFees" to e.fees,"expectedMargin" to margin,"displayedMargin" to shownMargin,"expectedRemaining" to remaining,"expectedRealizedNet" to net,"actualRealizedNet" to exact(sum(after.matches.filter{it.closeExecutionId==e.id}.map{decimal(it.net)})),"controlTapsIncludingEntryAndSave" to taps,"fieldsTyped" to fields.toList(),"requiredScrollCommands" to scrolls,"extraConfirmation" to false,"saveVisible" to true,"steps" to steps.toList(),"result" to "PASS")
         return e
     }
     private fun verifyPositionUi(after:LedgerSnapshot,e:LedgerExecution,remaining:String,margin:String?){
@@ -140,14 +140,14 @@ class TradeEntryExperienceTest {
         assertEquals(1,facts().executions.size);tap("entry-cancel");clock(today)
         enter("stock","600000","sell","10","1000","6.00",null,"0","-7")
         val a=enter("futures","rb2701","buy-open","3500","2","7.01","4900.00","2",capture="71-entry-futures-filled",positionMargin="4900")
-        val b=enter("futures","rb2701","buy-open","3510","3","10.54","7371.00","5",positionMargin="12271")
+        val b=enter("futures","rb2701","buy-open","3510","3","10.54","7371.00","5",positionMargin="12271",symbolSource="recent")
         val close=enter("futures","rb2701","sell-close","3530","4","14.13","2457.00","1","971.833333333333",positionMargin="2457")
         screenshot("72-entry-saved-list")
         page(1);ui.onNodeWithText("当前持仓").performClick();ui.onNodeWithTag("v2-trades").performScrollToNode(hasTestTag("position-cycle_${a.id}"));screenshot("73-entry-partial-position")
         val partial=facts();assertEquals("1",partial.lots.first{it.executionId==b.id}.remaining);assertEquals("0",partial.lots.first{it.executionId==a.id}.remaining)
         enter("futures","rb2701","sell-open","4000","1","4.01","2800.00","1",positionMargin="2800")
         enter("futures","rb2701","buy-close","3990","1","4.00","2457.00","0","91.99")
-        enter("futures","al2701","buy-open","20000","2","6.01","22000.00","2",positionMargin="22000")
+        enter("futures","al2701","buy-open","20000","2","6.01","22000.00","2",positionMargin="22000",symbolSource="search")
         openDetails(close);ui.onNodeWithTag("edit-execution").performScrollTo().performClick();text("execution-price","3540");text("execution-quantity","3")
         waitFor("修改实时报价"){displayed("entry-estimated-fee")=="预计手续费：¥10.63"}
         tap("save-execution");waitFor("修改影响预览"){model.pending.value!=null && !model.busy.value};assertEquals("3530",facts().executions.first{it.id==close.id}.price)
@@ -158,10 +158,15 @@ class TradeEntryExperienceTest {
         observations+=mapOf("operation" to "delete-close","expectedRemaining" to "5","result" to "PASS")
         delete(b);equal("2",facts().cycles.first{it.id=="cycle_${a.id}"}.remaining);assertEquals(3,facts().audits.size)
         observations+=mapOf("operation" to "delete-open","expectedRemaining" to "2","result" to "PASS")
-        val beforeUnknown=facts();begin("futures","zz2701","buy-open","100","1")
-        waitFor("未知品种提示"){ui.onAllNodesWithTag("entry-unverified").fetchSemanticsNodes().isNotEmpty()}
-        ui.onNodeWithTag("entry-estimated-fee").assertTextEquals("预计手续费：暂无法估算");screenshot("76-entry-unknown-contract")
-        tap("save-execution");waitFor("未知品种拒绝保存"){!model.busy.value && model.problem.value!=null};assertEquals(beforeUnknown,facts());observations+=mapOf("operation" to "unknown-contract","code" to "zz2701","displayedFees" to displayed("entry-estimated-fee"),"saved" to false,"result" to "PASS");tap("entry-cancel")
+        val beforeUnknown=facts()
+        for(unknown in listOf("zz2701","i2701")){
+            begin("futures",unknown,"buy-open","100","1")
+            waitFor("未知品种提示"){ui.onAllNodesWithTag("entry-unverified").fetchSemanticsNodes().isNotEmpty()}
+            ui.onNodeWithTag("entry-estimated-fee").assertTextEquals("预计手续费：暂无法估算")
+            if(unknown=="i2701")screenshot("76-entry-unknown-contract")
+            tap("save-execution");waitFor("未知品种拒绝保存"){!model.busy.value && model.problem.value!=null}
+            assertEquals(beforeUnknown,facts());observations+=mapOf("operation" to "unknown-contract","code" to unknown,"displayedFees" to displayed("entry-estimated-fee"),"saved" to false,"result" to "PASS");tap("entry-cancel")
+        }
         statistics("84.99");screenshot("74-entry-statistics")
         exerciseKeyboard();exerciseRealSafBackup()
         val expected=facts();assertEquals(6,expected.executions.size);assertEquals("84.99",exact(sum(expected.matches.map{decimal(it.net)})))

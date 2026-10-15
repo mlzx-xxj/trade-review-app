@@ -57,7 +57,7 @@ import java.math.BigDecimal
     var picker by remember{mutableStateOf(false)};var query by remember{mutableStateOf("")};var planPicker by remember{mutableStateOf(false)}
     val catalog by model.instruments.collectAsState()
     val reference=if(account=="futures")FuturesReferenceCatalog.find(code)else null
-    val displayName=name.ifBlank{reference?.name?:code}
+    val displayName=name.ifBlank{catalog.firstOrNull{it.market==account && it.code.equals(code,true)}?.name?.removeSuffix(" "+code)?:reference?.name?:code}
     val fields=mapOf("mode" to key,"id" to id,"account" to account,"code" to code,"name" to name,"side" to side,"effect" to effect,"price" to price,"quantity" to quantity,"strategy" to strategy.orEmpty(),"plan" to plan.orEmpty(),"tp" to tp,"stop" to stop)
     LaunchedEffect(fields){model.draft(fields)}
     val initial=value?:LedgerExecution(id,account,code,displayName,stamp.toLocalDate().toEpochDay(),stamp.hour*60+stamp.minute,stamp.toLocalDate().toEpochDay(),0,side,effect,price,quantity,"0",feeSource=AutomaticEntry.SOURCE,second=stamp.second)
@@ -102,7 +102,7 @@ import java.math.BigDecimal
                     }
                     TextButton({planPicker=true},Modifier.heightIn(min=48.dp)){Text(if(plan==null)"关联已有计划"else"更换已关联计划")}
                     TextButton({model.favorite(account,code,displayName)},Modifier.heightIn(min=48.dp)){Text("保存为常用")}
-                    if(account=="futures")Text("离线参考核实于 ${FuturesReferenceCatalog.verifiedDate}，非期货公司实际标准。费用每笔另加0.01元，按分四舍五入。",style=MaterialTheme.typography.bodySmall)
+                    if(account=="futures")Text("费用按当笔保存规则计算，参考值不等于期货公司实际标准；新成交整笔加收0.01元，按分四舍五入。",style=MaterialTheme.typography.bodySmall)
                 }
                 if(draft.isNotEmpty())Text("已恢复未保存内容",style=MaterialTheme.typography.labelMedium)
             }
@@ -121,7 +121,9 @@ import java.math.BigDecimal
         EntryField("名称或代码",query,{query=it},"instrument-search")
         val recent=MatchingEngine.ordered(state.executions.filter{it.accountId==account}).reversed().map{it.code to it.name}
         val saved=catalog.filter{it.market==account}.sortedWith(compareByDescending<com.tradereview.app.data.Instrument>{it.favorite}.thenByDescending{it.lastUsed}).map{it.code to it.name.removeSuffix(" "+it.code)}
-        val builtins=if(account=="futures")FuturesReferenceCatalog.products.map{it.prefix to it.name+if(it.multiplier==null)"（未核实）"else""}else emptyList()
+        val searched=query.trim().lowercase()
+        val searchedPrefix=if(Regex("[a-z]{1,4}[0-9]{3,4}").matches(searched))FuturesReferenceCatalog.find(searched)?.prefix else null
+        val builtins=if(account=="futures")FuturesReferenceCatalog.products.map{(if(it.prefix==searchedPrefix)searched else it.prefix) to it.name+if(it.multiplier==null)"（未核实）"else""}else emptyList()
         val options=(recent+saved+builtins).distinctBy{it.first}.filter{(c,n)->query.isBlank() || c.contains(query,true) || n.contains(query,true)}
         LazyColumn(Modifier.heightIn(max=280.dp)){items(options,key={it.first}){(c,n)->TextButton({code=c.lowercase();name=n.removeSuffix("（未核实）");picker=false},Modifier.fillMaxWidth().heightIn(min=48.dp).testTag("instrument-$c")){Text("$n $c")}}}
     }},confirmButton={TextButton({picker=false}){Text("关闭")}})
