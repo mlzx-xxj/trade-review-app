@@ -6,6 +6,10 @@ if [[ "${V100_CHECK_BOOT:-false}" == true ]]; then
   [[ "$(adb shell getprop ro.kernel.qemu | tr -d '\r\n')" == 1 ]] || { echo 'Boot checks require a disposable emulator' >&2; exit 1; }
   adb shell wm size > ci-stability/boot-display.txt || exit 1
   adb shell wm density >> ci-stability/boot-display.txt || exit 1
+  # AVD heap-size does not guarantee the regular app growth limit. Record actual
+  # boot properties; never conceal a small heap/OOM by removing the 10k corpus.
+  adb shell getprop dalvik.vm.heapgrowthlimit > ci-stability/boot-heap.txt || exit 1
+  adb shell getprop dalvik.vm.heapsize >> ci-stability/boot-heap.txt || exit 1
   # Finish SystemUI/keyguard startup before Gradle competes for the runner CPU.
   sleep 20
   adb logcat -d -s ActivityManager:I ActivityTaskManager:I AndroidRuntime:E > ci-stability/boot-logcat.txt || exit 1

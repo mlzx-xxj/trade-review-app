@@ -37,7 +37,7 @@ class PerformanceBaselineTest {
         metrics[name]=mapOf("samplesMs" to samples,"medianMs" to samples.sorted()[1],"minimumMs" to samples.min(),"maximumMs" to samples.max())
     }
     private fun write(name:String){
-        metrics["environment"]=mapOf("api" to Build.VERSION.SDK_INT,"model" to Build.MODEL,"abis" to Build.SUPPORTED_ABIS.toList(),"warmups" to 1,"samples" to 3,"datasetDate" to today.toString(),"measurement" to "elapsed wall time; disposable CI emulator, not phone")
+        metrics["environment"]=mapOf("maxHeapBytes" to Runtime.getRuntime().maxMemory(),"api" to Build.VERSION.SDK_INT,"model" to Build.MODEL,"abis" to Build.SUPPORTED_ABIS.toList(),"warmups" to 1,"samples" to 3,"datasetDate" to today.toString(),"measurement" to "elapsed wall time; disposable CI emulator, not phone")
         val json=GsonBuilder().setPrettyPrinting().create().toJson(metrics)
         V08Metrics.write("$name-api${Build.VERSION.SDK_INT}.json",json)
         println("V08_METRICS_FILE=$name-api${Build.VERSION.SDK_INT}.json")

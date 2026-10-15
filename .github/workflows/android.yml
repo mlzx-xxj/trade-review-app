@@ -180,7 +180,7 @@ jobs:
           profile: Nexus 4
           heap-size: 512M
           emulator-boot-timeout: 300
-          emulator-options: -no-window -gpu swiftshader_indirect -feature -Vulkan -memory 3072 -cores 2 -no-snapshot -noaudio -no-boot-anim -no-metrics -partition-size 2048
+          emulator-options: -no-window -gpu swiftshader_indirect -feature -Vulkan -prop dalvik.vm.heapgrowthlimit=256m -prop dalvik.vm.heapsize=512m -memory 3072 -cores 2 -no-snapshot -noaudio -no-boot-anim -no-metrics -partition-size 2048
           disable-animations: true
           script: bash scripts/run-device-tests.sh
       - name: Pack one copy of native XML, metrics and screenshots
@@ -328,7 +328,7 @@ jobs:
           arch: x86_64
           profile: Nexus 4
           emulator-boot-timeout: 300
-          emulator-options: -no-window -gpu swiftshader_indirect -feature -Vulkan -memory 3072 -cores 2 -no-snapshot -noaudio -no-boot-anim -no-metrics -partition-size 2048
+          emulator-options: -no-window -gpu swiftshader_indirect -feature -Vulkan -prop dalvik.vm.heapgrowthlimit=256m -prop dalvik.vm.heapsize=512m -memory 3072 -cores 2 -no-snapshot -noaudio -no-boot-anim -no-metrics -partition-size 2048
           disable-animations: true
           script: bash scripts/ci-signed-install.sh
       - name: Package signed-install evidence

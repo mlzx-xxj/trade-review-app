@@ -36,6 +36,7 @@ class ActivityCompatibilityTest {
     private lateinit var model:TradeViewModel
     private fun shell(command:String):String=ParcelFileDescriptor.AutoCloseInputStream(InstrumentationRegistry.getInstrumentation().uiAutomation.executeShellCommand(command)).bufferedReader().use{it.readText()}
     @Before fun seed(){
+        val freshDraft=EntryDraft(amount="12.")
         application.deviceExperience.initialize(true);application.deviceExperience.finishOnboarding()
         require(Build.HARDWARE in listOf("ranchu","goldfish")){"This fixture only runs on a disposable emulator"}
         runBlocking {
@@ -46,10 +47,10 @@ class ActivityCompatibilityTest {
             db.trades().savePreflightItem(item);db.trades().savePreflightCheck(PreflightCheck(LocalDate.now().toEpochDay(),"manual:${item.id}",item.text,true,"manual",listOf("trade:$key")))
             db.trades().saveGoal(ReviewGoal(id="00000000000000000000000000000809",title="重启验收目标",kind="text",startDate=ReviewPeriod.at("week",LocalDate.now()).start))
             db.trades().saveOcrDraft(OcrDraft(id="00000000000000000000000000000811",fields=SmartJson.fields(mapOf("quantity" to "2.")),blocked=true,closedEvidence=false,createdDay=LocalDate.now().toEpochDay()))
-            db.trades().saveDraft(EntryDraft(amount="12."))
+            db.trades().saveDraft(freshDraft)
         }
         compose.runOnIdle{model=ViewModelProvider(compose.activity)[TradeViewModel::class.java]}
-        compose.waitUntil(30000){!model.state.value.loading && !model.analytics.value.loading && model.state.value.trades.any{it.recordKey==key}}
+        compose.waitUntil(30000){!model.state.value.loading && !model.analytics.value.loading && model.state.value.trades.any{it.recordKey==key} && model.state.value.drafts.any{it==freshDraft}}
     }
     @Test fun actualActivityDraftSurvivesRecreationAndBackgroundResume(){
         compose.onNodeWithContentDescription("新增交易").performClick()
