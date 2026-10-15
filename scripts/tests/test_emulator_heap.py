@@ -18,6 +18,8 @@ case "$*" in
  'shell getprop ro.kernel.qemu') printf '%s\\n' "$TEST_QEMU";;
  'shell id -u') echo 0;;
  'shell getprop sys.boot_completed') echo 1;;
+  'shell getprop init.svc.zygote') echo stopped;;
+  'shell getprop init.svc.surfaceflinger') echo stopped;;
  'shell getprop dalvik.vm.heapgrowthlimit') echo 256m;;
  'shell getprop dalvik.vm.heapsize') echo 512m;;
 esac
