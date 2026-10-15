@@ -170,7 +170,10 @@ class TradeEntryExperienceTest {
             tap("save-execution");waitFor("未知品种拒绝保存"){!model.busy.value && model.problem.value!=null}
             assertEquals(beforeUnknown,facts());observations+=mapOf("operation" to "unknown-contract","code" to unknown,"displayedFees" to displayed("entry-estimated-fee"),"saved" to false,"result" to "PASS");tap("entry-cancel")
         }
-        statistics("84.99");screenshot("74-entry-statistics")
+        statistics("84.99");waitFor("临时反馈自然结束"){model.message.value==null};screenshot("74-entry-statistics")
+        ui.onNodeWithTag("v2-statistics").performScrollToNode(hasTestTag("v2-daily-chart"))
+        ui.onNodeWithTag("v2-daily-chart-scroll").performSemanticsAction(androidx.compose.ui.semantics.SemanticsActions.ScrollBy){scroll->scroll((today.dayOfMonth-4).coerceAtLeast(0)*52f*app.resources.displayMetrics.density,0f)}
+        screenshot("78-entry-statistics-bars")
         exerciseKeyboard();exerciseRealSafBackup()
         val expected=facts();assertEquals(6,expected.executions.size);assertEquals("84.99",exact(sum(expected.matches.map{decimal(it.net)})))
         val proof=mapOf("api" to Build.VERSION.SDK_INT,"pid" to Process.myPid(),"ledger" to LedgerJson.element(expected),"observations" to observations,"allExecutionsCreatedViaRealForm" to true,"syntheticOnly" to true,"baselineInputCountsExcludeKeyboardKeyStrokes" to true,"zipSafExportReadbackAndConfirmedReplace" to true,"result" to "PASS")

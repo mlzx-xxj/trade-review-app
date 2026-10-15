@@ -4,9 +4,9 @@
 
 2.0.0/code21/com.tradereview.app；Room v8正式保留v1→v8迁移，JSON7/ZIP1兼容旧格式。旧16表、原盈亏/币种/recordKey/截图/其他业务原样保留，不推断旧持仓、不重复进入V2统计。金额用BigDecimal，费用分摊守恒，风险金不当现金。
 
-V2 PR #10 与公开 CI 加固 PR #11 已合并。依 Issue #12 所有者授权，正式包从 V2 起固定使用新永久证书 `29b2f82887a0591d5b1d1f9ab148b90c0b658088530e3bcc1bd7e5fee64f2af9`，原 V0.3 指纹仅留历史证据。旧私钥不可恢复，**新证书不能覆盖安装旧 V0.3 签名应用**：先验证完整 ZIP 备份，再由所有者确认重装并恢复；不自动卸载或清除数据。四个 Environment Secrets 尚待所有者配置，未真实签名/真机验收，不宣称稳定发布。无凭据仅隔离 com.tradereview.app.rc.v200、2.0.0-rc.1 非调试 RC。
+V2 PR #10 与公开 CI 加固 PR #11 已合并。依 Issue #12 所有者授权，正式包从 V2 起固定使用新永久证书 `29b2f82887a0591d5b1d1f9ab148b90c0b658088530e3bcc1bd7e5fee64f2af9`，原 V0.3 指纹仅留历史证据。旧私钥不可恢复，**新证书不能覆盖安装旧 V0.3 签名应用**：先验证完整 ZIP 备份，再由所有者确认重装并恢复；不自动卸载或清除数据。已独立下载并验签 [main 38736945929](https://github.com/mlzx-xxj/trade-review-app/actions/runs/38736945929) 的 code20 候选 APK，证书与上述永久 pin 一致。永久签名仅由受保护的 main 在完整测试通过后使用既有 Environment Secrets 执行，PR 不读取这些凭据。签名配置及实际证书以对应可信运行的验签产物为准，不能由 PR 的 signing=false 推断 Secrets 缺失。本轮 PR 交付独立 com.tradereview.app.rc.v200、2.0.0-rc.2 非调试 RC；正式同证书升级和用户手机验收不由 RC 测试替代，不自动发布 Stable。
 
-[永久签名迁移验证](docs/PERMANENT-SIGNING-V2-VALIDATION.md) · [公开仓库 CI 安全与手机操作](docs/PUBLIC-CI-SECURITY.md) · [实施计划](docs/V200-PLAN.md) · [实际验证/失败记录](docs/V200-VALIDATION.md) · [模型/计算/迁移/备份](docs/V200-DATA-AND-CALCULATIONS.md) · [手机签名配置](docs/V200-PHONE-SIGNING.md) · [手机验收](docs/V200-PHONE-ACCEPTANCE.md)
+[快速录入实测与参数来源](docs/V200-TRADE-ENTRY-EXPERIENCE.md) · [永久签名迁移验证](docs/PERMANENT-SIGNING-V2-VALIDATION.md) · [公开仓库 CI 安全与手机操作](docs/PUBLIC-CI-SECURITY.md) · [实施计划](docs/V200-PLAN.md) · [实际验证/失败记录](docs/V200-VALIDATION.md) · [模型/计算/迁移/备份](docs/V200-DATA-AND-CALCULATIONS.md) · [手机签名配置](docs/V200-PHONE-SIGNING.md) · [手机验收](docs/V200-PHONE-ACCEPTANCE.md)
 
 以下内容为历史版本，不代表V2页面或本轮CI结果。
 
