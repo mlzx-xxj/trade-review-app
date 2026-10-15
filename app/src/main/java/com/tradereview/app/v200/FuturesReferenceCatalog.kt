@@ -2,7 +2,7 @@ package com.tradereview.app.v200
 
 import java.time.LocalDate
 
-/** Facts verified from SHFE public sources; reference only, no runtime network. */
+/** Exchange contract multipliers and available reference costs; no runtime network. */
 object FuturesReferenceCatalog {
     const val verifiedDate="2026-10-15"
     private val effective=LocalDate.of(2026,10,14).toEpochDay()

@@ -227,7 +227,9 @@ class TradeEntryExperienceTest {
             observations+=mapOf("operation" to "pending-common-product","code" to "i2701","action" to action,"price" to price,"quantity" to qty,"multiplier" to e.multiplier,"displayedFees" to "待估算","savedFees" to e.fees,"savedMarginRate" to e.marginRate,"remaining" to c.remaining,"realized" to c.realized,"result" to "PASS")
         }
         assertEquals(2,facts().executions.count{it.id !in originals})
-        statistics("84.99");ui.onNodeWithTag("statistics-pending").assertTextEquals("1 笔费用待估算，未计入净盈亏、胜率和图表；有效样本 2");screenshot("82-entry-pending-statistics")
+        page(0)
+        for(period in listOf("week","month","all"))ui.onNodeWithTag("home-realized-$period").assertIsDisplayed().assertTextEquals("待估算")
+        statistics("84.99");ui.onNodeWithTag("statistics-pending").assertTextEquals("1 笔费用待估算，未计入净盈亏、胜率和图表；有效样本 2");waitFor("统计截图等待真实保存反馈自然消失"){ui.onAllNodesWithText("成交已保存，持仓与统计已重算").fetchSemanticsNodes().isEmpty()};ui.onNodeWithTag("period-realized-net").assertIsDisplayed();screenshot("82-entry-pending-statistics")
         ui.onNodeWithTag("statistics-market-futures").performClick();waitFor("期货已知盈亏不混入未知"){displayed("period-realized-net")=="￥91.99"};ui.onNodeWithTag("statistics-pending").assertIsDisplayed()
         ui.onNodeWithTag("statistics-market-all").performClick();statistics("84.99")
     }
