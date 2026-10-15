@@ -19,6 +19,10 @@ class BootHealthTest(unittest.TestCase):
         (bin_dir/'adb').write_text('''#!/bin/sh
 case "$*" in
   'shell getprop ro.kernel.qemu') echo 1;;
+  'shell id -u') echo 0;;
+  'shell getprop sys.boot_completed') echo 1;;
+  'shell getprop dalvik.vm.heapgrowthlimit') echo 256m;;
+  'shell getprop dalvik.vm.heapsize') echo 512m;;
   'logcat -d -s ActivityManager:I ActivityTaskManager:I AndroidRuntime:E') cat fixture-log.txt;;
   'shell dumpsys activity lastanr') cat fixture-last-anr.txt;;
   'exec-out screencap -p') printf 'synthetic-png';;
