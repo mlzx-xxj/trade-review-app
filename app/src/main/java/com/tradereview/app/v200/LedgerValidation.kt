@@ -64,6 +64,7 @@ object LedgerValidation {
         if(e.accountId=="stock")ledgerRequire(e.tradingDay==e.date && (e.side=="buy" && e.effect=="open" || e.side=="sell" && e.effect=="close"),"A股只支持买入/卖出，不允许卖空或期货开平类型")
         else ledgerRequire(e.tradingDay in e.date..(e.date+7),"夜盘交易日需人工确认，与自然日期相隔不超过七天")
         number(e.price,true);number(e.quantity,true,BigDecimal("1000000000"));ledgerRequire(decimal(e.quantity).stripTrailingZeros().scale()<=0,"数量必须为整数股或整数手")
+        if(e.feeSource==AutomaticEntry.SOURCE)ledgerRequire(e.tradingDay==e.date,"自动记账的自然日期不一致，拒绝恢复或保存")
         number(e.fees);optional(e.feeRateSnapshot);ledgerRequire(e.feeSource in listOf("actual","rule",AutomaticEntry.SOURCE),"费用来源无效")
         optional(e.multiplier,true);optional(e.marginRate);ledgerRequire(e.marginRate==null || decimal(e.marginRate)<=BigDecimal.ONE,"保证金率无效")
         if(e.accountId=="futures")ledgerRequire(e.parametersConfirmed && e.multiplier!=null,"期货合约乘数未核实；请先配置或确认本笔参数，不能虚构已实现盈亏")

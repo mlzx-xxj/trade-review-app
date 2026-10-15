@@ -154,9 +154,12 @@ class TradeEntryExperienceTest {
         ui.onNodeWithTag("confirm-execution-change").performClick();waitFor("修改确认"){!model.busy.value && model.pending.value==null && model.state.value.ledger!!.executions.first{it.id==close.id}.price=="3540"}
         val changed=facts().executions.first{it.id==close.id};assertEquals(close.ordinal,changed.ordinal);equal("10.63",changed.fees);equal("1078.846666666667",exact(sum(facts().matches.filter{it.closeExecutionId==close.id}.map{decimal(it.net)})));equal("2",facts().cycles.first{it.id=="cycle_${a.id}"}.remaining)
         observations+=mapOf("operation" to "edit","id" to close.id,"price" to "3540","quantity" to "3","expectedFees" to "10.63","displayedFees" to "预计手续费：¥10.63","savedFees" to changed.fees,"expectedRemaining" to "2","actualRealizedNet" to "1078.846666666667","positionPreserved" to (changed.ordinal==close.ordinal),"extraConfirmation" to true,"result" to "PASS")
-        back();delete(changed);equal("5",facts().cycles.first{it.id=="cycle_${a.id}"}.remaining)
+        back();verifyPositionUi(facts(),changed,"2","4914");history();row(changed)
+        delete(changed);equal("5",facts().cycles.first{it.id=="cycle_${a.id}"}.remaining)
+        verifyPositionUi(facts(),a,"5","12271")
         observations+=mapOf("operation" to "delete-close","expectedRemaining" to "5","result" to "PASS")
         delete(b);equal("2",facts().cycles.first{it.id=="cycle_${a.id}"}.remaining);assertEquals(3,facts().audits.size)
+        verifyPositionUi(facts(),a,"2","4900")
         observations+=mapOf("operation" to "delete-open","expectedRemaining" to "2","result" to "PASS")
         val beforeUnknown=facts()
         for(unknown in listOf("zz2701","i2701")){

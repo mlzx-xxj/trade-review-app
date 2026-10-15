@@ -37,6 +37,8 @@ class AutomaticEntryTest {
             LedgerValidation.execution(e.copy(feeSource=source))
             assertThrows(LedgerException::class.java){LedgerValidation.execution(e.copy(feeSource=source,date=today+1,tradingDay=today+1))}
         }
+        assertThrows(LedgerException::class.java){LedgerValidation.execution(e.copy(tradingDay=today+1))}
+        LedgerValidation.execution(e.copy(feeSource="actual",tradingDay=today+1)) // historical night facts remain compatible
         LedgerValidation.cash(LedgerCashFlow("today","stock",today,"in","1"))
         assertThrows(LedgerException::class.java){LedgerValidation.cash(LedgerCashFlow("future","stock",today+1,"in","1"))}
     }

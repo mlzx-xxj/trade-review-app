@@ -31,15 +31,23 @@ def main():
         assert Path(apk).is_file()
         assert "Success" in adb("install","-r",apk)
     logs={}
-    for phase in ("journey","reopen"):
-        if phase=="reopen":
-            adb("shell","am","force-stop",APP)
-            assert not subprocess.run(["adb","shell","pidof",APP],capture_output=True,text=True,check=False).stdout.strip(),"Process did not stop"
-        result=adb("shell","am","instrument","-w","-r","-e","class",CLASS,"-e","entryPhase",phase,"-e","additionalTestOutputDir",REMOTE+"/"+phase,APP+".test/androidx.test.runner.AndroidJUnitRunner",timeout=900)
-        path=ROOT/(phase+"-instrumentation.txt");path.write_text(result)
-        assert successful_runner(result),"Actual UI "+phase+" failed; retain runner logs"
-        logs[phase]=hashlib.sha256(path.read_bytes()).hexdigest()
-    adb("pull",REMOTE,str(ROOT))
+    try:
+        for phase in ("journey","reopen"):
+            if phase=="reopen":
+                adb("shell","am","force-stop",APP)
+                assert not subprocess.run(["adb","shell","pidof",APP],capture_output=True,text=True,check=False).stdout.strip(),"Process did not stop"
+            result=adb("shell","am","instrument","-w","-r","-e","class",CLASS,"-e","entryPhase",phase,"-e","additionalTestOutputDir",REMOTE+"/"+phase,APP+".test/androidx.test.runner.AndroidJUnitRunner",timeout=900)
+            path=ROOT/(phase+"-instrumentation.txt");path.write_text(result)
+            assert successful_runner(result),"Actual UI "+phase+" failed; retain runner logs"
+            logs[phase]=hashlib.sha256(path.read_bytes()).hexdigest()
+    except BaseException:
+        # Keep the real failure and collect its screenshot/hierarchy before the AVD
+        # is destroyed. Failure diagnostics must never become a successful result.
+        try: adb("pull",REMOTE,str(ROOT))
+        except (OSError,subprocess.SubprocessError): pass
+        raise
+    else:
+        adb("pull",REMOTE,str(ROOT))
     journey=list(ROOT.rglob(f"trade-entry-experience-api{api}.json"));reopened=list(ROOT.rglob(f"entry-reopen-api{api}.json"))
     assert len(journey)==len(reopened)==1,"Missing/duplicate actual UI evidence"
     first=json.loads(journey[0].read_text());second=json.loads(reopened[0].read_text())
