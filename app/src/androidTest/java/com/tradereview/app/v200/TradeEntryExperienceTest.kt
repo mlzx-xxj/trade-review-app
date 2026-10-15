@@ -64,6 +64,8 @@ class TradeEntryExperienceTest {
     private fun enter(market:String,code:String,action:String,price:String,quantity:String,fee:String,margin:String?,remaining:String,net:String="0",capture:String?=null,positionMargin:String?=null):LedgerExecution {
         val before=facts();begin(market,code,action,price,quantity)
         waitFor("实时报价 $code"){numberOnScreen("entry-estimated-fee")?.let{BigDecimal(it).compareTo(BigDecimal(fee))==0}==true}
+        visible(ui.onNodeWithTag("entry-estimated-fee"))
+        if(market=="futures")visible(ui.onNodeWithTag("entry-estimated-margin"))
         val shownFee=displayed("entry-estimated-fee")
         val shownMargin=if(market=="futures"){waitFor("实时保证金"){numberOnScreen("entry-estimated-margin")?.let{BigDecimal(it).compareTo(BigDecimal(requireNotNull(margin)))==0}==true};displayed("entry-estimated-margin")}else null
         capture?.let(::screenshot)
@@ -71,12 +73,14 @@ class TradeEntryExperienceTest {
         waitFor("无多余确认的正常保存"){!model.busy.value && !model.editor.value && model.state.value.ledger?.executions?.size==before.executions.size+1}
         assertNull("普通录入不应弹顺序/参数确认",model.pending.value)
         val after=facts();val e=after.executions.single{it.id !in before.executions.map{v->v.id}}
+        assertEquals(action.substringBefore('-'),e.side)
+        if(market=="futures")assertEquals(action.substringAfter('-'),e.effect)
         equal(fee,e.fees);equal(net,exact(sum(after.matches.filter{it.closeExecutionId==e.id}.map{decimal(it.net)})))
         equal(remaining,exact(sum(after.cycles.filter{it.accountId==market && it.code==code && it.direction==(if(action.startsWith("sell-open") || action.startsWith("buy-close"))"short"else"long")}.map{decimal(it.remaining)})))
         row(e)
         verifyPositionUi(after,e,remaining,positionMargin)
         history();row(e)
-        observations+=mapOf("id" to e.id,"market" to market,"code" to code,"action" to action,"price" to price,"quantity" to quantity,"expectedFees" to fee,"displayedFees" to shownFee,"savedFees" to e.fees,"expectedMargin" to margin,"displayedMargin" to shownMargin,"expectedRemaining" to remaining,"expectedRealizedNet" to net,"actualRealizedNet" to exact(sum(after.matches.filter{it.closeExecutionId==e.id}.map{decimal(it.net)})),"controlTapsIncludingEntryAndSave" to taps,"fieldsTyped" to fields.toList(),"requiredScrollCommands" to scrolls,"extraConfirmation" to false,"saveVisible" to true,"steps" to steps.toList(),"result" to "PASS")
+        observations+=mapOf("id" to e.id,"market" to market,"code" to code,"action" to action,"savedSide" to e.side,"savedEffect" to e.effect,"price" to price,"quantity" to quantity,"expectedFees" to fee,"displayedFees" to shownFee,"savedFees" to e.fees,"expectedMargin" to margin,"displayedMargin" to shownMargin,"expectedRemaining" to remaining,"expectedRealizedNet" to net,"actualRealizedNet" to exact(sum(after.matches.filter{it.closeExecutionId==e.id}.map{decimal(it.net)})),"controlTapsIncludingEntryAndSave" to taps,"fieldsTyped" to fields.toList(),"requiredScrollCommands" to scrolls,"extraConfirmation" to false,"saveVisible" to true,"steps" to steps.toList(),"result" to "PASS")
         return e
     }
     private fun verifyPositionUi(after:LedgerSnapshot,e:LedgerExecution,remaining:String,margin:String?){
@@ -136,7 +140,7 @@ class TradeEntryExperienceTest {
         val beforeUnknown=facts();begin("futures","zz2701","buy-open","100","1")
         waitFor("未知品种提示"){ui.onAllNodesWithTag("entry-unverified").fetchSemanticsNodes().isNotEmpty()}
         ui.onNodeWithTag("entry-estimated-fee").assertTextEquals("预计手续费：暂无法估算");screenshot("76-entry-unknown-contract")
-        tap("save-execution");waitFor("未知品种拒绝保存"){!model.busy.value && model.problem.value!=null};assertEquals(beforeUnknown,facts());tap("entry-cancel")
+        tap("save-execution");waitFor("未知品种拒绝保存"){!model.busy.value && model.problem.value!=null};assertEquals(beforeUnknown,facts());observations+=mapOf("operation" to "unknown-contract","code" to "zz2701","displayedFees" to displayed("entry-estimated-fee"),"saved" to false,"result" to "PASS");tap("entry-cancel")
         statistics("84.99");screenshot("74-entry-statistics")
         exerciseKeyboard();exerciseRealSafBackup()
         val expected=facts();assertEquals(6,expected.executions.size);assertEquals("84.99",exact(sum(expected.matches.map{decimal(it.net)})))
