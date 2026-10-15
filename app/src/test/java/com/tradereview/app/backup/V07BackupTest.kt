@@ -10,7 +10,7 @@ class V07BackupTest {
         preflightItems=listOf(PreflightItem(text="先核对风险",archived=true)),preflightChecks=listOf(PreflightCheck(day,"auto:review:${day-1}","补齐昨日复盘",true,"auto",listOf("review:${day-1}"))),
         ocrDrafts=listOf(OcrDraft(fields=SmartJson.fields(mapOf("symbol" to "螺纹钢","realizedPnl" to "-12.")),blocked=true,closedEvidence=false,createdDay=day)))
     @Test fun allNewSettingsChecksAndIncompleteOcrFieldsRoundTripExactly() {
-        val d=data();val output=BackupCodec.encode(d);assertEquals(d,BackupCodec.decode(output));assertFalse(output.contains("rawText"));assertEquals(7,BackupCodec.SCHEMA_VERSION)
+        val d=data();val output=BackupCodec.encode(d);assertEquals(d,BackupCodec.decode(output));assertFalse(output.contains("rawText"));assertEquals(8,BackupCodec.SCHEMA_VERSION);assertEquals(8,BackupCodec.strictObject(output)["schemaVersion"].asInt)
     }
     @Test fun everySupportedOldGoldenVersionIncludingV06RemainsCompatible() {
         for(name in listOf("v02-backup.json","v03-backup.json","v03-android-backup.json","v04-backup.json","v05-backup.json","v06-backup.json")) {
