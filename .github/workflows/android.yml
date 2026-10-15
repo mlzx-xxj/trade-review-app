@@ -7,11 +7,11 @@ on:
   workflow_dispatch:
     inputs:
       old_fixed_release_tag:
-        description: 'Optional real original-pin old Release tag; main only'
+        description: 'Optional V0.3 public Release tag for expected incompatible-install test; main only'
         required: false
         type: string
       old_fixed_asset_name:
-        description: 'Exact original-pin public APK asset name; main only'
+        description: 'Exact historical V0.3 APK asset name; never a compatible upgrade fixture'
         required: false
         type: string
 
@@ -210,7 +210,7 @@ jobs:
           retention-days: 3
 
   trusted-signing:
-    name: Original V0.3 signing, protected main only
+    name: Permanent V2 signing, protected main only
     needs: [build, device-tests]
     if: >-
       github.repository == 'mlzx-xxj/trade-review-app' &&
@@ -250,14 +250,14 @@ jobs:
         run: |
           python3 scripts/ci-require-signing-environment.py
           python3 scripts/ci-stage-candidate.py --for-signing
-      - name: Use only original main-protected signing credentials
+      - name: Use only owner-held permanent V2 main-protected credentials
         id: signing
         env:
           EXISTING_KEY_BASE64: ${{ secrets.TRADE_REVIEW_KEYSTORE_BASE64 }}
           EXISTING_STORE_PASSWORD: ${{ secrets.TRADE_REVIEW_KEYSTORE_PASSWORD }}
           EXISTING_KEY_ALIAS: ${{ secrets.TRADE_REVIEW_KEY_ALIAS }}
           EXISTING_KEY_PASSWORD: ${{ secrets.TRADE_REVIEW_KEY_PASSWORD }}
-          TRADE_REVIEW_UPGRADE_CERT_SHA256: ${{ vars.TRADE_REVIEW_UPGRADE_CERT_SHA256 }}
+          TRADE_REVIEW_SIGNING_CERT_SHA256: ${{ vars.TRADE_REVIEW_SIGNING_CERT_SHA256 }}
           VERIFIED_INPUTS: verified-signing-inputs
           INPUTS_DIGEST: ${{ needs.build.outputs.inputs_digest }}
         run: bash scripts/sign-v200-existing.sh
@@ -272,7 +272,7 @@ jobs:
           if-no-files-found: error
 
   signed-install:
-    name: API ${{ matrix.api }} original-identity install
+    name: API ${{ matrix.api }} permanent-V2 install
     needs: [build, device-tests, trusted-signing]
     if: >-
       github.repository == 'mlzx-xxj/trade-review-app' && github.ref == 'refs/heads/main' &&
@@ -320,7 +320,7 @@ jobs:
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
-      - name: Actual fixed APK install or real original-signer upgrade
+      - name: Actual permanent APK install and optional incompatible V0.3 rejection
         uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2
         with:
           api-level: ${{ matrix.api }}

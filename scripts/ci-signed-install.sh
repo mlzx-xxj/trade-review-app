@@ -10,6 +10,6 @@ grep -Fq '<no ANR has occurred since boot>' ci-v200/boot-last-anr.txt || exit 1
 if grep -Fq 'FATAL EXCEPTION' ci-v200/boot-logcat.txt; then exit 1; fi
 args=(--directory delivered-packages --aapt "$ANDROID_HOME/build-tools/35.0.0/aapt" --apksigner "$ANDROID_HOME/build-tools/35.0.0/apksigner")
 if [[ -f delivered-packages/old-fixed.apk ]]; then
-  args+=(--old-apk delivered-packages/old-fixed.apk --upgrade-fixture delivered-packages/upgrade-fixture.apk)
+  args+=(--old-apk delivered-packages/old-fixed.apk)
 fi
 python3 scripts/run-v200-package-probes.py "${args[@]}"

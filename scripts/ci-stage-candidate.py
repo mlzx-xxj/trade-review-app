@@ -36,9 +36,9 @@ def stage(include_signed=False):
         target=Path("verified-reports/devices")/f"android-test-reports-api{api_number}"
         artifacts.download(prefix+str(latest),target,f"device-{api_number}")
         shutil.copytree(target/"screenshots",Path("screenshots")/f"v200-emulator-screenshots-api{api_number}")
-    status=dict(sourceCommit=run["sourceCommit"],configured=False,originalPinVerified=False,
+    status=dict(sourceCommit=run["sourceCommit"],configured=False,permanentPinVerified=False,legacyV03UpgradeCompatible=False,
                 realPhoneAcceptance="not-confirmed",credentialsInspected=False,
-                reason="No original identity used; credentials absent or protected Environment unavailable")
+                reason="No permanent identity used; credentials absent or protected Environment unavailable")
     if os.environ.get("SIGNING_RESULT")=="success":
         artifacts.download("signing-result-attempt"+os.environ["SIGNING_ATTEMPT"],"incoming/signed","signing-result",os.environ["SIGNED_DIGEST"])
         status=json.loads(Path("incoming/signed/dist/SIGNING-STATUS.json").read_text())
@@ -51,11 +51,12 @@ def stage(include_signed=False):
             # Signed-install jobs run after the original read-only full matrix, without Secrets.
             prefix=f"signed-install-api{api_number}-attempt"
             values=[int(a["name"][len(prefix):]) for a in listing if re.fullmatch(prefix+r"[1-9][0-9]*",a["name"])]
-            require(bool(values),"Missing original-identity install evidence")
+            require(bool(values),"Missing permanent-identity install evidence")
             target=Path("signed-install")/str(api_number)
             artifacts.download(prefix+str(max(values)),target,f"signed-install-{api_number}")
             probe=json.loads((target/f"package-probes-api{api_number}.json").read_text())
-            require(probe["fixedReleaseInstall"]=="passed-original-pin-non-debuggable-release","Fixed identity was not actually installed")
+            require(probe["fixedReleaseInstall"]=="passed-permanent-v2-pin-non-debuggable-release","Permanent identity was not actually installed")
+            require(probe.get("legacyV03UpgradeCompatible") is False and probe.get("samePermanentSignerUpgrade")=="not-executed-no-earlier-permanent-apk","Upgrade compatibility claim invalid")
             require(probe["fixedActualApkSha"]==json.loads((dist/"FIXED-IDENTITY.json").read_text())["apkSha256"],"Installed fixed APK differs from signed candidate")
             destination=Path("verified-reports/devices")/f"android-test-reports-api{api_number}"/"metrics"/f"package-probes-api{api_number}.json"
             destination.write_text(json.dumps(probe,indent=2)+"\n")

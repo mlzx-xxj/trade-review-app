@@ -29,6 +29,8 @@ def check(document):
                 require(3<=int(step["with"]["retention-days"])<=7,"Temporary retention must be bounded")
     require(writes==["publish"],"Only publisher may write")
     require(len(secret_steps)==1 and secret_steps[0][0]=="trusted-signing","Secrets escaped dedicated signing step")
+    signing_env=secret_steps[0][1]["env"]
+    require(signing_env.get("TRADE_REVIEW_SIGNING_CERT_SHA256")=="${{ vars.TRADE_REVIEW_SIGNING_CERT_SHA256 }}" and "TRADE_REVIEW_UPGRADE_CERT_SHA256" not in signing_env,"Use permanent Environment public pin, never the old V0.3 upgrade variable")
     require(jobs["trusted-signing"]["environment"]==ENVIRONMENT,"Signing must bind protected Environment")
     for name in ("trusted-signing","signed-install","publish"):
         condition=jobs[name]["if"]

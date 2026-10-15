@@ -132,13 +132,13 @@ class ContextAndEnvironmentTest(unittest.TestCase):
     def test_wrong_public_pin_rejected_before_opening_private_material(self):
         with tempfile.TemporaryDirectory() as temp:
             root=Path(temp);(root/"verified-signing-inputs").mkdir();(root/"verified-signing-inputs/app-release-unsigned.apk").write_bytes(b"synthetic unsigned fixture")
-            environment={"GITHUB_REPOSITORY":security.REPOSITORY,"GITHUB_EVENT_NAME":"push","GITHUB_REF":"refs/heads/main","GITHUB_SHA":"a"*40,"SOURCE_COMMIT":"a"*40,"GITHUB_WORKFLOW_REF":self.c["workflow"],"GITHUB_RUN_ID":"123","GITHUB_RUN_ATTEMPT":"1","VERIFIED_INPUTS":"verified-signing-inputs","TRADE_REVIEW_UPGRADE_CERT_SHA256":"f"*64,"EXISTING_KEY_BASE64":"synthetic","EXISTING_STORE_PASSWORD":"synthetic","EXISTING_KEY_ALIAS":"synthetic","EXISTING_KEY_PASSWORD":"synthetic"}
+            environment={"GITHUB_REPOSITORY":security.REPOSITORY,"GITHUB_EVENT_NAME":"push","GITHUB_REF":"refs/heads/main","GITHUB_SHA":"a"*40,"SOURCE_COMMIT":"a"*40,"GITHUB_WORKFLOW_REF":self.c["workflow"],"GITHUB_RUN_ID":"123","GITHUB_RUN_ATTEMPT":"1","VERIFIED_INPUTS":"verified-signing-inputs","TRADE_REVIEW_SIGNING_CERT_SHA256":"f"*64,"EXISTING_KEY_BASE64":"synthetic","EXISTING_STORE_PASSWORD":"synthetic","EXISTING_KEY_ALIAS":"synthetic","EXISTING_KEY_PASSWORD":"synthetic"}
             old=Path.cwd()
             try:
                 os.chdir(root)
                 with patch.dict(os.environ,environment):
                     sha=security.manifest("verified-signing-inputs","signing-inputs");os.environ["INPUTS_DIGEST"]=sha
-                    (root/"docs").mkdir();(root/"docs/V03-CERTIFICATE-SHA256.txt").write_text(security.PIN)
+                    (root/"docs").mkdir();(root/"docs/V03-CERTIFICATE-SHA256.txt").write_text(security.LEGACY_V03_PIN)
                     with patch.object(signer.base64,"b64decode") as decode:
                         with self.assertRaisesRegex(ValueError,"pin"):signer.main()
                         decode.assert_not_called()

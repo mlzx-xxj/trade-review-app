@@ -49,7 +49,7 @@ def start(package):
 
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument("--directory",required=True);p.add_argument("--aapt",required=True);p.add_argument("--apksigner",required=True);p.add_argument("--old-apk");p.add_argument("--upgrade-fixture");a=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument("--directory",required=True);p.add_argument("--aapt",required=True);p.add_argument("--apksigner",required=True);p.add_argument("--old-apk");a=p.parse_args()
     assert adb("shell","getprop","ro.kernel.qemu").stdout.strip()=="1","Never run on a personal phone"
     api=int(adb("shell","getprop","ro.build.version.sdk").stdout.strip());folder=Path(a.directory)
     rc=folder/"TradeReview-v2.0-RC.apk";data=identity.inspect(rc,a.aapt,a.apksigner);identity.require_identity(data,"rc")
@@ -58,37 +58,37 @@ def main():
     window(package,"累计表现","rc-first-start");capture("50-v200-rc-first-start")
     adb("shell","am","force-stop",package);start(package);window(package,"累计表现","rc-restart");capture("51-v200-rc-home-restart")
     report=dict(api=api,rcActualApkSha=data["apkSha256"],rcPackage=package,rcNonDebuggable=True,rcInstalled=True,rcFirstHomeVisible=True,rcRestartKeptHome=True,
-        fixedReleaseInstall="not-executed-no-fixed-key",sameOriginalSignerUpgrade="not-executed-no-fixed-key",realPhone="not-executed")
+        fixedReleaseInstall="not-executed-no-permanent-key",legacyV03UpgradeCompatible=False,legacyV03IncompatibleInstall="not-executed-no-permanent-key",samePermanentSignerUpgrade="not-executed-no-earlier-permanent-apk",realPhone="not-executed")
     fixed=folder/"TradeReview-v2.0-fixed-candidate.apk"
     if fixed.exists():
         new=identity.inspect(fixed,a.aapt,a.apksigner);identity.require_identity(new,"release")
         report["fixedActualApkSha"]=new["apkSha256"]
-        report["sameOriginalSignerUpgrade"]="not-executed-no-old-fixed-apk-supplied"
-        # Prior Main regression data are all synthetic, and already reported. Discard ONLY here on qemu.
+        report["legacyV03IncompatibleInstall"]="not-executed-no-old-v03-apk-supplied"
+        # Prior regression data are synthetic. This cleanup is forbidden outside qemu.
         adb("uninstall","com.tradereview.app",check=False)
         adb("uninstall","com.tradereview.app.test",check=False)
         if a.old_apk:
-            # Genuine V0.3 predates bundled OCR/ABIs; validate its actual signer and identity,
-            # while both delivered V2.0 APKs still require the complete current OCR payload.
             old=identity.inspect(a.old_apk,a.aapt,a.apksigner,require_current_payload=False)
-            assert old["applicationId"]=="com.tradereview.app" and old["certificateSha256"]==identity.PIN and 3<=old["versionCode"]<20,"Real old original-signer APK required"
-            assert a.upgrade_fixture,"Same fixed-signed synthetic instrumentation required"
+            assert old["applicationId"]=="com.tradereview.app" and old["certificateSha256"]==identity.LEGACY_V03_PIN and 3<=old["versionCode"]<20 and old["debuggable"],"Real historical V0.3 debuggable APK required for synthetic private-data preservation probe"
+            assert identity.upgrade_policy(old,new)=="incompatible-certificate-backup-reinstall-restore-required"
             assert "Success" in adb("install",a.old_apk).stdout
-            assert "Success" in adb("install","-r",a.upgrade_fixture).stdout
-            start("com.tradereview.app");window("com.tradereview.app","快捷记账","old-fixed-ready")
-            def fixture(phase):
-                result=adb("shell","am","instrument","-w","-e","phase",phase,"-e","target_schema","8","com.tradereview.app.test/com.tradereview.app.release.LegacyUpgradeInstrumentation",timeout=120)
-                (ROOT/("old-fixed-"+phase+".txt")).write_text(result.stdout+result.stderr)
-                assert "V100_UPGRADE_FIXTURE_OK="+phase in result.stdout
-            fixture("prepare");adb("shell","am","force-stop","com.tradereview.app")
-            # Actual Android install -r over the REAL original fixed identity. No uninstall/clear in between.
-            assert "Success" in adb("install","-r",str(fixed)).stdout
-            start("com.tradereview.app");window("com.tradereview.app","累计表现","fixed-upgraded-home");fixture("verify")
-            report["sameOriginalSignerUpgrade"]="passed-real-original-apk-to-release-with-synthetic-trade-and-diary"
-        else:
-            assert "Success" in adb("install",str(fixed)).stdout
-            start("com.tradereview.app");window("com.tradereview.app","累计表现","fixed-home")
-        capture("56-v200-fixed-release-install");report["fixedReleaseInstall"]="passed-original-pin-non-debuggable-release"
+            # No new-signed instrumentation can access the old identity. Use only run-as
+            # on the genuine historical debuggable APK, on a disposable emulator.
+            adb("shell","run-as","com.tradereview.app","mkdir","-p","files")
+            adb("shell","run-as","com.tradereview.app","touch","files/v2-migration-synthetic-marker")
+            before=adb("shell","pm","path","com.tradereview.app").stdout
+            result=adb("install","-r",str(fixed),check=False)
+            assert result.returncode!=0 and "INSTALL_FAILED_UPDATE_INCOMPATIBLE" in result.stdout+result.stderr,"Different certificate must be rejected by Android"
+            assert adb("shell","pm","path","com.tradereview.app").stdout==before,"Rejected update must keep the old installation"
+            adb("shell","run-as","com.tradereview.app","test","-f","files/v2-migration-synthetic-marker")
+            report["legacyV03IncompatibleInstall"]="passed-android-rejected-different-certificate-old-install-and-marker-preserved"
+            report["legacyV03ActualApkSha"]=old["apkSha256"]
+            # Only after proving rejection and preservation, discard the synthetic emulator
+            # fixture for a separate FRESH install. This is never a phone migration script.
+            assert "Success" in adb("uninstall","com.tradereview.app").stdout
+        assert "Success" in adb("install",str(fixed)).stdout
+        start("com.tradereview.app");window("com.tradereview.app","累计表现","permanent-v2-fresh-home")
+        capture("56-v200-fixed-release-install");report["fixedReleaseInstall"]="passed-permanent-v2-pin-non-debuggable-release"
     (ROOT/f"package-probes-api{api}.json").write_text(json.dumps(report,indent=2)+"\n");print(json.dumps(report))
 
 

@@ -6,8 +6,8 @@ from pathlib import Path
 import re
 import subprocess
 import zipfile
+from signing_identity import PIN, LEGACY_V03_PIN, require_committed_identity, upgrade_policy
 
-PIN="30d5e88ac7f0ade3d8c5f10d7d894681e7953002377c85b5fa094ee7b71e071c"
 ROOT=Path(__file__).resolve().parents[1]
 
 
@@ -41,20 +41,25 @@ def inspect(apk,aapt,signer,require_current_payload=True):
 
 def require_identity(data,kind):
     if kind not in ("rc","release"):raise ValueError("Known build type required")
-    if (ROOT/"docs/V03-CERTIFICATE-SHA256.txt").read_text().strip().lower()!=PIN:raise ValueError("Original V0.3 certificate pin changed")
+    require_committed_identity()
     package="com.tradereview.app.rc.v200" if kind=="rc" else "com.tradereview.app"
     version="2.0.0-rc.1" if kind=="rc" else "2.0.0"
     if data["applicationId"]!=package or data["versionName"]!=version or data["versionCode"]!=20 or data["debuggable"]:raise ValueError("Package/version/non-debuggable build identity mismatch")
-    if kind=="release" and data["certificateSha256"]!=PIN:raise ValueError("Formal Release must use the original V0.3 private identity")
-    if kind=="rc" and data["certificateSha256"]==PIN:raise ValueError("Isolated RC must not consume the original formal identity")
+    if kind=="release" and data["certificateSha256"]!=PIN:raise ValueError("Formal Release must use the permanent V2 private identity")
+    if kind=="rc" and data["certificateSha256"] in (PIN,LEGACY_V03_PIN):raise ValueError("Isolated RC must not consume either permanent or historical formal identity")
+
+
+def identity_metadata(kind):
+    return dict(buildType=kind,classification="isolated-rc" if kind=="rc" else "permanent-v2-release-candidate",
+                permanentIdentityVerified=kind=="release",legacyV03UpgradeCompatible=False,
+                sameSignerUpgrade="not-executed",stablePublished=False,phoneAcceptance="not-confirmed")
 
 
 def prepare(apk,directory,kind,aapt,signer,source):
     if not re.fullmatch(r"[0-9a-f]{40}",source):raise ValueError("Verified source SHA required")
     data=inspect(apk,aapt,signer);require_identity(data,kind)
     out=Path(directory);out.mkdir(parents=True,exist_ok=True)
-    data.update(sourceCommit=source,buildType=kind,classification="isolated-rc" if kind=="rc" else "fixed-v03-release-candidate",
-                upgradeIdentityVerified=kind=="release",stablePublished=False,phoneAcceptance="not-confirmed")
+    data.update(sourceCommit=source,**identity_metadata(kind))
     target=out/("RC-IDENTITY.json" if kind=="rc" else "FIXED-IDENTITY.json")
     target.write_text(json.dumps(data,indent=2)+"\n")
     print(json.dumps(data));return data
@@ -64,7 +69,7 @@ def verify_delivery(directory,aapt,signer,source):
     root=Path(directory);expected={"TradeReview-v2.0-RC.apk":"rc"}
     if (root/"FIXED-IDENTITY.json").exists():expected["TradeReview-v2.0-fixed-candidate.apk"]="release"
     status=json.loads((root/"SIGNING-STATUS.json").read_text())
-    if type(status.get("configured")) is not bool or status.get("originalPinVerified") is not status["configured"] or status.get("realPhoneAcceptance")!="not-confirmed":raise ValueError("Signing/phone status must reflect this observed candidate build")
+    if type(status.get("configured")) is not bool or status.get("permanentPinVerified") is not status["configured"] or status.get("legacyV03UpgradeCompatible") is not False or status.get("realPhoneAcceptance")!="not-confirmed" or status.get("originalPinVerified",False) is not False:raise ValueError("Signing/phone status must reflect this observed candidate build")
     if status.get("sourceCommit")!=source or status.get("configured")!=('release' in expected.values()):raise ValueError("Observed fixed signing configuration does not match delivered identities")
     if {p.name for p in root.glob("*.apk")}!=set(expected):raise ValueError("Unexpected APK or incomplete identity pair")
     hashes=[];checked={}
@@ -72,13 +77,15 @@ def verify_delivery(directory,aapt,signer,source):
         data=inspect(root/filename,aapt,signer);require_identity(data,kind)
         saved=json.loads((root/("RC-IDENTITY.json" if kind=="rc" else "FIXED-IDENTITY.json")).read_text())
         if any(saved.get(k)!=v for k,v in data.items()) or saved.get("sourceCommit")!=source or saved.get("stablePublished") is not False or saved.get("phoneAcceptance")!="not-confirmed":raise ValueError("Actual APK/metadata/source/RC status mismatch")
-        if saved.get("upgradeIdentityVerified")!=(kind=="release"):raise ValueError("Upgrade identity misclassified")
-        if saved.get("buildType")!=kind or saved.get("classification")!=("isolated-rc" if kind=="rc" else "fixed-v03-release-candidate"):raise ValueError("Build classification mismatch")
+        if any(saved.get(k)!=v for k,v in identity_metadata(kind).items()) or saved.get("upgradeIdentityVerified",False) is not False:raise ValueError("Build or upgrade compatibility misclassified")
         hashes.append(f'{data["apkSha256"]}  {filename}');checked[filename]=saved
     (root/"SHA256SUMS.txt").write_text("\n".join(hashes)+"\n")
     (root/"PUBLICATION-CHECK.json").write_text(json.dumps(checked,indent=2)+"\n")
     rc=checked["TradeReview-v2.0-RC.apk"]
-    text=f'versionName={rc["versionName"]}\nversionCode=20\napplicationId={rc["applicationId"]}\nbuildType=rc\ndebuggable=false\nsourceCommit={source}\ncertificateSha256={rc["certificateSha256"]}\napkSha256={rc["apkSha256"]}\noriginalUpgradePin={PIN}\nupgradeVerified=false\nclassification=isolated-rc\nGitHubActionsSecretsConfigured={str(status["configured"]).lower()}\nThis RC uses a temporary runner test key, not the formal private identity. No sustainable RC-to-RC upgrades are promised. Fixed Release status, when present, is in FIXED-IDENTITY.json. Stable publication and real phone acceptance are not claimed.\n'
+    text=f'versionName={rc["versionName"]}\nversionCode=20\napplicationId={rc["applicationId"]}\nbuildType=rc\ndebuggable=false\nsourceCommit={source}\ncertificateSha256={rc["certificateSha256"]}\napkSha256={rc["apkSha256"]}\npermanentV2CertificatePin={PIN}\nhistoricalV03CertificatePin={LEGACY_V03_PIN}\nlegacyV03UpgradeCompatible=false\nsamePermanentSignerUpgrade=not-executed\nclassification=isolated-rc\nGitHubActionsSecretsConfigured={str(status["configured"]).lower()}\nThis RC uses a temporary runner test key; no sustainable RC-to-RC upgrades are promised. Old V0.3 and new permanent V2 certificates are incompatible: verify a full ZIP backup, then owner-approved reinstall and restore. Never uninstall/clear data automatically. Future permanent updates must retain com.tradereview.app and the V2 certificate, and increase versionCode. Stable publication and real phone acceptance are not claimed.\n'
+    if "TradeReview-v2.0-fixed-candidate.apk" in checked:
+        fixed=checked["TradeReview-v2.0-fixed-candidate.apk"]
+        text+=f'\nPermanentCandidateApplicationId={fixed["applicationId"]}\nPermanentCandidateVersionName={fixed["versionName"]}\nPermanentCandidateVersionCode={fixed["versionCode"]}\nPermanentCandidateCertificateSha256={fixed["certificateSha256"]}\nPermanentCandidateApkSha256={fixed["apkSha256"]}\nPermanentCandidateDebuggable=false\nPermanentCandidateClassification=permanent-v2-release-candidate\nPermanentPinVerified=true\n'
     (root/"SIGNING.txt").write_text(text);print(json.dumps(checked));return checked
 
 

@@ -1,5 +1,7 @@
 # Public 仓库 CI/CD 安全边界
 
+当前签名身份以 [Issue #12](https://github.com/mlzx-xxj/trade-review-app/issues/12) 和 [V2 手机签名指南](V200-PHONE-SIGNING.md) 为准：新永久证书不兼容旧 V0.3，PR #11 的权限/产物隔离继续保留。下列原流程审查与存储对比为 PR #11 历史记录。
+
 本轮只改工作流、CI脚本、测试和本文档。基线 main `e4e311a81460b4abfbf282851c2c4c8d05831834`，V2 PR #10 已合并。App源码、财务公式、数据库/备份业务格式、包名和版本均不改。
 
 ## 原流程审查
@@ -13,7 +15,7 @@
 | Artifact | RC、同一APK的分片、wrapper、签名元数据、构建报告、两套截图包、两套包含相同截图的原始报告均保存30天 |
 | Release | 每个运行/尝试建新tag，并重复上传截图ZIP与单张PNG |
 
-原流程未使用pull_request_target。原V0.3证书pin不变：`30d5e88ac7f0ade3d8c5f10d7d894681e7953002377c85b5fa094ee7b71e071c`。
+原流程未使用pull_request_target。原V0.3证书pin仅留历史证据（Issue #12 起不再作为当前签名门禁）：`30d5e88ac7f0ade3d8c5f10d7d894681e7953002377c85b5fa094ee7b71e071c`。
 
 ## 新依赖和权限
 
@@ -40,14 +42,14 @@ PR和非main手动只走B/D，始终能下载隔离RC Artifact。签名与发布
 因此在配置任何长期私钥之前，所有者必须完成：
 
 1. 创建Environment `v03-signing-main`，Deployment branches/tags选择Selected branches and tags，只添加类型Branch、名称严格为main的一项；不允许tag main、通配符或PR ref。
-2. 把原四个`TRADE_REVIEW_KEYSTORE_BASE64`、`TRADE_REVIEW_KEYSTORE_PASSWORD`、`TRADE_REVIEW_KEY_ALIAS`、`TRADE_REVIEW_KEY_PASSWORD`放在这个Environment；原证书pin作为公开Variable `TRADE_REVIEW_UPGRADE_CERT_SHA256`。不重新生成私钥。
+2. 把原四个`TRADE_REVIEW_KEYSTORE_BASE64`、`TRADE_REVIEW_KEYSTORE_PASSWORD`、`TRADE_REVIEW_KEY_ALIAS`、`TRADE_REVIEW_KEY_PASSWORD`放在这个Environment；新永久证书pin作为该Environment公开Variable `TRADE_REVIEW_SIGNING_CERT_SHA256`。不重新生成私钥。
 3. 移除同名Repository Secrets及任何可供PR读取的签名副本；不要把私钥放普通Variables。必须由所有者在可信设备自行完成，Codex不代传或读取。
 4. 建议配置Environment required reviewer、关闭管理员绕过。只有一个管理者时，防止自己审批可能导致自己发起的运行无人能审批，需按实际管理人员设置。
 5. 建议为main启用PR合并、必要状态检查及CODEOWNERS审核，限制直接推送。新CODEOWNERS文件只有在所有者启用对应保护后才有强制效果。不要给不可信贡献者仓库写权限；公开贡献使用Fork PR。开启GitHub secret scanning/push protection。
 
 代码只读取既有Environment及分支规则；缺失、403或规则不严格均不进入签名Job，也不自动创建Environment。进入后在加载密钥的步骤之前再次检查保护并验证全部原始测试和未签名输入。不能读取Secrets真实值的API不被伪装成配置成功。
 
-签名Job不运行Gradle、不从Artifact执行脚本；只给已验证unsigned APK和公开模拟器测试fixture签名。临时密钥文件位于runner临时目录，0600，finally删除，异常不输出私有诊断。签名后使用apksigner核对原pin，并逐项比较签名APK与已验证未签名APK的应用payload。固定包在无Secrets的API29/35任务中真实安装；手动提供原签名旧公开APK时才做真实install -r与合成数据保留验证。缺旧APK明确未执行，不用临时签名冒充。
+签名Job不运行Gradle、不从Artifact执行脚本；只给已验证unsigned APK和公开模拟器测试fixture签名。临时密钥文件位于runner临时目录，0600，finally删除，异常不输出私有诊断。签名后使用apksigner核对提交的新永久V2 pin与Environment公开变量，并逐项比较签名APK与已验证未签名APK的应用payload。固定包在无Secrets的API29/35任务中真实安装；手动提供历史V0.3公开APK时做真实install -r被Android拒绝及旧安装/合成私有标记保留验证；不同证书不允许宣称覆盖成功。缺旧APK明确未执行，不用临时签名冒充；新身份未来版本仍需同证书且递增versionCode，真实未来升级尚待有对应包后测试。
 
 缺少全部Secrets时仅RC；部分Secrets、错误证书、固定包安装失败均拒绝发布，不降级掩盖错误。所有包仍为prerelease候选，真机验收和稳定发布另行决定。
 
@@ -71,18 +73,18 @@ PR和非main手动只走B/D，始终能下载隔离RC Artifact。签名与发布
 
 ## 实际检查范围与待办
 
-本轮环境审查：仓库Public、main基线合并已确认；GitHub API显示main未受保护，Environment列表为空。Secrets/Variables名称以及默认Token权限管理接口返回403，不能据此声称不存在Secrets或已安全迁移。未读取任何长期私钥或密码，未修改GitHub保护设置。
+PR #11 当时审查（历史）：仓库Public、main基线合并已确认；当时main未受保护，Environment列表为空。Issue #12 本轮已实查main受保护，Environment允许且仅允许main。Secrets/Variables名称以及默认Token权限管理接口返回403，不能据此声称不存在Secrets或已安全迁移。未读取任何长期私钥或密码，未修改GitHub保护设置。
 
-本地安全用例覆盖实际YAML条件、同仓/Fork PR、main push/main手动、非main手动、失败/取消/跳过矩阵、缺Secrets、环境分支策略、原pin错误、Artifact缺失/篡改/跨运行/非法ZIP、私钥步骤提前拒绝和发布白名单。原50项安全/签名/启动回归保留，actionlint实际执行。最终计数及Actions真实运行链接以本PR验证记录为准，不把条件模拟当成真实main签名。
+本地安全用例覆盖实际YAML条件、同仓/Fork PR、main push/main手动、非main手动、失败/取消/跳过矩阵、缺Secrets、环境分支策略、永久pin错误、Artifact缺失/篡改/跨运行/非法ZIP、私钥步骤提前拒绝和发布白名单。原50项安全/签名/启动回归保留，actionlint实际执行。最终计数及Actions真实运行链接以本PR验证记录为准，不把条件模拟当成真实main签名。
 
 新流程尚未合并时，main push/选择main手动仍使用旧main工作流。为遵守“不自动合并”，本轮可以实际执行PR及开发分支手动路径；新main路径需所有者合并后实测。不能把旧main的运行、单元测试事件矩阵或非main手动运行冒充新main发布成功。原私钥/受保护环境未就绪时，固定签名与原证书升级均未执行。
 
 ## 仅安卓手机操作
 
 1. 审核本PR的完整Android CI，再自行决定合并。不要在聊天、Issue、PR或Artifact发送keystore和密码。
-2. 配置签名前先在仓库Settings → Environments完成上述main专用保护，迁移Secrets并移除Repository副本；手机可切换浏览器“桌面网站”。没有原V0.3 keystore时保持RC，不建立替代身份。
-3. Actions → Android CI → Run workflow。未合并前选择codex/public-ci-security，只会构建测试，不签名或发布。合并后选择main，必须等待build和两个API全部绿色；保护/密钥未就绪则跳过固定签名，只允许RC候选。
-4. 若需真实原签名升级验证，在main手动运行输入原固定证书公开Release tag及精确APK文件名。只接收本仓库公开文件名，不输入路径、URL、通配符或秘密。
+2. 配置签名前先在仓库Settings → Environments完成上述main专用保护，迁移Secrets并移除Repository副本；手机可切换浏览器“桌面网站”。旧V0.3私钥已丢失；所有者已授权并独立保管新永久V2密钥，Codex不得再生成。按当前手机指南由所有者配置，缺材料保持RC。
+3. Actions → Android CI → Run workflow。未合并前选择codex/permanent-signing-v2，只会构建测试，不签名或发布。合并后选择main，必须等待build和两个API全部绿色；保护/密钥未就绪则跳过固定签名，只允许RC候选。
+4. 若需真实旧V0.3不同证书拒绝验证，在main手动运行输入原固定证书公开Release tag及精确APK文件名。只接收本仓库公开文件名，不输入路径、URL、通配符或秘密。
 5. PR/nonmain运行：在完成页面Artifacts下载rc-apk-attemptN ZIP，解压取APK；需登录GitHub，7天后过期可重跑。可信main成功发布：从Releases下载APK、SIGNING.txt、SHA256SUMS.txt、CI-RESULTS.txt和CI-EVIDENCE.zip。仅使用Release中明确标记的身份，不认为隔离RC可以覆盖旧应用。
 6. 测试失败查看对应build/API29/API35及failure诊断，修复后Re-run failed jobs。系统启动ANR不得忽略。相同源码已有候选时保留首个已验证Release，不使用覆盖上传。
 
