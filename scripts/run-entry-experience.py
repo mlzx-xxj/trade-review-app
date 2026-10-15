@@ -21,7 +21,7 @@ def adb(*args,timeout=60):
 
 def successful_runner(text):
     return ("OK (1 test)" in text and "INSTRUMENTATION_CODE: -1" in text
-            and not any(v in text for v in ("FAILURES", "INSTRUMENTATION_FAILED", "Process crashed", "shortMsg=")))
+            and not any(v in text for v in ("FAILURES", "INSTRUMENTATION_FAILED", "Process crashed", "shortMsg=", "TIMEOUT:")))
 
 
 def collect_output(api):
@@ -61,8 +61,14 @@ def main():
             if phase=="reopen":
                 adb("shell","am","force-stop",APP)
                 assert not subprocess.run(["adb","shell","pidof",APP],capture_output=True,text=True,check=False).stdout.strip(),"Process did not stop"
-            result=adb("shell","am","instrument","-w","-r","-e","class",CLASS,"-e","entryPhase",phase,"-e","additionalTestOutputDir",directory+"/"+REMOTE+"/"+phase,APP+".test/androidx.test.runner.AndroidJUnitRunner",timeout=900)
-            path=ROOT/(phase+"-instrumentation.txt");path.write_text(result)
+            path=ROOT/(phase+"-instrumentation.txt")
+            try:
+                result=adb("shell","am","instrument","-w","-r","-e","class",CLASS,"-e","entryPhase",phase,"-e","additionalTestOutputDir",directory+"/"+REMOTE+"/"+phase,APP+".test/androidx.test.runner.AndroidJUnitRunner",timeout=900)
+            except subprocess.TimeoutExpired as error:
+                partial=error.stdout or b"";partial=partial.decode("utf-8",errors="replace") if isinstance(partial,bytes) else partial
+                path.write_text(partial+"\nTIMEOUT: actual UI instrumentation did not finish\n")
+                raise
+            path.write_text(result)
             assert successful_runner(result),"Actual UI "+phase+" failed; retain runner logs"
             logs[phase]=hashlib.sha256(path.read_bytes()).hexdigest()
     except BaseException:

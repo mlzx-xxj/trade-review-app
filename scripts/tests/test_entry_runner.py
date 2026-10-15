@@ -13,7 +13,7 @@ class EntryRunnerTest(unittest.TestCase):
     def test_failed_or_crashed_instrumentation_never_becomes_success(self):
         good="OK (1 test)\nINSTRUMENTATION_CODE: -1"
         self.assertTrue(runner.successful_runner(good))
-        for bad in ("", "OK (1 test)", "INSTRUMENTATION_CODE: -1", good+"\nFAILURES!!!", good+"\nProcess crashed", good+"\nshortMsg=error"):
+        for bad in ("", "OK (1 test)", "INSTRUMENTATION_CODE: -1", good+"\nFAILURES!!!", good+"\nProcess crashed", good+"\nshortMsg=error",good+"\nTIMEOUT: stopped"):
             self.assertFalse(runner.successful_runner(bad))
     def test_refuses_a_phone_before_install_force_stop_or_file_access(self):
         with patch.object(runner,"adb",return_value="0") as adb:
@@ -47,3 +47,12 @@ class EntryRunnerTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp,patch.object(runner,"ROOT",Path(tmp)),patch.object(Path,"is_file",return_value=True),patch.object(runner,"adb",side_effect=["1","29","Success","Success","/tmp/untrusted-dir"]) as adb:
             with self.assertRaisesRegex(AssertionError,"private fixture directory"):runner.main()
             self.assertFalse(any("instrument" in c.args for c in adb.call_args_list))
+    def test_timeout_keeps_partial_runner_stdout_and_cannot_write_a_pass_report(self):
+        timeout=subprocess.TimeoutExpired("adb",900,output=b"INSTRUMENTATION_STATUS: class=stuck")
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp)
+            with patch.object(runner,"ROOT",root),patch.object(Path,"is_file",return_value=True),patch.object(runner,"collect_output"),patch.object(runner,"adb",side_effect=["1","29","Success","Success","/data/user/0/"+runner.APP,timeout]):
+                with self.assertRaises(subprocess.TimeoutExpired):runner.main()
+            self.assertIn("class=stuck",(root/"journey-instrumentation.txt").read_text())
+            self.assertIn("TIMEOUT:",(root/"journey-instrumentation.txt").read_text())
+            self.assertFalse((root/"entry-runner-api29.json").exists())

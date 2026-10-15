@@ -35,7 +35,13 @@ if [[ "${V100_CHECK_BOOT:-false}" == true ]]; then
   if grep -Fq 'FATAL EXCEPTION' ci-stability/post-heap-logcat.txt; then exit 1; fi
 fi
 device_test_status=0
-./gradlew --no-daemon --build-cache --init-script scripts/ci-test-execution.gradle --stacktrace -Pandroid.testInstrumentationRunnerArguments.ciExpectedHeapMiB=256 :app:connectedDebugAndroidTest || device_test_status=$?
+mkdir -p ci-stability
+# Preserve the exact in-flight test/lifecycle even if a platform IPC call never
+# returns. A timeout is a failing run; it cannot produce successful evidence.
+adb logcat -v threadtime -s TestRunner:I LifecycleMonitor:D ActivityTaskManager:I AndroidRuntime:E '*:S' > ci-stability/native-live-logcat.txt 2>&1 &
+native_log_pid=$!
+timeout --signal=TERM --kill-after=30s 20m ./gradlew --no-daemon --build-cache --init-script scripts/ci-test-execution.gradle --stacktrace -Pandroid.testInstrumentationRunnerArguments.ciExpectedHeapMiB=256 :app:connectedDebugAndroidTest || device_test_status=$?
+kill "$native_log_pid" 2>/dev/null || true
 if [[ "${V08_STABILITY_PROBES:-false}" == true ]]; then
   # Independently collect process evidence even after a native failure. Never
   # replace its failing exit status with a successful probe or publish the run.
