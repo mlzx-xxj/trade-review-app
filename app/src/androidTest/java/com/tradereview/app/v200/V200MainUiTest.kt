@@ -54,7 +54,41 @@ class V200MainUiTest {
 
     @Test fun stockEntryEditDeleteRequirePreviewAndPreserveActualAudit(){start();fill();compose.onNodeWithTag("save-execution").performClick();wait{model.state.value.ledger?.executions?.size==1 && !model.busy.value};val original=model.state.value.ledger!!.executions.single();assertEquals("0.1",original.fees);assertEquals("0",sellable(model.state.value.ledger!!,model.state.value.ledger!!.cycles.single(),today));compose.onNodeWithTag("v2-trades").performScrollToNode(hasTestTag("position-cycle_${original.id}"));capture("41-v200-positions");compose.onNodeWithText("历史成交").performClick();compose.onNodeWithTag("execution-${original.id}").performClick();compose.onNodeWithTag("edit-execution").performScrollTo().performClick();field("execution-price","12");compose.onNodeWithTag("save-execution").performClick();wait{model.pending.value!=null};assertEquals(original,runBlocking{model.repository.read().executions.single()});compose.onNodeWithTag("confirm-execution-change").performClick();wait{!model.busy.value && model.pending.value==null && model.state.value.ledger!!.executions.single().price=="12"};compose.onNodeWithTag("delete-execution").performScrollTo().performClick();wait{model.pending.value!=null};compose.onNodeWithTag("confirm-execution-change").performClick();wait{!model.busy.value && model.state.value.ledger!!.executions.isEmpty()};val after=runBlocking{model.repository.read()};assertEquals(2,after.audits.size);assertTrue(after.cycles.isEmpty());assertEquals(original.id,after.audits.first().executionId)}
 
-    @Test fun separateRiskFundsAndCustomStrategyRequireExplicitExceededRiskConfirmation(){compose.onNodeWithTag("open-risk-strategy").performClick();compose.onNodeWithTag("v2-risk-strategy").performScrollToNode(hasTestTag("risk-fund-stock"));field("risk-fund-stock","10000");field("risk-limit-stock","5");compose.onNodeWithTag("v2-risk-strategy").performScrollToNode(hasTestTag("save-risk-stock"));compose.onNodeWithTag("save-risk-stock").performClick();wait{model.state.value.ledger!!.risks.first{it.id=="stock"}.riskFund=="10000" && !model.busy.value};assertNull(model.state.value.ledger!!.risks.first{it.id=="futures"}.riskFund);capture("45-v200-risk-strategy");compose.onNodeWithTag("v2-risk-strategy").performScrollToNode(hasTestTag("risk-section-strategies"));compose.onNodeWithTag("risk-section-strategies").performClick();compose.onNodeWithTag("new-strategy").performClick();field("strategy-name","手机合成策略");field("strategy-description","可编辑，稳定ID");compose.onNodeWithTag("save-strategy").performClick();wait{!model.busy.value && model.state.value.ledger!!.strategies.any{it.name=="手机合成策略"}};back();start();fill();field("execution-stop","9");compose.onNodeWithTag("execution-strategy").performScrollTo().performClick();compose.onNodeWithText("手机合成策略").performClick();compose.onNodeWithTag("save-execution").performClick();wait{model.pending.value!=null};assertTrue(runBlocking{model.repository.read().executions.isEmpty()});capture("53-v200-risk-confirmation");compose.onNodeWithTag("confirm-execution-change").performClick();wait{!model.busy.value && model.state.value.ledger!!.executions.size==1};val e=model.state.value.ledger!!.executions.single();assertTrue(e.riskConfirmed);assertEquals("100",e.riskAmount);assertEquals("10000",e.riskFundSnapshot);assertNotNull(e.strategyId)}
+    @Test fun separateRiskFundsAndCustomStrategyRequireExplicitExceededRiskConfirmation() {
+        fun step(label:String,predicate:()->Boolean) {
+            try { wait { predicate() } } catch(error:androidx.compose.ui.test.ComposeTimeoutException) {
+                throw AssertionError("$label: busy=${model.busy.value}, problem=${model.problem.value}, pending=${model.pending.value!=null}, executions=${model.state.value.ledger?.executions?.size}",error)
+            }
+        }
+        compose.onNodeWithTag("open-risk-strategy").performClick()
+        compose.onNodeWithTag("v2-risk-strategy").performScrollToNode(hasTestTag("risk-fund-stock"))
+        field("risk-fund-stock","10000");field("risk-limit-stock","5")
+        compose.onNodeWithTag("v2-risk-strategy").performScrollToNode(hasTestTag("save-risk-stock"))
+        compose.onNodeWithTag("save-risk-stock").assertIsEnabled().performClick()
+        step("保存独立风险金") { model.state.value.ledger!!.risks.first { it.id=="stock" }.riskFund=="10000" && !model.busy.value }
+        assertNull(model.state.value.ledger!!.risks.first { it.id=="futures" }.riskFund)
+        capture("45-v200-risk-strategy")
+        compose.onNodeWithTag("v2-risk-strategy").performScrollToNode(hasTestTag("risk-section-strategies"))
+        compose.onNodeWithTag("risk-section-strategies").performClick()
+        compose.onNodeWithTag("new-strategy").performClick()
+        field("strategy-name","手机合成策略");field("strategy-description","可编辑，稳定ID")
+        compose.onNodeWithTag("save-strategy").assertIsEnabled().performClick()
+        step("保存自定义策略") { !model.busy.value && model.state.value.ledger!!.strategies.any { it.name=="手机合成策略" } }
+        back();start();fill();field("execution-stop","9")
+        compose.onNodeWithTag("execution-strategy").performScrollTo().performClick()
+        compose.onNodeWithText("手机合成策略").performClick()
+        compose.onNodeWithTag("save-execution").assertIsEnabled().performClick()
+        step("生成超限确认预览") { model.pending.value!=null && !model.busy.value }
+        assertTrue(runBlocking { model.repository.read().executions.isEmpty() })
+        compose.onNodeWithTag("confirm-execution-change").assertIsDisplayed().assertIsEnabled()
+        capture("53-v200-risk-confirmation")
+        compose.onNodeWithTag("confirm-execution-change").performClick()
+        step("确认真实成交入库") { !model.busy.value && model.state.value.ledger!!.executions.size==1 }
+        val e=model.state.value.ledger!!.executions.single()
+        assertTrue(e.riskConfirmed);assertEquals("100",e.riskAmount)
+        assertEquals("10000",e.riskFundSnapshot);assertNotNull(e.strategyId)
+    }
+
 
     @Test fun symbolPlanAndOpenAndClosedPositionReviewsKeepFactsSeparate(){page(2);compose.onNodeWithTag("new-plan").performClick();field("plan-code","000001");field("plan-name","未持仓合成股票");field("plan-entry","9");field("plan-note","计划不能伪造成交");compose.onNodeWithTag("save-plan").performClick();wait{!model.busy.value && model.state.value.ledger!!.plans.size==1};assertTrue(model.state.value.ledger!!.executions.isEmpty());runBlocking{save(open())};wait{model.state.value.ledger!!.cycles.size==1};compose.onNodeWithText("盘后复盘").performClick();compose.onNodeWithTag("v2-reviews").performScrollToNode(hasTestTag("review-cycle-cycle_a"));compose.onNodeWithTag("review-cycle-cycle_a").performClick();field("position-review-note","仍持有时复盘");compose.onNodeWithTag("save-position-review").performClick();wait{!model.busy.value && model.state.value.ledger!!.reviews.size==1};runBlocking{save(open("full_close",today,price="11",fees="0.66").copy(side="sell",effect="close",second=2))};wait{model.state.value.ledger!!.cycles.single().closedDay!=null};val facts=model.state.value.ledger!!.executions;compose.onNodeWithTag("review-cycle-cycle_a").performClick();field("position-review-note","完全平仓后继续复盘");compose.onNodeWithTag("save-position-review").performClick();wait{!model.busy.value && model.state.value.ledger!!.reviews.size==2};assertEquals(facts,model.state.value.ledger!!.executions);capture("42-v200-review")}
 
