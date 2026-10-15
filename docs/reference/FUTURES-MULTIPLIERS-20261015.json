@@ -1,0 +1,134 @@
+{
+  "scope": "Only contract unit/multiplier verified. No guessed current margin or fees. Historical contract minima are not current trading parameters.",
+  "sources": {
+    "dce-units": {
+      "url": "https://www.dce.com.cn/dalianshangpin/resource/cms/2016/11/玉米淀粉期货合约设计说明.pdf",
+      "location": "表7，不同品种交易单位",
+      "access": "official-domain search-index excerpt; direct PDF HTTP503",
+      "units": {
+        "i": "100",
+        "jm": "60",
+        "j": "100",
+        "l": "5",
+        "pp": "5",
+        "v": "5",
+        "m": "10",
+        "y": "10",
+        "p": "10",
+        "c": "10"
+      },
+      "verifiedDate": "2026-10-15",
+      "marginRate": null,
+      "fees": null
+    },
+    "dce-coal": {
+      "url": "https://www.dce.com.cn/dce/file/2026-01-15/17684624156122c9a882b9ae6dcbb289019bc092f6fc1681.pdf",
+      "location": "2026焦煤/焦炭factsheet",
+      "access": "official-domain search-index excerpt; direct PDF HTTP503",
+      "units": {
+        "jm": "60",
+        "j": "100"
+      },
+      "verifiedDate": "2026-10-15",
+      "marginRate": null,
+      "fees": null
+    },
+    "czce-units": {
+      "url": "https://www.czce.com.cn/cn/content_file/jysj/ydscbg/2026/3/d2fcd9faa7834956874967667f0e8dfe.pdf",
+      "location": "2026年第2期，PDF第3页注3",
+      "access": "raw official PDF downloaded and independently read",
+      "sha256": "08c20f147bfa0f0f6b7f6b4d17a99fc6f3073577391661217674f23d989978a8",
+      "units": {
+        "fg": "20",
+        "sa": "20",
+        "ma": "10",
+        "ta": "5"
+      },
+      "verifiedDate": "2026-10-15",
+      "marginRate": null,
+      "fees": null
+    },
+    "cffex-if": {
+      "url": "https://www.cffex.com.cn/u/cms/www/202003/27165308xfog.pdf",
+      "location": "沪深300合约交易细则第五条",
+      "units": {
+        "if": "300"
+      },
+      "access": "official-domain search-index excerpt; direct PDF HTTP503",
+      "verifiedDate": "2026-10-15",
+      "marginRate": null,
+      "fees": null
+    },
+    "cffex-ih": {
+      "url": "https://www.cffex.com.cn/u/cms/www/202003/27165822h30l.pdf",
+      "location": "上证50合约交易细则第五条",
+      "units": {
+        "ih": "300"
+      },
+      "access": "official-domain search-index excerpt; direct PDF HTTP503",
+      "verifiedDate": "2026-10-15",
+      "marginRate": null,
+      "fees": null
+    },
+    "cffex-ic": {
+      "url": "https://www.cffex.com.cn/u/cms/www/oldsys/W020150327602765122017.pdf",
+      "location": "中证500合约乘数",
+      "units": {
+        "ic": "200"
+      },
+      "access": "official-domain search-index excerpt; direct PDF HTTP503",
+      "verifiedDate": "2026-10-15",
+      "marginRate": null,
+      "fees": null
+    },
+    "cffex-im": {
+      "url": "https://www.cffex.com.cn/u/cms/www/202207/18190308vxpv.pdf",
+      "location": "中证1000合约乘数",
+      "units": {
+        "im": "200"
+      },
+      "access": "official-domain search-index excerpt; direct PDF HTTP503",
+      "verifiedDate": "2026-10-15",
+      "marginRate": null,
+      "fees": null
+    },
+    "dce-eg": {
+      "url": "https://www.dce.com.cn/dalianshangpin/resource/cms/2018/12/2018120618351815245.pdf",
+      "readCopy": "https://hsqhyx202507141706.oss-cn-beijing.aliyuncs.com/2025/12/03/8da57a36174d432fa2d297f5607276a7%E4%B9%99%E4%BA%8C%E9%86%87%E6%9C%9F%E8%B4%A7%E4%BA%A4%E6%98%93%E6%89%8B%E5%86%8C.pdf",
+      "title": "大连商品交易所乙二醇期货交易手册，2024年10月",
+      "location": "原手册印刷页10，PDF第7页右侧合约表",
+      "access": "Original official URL inaccessible; independently viewed complete DCE-authored manual via broker-hosted mirror. Not a broker-estimated parameter.",
+      "sha256": "2a245e377e5d89c7b3ce45302fe1d8ee73a3fffa0c3b412a53cb3ec3b4a02110",
+      "bytes": 21514189,
+      "verifiedDate": "2026-10-15",
+      "units": {
+        "eg": "10"
+      },
+      "marginRate": null,
+      "fees": null
+    }
+  },
+  "unverified": [],
+  "unknownHandling": "Persist null fees; preserve FIFO quantity and known gross PnL; do not include unknown net in known totals; immutable per-execution snapshot.",
+  "missingReferenceAmounts": [
+    "i",
+    "jm",
+    "j",
+    "eg",
+    "l",
+    "pp",
+    "v",
+    "m",
+    "y",
+    "p",
+    "c",
+    "fg",
+    "sa",
+    "ma",
+    "ta",
+    "if",
+    "ih",
+    "ic",
+    "im"
+  ]
+}

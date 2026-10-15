@@ -18,7 +18,7 @@ object AutomaticEntry {
     fun now(clock:Clock):ZonedDateTime = clock.instant().atZone(beijing)
     fun today()=now(Clock.systemUTC()).toLocalDate()
     fun cents(value:BigDecimal):String = value.setScale(2,RoundingMode.HALF_UP).toPlainString()
-    fun money(value:String?):String = value?.let { "¥"+DecimalFormat("#,##0.00",DecimalFormatSymbols(Locale.CHINA)).format(decimal(it)) } ?: "暂无法估算"
+    fun money(value:String?):String = value?.let { "¥"+DecimalFormat("#,##0.00",DecimalFormatSymbols(Locale.CHINA)).apply{roundingMode=RoundingMode.HALF_UP}.format(decimal(it)) } ?: "暂无法估算"
     fun stockFee(e:LedgerExecution):String = cents(decimal(e.price)*decimal(e.quantity)*decimal(requireNotNull(e.feeRateSnapshot)))
 
     /** Same preparation is used for the live quote and persisted facts. No current prices. */
@@ -35,14 +35,14 @@ object AutomaticEntry {
         val selected=saved ?: rules.filter{it.code==input.code && it.verified && it.effectiveDay<=input.date}
             .maxWithOrNull(compareBy<LedgerContractRule>{it.effectiveDay}.thenBy{it.id})
             ?: FuturesReferenceCatalog.rule(input.code,input.date)
-            ?:throw LedgerException("该品种缺少已核实参考参数，暂无法估算；没有保存成交")
+            ?:throw LedgerException("该品种合约乘数尚未核实，暂不能保存；未编造持仓或盈亏")
         val rule=selected.copy(addMode="per_execution",addValue="0.01")
         ledgerRequire(rule.multiplier!=null && rule.verified,"缺少已核实合约乘数，暂无法估算")
         val e=input.copy(multiplier=rule.multiplier,marginRate=rule.marginRate,parametersConfirmed=true,ruleSnapshot=LedgerJson.text(rule))
         return e.copy(fees=LedgerFees.futures(rule,e,prior))
     }
 
-    data class Estimate(val fees:String?,val margin:String?,val marginLabel:String,val problem:String?=null)
+    data class Estimate(val fees:String?,val margin:String?,val marginLabel:String,val problem:String?=null,val ready:Boolean=false)
     fun estimate(input:LedgerExecution?,state:LedgerSnapshot):Estimate {
         if(input==null || input.price.isBlank() || input.quantity.isBlank())return Estimate(null,null,"预计保证金占用")
         return try {
@@ -62,7 +62,7 @@ object AutomaticEntry {
                 val own=after.cycles.filter{it.accountId==e.accountId && it.code==e.code && decimal(it.remaining)>BigDecimal.ZERO}
                 if(own.all{it.referenceMargin!=null})cents(sum(own.map{decimal(it.referenceMargin!!)})) else null
             }
-            Estimate(e.fees,margin,if(e.effect=="open")"预计新增保证金占用"else"平仓后预计剩余占用")
+            Estimate(e.fees,margin,if(e.effect=="open")"预计新增保证金占用"else"平仓后预计剩余占用",ready=true)
         } catch(e:IllegalArgumentException) { Estimate(null,null,"预计保证金占用",e.message) }
     }
 }

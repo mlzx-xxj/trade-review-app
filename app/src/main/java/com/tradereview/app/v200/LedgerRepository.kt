@@ -60,14 +60,14 @@ class LedgerRepository(private val db:TradeDatabase) {
         ledgerRequire(before.reviews.all{r->result.cycles.any{it.id==r.cycleId}},"此次更改会使已有持仓复盘失去关联，请先处理该复盘；未修改任何成交")
         val audit=existing?.takeIf{it!=candidate}?.let{ExecutionAudit(com.tradereview.app.data.newKey(),it.id,if(candidate==null)"delete"else"edit",LedgerJson.text(it),candidate?.let(LedgerJson::text),System.currentTimeMillis())}
         val after=before.copy(executions=facts,lots=result.lots,matches=result.matches,cycles=result.cycles,audits=before.audits+listOfNotNull(audit)+repriced)
-        val oldNet=sum(before.matches.map{decimal(it.net)});val newNet=sum(after.matches.map{decimal(it.net)})
+        val oldNet=completeTotal(before.matches.map{it.net});val newNet=completeTotal(after.matches.map{it.net})
         val changed=before.cycles.count{old->after.cycles.firstOrNull{it.id==old.id}!=old}+after.cycles.count{new->before.cycles.none{it.id==new.id}}
         val byExecution=after.executions.associateBy{it.id}
-        val cash=after.accounts.joinToString("\n"){a->"${a.name}：已实现 ${exact(sum(after.matches.filter{m->byExecution.getValue(m.closeExecutionId).accountId==a.id}.map{decimal(it.net)}))}；${if(a.id=="stock")"参考现金 ${LedgerStatistics.cash(after,a)?:"未知（期初/历史未完整确认）"}"else "不推算真实可用资金"}"}
+        val cash=after.accounts.joinToString("\n"){a->"${a.name}：已实现 ${moneyText(completeTotal(after.matches.filter{m->byExecution.getValue(m.closeExecutionId).accountId==a.id}.map{it.net}))}；${if(a.id=="stock")"参考现金 ${LedgerStatistics.cash(after,a)?:"未知（期初/历史未完整确认）"}"else "不推算真实可用资金"}"}
         val risk=candidate?.let{LedgerRisk.evaluate(it,before.risks.first{r->r.id==it.accountId})}
         val uncertain=existing==null && MatchingEngine.uncertainTimes(facts).any{group->group.any{it.id==candidate?.id}}
         val historyChanged=before.matches.any{m->after.matches.firstOrNull{it.id==m.id}!=m}
-        LedgerChange(before,after,candidate?.id,deleteId!=null,risk,(if(uncertain)"本组秒数不完整或同秒无法区分，按明确序号FIFO；请核对先后顺序。\n"else "")+"后续 ${repriced.size} 笔费用按各自原快照重算（不使用新费率）。\n影响 $changed 个持仓周期、${after.matches.count{m->before.matches.firstOrNull{it.id==m.id}!=m}} 项匹配。\n已实现净盈亏：${exact(oldNet)} → ${exact(newNet)}\n$cash\n费用不会重复扣除；确认后事务重算。",uncertain,historyChanged)
+        LedgerChange(before,after,candidate?.id,deleteId!=null,risk,(if(uncertain)"本组秒数不完整或同秒无法区分，按明确序号FIFO；请核对先后顺序。\n"else "")+"后续 ${repriced.size} 笔费用按各自原快照重算（不使用新费率）。\n影响 $changed 个持仓周期、${after.matches.count{m->before.matches.firstOrNull{it.id==m.id}!=m}} 项匹配。\n已实现净盈亏：${moneyText(oldNet)} → ${moneyText(newNet)}\n$cash\n费用不会重复扣除；确认后事务重算。",uncertain,historyChanged)
     }
     suspend fun confirm(change:LedgerChange,riskAcknowledged:Boolean=false)=withContext(Dispatchers.IO) {
         val context=kotlinx.coroutines.currentCoroutineContext()

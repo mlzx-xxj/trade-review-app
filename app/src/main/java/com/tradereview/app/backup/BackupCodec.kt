@@ -37,7 +37,7 @@ data class BackupData(val exportedAt: String, val trades: List<Trade>, val daily
 
 /** Schema version is the interchange format version, independent of Room's version. */
 object BackupCodec {
-    const val SCHEMA_VERSION = 7
+    const val SCHEMA_VERSION = 8
     const val MAX_BYTES = 16 * 1024 * 1024
     const val MAX_RECORDS = 10_000
     private val gson = GsonBuilder().serializeNulls().disableHtmlEscaping().create()
@@ -126,6 +126,9 @@ object BackupCodec {
                 counts.integer("dailyReviews") == data.dailyReviews.size.toLong() &&
                 counts.integer("plans") == data.planCount.toLong() && counts.integer("reviews") == data.reviewCount.toLong(), "数量不一致，备份可能不完整")
             if(version>=7)requireBackup(counts.integer("ledgerRecords")==ledgerRecords(data).toLong(),"新账本数量校验不一致")
+            if(version<8)data.ledger?.let { l ->
+                requireBackup(l.executions.all{it.fees!=null} && l.cycles.all{it.openCost!=null && it.fees!=null && it.realized!=null} && l.lots.all{it.allocatedFees!=null} && l.matches.all{it.openFees!=null && it.closeFees!=null && it.net!=null},"旧格式不支持待估算金额")
+            }
             val checksum = root.string("checksumSha256")
             val canonical = digest(gson.toJson(payload(data, version)))
             // V0.3 used reflection for catalog/draft objects: ART sorts declared fields,

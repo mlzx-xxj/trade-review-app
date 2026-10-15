@@ -12,7 +12,7 @@ android {
         applicationId = "com.tradereview.app"
         minSdk = 26
         targetSdk = 35
-        versionCode = 21
+        versionCode = 22
         versionName = "2.0.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -32,7 +32,7 @@ android {
         create("rc") {
             initWith(getByName("release"))
             applicationIdSuffix = ".rc.v200"
-            versionNameSuffix = "-rc.2"
+            versionNameSuffix = "-rc.3"
             signingConfig = signingConfigs.getByName("debug")
             matchingFallbacks += listOf("release")
             resValue("string", "app_name", "交易复盘 RC")

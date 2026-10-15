@@ -33,25 +33,25 @@ object FuturesReferenceCatalog {
         Product("sp","纸浆","SHFE","10","0.07","turnover_rate","0.00002","0.00002","0.00000","sp2701"),
         Product("op","胶版印刷纸","SHFE","40","0.07","turnover_rate","0.00002","0.00002","0.00000","op2701"),
         Product("ec","SCFIS欧线","INE","50","0.17","turnover_rate","0.0006","0.0006","0.0012","ec2701"),
-        Product("i","铁矿石","DCE",null,null),
-        Product("jm","焦煤","DCE",null,null),
-        Product("j","焦炭","DCE",null,null),
-        Product("eg","乙二醇","DCE",null,null),
-        Product("l","塑料","DCE",null,null),
-        Product("pp","聚丙烯","DCE",null,null),
-        Product("v","PVC","DCE",null,null),
-        Product("m","豆粕","DCE",null,null),
-        Product("y","豆油","DCE",null,null),
-        Product("p","棕榈油","DCE",null,null),
-        Product("c","玉米","DCE",null,null),
-        Product("fg","玻璃","CZCE",null,null),
-        Product("sa","纯碱","CZCE",null,null),
-        Product("ma","甲醇","CZCE",null,null),
-        Product("ta","PTA","CZCE",null,null),
-        Product("if","沪深300股指","CFFEX",null,null),
-        Product("ih","上证50股指","CFFEX",null,null),
-        Product("ic","中证500股指","CFFEX",null,null),
-        Product("im","中证1000股指","CFFEX",null,null),
+        Product("i","铁矿石","DCE","100",null),
+        Product("jm","焦煤","DCE","60",null),
+        Product("j","焦炭","DCE","100",null),
+        Product("eg","乙二醇","DCE","10",null),
+        Product("l","塑料","DCE","5",null),
+        Product("pp","聚丙烯","DCE","5",null),
+        Product("v","PVC","DCE","5",null),
+        Product("m","豆粕","DCE","10",null),
+        Product("y","豆油","DCE","10",null),
+        Product("p","棕榈油","DCE","10",null),
+        Product("c","玉米","DCE","10",null),
+        Product("fg","玻璃","CZCE","20",null),
+        Product("sa","纯碱","CZCE","20",null),
+        Product("ma","甲醇","CZCE","10",null),
+        Product("ta","PTA","CZCE","5",null),
+        Product("if","沪深300股指","CFFEX","300",null),
+        Product("ih","上证50股指","CFFEX","300",null),
+        Product("ic","中证500股指","CFFEX","200",null),
+        Product("im","中证1000股指","CFFEX","200",null),
     )
     fun find(code:String):Product? {
         val prefix=Regex("^[a-zA-Z]+").find(code.trim())?.value?.lowercase() ?: return null
@@ -59,7 +59,7 @@ object FuturesReferenceCatalog {
     }
     fun rule(code:String,day:Long):LedgerContractRule? {
         val p=find(code) ?: return null
-        if(p.multiplier==null || p.open==null || day<effective)return null
+        if(p.multiplier==null || day<effective)return null
         return LedgerContractRule("reference_${p.prefix}_20261015",code,p.name,p.multiplier,p.margin,p.mode,p.open,p.close,p.today,"per_execution","0.01",effective,true)
     }
 }

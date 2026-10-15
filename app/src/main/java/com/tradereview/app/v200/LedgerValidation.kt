@@ -65,7 +65,7 @@ object LedgerValidation {
         else ledgerRequire(e.tradingDay in e.date..(e.date+7),"夜盘交易日需人工确认，与自然日期相隔不超过七天")
         number(e.price,true);number(e.quantity,true,BigDecimal("1000000000"));ledgerRequire(decimal(e.quantity).stripTrailingZeros().scale()<=0,"数量必须为整数股或整数手")
         if(e.feeSource==AutomaticEntry.SOURCE)ledgerRequire(e.tradingDay==e.date,"自动记账的自然日期不一致，拒绝恢复或保存")
-        number(e.fees);optional(e.feeRateSnapshot);ledgerRequire(e.feeSource in listOf("actual","rule",AutomaticEntry.SOURCE),"费用来源无效")
+        optional(e.fees);ledgerRequire(e.fees!=null || e.feeSource==AutomaticEntry.SOURCE && e.accountId=="futures","只有自动期货参考费用允许待估算");optional(e.feeRateSnapshot);ledgerRequire(e.feeSource in listOf("actual","rule",AutomaticEntry.SOURCE),"费用来源无效")
         optional(e.multiplier,true);optional(e.marginRate);ledgerRequire(e.marginRate==null || decimal(e.marginRate)<=BigDecimal.ONE,"保证金率无效")
         if(e.accountId=="futures")ledgerRequire(e.parametersConfirmed && e.multiplier!=null,"期货合约乘数未核实；请先配置或确认本笔参数，不能虚构已实现盈亏")
         e.ruleSnapshot?.let{ledgerRequire(it.length<=4096,"参数快照超长");LedgerJson.rule(it)}
@@ -102,7 +102,7 @@ object LedgerValidation {
                     val r=LedgerJson.rule(e.ruleSnapshot!!);ledgerRequire(r.code==e.code && r.multiplier!=null && decimal(r.multiplier).compareTo(decimal(e.multiplier!!))==0,"合约参数快照与成交不一致")
                     LedgerFees.fromMatches(r,e,byClose[e.id].orEmpty(),byId)
                 }
-                ledgerRequire(decimal(expected).compareTo(decimal(e.fees))==0,"手续费与保存的当笔规则不一致，不自动改写真实费用")
+                ledgerRequire(if(expected==null)e.fees==null else e.fees!=null && decimal(expected).compareTo(decimal(e.fees))==0,"手续费与保存的当笔规则不一致，不自动改写真实费用")
             }
             val expectedExceeded=e.riskAmount!=null && e.riskLimitSnapshot!=null && decimal(e.riskAmount)>decimal(e.riskLimitSnapshot)
             ledgerRequire(e.riskExceeded==expectedExceeded,"风险标记与保存的风险口径不一致")

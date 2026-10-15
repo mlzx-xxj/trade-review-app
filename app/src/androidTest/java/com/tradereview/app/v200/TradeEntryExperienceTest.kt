@@ -68,7 +68,7 @@ class TradeEntryExperienceTest {
     private fun selected(tag:String){val n=ui.onNodeWithTag(tag);if(n.fetchSemanticsNode().config.getOrElse(SemanticsProperties.Selected){false}!=true)tap(tag)}
     private fun displayed(tag:String)=ui.onNodeWithTag(tag).fetchSemanticsNode().config[SemanticsProperties.Text].joinToString(""){it.text}
     private fun numberOnScreen(tag:String):String?=Regex("¥([0-9,]+\\.[0-9]{2})").find(displayed(tag))?.groupValues?.get(1)?.replace(",","")
-    private fun equal(expected:String,actual:String)=assertEquals(expected,0,BigDecimal(expected).compareTo(BigDecimal(actual)))
+    private fun equal(expected:String,actual:String?)=assertEquals(expected,0,BigDecimal(expected).compareTo(BigDecimal(requireNotNull(actual))))
     private fun clock(day:LocalDate){ui.runOnIdle{model.entryClock=Clock.fixed(day.atTime(10,0).atZone(AutomaticEntry.beijing).toInstant(),ZoneOffset.UTC)}}
     private fun page(index:Int){ui.onNodeWithTag("v2-main-page-$index").performClick()}
     private fun screenshot(name:String){ui.waitForIdle();android.os.SystemClock.sleep(150);val bitmap=requireNotNull(instrumentation.uiAutomation.takeScreenshot());File(output(),"$name.png").outputStream().use{assertTrue(bitmap.compress(android.graphics.Bitmap.CompressFormat.PNG,100,it))};bitmap.recycle()}
@@ -76,10 +76,10 @@ class TradeEntryExperienceTest {
     private fun row(e:LedgerExecution){
         ui.onNodeWithTag("v2-trades").performScrollToNode(hasTestTag("execution-${e.id}"))
         ui.onNodeWithTag("execution-${e.id}").assertIsDisplayed()
-        ui.onNode(hasText("${e.quantity}${if(e.accountId=="stock")"股"else"手"} × ${e.price} · 费用 ￥${e.fees}") and hasAnyAncestor(hasTestTag("execution-${e.id}")),useUnmergedTree=true).assertIsDisplayed()
+        ui.onNode(hasText("${e.quantity}${if(e.accountId=="stock")"股"else"手"} × ${amount(e.price)} · 费用 ${amount(e.fees)}") and hasAnyAncestor(hasTestTag("execution-${e.id}")),useUnmergedTree=true).assertIsDisplayed()
         if(e.effect!="open"){
-            val net=exact(sum(facts().matches.filter{it.closeExecutionId==e.id}.map{decimal(it.net)}))
-            ui.onNode(hasText("￥$net") and hasAnyAncestor(hasTestTag("execution-${e.id}")),useUnmergedTree=true).assertIsDisplayed()
+            val net=completeTotal(facts().matches.filter{it.closeExecutionId==e.id}.map{it.net})
+            ui.onNode(hasText(moneyText(net)) and hasAnyAncestor(hasTestTag("execution-${e.id}")),useUnmergedTree=true).assertIsDisplayed()
         }
     }
     private fun begin(market:String,code:String,action:String,price:String,quantity:String,symbolSource:String="typed"){
@@ -123,17 +123,17 @@ class TradeEntryExperienceTest {
         val direction=if(e.accountId=="stock")"股票"else if(cycle.direction=="long")"多头"else"空头"
         ui.onNode(hasText(" · $direction",substring=true) and hasAnyAncestor(hasTestTag(tag)),useUnmergedTree=true).assertIsDisplayed()
         ui.onNode(hasText(" · $remaining${if(e.accountId=="stock")"股"else"手"}",substring=true) and hasAnyAncestor(hasTestTag(tag)),useUnmergedTree=true).assertIsDisplayed()
-        margin?.let{equal(it,requireNotNull(cycle.referenceMargin));ui.onNode(hasText("参考保证金 ￥${BigDecimal(it).stripTrailingZeros().toPlainString()}") and hasAnyAncestor(hasTestTag(tag)),useUnmergedTree=true).assertIsDisplayed()}
+        margin?.let{equal(it,requireNotNull(cycle.referenceMargin));ui.onNode(hasText("参考保证金 ${amount(it)}") and hasAnyAncestor(hasTestTag(tag)),useUnmergedTree=true).assertIsDisplayed()}
         ui.onNodeWithTag(tag).performClick()
-        ui.onNodeWithTag("v2-position-details").performScrollToNode(hasText("￥${cycle.realized}"))
-        ui.onNodeWithText("￥${cycle.realized}").assertIsDisplayed()
+        ui.onNodeWithTag("v2-position-details").performScrollToNode(hasText(amount(cycle.realized)))
+        ui.onNodeWithText(amount(cycle.realized)).assertIsDisplayed()
         back()
     }
     private fun history(){page(1);ui.onNodeWithText("历史成交").performClick()}
     private fun openDetails(e:LedgerExecution){history();row(e);ui.onNodeWithTag("execution-${e.id}").performClick()}
     private fun back(){ui.onNodeWithContentDescription("返回主页面").performClick()}
     private fun delete(e:LedgerExecution){openDetails(e);ui.onNodeWithTag("delete-execution").performScrollTo().performClick();waitFor("删除预览"){model.pending.value!=null && !model.busy.value};val before=facts();ui.onNodeWithTag("confirm-execution-change").performClick();waitFor("删除事务提交"){!model.busy.value && model.pending.value==null && model.state.value.ledger!!.executions.size==before.executions.size-1};assertFalse(facts().executions.any{it.id==e.id});back()}
-    private fun statistics(expected:String){page(3);ui.onNodeWithTag("v2-statistics").performScrollToIndex(0);ui.onNodeWithTag("statistics-period-month").performClick();waitFor("统计刷新"){displayed("period-realized-net")=="￥$expected"};ui.onNodeWithTag("period-realized-net").assertTextEquals("￥$expected")}
+    private fun statistics(expected:String){page(3);ui.onNodeWithTag("v2-statistics").performScrollToIndex(0);ui.onNodeWithTag("statistics-period-month").performClick();waitFor("统计刷新"){displayed("period-realized-net")==moneyText(decimal(expected))};ui.onNodeWithTag("period-realized-net").assertTextEquals(moneyText(decimal(expected)))}
 
     @Test fun actualFormJourneyAndReopenEvidence(){
         assertEquals("Only isolated emulators may run this fixture","1",shell("getprop ro.kernel.qemu").trim())
@@ -155,6 +155,9 @@ class TradeEntryExperienceTest {
         val a=enter("futures","rb2701","buy-open","3500","2","7.01","4900.00","2",capture="71-entry-futures-filled",positionMargin="4900")
         val b=enter("futures","rb2701","buy-open","3510","3","10.54","7371.00","5",positionMargin="12271",symbolSource="recent")
         val close=enter("futures","rb2701","sell-close","3530","4","14.13","2457.00","1","971.833333333333",positionMargin="2457")
+        ui.onNode(hasText("￥971.83") and hasAnyAncestor(hasTestTag("execution-${close.id}")),useUnmergedTree=true).assertIsDisplayed()
+        ui.onAllNodesWithText("￥971.833333333333").assertCountEquals(0)
+        observations+=mapOf("operation" to "rounded-partial-net","displayedNet" to "￥971.83","savedRawNet" to exact(sum(facts().matches.filter{it.closeExecutionId==close.id}.map{decimal(it.net)})),"result" to "PASS")
         screenshot("72-entry-saved-list")
         page(1);ui.onNodeWithText("当前持仓").performClick();ui.onNodeWithTag("v2-trades").performScrollToNode(hasTestTag("position-cycle_${a.id}"));screenshot("73-entry-partial-position")
         val partial=facts();assertEquals("1",partial.lots.first{it.executionId==b.id}.remaining);assertEquals("0",partial.lots.first{it.executionId==a.id}.remaining)
@@ -175,26 +178,52 @@ class TradeEntryExperienceTest {
         verifyPositionUi(facts(),a,"2","4900")
         observations+=mapOf("operation" to "delete-open","expectedRemaining" to "2","result" to "PASS")
         val beforeUnknown=facts()
-        for(unknown in listOf("zz2701","i2701")){
+        for(unknown in listOf("zz2701")){
             begin("futures",unknown,"buy-open","100","1")
             waitFor("未知品种提示"){ui.onAllNodesWithTag("entry-unverified").fetchSemanticsNodes().isNotEmpty()}
             ui.onNodeWithTag("entry-estimated-fee").assertTextEquals("预计手续费：暂无法估算")
-            if(unknown=="i2701")screenshot("76-entry-unknown-contract")
+            if(unknown=="zz2701")screenshot("76-entry-unknown-contract")
             tap("save-execution");waitFor("未知品种拒绝保存"){!model.busy.value && model.problem.value!=null}
             assertEquals(beforeUnknown,facts());observations+=mapOf("operation" to "unknown-contract","code" to unknown,"displayedFees" to displayed("entry-estimated-fee"),"saved" to false,"result" to "PASS");tap("entry-cancel")
         }
-        statistics("84.99");waitFor("临时反馈自然结束"){model.message.value==null};screenshot("74-entry-statistics")
+        pendingCommonProductJourney();statistics("84.99");waitFor("临时反馈自然结束"){model.message.value==null};screenshot("74-entry-statistics")
         ui.onNodeWithTag("v2-statistics").performScrollToNode(hasTestTag("v2-daily-chart"))
         ui.onNodeWithTag("v2-daily-chart-scroll").performSemanticsAction(androidx.compose.ui.semantics.SemanticsActions.ScrollBy){scroll->scroll((today.dayOfMonth-4).coerceAtLeast(0)*52f*app.resources.displayMetrics.density,0f)}
         screenshot("78-entry-statistics-bars")
         exerciseKeyboard();exerciseRealSafBackup()
-        val expected=facts();assertEquals(6,expected.executions.size);assertEquals("84.99",exact(sum(expected.matches.map{decimal(it.net)})))
+        val expected=facts();assertEquals(8,expected.executions.size);assertEquals("84.99",exact(sum(LedgerStatistics.closed(expected).mapNotNull{it.net})));assertNull(expected.matches.single{m->expected.executions.single{it.id==m.closeExecutionId}.code=="i2701"}.net)
         val proof=mapOf("api" to Build.VERSION.SDK_INT,"pid" to Process.myPid(),"ledger" to LedgerJson.element(expected),"observations" to observations,"allExecutionsCreatedViaRealForm" to true,"syntheticOnly" to true,"baselineInputCountsExcludeKeyboardKeyStrokes" to true,"zipSafExportReadbackAndConfirmedReplace" to true,"result" to "PASS")
         val json=gson.toJson(proof)
         File(app.filesDir,"entry-experience-expected.json").writeText(json)
         val reportName=if(InstrumentationRegistry.getArguments().getString("entryPhase")=="journey")"trade-entry-experience"else"entry-regression"
         if(reportName=="entry-regression")com.tradereview.app.stability.V08Metrics.write("$reportName-api${Build.VERSION.SDK_INT}.json",json)
         else File(output(),"$reportName-api${Build.VERSION.SDK_INT}.json").writeText(json)
+    }
+
+
+    private fun pendingCommonProductJourney(){
+        val originals=facts().executions.map{it.id}.toSet()
+        for((action,price,qty,remaining) in listOf(listOf("buy-open","800","2","2"),listOf("sell-close","810","1","1"))){
+            val before=facts();begin("futures","i2701",action,price,qty)
+            waitFor("已核实乘数，无费用仍可保存"){displayed("entry-estimated-fee")=="预计手续费：待估算"}
+            ui.onNodeWithTag("entry-estimated-margin").assertTextContains("待估算")
+            ui.onNodeWithTag("entry-pending-note").assertTextContains("可保存")
+            if(action=="buy-open"){ui.onNodeWithTag("execution-quantity").performImeAction();screenshot("79-entry-common-pending-filled")}
+            tap("save-execution");waitFor("缺参考金额正常保存"){!model.busy.value && !model.editor.value && model.state.value.ledger?.executions?.size==before.executions.size+1}
+            assertNull(model.pending.value)
+            val after=facts();val e=after.executions.single{it.id !in before.executions.map{v->v.id}}
+            assertEquals("100",e.multiplier);assertNull(e.fees);assertNull(e.marginRate)
+            row(e);screenshot("80-entry-pending-saved-list")
+            val c=after.cycles.single{it.code=="i2701"};assertEquals(remaining,c.remaining);assertNull(c.fees);assertNull(c.referenceMargin)
+            if(action=="sell-close"){val match=after.matches.single{it.closeExecutionId==e.id};assertEquals("1000",match.gross);assertNull(match.openFees);assertNull(match.closeFees);assertNull(match.net);assertNull(c.realized)}
+            verifyPositionUi(after,e,remaining,null)
+            page(1);ui.onNodeWithText("当前持仓").performClick();ui.onNodeWithTag("v2-trades").performScrollToNode(hasTestTag("position-${c.id}"));ui.onNode(hasText("累计手续费 待估算") and hasAnyAncestor(hasTestTag("position-${c.id}")),useUnmergedTree=true).assertIsDisplayed();screenshot("81-entry-pending-position")
+            observations+=mapOf("operation" to "pending-common-product","code" to "i2701","action" to action,"price" to price,"quantity" to qty,"multiplier" to e.multiplier,"displayedFees" to "待估算","savedFees" to e.fees,"savedMarginRate" to e.marginRate,"remaining" to c.remaining,"realized" to c.realized,"result" to "PASS")
+        }
+        assertEquals(2,facts().executions.count{it.id !in originals})
+        statistics("84.99");ui.onNodeWithTag("statistics-pending").assertTextContains("1 笔费用待估算");screenshot("82-entry-pending-statistics")
+        ui.onNodeWithTag("statistics-market-futures").performClick();waitFor("期货已知盈亏不混入未知"){displayed("period-realized-net")=="￥91.99"};ui.onNodeWithTag("statistics-pending").assertIsDisplayed()
+        ui.onNodeWithTag("statistics-market-all").performClick();statistics("84.99")
     }
 
     private fun exerciseKeyboard(){
@@ -223,7 +252,7 @@ class TradeEntryExperienceTest {
         requireNotNull(device.wait(Until.findObject(By.clazz("android.widget.EditText")),20000)){"系统保存文件名输入框未出现"}.text=filename
         requireNotNull(device.wait(Until.findObject(By.text(java.util.regex.Pattern.compile("(?i)(save|保存)"))),15000)){"系统保存按钮未出现"}.click()
         waitFor("真实SAF导出并回读校验"){!backup.busy.value && backup.message.value?.contains("已重新读取并通过 SHA-256")==true}
-        back();val removable=before.executions.first{it.code=="al2701"};delete(removable);assertEquals(5,facts().executions.size)
+        back();val removable=before.executions.first{it.code=="al2701"};delete(removable);assertEquals(before.executions.size-1,facts().executions.size)
         ui.onNodeWithTag("open-backup").performClick();ui.onNodeWithTag("v2-import-backup").performClick()
         var file=device.wait(Until.findObject(By.text(filename)),15000)
         if(file==null){requireNotNull(device.findObject(By.desc(java.util.regex.Pattern.compile("(?i)(Show roots|Open navigation drawer|显示根目录|打开导航抽屉)")))){"文件选择器根目录入口缺失"}.click();requireNotNull(device.wait(Until.findObject(By.text(java.util.regex.Pattern.compile("(?i)(Downloads|下载)"))),10000)).click();file=device.wait(Until.findObject(By.text(filename)),15000)}
@@ -231,8 +260,8 @@ class TradeEntryExperienceTest {
         waitFor("ZIP校验预览"){!backup.busy.value && backup.preview.value!=null}
         ui.onNodeWithTag("v2-backup").performScrollToNode(hasText("覆盖备份范围"));ui.onNodeWithText("覆盖备份范围").performClick()
         ui.onNodeWithTag("v2-backup").performScrollToNode(hasTestTag("v2-restore-continue"));ui.onNodeWithTag("v2-restore-continue").performClick()
-        assertEquals(5,facts().executions.size);ui.onNodeWithTag("v2-confirm-restore").performClick()
-        waitFor("ZIP二次确认事务恢复"){!backup.busy.value && backup.preview.value==null && model.state.value.ledger?.executions?.size==6}
+        assertEquals(before.executions.size-1,facts().executions.size);ui.onNodeWithTag("v2-confirm-restore").performClick()
+        waitFor("ZIP二次确认事务恢复"){!backup.busy.value && backup.preview.value==null && model.state.value.ledger?.executions?.size==before.executions.size}
         assertEquals(before,facts());back();statistics("84.99")
     }
 
@@ -241,7 +270,7 @@ class TradeEntryExperienceTest {
         assertNotEquals("必须是真正的新进程",proof["pid"].asInt,Process.myPid())
         val expected=LedgerJson.parse(proof["ledger"])
         waitFor("重启后本机记录载入"){model.state.value.ledger==expected}
-        assertEquals(expected,facts());history();expected.executions.forEach(::row)
+        assertEquals(expected,facts());history();expected.executions.forEach(::row);assertEquals(2,expected.executions.count{it.fees==null});assertNull(expected.cycles.single{it.code=="i2701"}.realized)
         page(1);ui.onNodeWithText("当前持仓").performClick()
         expected.cycles.filter{decimal(it.remaining)>BigDecimal.ZERO}.forEach{c->ui.onNodeWithTag("v2-trades").performScrollToNode(hasTestTag("position-${c.id}"));ui.onNodeWithTag("position-${c.id}").assertIsDisplayed()}
         statistics("84.99");screenshot("77-entry-after-process-restart")
