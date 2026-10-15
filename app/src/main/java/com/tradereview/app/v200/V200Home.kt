@@ -21,7 +21,7 @@ import java.math.RoundingMode
 fun calendarLabel(value:BigDecimal?)=when{value==null->"无平仓";value.signum()==0->"持平";value.abs()<BigDecimal("0.01")->if(value.signum()>0)"+<0.01"else"-<0.01";value.abs()>=BigDecimal(10000)->exact(value.movePointLeft(4).setScale(1,RoundingMode.HALF_UP))+"万";else->exact(value.setScale(2,RoundingMode.HALF_UP))}
 fun sellable(state:LedgerSnapshot,cycle:LedgerCycle,day:Long):String {val facts=state.executions.associateBy{it.id};return exact(sum(state.lots.filter{it.cycleId==cycle.id && facts.getValue(it.executionId).tradingDay<day}.map{decimal(it.remaining)}))}
 @Composable fun V200Home(state:LedgerScreenState,onCycle:(String)->Unit,onDay:(Long)->Unit){
-    val ledger=state.ledger?:return;val today=LocalDate.now();val epoch=today.toEpochDay();val week=today.minusDays((today.dayOfWeek.value-1).toLong()).toEpochDay();val month=today.withDayOfMonth(1).toEpochDay()
+    val ledger=state.ledger?:return;val today=AutomaticEntry.today();val epoch=today.toEpochDay();val week=today.minusDays((today.dayOfWeek.value-1).toLong()).toEpochDay();val month=today.withDayOfMonth(1).toEpochDay()
     var expanded by rememberSaveable{mutableStateOf(false)};var offset by rememberSaveable{mutableIntStateOf(0)}
     LazyColumn(Modifier.fillMaxSize().testTag("v2-home"),contentPadding=PaddingValues(12.dp),verticalArrangement=Arrangement.spacedBy(10.dp)){
         item{LedgerPanel("累计表现 · 已实现净盈亏"){
@@ -48,7 +48,7 @@ fun sellable(state:LedgerSnapshot,cycle:LedgerCycle,day:Long):String {val facts=
 @Composable fun PositionCard(state:LedgerSnapshot,c:LedgerCycle,onClick:(String)->Unit){LedgerPanel("${c.name} ${c.code} · ${directionLabel(c)}",Modifier.clickable{onClick(c.id)}.testTag("position-${c.id}")){
     Text("首次${if(c.accountId=="stock")"买入"else"开仓"} ${LocalDate.ofEpochDay(c.firstDay)} · ${c.remaining}${if(c.accountId=="stock")"股"else"手"}")
     Text("${if(c.accountId=="stock" && decimal(c.remaining)>BigDecimal.ZERO)"持仓成本均价（含未卖出买入费用）"else"平均开仓价"} ${if(c.accountId=="stock" && decimal(c.remaining)>BigDecimal.ZERO)exact(ratio(decimal(c.openCost),decimal(c.remaining)))else c.averagePrice}")
-    if(c.accountId=="stock")Text("可卖 ${sellable(state,c,LocalDate.now().toEpochDay())}股 · 持仓成本 ${amount(c.openCost)}")
+    if(c.accountId=="stock")Text("可卖 ${sellable(state,c,AutomaticEntry.today().toEpochDay())}股 · 持仓成本 ${amount(c.openCost)}")
     Text("止盈 ${c.takeProfit?:"未设置"} · 止损 ${c.stopLoss?:"未设置"}")
     if(c.accountId=="futures"){Text("参考保证金 ${amount(c.referenceMargin)}");Text("累计手续费 ${amount(c.fees)}")}
 }}

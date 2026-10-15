@@ -90,7 +90,8 @@ class TradeEntryExperienceTest {
         val empty=LedgerSnapshot(accounts=listOf(LedgerAccount("stock","stock","A股账户"),LedgerAccount("futures","futures","国内期货账户")),risks=listOf(MarketRisk("stock"),MarketRisk("futures")))
         runBlocking{app.database.withTransaction{model.repository.write(empty,true)}}
         ui.runOnIdle{model.page(1);model.closeEditor();model.handle["v2-entry-fields"]=null}
-        waitFor("空账本开始"){model.state.value.ledger==empty}
+        val cleared=facts()
+        waitFor("空账本开始"){model.state.value.ledger==cleared}
         val today=AutomaticEntry.today();clock(today.minusDays(1))
         enter("stock","600000","buy","10","1000","1.00",null,"1000",capture="70-entry-stock-filled")
         // The SAME real form rejects T+1; the test changes only the injected clock afterwards.
