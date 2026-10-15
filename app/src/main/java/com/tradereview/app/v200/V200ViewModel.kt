@@ -33,6 +33,7 @@ class V200ViewModel(val database:TradeDatabase,val handle:SavedStateHandle):View
     fun execution(value:LedgerExecution){action(null){
         val now=entryNow()
         val isNew=value.ordinal==0L
+        if(isNew && value.feeSource==AutomaticEntry.SOURCE)ledgerRequire(value.date==now.toLocalDate().toEpochDay(),"北京时间日期已切换，金额已刷新，请再次保存")
         val stamped=if(isNew && value.feeSource==AutomaticEntry.SOURCE)value.copy(date=now.toLocalDate().toEpochDay(),tradingDay=now.toLocalDate().toEpochDay(),minute=now.hour*60+now.minute,second=now.second)else value
         val preview=repository.preview(stamped)
         val existing=preview.before.executions.any{it.id==value.id}

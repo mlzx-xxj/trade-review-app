@@ -21,7 +21,7 @@ import java.time.LocalDate
     val csv=rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("text/csv")){it?.let(backup::exportLedgerCsv)}
     val oldCsv=rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("text/csv")){it?.let(backup::exportCsv)}
     val restore=rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()){it?.let(backup::readBackup)}
-    val date=LocalDate.now().toString()
+    val date=AutomaticEntry.today().toString()
     LazyColumn(Modifier.fillMaxSize().testTag("v2-backup"),contentPadding=PaddingValues(12.dp),verticalArrangement=Arrangement.spacedBy(12.dp)){
         item{Button({exportChoice=true},enabled=!busy,modifier=Modifier.fillMaxWidth().heightIn(min=56.dp).testTag("v2-export-backup")){Text("保存完整 ZIP 备份")}}
         item{OutlinedButton({restore.launch(arrayOf("application/zip","application/json","application/octet-stream"))},enabled=!busy,modifier=Modifier.fillMaxWidth().heightIn(min=56.dp).testTag("v2-import-backup")){Text("从 ZIP／JSON 恢复")}}

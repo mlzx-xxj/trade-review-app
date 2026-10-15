@@ -24,6 +24,7 @@ object AutomaticEntry {
     /** Same preparation is used for the live quote and persisted facts. No current prices. */
     fun prepare(input:LedgerExecution,existing:LedgerExecution?,prior:List<LedgerExecution>,rules:List<LedgerContractRule>):LedgerExecution {
         LedgerValidation.number(input.price,true);LedgerValidation.number(input.quantity,true)
+        ledgerRequire(decimal(input.quantity).stripTrailingZeros().scale()<=0,"数量必须为整数股或整数手")
         if(input.accountId=="stock") {
             val rate=existing?.feeRateSnapshot?.takeIf{existing.side==input.side}
                 ?:if(input.side=="buy")STOCK_BUY_RATE else STOCK_SELL_RATE

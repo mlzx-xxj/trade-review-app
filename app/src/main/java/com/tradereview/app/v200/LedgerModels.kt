@@ -4,7 +4,7 @@ import androidx.room.*
 import com.tradereview.app.data.newKey
 
 @Entity(tableName="ledger_accounts")
-data class LedgerAccount(@PrimaryKey val id: String, val market: String, val name: String, val initialCapital: String? = null, val historyComplete: Boolean = false, val buyRate: String = "0.0001", val sellRate: String = "0.0006")
+data class LedgerAccount(@PrimaryKey val id: String, val market: String, val name: String, val initialCapital: String? = null, val historyComplete: Boolean = false, val buyRate: String = AutomaticEntry.STOCK_BUY_RATE, val sellRate: String = AutomaticEntry.STOCK_SELL_RATE)
 
 @Entity(tableName="ledger_strategies")
 data class LedgerStrategy(@PrimaryKey val id: String, val name: String, val description: String = "", val sortOrder: Int = 0, val active: Boolean = true)

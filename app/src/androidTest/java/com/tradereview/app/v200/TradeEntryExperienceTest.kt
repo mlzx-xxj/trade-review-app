@@ -148,7 +148,8 @@ class TradeEntryExperienceTest {
         val json=gson.toJson(proof)
         File(app.filesDir,"entry-experience-expected.json").writeText(json)
         val reportName=if(InstrumentationRegistry.getArguments().getString("entryPhase")=="journey")"trade-entry-experience"else"entry-regression"
-        File(output(),"$reportName-api${Build.VERSION.SDK_INT}.json").writeText(json)
+        if(reportName=="entry-regression")com.tradereview.app.stability.V08Metrics.write("$reportName-api${Build.VERSION.SDK_INT}.json",json)
+        else File(output(),"$reportName-api${Build.VERSION.SDK_INT}.json").writeText(json)
     }
 
     private fun exerciseKeyboard(){
@@ -157,10 +158,13 @@ class TradeEntryExperienceTest {
         try{
             automation.serviceInfo=automation.serviceInfo.apply{this.flags=this.flags or AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS}
             shell("settings put secure show_ime_with_hard_keyboard 1")
-            begin("stock","000001","buy","10","100")
+            begin("futures","rb2701","buy-open","3500","2")
             ui.onNodeWithTag("execution-price").performScrollTo().performTouchInput{click()}
             waitFor("真实软键盘"){automation.windows.any{it.type==AccessibilityWindowInfo.TYPE_INPUT_METHOD}}
-            ui.onNodeWithTag("save-execution").assertIsDisplayed();screenshot("75-entry-keyboard")
+            ui.onNodeWithTag("save-execution").assertIsDisplayed()
+            ui.onNodeWithTag("entry-estimated-fee").assertIsDisplayed()
+            ui.onNodeWithTag("entry-estimated-margin").assertIsDisplayed()
+            screenshot("75-entry-keyboard")
             tap("entry-cancel")
         }finally{if(prior=="null")shell("settings delete secure show_ime_with_hard_keyboard")else shell("settings put secure show_ime_with_hard_keyboard $prior");automation.serviceInfo=automation.serviceInfo.apply{this.flags=flags}}
     }

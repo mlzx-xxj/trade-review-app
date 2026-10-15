@@ -24,6 +24,15 @@ class LedgerRepositoryTest {
     @After fun close(){db.close()}
     private fun buy(id:String="buy")=LedgerExecution(id,"stock","600000","合成股票",day,600,day,0,"buy","open","10","100","0",feeSource="rule")
     private suspend fun save(e:LedgerExecution)=repo.confirm(repo.preview(e))
+    @Test fun frozenLegacyEditKeepsItsConfirmedOrderWithoutAnotherTechnicalConfirmation()=runBlocking{
+        save(buy())
+        val second=repo.preview(buy("second"));assertTrue(second.orderWarning);repo.confirm(second,true)
+        val old=repo.read().executions.first{it.id=="second"};assertTrue(old.orderConfirmed)
+        val edit=repo.preview(old.copy(price="12"));assertFalse(edit.orderWarning)
+        repo.confirm(edit)
+        val saved=repo.read().executions.first{it.id==old.id}
+        assertEquals(old.ordinal,saved.ordinal);assertEquals(old.minute,saved.minute);assertTrue(saved.orderConfirmed)
+    }
     @Test fun deletingTheLastFactDoesNotReuseItsAuditedSaveOrder()=runBlocking{
         save(buy().copy(feeSource=AutomaticEntry.SOURCE));save(buy("second").copy(feeSource=AutomaticEntry.SOURCE))
         repo.confirm(repo.preview(null,"second"),true)

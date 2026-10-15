@@ -57,7 +57,7 @@ object LedgerValidation {
     fun risk(r:MarketRisk){ledgerRequire(r.id in listOf("stock","futures") && r.limitMode in listOf("amount","percent"),"风险配置无效");optional(r.riskFund,true);optional(r.limitValue,true);optional(r.defaultLimit,true);if(r.limitMode=="percent" && r.limitValue!=null)ledgerRequire(decimal(r.limitValue)<=BigDecimal(100),"风险金比例应大于0且不超过100%")}
     fun rule(r:LedgerContractRule){id(r.id);code("futures",r.code);word(r.name);day(r.effectiveDay);optional(r.multiplier,true);optional(r.marginRate);ledgerRequire(r.marginRate==null || decimal(r.marginRate)<=BigDecimal.ONE,"保证金率应在0至1之间");ledgerRequire(r.feeMode in listOf("per_lot","turnover_rate") && r.addMode in listOf("none","per_lot","turnover_rate","per_execution"),"必须明确按手金额或成交额费率，不能猜测+0.01单位");listOf(r.openFee,r.closeFee,r.todayFee,r.addValue).forEach{optional(it)};ledgerRequire(r.addMode=="none" && r.addValue==null || r.addMode!="none" && r.addValue!=null,"手续费加收单位及金额不完整");if(r.feeMode=="turnover_rate")listOf(r.openFee,r.closeFee,r.todayFee).forEach{ledgerRequire(it==null || decimal(it)<=BigDecimal.ONE,"成交额费率应在0至1之间")};if(r.addMode=="turnover_rate")ledgerRequire(decimal(r.addValue!!)<=BigDecimal.ONE,"加收费率应在0至1之间");if(r.verified)ledgerRequire(r.multiplier!=null,"核实的合约规则必须包含乘数")}
     fun execution(e:LedgerExecution) {
-        id(e.id);code(e.accountId,e.code);word(e.name);day(e.date);day(e.tradingDay);ledgerRequire(e.date<=(if(e.feeSource==AutomaticEntry.SOURCE)AutomaticEntry.today()else LocalDate.now()).toEpochDay(),"真实成交自然日期不能晚于今天")
+        id(e.id);code(e.accountId,e.code);word(e.name);day(e.date);day(e.tradingDay);ledgerRequire(e.date<=AutomaticEntry.today().toEpochDay(),"真实成交自然日期不能晚于今天")
         ledgerRequire(e.second==null || e.second in 0..59,"成交秒必须在0至59，未知保持空")
         ledgerRequire(e.minute in 0..1439 && e.ordinal in 0..Long.MAX_VALUE,"成交时间/顺序无效")
         ledgerRequire(e.side in listOf("buy","sell") && e.effect in listOf("open","close","close_today","close_yesterday"),"买卖及开平选项无效")
@@ -76,7 +76,7 @@ object LedgerValidation {
     }
     fun plan(p:LedgerPlan){id(p.id);code(p.accountId,p.code);word(p.name);day(p.day);p.strategyId?.let(::id);listOf(p.entryPrice,p.takeProfit,p.stopLoss).forEach{optional(it,true)};LedgerJson.levels(p.levels);note(p.note)}
     fun review(r:LedgerReview){id(r.id);id(r.cycleId);day(r.day);listOf(r.takeProfit,r.stopLoss).forEach{optional(it,true)};LedgerJson.levels(r.levels);note(r.note)}
-    fun cash(f:LedgerCashFlow){id(f.id);ledgerRequire(f.accountId in listOf("stock","futures") && f.kind in listOf("in","out"),"出入金类型无效");day(f.day);ledgerRequire(f.day<=LocalDate.now().toEpochDay(),"实际资金流水日期不能晚于今天");number(f.amount,true);note(f.note)}
+    fun cash(f:LedgerCashFlow){id(f.id);ledgerRequire(f.accountId in listOf("stock","futures") && f.kind in listOf("in","out"),"出入金类型无效");day(f.day);ledgerRequire(f.day<=AutomaticEntry.today().toEpochDay(),"实际资金流水日期不能晚于今天");number(f.amount,true);note(f.note)}
     fun snapshot(s:LedgerSnapshot) {
         ledgerRequire(s.accounts.map{it.id}.toSet()==setOf("stock","futures") && s.accounts.size==2 && s.risks.map{it.id}.toSet()==setOf("stock","futures") && s.risks.size==2,"备份须包含两账户和两套风险配置")
         fun <T> unique(list:List<T>,key:(T)->String){ledgerRequire(list.size<=10000 && list.map(key).distinct().size==list.size,"数据过多或稳定ID重复")}

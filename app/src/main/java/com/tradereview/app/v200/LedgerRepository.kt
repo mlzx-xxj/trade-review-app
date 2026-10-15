@@ -46,7 +46,7 @@ class LedgerRepository(private val db:TradeDatabase) {
             }
             val config=before.risks.firstOrNull{it.id==input.accountId}?:MarketRisk(input.accountId)
             val risk=LedgerRisk.evaluate(prepared,config)
-            prepared.copy(orderConfirmed=false,riskAmount=risk.amount,riskFundSnapshot=risk.fund,riskLimitSnapshot=risk.limit,riskExceeded=risk.exceeded,riskWarningEnabled=config.warnEnabled,riskConfirmed=if(existing==input)existing?.riskConfirmed?:false else false)
+            prepared.copy(orderConfirmed=existing?.orderConfirmed?:false,riskAmount=risk.amount,riskFundSnapshot=risk.fund,riskLimitSnapshot=risk.limit,riskExceeded=risk.exceeded,riskWarningEnabled=config.warnEnabled,riskConfirmed=if(existing==input)existing?.riskConfirmed?:false else false)
         }
         val originalFacts=(prior+listOfNotNull(candidate)).sortedBy{it.id}
         MatchingEngine.uncertainTimes(originalFacts).forEach{group->ledgerRequire(group.map{it.ordinal}.distinct().size==group.size,"历史成交顺序冲突；未修改记录")}
@@ -65,7 +65,7 @@ class LedgerRepository(private val db:TradeDatabase) {
         val byExecution=after.executions.associateBy{it.id}
         val cash=after.accounts.joinToString("\n"){a->"${a.name}：已实现 ${exact(sum(after.matches.filter{m->byExecution.getValue(m.closeExecutionId).accountId==a.id}.map{decimal(it.net)}))}；${if(a.id=="stock")"参考现金 ${LedgerStatistics.cash(after,a)?:"未知（期初/历史未完整确认）"}"else "不推算真实可用资金"}"}
         val risk=candidate?.let{LedgerRisk.evaluate(it,before.risks.first{r->r.id==it.accountId})}
-        val uncertain=MatchingEngine.uncertainTimes(facts).any{group->group.any{it.id==candidate?.id}}
+        val uncertain=existing==null && MatchingEngine.uncertainTimes(facts).any{group->group.any{it.id==candidate?.id}}
         val historyChanged=before.matches.any{m->after.matches.firstOrNull{it.id==m.id}!=m}
         LedgerChange(before,after,candidate?.id,deleteId!=null,risk,(if(uncertain)"本组秒数不完整或同秒无法区分，按明确序号FIFO；请核对先后顺序。\n"else "")+"后续 ${repriced.size} 笔费用按各自原快照重算（不使用新费率）。\n影响 $changed 个持仓周期、${after.matches.count{m->before.matches.firstOrNull{it.id==m.id}!=m}} 项匹配。\n已实现净盈亏：${exact(oldNet)} → ${exact(newNet)}\n$cash\n费用不会重复扣除；确认后事务重算。",uncertain,historyChanged)
     }
