@@ -1,6 +1,6 @@
 # V2 永久签名迁移验证记录（Issue #12）
 
-基线 main `337ac2c9bd5ccc2e70cdf2e7a3abb93be97eff8e`，PR #11 已合并；本轮分支 `codex/permanent-signing-v2`。不改变 App 源码/版本、正式 applicationId、财务计算、Room 或备份格式。
+基线 main `337ac2c9bd5ccc2e70cdf2e7a3abb93be97eff8e`，PR #11 已合并；本轮分支 `codex/permanent-signing-v2`。签名PR依赖独立的 [CI测试修复PR #13](https://github.com/mlzx-xxj/trade-review-app/pull/13)，以其分支为审核基线，签名diff不改变App目录；组合代码的App生产源码/版本、正式applicationId、财务计算、Room或备份格式仍与main一致。请先审核/合并#13，再将本签名PR基线切回main，不自动合并。
 
 ## 实施内容
 
@@ -25,7 +25,9 @@
 
 API29 attempt1真实完成124项、1失败。V200大字体/键盘/重建用例多次配置变更引发 MainActivity DESTROYED→CREATED→RESUMED；清理使用 BACK 后 Activity 退出，再 onActivity 抛 NPE。未见相应生产进程 FATAL，属于生命周期同步与清理竞争线索，不能把一次复测绿色称为彻底消除不稳定。
 
-独立 [PR #13](https://github.com/mlzx-xxj/trade-review-app/pull/13) 只修改此测试：按主线程 lifecycle registry 等待 RESUMED及具体配置，明确隐藏IME而不发送可能退出页面的BACK；保留小屏、深色、字体、键盘、recreate、横屏、草稿与保存数据库全部断言，未吞异常或减少测试。主签名PR保持App目录与main一致。最终复测结果以该PR/本签名PR实际工作流为准。
+独立 [PR #13](https://github.com/mlzx-xxj/trade-review-app/pull/13) 只修改此测试：按主线程 lifecycle registry 等待 RESUMED及具体配置，明确隐藏IME而不发送可能退出页面的BACK；保留小屏、深色、字体、键盘、recreate、横屏、草稿与保存数据库全部断言，未吞异常或减少测试。API29严格夜间断言另暴露Android10延迟应用配置，测试显式睡眠/唤醒并等待实际深色；全部断言继续保留。
+
+本签名最终SHA首轮PR API35在旧兼容host草稿等待超时、非main API29大数据测试发生16MB heap OOM，全部失败证据保留，未称全绿。独立#13补齐精确等待本轮seed草稿（此前仅等交易读取，可能还在旧catalog快照）、显式256m growthlimit/512m heap的模拟器boot参数，并记录boot heap与Runtime.maxMemory；1000/5000/10000 corpus不减，生产App不加largeHeap。风险确认用例等待操作结束/按钮可用并标记超时阶段。签名分支随后依赖#13进行完整组合复测；不能将其中某一API曾通过冒充最终矩阵成功。最终结果以关联PR实际工作流为准。
 
 ## 尚未验证
 
