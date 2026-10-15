@@ -123,3 +123,5 @@
 - 本轮code21永久签名覆盖升级、用户手机验收尚未执行；无自动合并或Stable发布。
 
 原始证据下载：[API35实录/截图/全部XML](https://github.com/mlzx-xxj/trade-review-app/actions/runs/38770115548/artifacts/11991229741)，服务器ZIP SHA-256 `3d20abf35c6feb2fffa615b67e69447cec08311e646e27c6383ce55a65101401`，已校验MANIFEST来源690a8a3、运行38770115548/attempt1及全部文件大小/哈希。附加两次原始instrumentation日志均为OK(1 test)且CODE -1，并用entry-runner中的SHA重新核对；非JUnit旧全量130项的替代品。API29和最终最新源的下载链接在PR中更新。
+
+API29阶段运行690a8a3在124/130、0失败/0跳过后停滞，更新最终提交时被并发取消，未记为通过。只读查阅Google Maven官方UIAutomator2.3.0源码，确认其QueryController安装进程级辅助功能监听器，UiDevice还修改serviceInfo flags；新增实录之前没有在结束时复原。现已在新测试的TestWatcher结束阶段清理该监听器、恢复进入测试前的ServiceInfo，避免污染后续Compose字体/深色/重建测试；清理错误不吞掉。这个状态泄漏有源码依据，但不能仅凭它断言停滞根因已经解决，仍以最终两套完整测试结果为准。

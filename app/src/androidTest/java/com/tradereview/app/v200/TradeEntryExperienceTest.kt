@@ -34,11 +34,24 @@ import java.time.ZoneOffset
 class TradeEntryExperienceTest {
     @get:Rule(order=0) val ui=createAndroidComposeRule<MainActivity>()
     @get:Rule(order=1) val failures=object:org.junit.rules.TestWatcher(){
+        private var previousService:AccessibilityServiceInfo?=null
+        override fun starting(description:org.junit.runner.Description){
+            if(shell("getprop ro.kernel.qemu").trim()=="1")previousService=instrumentation.uiAutomation.serviceInfo
+        }
         override fun failed(error:Throwable,description:org.junit.runner.Description){
             if(runCatching{shell("getprop ro.kernel.qemu").trim()}.getOrNull()!="1")return
             runCatching{File(output(),"entry-failure.txt").writeText(error.stackTraceToString())}
             runCatching{UiDevice.getInstance(instrumentation).dumpWindowHierarchy(File(output(),"entry-failure.xml"))}
             runCatching{screenshot("entry-failure")}
+        }
+        override fun finished(description:org.junit.runner.Description){
+            // UiAutomator 2.3 installs a process-wide event listener and enables
+            // extra accessibility flags. Do not leak them into subsequent Compose
+            // tests (notably API29 font/night-mode and Activity recreation).
+            previousService?.let{service->
+                instrumentation.uiAutomation.setOnAccessibilityEventListener(null)
+                instrumentation.uiAutomation.serviceInfo=service
+            }
         }
     }
     private val instrumentation=InstrumentationRegistry.getInstrumentation()
