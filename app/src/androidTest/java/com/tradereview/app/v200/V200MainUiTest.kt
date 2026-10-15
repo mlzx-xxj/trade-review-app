@@ -128,7 +128,13 @@ class V200MainUiTest {
             val manager=InstrumentationRegistry.getInstrumentation().targetContext
                 .getSystemService(android.content.Context.UI_MODE_SERVICE) as android.app.UiModeManager
             val expectedMode=if(mode=="yes")android.app.UiModeManager.MODE_NIGHT_YES else android.app.UiModeManager.MODE_NIGHT_NO
-            manager.setNightMode(expectedMode)
+            if(Build.VERSION.SDK_INT==29) {
+                // This image locks global night mode against the shell UID. Act as
+                // the emulator's system-side settings operator, never as App code.
+                assertEquals("Night-mode setup is only for a root-capable CI emulator","0",shell("su 0 id -u").trim())
+                val result=shell("su 0 cmd uimode night $mode")
+                assertTrue("System night-mode command rejected: $result",result.contains("Night mode: $mode"))
+            } else manager.setNightMode(expectedMode)
             val setup=android.provider.Settings.Secure.getInt(InstrumentationRegistry.getInstrumentation().targetContext.contentResolver,"user_setup_complete",0)
             assertEquals("System must accept night mode (user_setup_complete=$setup)",expectedMode,manager.nightMode)
         } finally { automation.dropShellPermissionIdentity() }
