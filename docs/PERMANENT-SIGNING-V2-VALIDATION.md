@@ -15,9 +15,9 @@
 
 2026-10-15 实查 main protected=true；Environment deployment policy 仅 Branch main（无通配符或tag）。Variables/Secrets 管理接口返回403，不能读配置值或据此宣布配置成功。所有者在 Issue/任务说明四个 Secrets 尚未配置，本轮不添加、不索取、不生成任何私钥。
 
-本地实际执行：95 项 Python 安全/签名/启动/产物回归通过，actionlint 和工作流结构检查通过，私钥路径/内容扫描未发现跟踪的私钥；扫描不是完整 GitHub secret scanning。新增用例均使用合成字符串/模拟 apksigner/adb，不是真实新私钥签名或 Android 异证书安装验收。
+本地实际执行：96 项 Python 安全/签名/启动/产物回归通过，actionlint 和工作流结构检查通过，私钥路径/内容扫描未发现跟踪的私钥；扫描不是完整 GitHub secret scanning。新增用例均使用合成字符串/模拟 apksigner/adb，不是真实新私钥签名或 Android 异证书安装验收。
 
-完整本轮 GitHub Actions 结果将记录在关联 PR 的验证表，不能以本地脚本检查替代 Android 编译/API29/API35。PR/非main分支不能签名或发布；真实新 main 签名必须等所有者配置 Environment、审核合并后再验证。此文不把历史运行当本轮最终提交结果。
+完整本轮 GitHub Actions 结果将记录在关联 PR 的验证表，不能以本地脚本检查替代 Android 编译/API29/API35。PR/非main分支不能签名或发布；真实新 main 签名必须等所有者配置 Environment、审核合并后再验证。Base gh手动触发后续返回HTTP401，连接器仍可维护PR及核对自动CI；不能把旧SHA的手动运行冒充最终SHA手动验证。此文不把历史运行当本轮最终提交结果。
 
 ## 失败运行 38696646794 调查
 
@@ -27,7 +27,7 @@ API29 attempt1真实完成124项、1失败。V200大字体/键盘/重建用例�
 
 独立 [PR #13](https://github.com/mlzx-xxj/trade-review-app/pull/13) 只修改此测试：按主线程 lifecycle registry 等待 RESUMED及具体配置，明确隐藏IME而不发送可能退出页面的BACK；保留小屏、深色、字体、键盘、recreate、横屏、草稿与保存数据库全部断言，未吞异常或减少测试。API29严格夜间断言另暴露Android10延迟应用配置，测试显式睡眠/唤醒并等待实际深色；全部断言继续保留。
 
-本签名最终SHA首轮PR API35在旧兼容host草稿等待超时、非main API29大数据测试发生16MB heap OOM，全部失败证据保留，未称全绿。独立#13补齐精确等待本轮seed草稿（此前仅等交易读取，可能还在旧catalog快照）、先前尝试的-prop dalvik参数被模拟器明确拒绝，API35实测仍192MiB，因此已移除。改在ro.kernel.qemu=1且支持root ADB的专用userdebug模拟器中配置实际ART growthlimit256m/heapsize512m并重启Zygote，核对boot属性及Runtime.maxMemory=256MiB；保留配置前后启动ANR/FATAL门禁。App仍正常UID，不设置生产largeHeap；1000/5000/10000 corpus不减，生产App不加largeHeap。风险确认用例等待操作结束/按钮可用并标记超时阶段。签名分支随后依赖#13进行完整组合复测；不能将其中某一API曾通过冒充最终矩阵成功。最终结果以关联PR实际工作流为准。
+本签名最终SHA首轮PR API35在旧兼容host草稿等待超时、非main API29大数据测试发生16MB heap OOM，全部失败证据保留，未称全绿。独立#13补齐精确等待本轮seed草稿（此前仅等交易读取，可能还在旧catalog快照）、先前尝试的-prop dalvik参数被模拟器明确拒绝，API35实测仍192MiB，因此已移除。改在ro.kernel.qemu=1且支持root ADB的专用userdebug模拟器中配置实际ART growthlimit256m/heapsize512m并重启Zygote，核对boot属性及Runtime.maxMemory=256MiB；保留原冷启动与新框架从启动前时间点开始的全部ANR/FATAL门禁；主动关闭旧框架日志单独完整留存，不清除logcat，新启动崩溃仍阻止测试（新增回归）。App仍正常UID，不设置生产largeHeap；1000/5000/10000 corpus不减，生产App不加largeHeap。风险确认用例等待操作结束/按钮可用并标记超时阶段。签名分支随后依赖#13进行完整组合复测；不能将其中某一API曾通过冒充最终矩阵成功。最终结果以关联PR实际工作流为准。
 
 ## 尚未验证
 
