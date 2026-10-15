@@ -35,7 +35,9 @@ def collect_output(api):
     for phase in ("journey","reopen"):
         for name in names:
             relative=f"{phase}/entry-experience/{name}"
-            result=subprocess.run(["adb","exec-out","run-as",APP,"cat",REMOTE+"/"+relative],capture_output=True,timeout=30,check=False)
+            # Shell v2 with no PTY keeps PNG bytes unchanged AND carries the remote
+            # exit status; raw exec-out cannot reliably distinguish a missing file.
+            result=subprocess.run(["adb","shell","-T","run-as",APP,"cat",REMOTE+"/"+relative],capture_output=True,timeout=30,check=False)
             if result.returncode:
                 if b"No such file or directory" in result.stderr or b"No such file or directory" in result.stdout:continue
                 raise RuntimeError("Cannot read private UI test evidence")

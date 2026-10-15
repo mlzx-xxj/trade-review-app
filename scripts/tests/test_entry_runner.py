@@ -30,9 +30,9 @@ class EntryRunnerTest(unittest.TestCase):
     def test_collector_reads_fixed_private_files_without_storage_permissions_or_archive_extraction(self):
         relative="journey/entry-experience/70-entry-stock-filled.png"
         def read(args,**kwargs):
-            self.assertEqual(["adb","exec-out","run-as",runner.APP,"cat"],args[:5])
-            self.assertTrue(args[5].startswith("files/entry-experience/"));self.assertNotIn("..",args[5])
-            return subprocess.CompletedProcess(args,0,b"synthetic-unit-bytes",b"") if args[5]==runner.REMOTE+"/"+relative else subprocess.CompletedProcess(args,1,b"",b"No such file or directory")
+            self.assertEqual(["adb","shell","-T","run-as",runner.APP,"cat"],args[:6])
+            self.assertTrue(args[6].startswith("files/entry-experience/"));self.assertNotIn("..",args[6])
+            return subprocess.CompletedProcess(args,0,b"synthetic-unit-bytes",b"") if args[6]==runner.REMOTE+"/"+relative else subprocess.CompletedProcess(args,1,b"",b"No such file or directory")
         with tempfile.TemporaryDirectory() as tmp,patch.object(runner,"ROOT",Path(tmp)),patch.object(runner.subprocess,"run",side_effect=read):
             runner.collect_output(29)
             self.assertEqual(b"synthetic-unit-bytes",(Path(tmp)/"private-output"/relative).read_bytes())
