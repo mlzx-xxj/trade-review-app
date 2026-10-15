@@ -1,0 +1,4 @@
+# Requires owner-enabled branch protection with code-owner review to be enforced.
+/.github/ @mlzx-xxj
+/scripts/ @mlzx-xxj
+/docs/V03-CERTIFICATE-SHA256.txt @mlzx-xxj

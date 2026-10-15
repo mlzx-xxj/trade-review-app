@@ -62,6 +62,7 @@ def main():
     fixed=folder/"TradeReview-v2.0-fixed-candidate.apk"
     if fixed.exists():
         new=identity.inspect(fixed,a.aapt,a.apksigner);identity.require_identity(new,"release")
+        report["fixedActualApkSha"]=new["apkSha256"]
         report["sameOriginalSignerUpgrade"]="not-executed-no-old-fixed-apk-supplied"
         # Prior Main regression data are all synthetic, and already reported. Discard ONLY here on qemu.
         adb("uninstall","com.tradereview.app",check=False)

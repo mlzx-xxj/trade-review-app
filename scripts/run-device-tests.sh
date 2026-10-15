@@ -20,7 +20,7 @@ if [[ "${V100_CHECK_BOOT:-false}" == true ]]; then
   fi
 fi
 device_test_status=0
-./gradlew --no-daemon --no-build-cache --stacktrace :app:connectedDebugAndroidTest || device_test_status=$?
+./gradlew --no-daemon --build-cache --init-script scripts/ci-test-execution.gradle --stacktrace :app:connectedDebugAndroidTest || device_test_status=$?
 if [[ "${V08_STABILITY_PROBES:-false}" == true ]]; then
   # Independently collect process evidence even after a native failure. Never
   # replace its failing exit status with a successful probe or publish the run.

@@ -1,0 +1,9 @@
+// Reuse compilation caches, but execute JVM test bodies on every CI run.
+gradle.projectsEvaluated {
+    allprojects {
+        tasks.withType(org.gradle.api.tasks.testing.Test).configureEach {
+            outputs.upToDateWhen { false }
+            outputs.cacheIf { false }
+        }
+    }
+}
