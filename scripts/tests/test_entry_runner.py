@@ -3,6 +3,7 @@ from pathlib import Path
 import unittest
 from unittest.mock import patch
 import tempfile
+import subprocess
 
 spec=importlib.util.spec_from_file_location("entry_runner",Path(__file__).resolve().parents[1]/"run-entry-experience.py")
 runner=importlib.util.module_from_spec(spec);spec.loader.exec_module(runner)
@@ -18,11 +19,31 @@ class EntryRunnerTest(unittest.TestCase):
         with patch.object(runner,"adb",return_value="0") as adb:
             with self.assertRaisesRegex(AssertionError,"phone"):runner.main()
             adb.assert_called_once_with("shell","getprop","ro.kernel.qemu")
-    def test_failed_journey_keeps_raw_log_and_pulls_diagnostics_without_pass_report(self):
+    def test_failed_journey_keeps_raw_log_and_collects_diagnostics_without_pass_report(self):
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp)
-            with patch.object(runner,"ROOT",root),patch.object(Path,"is_file",return_value=True),patch.object(runner,"adb",side_effect=["1","29","Success","Success","FAILURES!!!\nINSTRUMENTATION_CODE: -1",""]) as adb:
+            with patch.object(runner,"ROOT",root),patch.object(Path,"is_file",return_value=True),patch.object(runner,"collect_output") as collect,patch.object(runner,"adb",side_effect=["1","29","Success","Success","/data/user/0/"+runner.APP,"FAILURES!!!\nINSTRUMENTATION_CODE: -1"]):
                 with self.assertRaisesRegex(AssertionError,"Actual UI journey failed"):runner.main()
             self.assertIn("FAILURES!!!",(root/"journey-instrumentation.txt").read_text())
-            self.assertEqual(("pull",runner.REMOTE,str(root)),adb.call_args.args)
+            collect.assert_called_once_with(29)
             self.assertFalse((root/"entry-runner-api29.json").exists())
+    def test_collector_reads_fixed_private_files_without_storage_permissions_or_archive_extraction(self):
+        relative="journey/entry-experience/70-entry-stock-filled.png"
+        def read(args,**kwargs):
+            self.assertEqual(["adb","exec-out","run-as",runner.APP,"cat"],args[:5])
+            self.assertTrue(args[5].startswith("files/entry-experience/"));self.assertNotIn("..",args[5])
+            return subprocess.CompletedProcess(args,0,b"synthetic-unit-bytes",b"") if args[5]==runner.REMOTE+"/"+relative else subprocess.CompletedProcess(args,1,b"",b"No such file or directory")
+        with tempfile.TemporaryDirectory() as tmp,patch.object(runner,"ROOT",Path(tmp)),patch.object(runner.subprocess,"run",side_effect=read):
+            runner.collect_output(29)
+            self.assertEqual(b"synthetic-unit-bytes",(Path(tmp)/"private-output"/relative).read_bytes())
+    def test_collector_rejects_permission_errors_and_oversize_files(self):
+        with tempfile.TemporaryDirectory() as tmp,patch.object(runner,"ROOT",Path(tmp)):
+            with patch.object(runner.subprocess,"run",return_value=subprocess.CompletedProcess([],1,b"",b"Permission denied")):
+                with self.assertRaisesRegex(RuntimeError,"private UI test evidence"):runner.collect_output(35)
+            with patch.object(runner.subprocess,"run",return_value=subprocess.CompletedProcess([],0,b"x"*(8*1024*1024+1),b"")):
+                with self.assertRaisesRegex(AssertionError,"exceeds bound"):runner.collect_output(35)
+            self.assertFalse(list(Path(tmp).rglob("*.png")))
+    def test_unexpected_private_directory_cannot_become_an_instrumentation_argument(self):
+        with tempfile.TemporaryDirectory() as tmp,patch.object(runner,"ROOT",Path(tmp)),patch.object(Path,"is_file",return_value=True),patch.object(runner,"adb",side_effect=["1","29","Success","Success","/tmp/untrusted-dir"]) as adb:
+            with self.assertRaisesRegex(AssertionError,"private fixture directory"):runner.main()
+            self.assertFalse(any("instrument" in c.args for c in adb.call_args_list))

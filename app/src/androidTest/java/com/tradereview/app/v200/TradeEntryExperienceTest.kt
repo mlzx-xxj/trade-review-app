@@ -72,7 +72,7 @@ class TradeEntryExperienceTest {
     private fun clock(day:LocalDate){ui.runOnIdle{model.entryClock=Clock.fixed(day.atTime(10,0).atZone(AutomaticEntry.beijing).toInstant(),ZoneOffset.UTC)}}
     private fun page(index:Int){ui.onNodeWithTag("v2-main-page-$index").performClick()}
     private fun screenshot(name:String){ui.waitForIdle();android.os.SystemClock.sleep(150);val bitmap=requireNotNull(instrumentation.uiAutomation.takeScreenshot());File(output(),"$name.png").outputStream().use{assertTrue(bitmap.compress(android.graphics.Bitmap.CompressFormat.PNG,100,it))};bitmap.recycle()}
-    private fun output()=File(requireNotNull(InstrumentationRegistry.getArguments().getString("additionalTestOutputDir")),"entry-experience").apply{mkdirs()}
+    private fun output()=File(requireNotNull(InstrumentationRegistry.getArguments().getString("additionalTestOutputDir")),"entry-experience").apply{check(isDirectory || mkdirs()){ "无法创建真实UI证据目录" }}
     private fun row(e:LedgerExecution){
         ui.onNodeWithTag("v2-trades").performScrollToNode(hasTestTag("execution-${e.id}"))
         ui.onNodeWithTag("execution-${e.id}").assertIsDisplayed()
