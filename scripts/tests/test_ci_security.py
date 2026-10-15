@@ -8,6 +8,7 @@ import os
 from pathlib import Path
 import re
 import stat
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -119,6 +120,15 @@ class ContextAndEnvironmentTest(unittest.TestCase):
         with patch.dict(os.environ,{"GITHUB_EVENT_NAME":"pull_request"},clear=True),patch.object(signer.base64,"b64decode") as decode,patch.object(signer.subprocess,"run") as run:
             with self.assertRaises(ValueError):signer.main()
             decode.assert_not_called();run.assert_not_called()
+    def test_legacy_repository_secret_uploader_stops_before_any_private_path(self):
+        with tempfile.TemporaryDirectory() as temp:
+            flag=Path(temp)/"gh-was-called"
+            executable=Path(temp)/"gh"
+            executable.write_text("#!/bin/sh\nprintf unsafe > '"+str(flag)+"'\n");executable.chmod(0o755)
+            result=subprocess.run(["/bin/bash",str(SCRIPTS/"configure-v03-signing.sh"),"/nonexistent-private-path"],env={"PATH":temp},capture_output=True,text=True)
+            self.assertNotEqual(0,result.returncode)
+            self.assertIn("uploader disabled",result.stderr)
+            self.assertFalse(flag.exists())
     def test_wrong_public_pin_rejected_before_opening_private_material(self):
         with tempfile.TemporaryDirectory() as temp:
             root=Path(temp);(root/"verified-signing-inputs").mkdir();(root/"verified-signing-inputs/app-release-unsigned.apk").write_bytes(b"synthetic unsigned fixture")

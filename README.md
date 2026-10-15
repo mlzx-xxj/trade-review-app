@@ -6,7 +6,7 @@
 
 [PR #10](https://github.com/mlzx-xxj/trade-review-app/pull/10)，不自动合并。原长期签名未验证成功时，仅独立com.tradereview.app.rc.v200、2.0.0-rc.1非调试RC，不保证长期覆盖原应用。正式版需原V0.3私钥及所有者真机验收，不生成替代身份。
 
-[实施计划](docs/V200-PLAN.md) · [实际验证/失败记录](docs/V200-VALIDATION.md) · [模型/计算/迁移/备份](docs/V200-DATA-AND-CALCULATIONS.md) · [手机签名配置](docs/V200-PHONE-SIGNING.md) · [手机验收](docs/V200-PHONE-ACCEPTANCE.md)
+[公开仓库 CI 安全与手机操作](docs/PUBLIC-CI-SECURITY.md) · [实施计划](docs/V200-PLAN.md) · [实际验证/失败记录](docs/V200-VALIDATION.md) · [模型/计算/迁移/备份](docs/V200-DATA-AND-CALCULATIONS.md) · [手机签名配置](docs/V200-PHONE-SIGNING.md) · [手机验收](docs/V200-PHONE-ACCEPTANCE.md)
 
 以下内容为历史版本，不代表V2页面或本轮CI结果。
 
@@ -81,7 +81,7 @@ V0.3 已有长期证书 pin；本轮没有生成、读取或替换私钥。Secre
 ./gradlew :app:connectedDebugAndroidTest
 ```
 
-Base 缺少 SDK 时用 GitHub Actions，不需要完整 Android Studio。Base 可执行 `python3 -m unittest discover -s scripts/tests -p 'test_*.py'`（当前 40 项发布/交付/模拟器故障决策回归，不代表 Android 编译或真正 APK 验签）。RC 自动使用临时测试身份；正式 Release 没有原签名配置时只编译 unsigned 输出，绝不作为可安装正式包发布。完整 CI 显式禁用 Gradle 构建缓存，以重新执行编译、测试和 Lint。模拟器启动后保留20秒稳定时间，应用测试前核对平台dumpsys记录的ANR及崩溃日志，两份证据都保留；故障立即失败，不忽略对话框。其他应用自行打印“ANR in”文本不能替代系统实际记录。
+Base 缺少 SDK 时用 GitHub Actions，不需要完整 Android Studio。Base 可执行 `python3 -m unittest discover -s scripts/tests -p 'test_*.py'`（含当前工作流隔离、发布/交付和模拟器故障回归；实际数量见对应 CI，不代表 Android 编译或真实固定密钥验签）。RC 自动使用临时测试身份；正式 Release 没有原签名配置时只编译 unsigned 输出，绝不作为可安装正式包发布。完整 CI 复用编译缓存，但 JVM Test 禁用 up-to-date 和测试输出缓存以实际执行测试体；PR 只读，原固定签名和发布仅允许通过完整验证的 main。签名材料必须由所有者放入仅允许 main 的受保护 Environment，不能配置为 Repository Secrets，详见当前安全指南。模拟器启动后保留20秒稳定时间，应用测试前核对平台dumpsys记录的ANR及崩溃日志，两份证据都保留；故障立即失败，不忽略对话框。其他应用自行打印“ANR in”文本不能替代系统实际记录。
 
 JSON 为明文，校验摘要不提供加密或身份认证。模拟器结果不等于真实手机测试；请以本轮 Actions 和验证文档中的实际结果为准。
 

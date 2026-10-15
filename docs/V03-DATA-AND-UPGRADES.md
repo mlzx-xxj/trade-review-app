@@ -1,5 +1,7 @@
 # V0.3 数据、备份与后续升级
 
+> Public 仓库安全更新：本文的旧 Repository Secrets/旧分支签名步骤仅作历史记录，请勿执行。当前必须使用仅允许 main 的受保护 Environment，并移除 Repository 签名副本；见 [当前 CI 安全及手机操作指南](PUBLIC-CI-SECURITY.md)。旧 configure-v03-signing.sh 已停用，不读取私有材料。
+
 版本 0.3.0 / versionCode 3；applicationId 保持 `com.tradereview.app`。
 
 ## 数据结构
