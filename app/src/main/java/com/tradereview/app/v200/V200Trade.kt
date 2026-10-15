@@ -86,7 +86,7 @@ import java.math.BigDecimal
                     TextButton({picker=true},Modifier.heightIn(min=48.dp).testTag("entry-instrument-picker")){Text("常用品种")}
                 }
                 if(account=="stock")ChoiceRow(side,listOf("buy" to "买入","sell" to "卖出"),{side=it},"execution-side-")
-                else ChoiceRow("$side-${if(effect=="open")"open"else"close"}",listOf("buy-open" to "买开","sell-open" to "卖开","sell-close" to "卖平","buy-close" to "买平"),{side=it.substringBefore('-');effect=it.substringAfter('-')},"execution-action-")
+                else ChoiceRow("$side-${if(effect=="open")"open"else"close"}",listOf("buy-open" to "买开","sell-open" to "卖开","sell-close" to "卖平","buy-close" to "买平"),{val current="$side-${if(effect=="open")"open"else"close"}";if(it!=current){side=it.substringBefore('-');effect=it.substringAfter('-')}},"execution-action-")
                 Row(horizontalArrangement=Arrangement.spacedBy(8.dp)){
                     EntryField("成交价格",price,{price=it},"execution-price",true,Modifier.weight(1f))
                     EntryField(if(account=="stock")"数量（股）"else"数量（手）",quantity,{quantity=it},"execution-quantity",true,Modifier.weight(1f),keyboardType=androidx.compose.ui.text.input.KeyboardType.Number)

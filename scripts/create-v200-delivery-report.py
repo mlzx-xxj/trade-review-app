@@ -21,7 +21,7 @@ def junit(root, fragment, minimum, required):
 def main():
     p=argparse.ArgumentParser();p.add_argument('--reports',required=True);p.add_argument('--screenshots',required=True);p.add_argument('--dist',required=True);p.add_argument('--run-url',required=True);a=p.parse_args()
     root=Path(a.reports);dist=Path(a.dist)
-    counts={'jvm':junit(root/'build','/test-results/',227,{'ExperiencePolicyTest':3,'ExportReadbackTest':4,'MatchingEngineTest':37,'AutomaticEntryTest':18,'LedgerBackupTest':7,'ChartScaleTest':11,'LedgerCsvTest':3})}
+    counts={'jvm':junit(root/'build','/test-results/',228,{'ExperiencePolicyTest':3,'ExportReadbackTest':4,'MatchingEngineTest':37,'AutomaticEntryTest':19,'LedgerBackupTest':7,'ChartScaleTest':11,'LedgerCsvTest':3})}
     for variant in ['debug','rc','release']:
         lint=list((root/'build').rglob('lint-results-'+variant+'.xml'));assert len(lint)==1,variant
         counts['lint-'+variant]=dict(Counter(i.get('severity') for i in ET.parse(lint[0]).getroot().findall('issue')))
