@@ -9,17 +9,28 @@ SCRIPT=Path(__file__).resolve().parents[1]/'run-device-tests.sh'
 
 
 class BootHealthTest(unittest.TestCase):
-    def invoke(self, log, last_anr='ACTIVITY MANAGER LAST ANR\n  <no ANR has occurred since boot>\n'):
+    def invoke(self, log, last_anr='ACTIVITY MANAGER LAST ANR\n  <no ANR has occurred since boot>\n',post_log=None):
         scratch=tempfile.TemporaryDirectory();self.addCleanup(scratch.cleanup)
         root=Path(scratch.name);bin_dir=root/'bin';bin_dir.mkdir()
         (root/'fixture-log.txt').write_text(log)
+        (root/'fixture-post-log.txt').write_text(log if post_log is None else post_log)
         (root/'fixture-last-anr.txt').write_text(last_anr)
         (root/'gradlew').write_text('#!/bin/sh\ntouch gradle-invoked\nexit 7\n');(root/'gradlew').chmod(0o755)
         (bin_dir/'sleep').write_text('#!/bin/sh\nexit 0\n');(bin_dir/'sleep').chmod(0o755)
         (bin_dir/'adb').write_text('''#!/bin/sh
 case "$*" in
   'shell getprop ro.kernel.qemu') echo 1;;
+  'shell id -u') echo 0;;
+  'shell settings get global device_provisioned') echo 1;;
+  'shell settings get secure user_setup_complete') echo 1;;
+  'shell date '*) echo '10-15 09:00:00';;
+  'shell getprop sys.boot_completed') echo 1;;
+  'shell getprop init.svc.zygote') echo stopped;;
+  'shell getprop init.svc.surfaceflinger') echo stopped;;
+  'shell getprop dalvik.vm.heapgrowthlimit') echo 256m;;
+  'shell getprop dalvik.vm.heapsize') echo 512m;;
   'logcat -d -s ActivityManager:I ActivityTaskManager:I AndroidRuntime:E') cat fixture-log.txt;;
+  'logcat -d -T '*) cat fixture-post-log.txt;;
   'shell dumpsys activity lastanr') cat fixture-last-anr.txt;;
   'exec-out screencap -p') printf 'synthetic-png';;
 esac
@@ -50,6 +61,13 @@ exit 0
         root,result=self.invoke(text)
         self.assertTrue((root/'gradle-invoked').exists(),result.stderr);self.assertEqual(7,result.returncode)
         self.assertEqual(text,(root/'ci-stability/boot-logcat.txt').read_text())
+
+    def test_new_framework_boot_crash_is_rejected_before_any_test_command(self):
+        root,result=self.invoke('I healthy original cold boot\n',post_log='E AndroidRuntime: FATAL EXCEPTION: synthetic NEW boot failure\n')
+        self.assertEqual(1,result.returncode)
+        self.assertFalse((root/'gradle-invoked').exists())
+        self.assertTrue((root/'ci-stability/heap-controlled-shutdown-logcat.txt').is_file())
+        self.assertIn('FATAL EXCEPTION',(root/'ci-stability/post-heap-logcat.txt').read_text())
 
 
 if __name__=='__main__':unittest.main()
