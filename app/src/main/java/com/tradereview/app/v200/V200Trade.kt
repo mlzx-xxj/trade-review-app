@@ -91,10 +91,6 @@ import java.math.BigDecimal
                     EntryField("成交价格",price,{price=it},"execution-price",true,Modifier.weight(1f))
                     EntryField(if(account=="stock")"数量（股）"else"数量（手）",quantity,{quantity=it},"execution-quantity",true,Modifier.weight(1f),keyboardType=androidx.compose.ui.text.input.KeyboardType.Number)
                 }
-                Card(Modifier.fillMaxWidth()) { Column(Modifier.padding(12.dp),verticalArrangement=Arrangement.spacedBy(6.dp)){
-                    Text("预计手续费：${AutomaticEntry.money(estimate.fees)}",Modifier.testTag("entry-estimated-fee"),style=MaterialTheme.typography.titleMedium)
-                    if(account=="futures")Text("${estimate.marginLabel}：${AutomaticEntry.money(estimate.margin)}",Modifier.testTag("entry-estimated-margin"),style=MaterialTheme.typography.titleMedium)
-                }}
                 if(account=="futures" && reference?.multiplier==null && code.isNotBlank() && state.rules.none{it.code==code && it.verified})Text("该品种参数尚未核实，暂无法估算或保存",Modifier.testTag("entry-unverified"),color=MaterialTheme.colorScheme.error)
                 TextButton({details=!details},Modifier.heightIn(min=48.dp).testTag("entry-options")){Text(if(details)"收起可选信息"else"策略、止盈止损（可选）")}
                 if(details){
@@ -110,7 +106,15 @@ import java.math.BigDecimal
                 }
                 if(draft.isNotEmpty())Text("已恢复未保存内容",style=MaterialTheme.typography.labelMedium)
             }
-            Button({model.execution(candidate)},enabled=!busy,modifier=Modifier.fillMaxWidth().padding(12.dp).heightIn(min=52.dp).testTag("save-execution")){Text(if(busy)"正在保存…"else"保存成交")}
+            if(androidx.compose.ui.platform.LocalConfiguration.current.orientation==android.content.res.Configuration.ORIENTATION_LANDSCAPE){
+                Row(Modifier.fillMaxWidth().padding(horizontal=12.dp,vertical=6.dp),horizontalArrangement=Arrangement.spacedBy(8.dp),verticalAlignment=androidx.compose.ui.Alignment.CenterVertically){
+                    EntryAmounts(account,estimate,Modifier.weight(1f),compact=true)
+                    Button({model.execution(candidate)},enabled=!busy,modifier=Modifier.heightIn(min=52.dp).testTag("save-execution")){Text(if(busy)"正在保存…"else"保存成交")}
+                }
+            }else{
+                Card(Modifier.fillMaxWidth().padding(horizontal=12.dp)){EntryAmounts(account,estimate,Modifier.padding(12.dp))}
+                Button({model.execution(candidate)},enabled=!busy,modifier=Modifier.fillMaxWidth().padding(horizontal=12.dp,vertical=6.dp).heightIn(min=52.dp).testTag("save-execution")){Text(if(busy)"正在保存…"else"保存成交")}
+            }
         }}
     }
     if(picker)AlertDialog(onDismissRequest={picker=false},title={Text("常用品种")},text={Column{
@@ -125,4 +129,11 @@ import java.math.BigDecimal
         item{TextButton({plan=null;planPicker=false}){Text("不关联")}}
         items(state.plans.filter{it.accountId==account && it.code==code}.sortedByDescending{it.day}){p->TextButton({plan=p.id;if(stop.isBlank())stop=p.stopLoss.orEmpty();if(tp.isBlank())tp=p.takeProfit.orEmpty();planPicker=false},Modifier.fillMaxWidth().heightIn(min=48.dp)){Text("${LocalDate.ofEpochDay(p.day)} ${p.note.take(24)}")}}
     }},confirmButton={TextButton({planPicker=false}){Text("关闭")}})
+}
+
+@Composable private fun EntryAmounts(account:String,estimate:AutomaticEntry.Estimate,modifier:Modifier=Modifier,compact:Boolean=false){
+    Column(modifier,verticalArrangement=Arrangement.spacedBy(4.dp)){
+        Text("预计手续费：${AutomaticEntry.money(estimate.fees)}",Modifier.testTag("entry-estimated-fee"),style=if(compact)MaterialTheme.typography.bodyMedium else MaterialTheme.typography.titleMedium)
+        if(account=="futures")Text("${estimate.marginLabel}：${AutomaticEntry.money(estimate.margin)}",Modifier.testTag("entry-estimated-margin"),style=if(compact)MaterialTheme.typography.bodyMedium else MaterialTheme.typography.titleMedium)
+    }
 }

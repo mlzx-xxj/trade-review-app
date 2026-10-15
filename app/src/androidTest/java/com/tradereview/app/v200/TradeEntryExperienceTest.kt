@@ -32,7 +32,15 @@ import java.time.ZoneOffset
 /** Every business execution is entered through production MainActivity. Only reset/clock are injected. */
 @RunWith(AndroidJUnit4::class)
 class TradeEntryExperienceTest {
-    @get:Rule val ui=createAndroidComposeRule<MainActivity>()
+    @get:Rule(order=0) val ui=createAndroidComposeRule<MainActivity>()
+    @get:Rule(order=1) val failures=object:org.junit.rules.TestWatcher(){
+        override fun failed(error:Throwable,description:org.junit.runner.Description){
+            if(runCatching{shell("getprop ro.kernel.qemu").trim()}.getOrNull()!="1")return
+            runCatching{File(output(),"entry-failure.txt").writeText(error.stackTraceToString())}
+            runCatching{UiDevice.getInstance(instrumentation).dumpWindowHierarchy(File(output(),"entry-failure.xml"))}
+            runCatching{screenshot("entry-failure")}
+        }
+    }
     private val instrumentation=InstrumentationRegistry.getInstrumentation()
     private val gson=GsonBuilder().serializeNulls().setPrettyPrinting().create()
     private lateinit var app:TradeReviewApplication
@@ -68,7 +76,7 @@ class TradeEntryExperienceTest {
         if(market=="futures")visible(ui.onNodeWithTag("entry-estimated-margin"))
         val shownFee=displayed("entry-estimated-fee")
         val shownMargin=if(market=="futures"){waitFor("实时保证金"){numberOnScreen("entry-estimated-margin")?.let{BigDecimal(it).compareTo(BigDecimal(requireNotNull(margin)))==0}==true};displayed("entry-estimated-margin")}else null
-        capture?.let(::screenshot)
+        capture?.let{ui.onNodeWithTag("execution-quantity").performImeAction();ui.onNodeWithTag("entry-scroll").performSemanticsAction(androidx.compose.ui.semantics.SemanticsActions.ScrollBy){scroll->scroll(0f,-10000f)};screenshot(it)}
         tap("save-execution")
         waitFor("无多余确认的正常保存"){!model.busy.value && !model.editor.value && model.state.value.ledger?.executions?.size==before.executions.size+1}
         assertNull("普通录入不应弹顺序/参数确认",model.pending.value)
@@ -103,6 +111,7 @@ class TradeEntryExperienceTest {
     private fun statistics(expected:String){page(3);ui.onNodeWithTag("v2-statistics").performScrollToIndex(0);ui.onNodeWithTag("statistics-period-month").performClick();waitFor("统计刷新"){displayed("period-realized-net")=="￥$expected"};ui.onNodeWithTag("period-realized-net").assertTextEquals("￥$expected")}
 
     @Test fun actualFormJourneyAndReopenEvidence(){
+        assertEquals("Only isolated emulators may run this fixture","1",shell("getprop ro.kernel.qemu").trim())
         app=ui.activity.application as TradeReviewApplication
         ui.runOnIdle{model=ViewModelProvider(ui.activity)[V200ViewModel::class.java]}
         if(InstrumentationRegistry.getArguments().getString("entryPhase")=="reopen"){verifyAfterProcessRestart();return}
