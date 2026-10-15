@@ -44,6 +44,16 @@ class V200MainUiTest {
     }
     @Before fun reset(){require(Build.HARDWARE in listOf("ranchu","goldfish"));runBlocking{db.withTransaction{LedgerRepository(db).write(LedgerSnapshot(accounts=listOf(LedgerAccount("stock","stock","A股账户"),LedgerAccount("futures","futures","国内期货账户")),risks=listOf(MarketRisk("stock"),MarketRisk("futures")),strategies=listOf(LedgerStrategy("synthetic","合成策略"))),true)}};compose.runOnIdle{model=ViewModelProvider(compose.activity)[V200ViewModel::class.java];model.page(0);model.closeEditor();model.handle["v2-entry-fields"]=null};val expected=runBlocking{model.repository.read()};wait{model.state.value.ledger==expected};compose.onNodeWithTag("v2-home").assertIsDisplayed()}
     private fun wait(predicate:()->Boolean)=compose.waitUntil(30000){predicate()}
+    private fun waitForPlatformState(predicate:()->Boolean) {
+        // Compose.waitUntil advances the UI frame clock between polls. An asleep
+        // display cannot supply those frames; system state must be polled without
+        // depending on the stopped Activity or Choreographer.
+        val deadline=android.os.SystemClock.elapsedRealtime()+30000
+        while(!predicate()){
+            assertTrue("Platform state did not change within 30000 ms",android.os.SystemClock.elapsedRealtime()<deadline)
+            android.os.SystemClock.sleep(50)
+        }
+    }
     private fun page(n:Int){compose.onNodeWithTag("v2-main-page-$n").performClick()}
     private fun field(tag:String,text:String,scroll:Boolean=true){if(tag in listOf("execution-name","execution-stop","execution-tp") && compose.onAllNodesWithTag(tag).fetchSemanticsNodes().isEmpty())compose.onNodeWithTag("entry-options").performScrollTo().performClick();val node=compose.onNodeWithTag(tag);if(scroll)node.performScrollTo()else node.assertIsDisplayed();node.performTextReplacement(text)}
     private fun start(){page(1);compose.onNodeWithTag("new-execution").performClick();compose.onNodeWithTag("execution-code").assertExists()}
@@ -149,10 +159,14 @@ class V200MainUiTest {
         // Android 10 can defer a system night-mode change until screen-off.
         // Exercise that real transition, then require the Activity's new config.
         if(Build.VERSION.SDK_INT==29) {
-            shell("input keyevent KEYCODE_SLEEP")
-            wait { shell("dumpsys power").contains("mWakefulness=Asleep") }
-            shell("input keyevent KEYCODE_WAKEUP")
-            shell("wm dismiss-keyguard")
+            try {
+                shell("input keyevent KEYCODE_SLEEP")
+                waitForPlatformState { shell("dumpsys power").contains("mWakefulness=Asleep") }
+            } finally {
+                // Wake before any Compose polling, including the failure cleanup.
+                shell("input keyevent KEYCODE_WAKEUP")
+                shell("wm dismiss-keyguard")
+            }
         }
         val expected=if(mode=="yes")android.content.res.Configuration.UI_MODE_NIGHT_YES else android.content.res.Configuration.UI_MODE_NIGHT_NO
         awaitResumedConfiguration { it.resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK==expected }
