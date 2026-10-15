@@ -60,5 +60,79 @@ class V200MainUiTest {
 
     @Test fun realizedCalendarWeeklyMonthlyChartsAccountsAndFullZipRestoreUseRealFacts(){sample();capture("40-v200-home");compose.onNodeWithTag("calendar-expand").performClick();capture("46-v200-calendar");page(3);wait{compose.onAllNodesWithTag("period-realized-net").fetchSemanticsNodes().isNotEmpty()};compose.onNodeWithTag("period-realized-net").assertTextEquals("￥134.696");capture("43-v200-statistics");compose.onNodeWithTag("v2-statistics").performScrollToNode(hasTestTag("v2-daily-chart"));capture("47-v200-weekly-bars");compose.onNodeWithTag("v2-daily-chart").performTouchInput{click(androidx.compose.ui.geometry.Offset(20f,100f))};val firstDay=LedgerPeriod.week(LocalDate.now()).start;val firstValue=when(firstDay){today->todayNet;lossDay->"-3";flatDay->"0";else->null};if(firstValue==null)compose.onNodeWithText("没有平仓成交").assertIsDisplayed()else compose.onNode(hasText("￥$firstValue") and hasAnyAncestor(isDialog())).assertIsDisplayed();compose.onNodeWithText("关闭").performClick();val actions=compose.onNodeWithTag("v2-daily-chart").fetchSemanticsNode().config[androidx.compose.ui.semantics.SemanticsActions.CustomActions];compose.runOnIdle{assertTrue(actions.first{it.label.contains(LocalDate.now().toString())}.action())};compose.onNode(hasText("￥$todayNet") and hasAnyAncestor(isDialog())).assertIsDisplayed();compose.onNodeWithText("关闭").performClick();compose.onNodeWithTag("v2-statistics").performScrollToIndex(0);compose.onNodeWithTag("statistics-period-month").performClick();wait{compose.onAllNodesWithTag("statistics-results-month-all").fetchSemanticsNodes().isNotEmpty()};compose.onNodeWithTag("v2-statistics").performScrollToNode(hasTestTag("v2-daily-chart"));capture("57-v200-month-flat-and-empty");compose.onNodeWithTag("v2-daily-chart-scroll").performSemanticsAction(androidx.compose.ui.semantics.SemanticsActions.ScrollBy){scroll->scroll((LocalDate.now().dayOfMonth-4).coerceAtLeast(0)*52f*app.resources.displayMetrics.density,0f)};capture("48-v200-monthly-bars");compose.onNodeWithTag("v2-daily-chart-scroll").performTouchInput{swipeLeft()};compose.onNodeWithTag("v2-statistics").performScrollToNode(hasText("本月品种／合约净盈亏",substring=true));compose.onNodeWithTag("v2-statistics").performScrollToNode(hasTestTag("distribution-000001"));capture("49-v200-contract-distribution");page(4);capture("44-v200-accounts");compose.onNodeWithTag("v2-accounts").performScrollToNode(hasTestTag("new-cashflow"));compose.onNodeWithTag("new-cashflow").assertIsDisplayed().performClick();compose.onNodeWithTag("cashflow-amount").performScrollTo().performTextReplacement("200");compose.onNodeWithTag("save-cashflow").performClick();wait{!model.busy.value && model.state.value.ledger!!.cashFlows.size==2};assertEquals("134.696",exact(sum(model.state.value.closed.map{it.net})));runBlocking{val legacyKey="00000000000000000000000000002000";if(db.trades().findTradeByKey(legacyKey)==null){db.trades().insert(Trade(recordKey=legacyKey,date=first,market="forex",symbol="合成旧美元",currency="USD",netPnl="-123.45",note="旧档案，不生成新持仓"));AttachmentRepository(db,app.evidenceStore).importImage(app.contentResolver,TestImageProvider.uri(),legacyKey,"before","旧档案合成截图")}};assertEquals("134.696",exact(sum(model.state.value.closed.map{it.net})));page(1);compose.onNodeWithTag("legacy-archive").performClick();wait{compose.onAllNodesWithText("USD",substring=true).fetchSemanticsNodes().isNotEmpty()};capture("54-v200-legacy-archive");back();val service=FullZipRepository(db,app.evidenceStore);val uri=BackupDocumentProvider.uri();runBlocking{app.contentResolver.openOutputStream(uri,"wt")!!.use{service.export(it)}};val before=runBlocking{model.repository.read()};compose.onNodeWithTag("open-backup").performClick();lateinit var backup:BackupViewModel;compose.runOnIdle{backup=ViewModelProvider(compose.activity)[BackupViewModel::class.java];backup.readBackup(uri)};wait{backup.preview.value!=null && !backup.busy.value};compose.onNodeWithTag("v2-backup").performScrollToNode(hasTestTag("v2-restore-continue"));compose.onNodeWithTag("v2-restore-continue").assertIsDisplayed().performClick();wait{compose.onAllNodesWithTag("v2-confirm-restore").fetchSemanticsNodes().size==1};compose.onNodeWithTag("v2-confirm-restore").assertIsDisplayed();capture("55-v200-restore-confirmation");compose.onNodeWithTag("v2-confirm-restore").performClick();wait{!backup.busy.value && backup.preview.value==null};assertEquals(before,runBlocking{model.repository.read()})}
 
-    @Test fun realMainDraftLargeFontDarkKeyboardAndRecreationKeepSaveVisible(){val display=shell("wm size");val scale=shell("settings get system font_scale").trim();val keyboard=shell("settings get secure show_ime_with_hard_keyboard").trim();val automation=InstrumentationRegistry.getInstrumentation().uiAutomation;val flags=automation.serviceInfo.flags;try{automation.serviceInfo=automation.serviceInfo.apply{this.flags=this.flags or AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS};shell("wm size 640x1136");shell("cmd uimode night yes");shell("settings put system font_scale 1.3");wait{compose.activity.resources.configuration.fontScale>=1.29f};start();fill("12.34");shell("settings put secure show_ime_with_hard_keyboard 1");compose.onNodeWithTag("execution-price").performScrollTo().performTouchInput{click()};wait{automation.windows.any{it.type==AccessibilityWindowInfo.TYPE_INPUT_METHOD}};compose.onNodeWithTag("save-execution").assertIsDisplayed();capture("52-v200-large-font-keyboard");compose.activityRule.scenario.recreate();wait{compose.onAllNodesWithTag("execution-price").fetchSemanticsNodes().isNotEmpty()};compose.onNodeWithTag("execution-price").performScrollTo().assertTextContains("12.34");compose.activityRule.scenario.onActivity{it.requestedOrientation=ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE};wait{compose.activity.resources.configuration.orientation==android.content.res.Configuration.ORIENTATION_LANDSCAPE};compose.onNodeWithTag("save-execution").assertIsDisplayed();compose.onNodeWithTag("save-execution").performClick();wait{!model.busy.value && runBlocking{LedgerRepository(db).read().executions.size}==1};assertEquals("12.34",runBlocking{LedgerRepository(db).read().executions.single().price})}finally{shell("input keyevent KEYCODE_BACK");automation.serviceInfo=automation.serviceInfo.apply{this.flags=flags};shell("settings put system font_scale ${scale.toFloatOrNull()?:1f}");shell("cmd uimode night no");val previousSize=Regex("Override size: ([0-9]+x[0-9]+)").find(display)?.groupValues?.get(1);shell("wm size ${previousSize?:"reset"}");if(keyboard=="null")shell("settings delete secure show_ime_with_hard_keyboard")else shell("settings put secure show_ime_with_hard_keyboard $keyboard");compose.activityRule.scenario.onActivity{it.requestedOrientation=ActivityInfo.SCREEN_ORIENTATION_PORTRAIT}}}
+    // Configuration changes temporarily leave ActivityScenario without an Activity.
+    // Inspect the lifecycle registry atomically on main, never call compose.activity
+    // from a polling predicate in that gap.
+    private fun awaitResumedConfiguration(predicate:(MainActivity)->Boolean = { true }) {
+        wait {
+            var ready=false
+            InstrumentationRegistry.getInstrumentation().runOnMainSync {
+                val activities=androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry.getInstance()
+                    .getActivitiesInStage(androidx.test.runner.lifecycle.Stage.RESUMED)
+                ready=activities.filterIsInstance<MainActivity>().any(predicate)
+            }
+            ready
+        }
+        compose.waitForIdle()
+    }
+    private fun resumedActivityAction(action:(MainActivity)->Unit) {
+        awaitResumedConfiguration()
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            val activity=androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry.getInstance()
+                .getActivitiesInStage(androidx.test.runner.lifecycle.Stage.RESUMED)
+                .filterIsInstance<MainActivity>().single()
+            action(activity)
+        }
+    }
+
+    @Test fun realMainDraftLargeFontDarkKeyboardAndRecreationKeepSaveVisible() {
+        val display=shell("wm size")
+        val scale=shell("settings get system font_scale").trim()
+        val keyboard=shell("settings get secure show_ime_with_hard_keyboard").trim()
+        val automation=InstrumentationRegistry.getInstrumentation().uiAutomation
+        val flags=automation.serviceInfo.flags
+        val database=db // Application-owned; independent of Activity recreation.
+        try {
+            automation.serviceInfo=automation.serviceInfo.apply { this.flags=this.flags or AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS }
+            shell("wm size 640x1136")
+            awaitResumedConfiguration { it.resources.displayMetrics.widthPixels==640 }
+            shell("cmd uimode night yes")
+            awaitResumedConfiguration { it.resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK==android.content.res.Configuration.UI_MODE_NIGHT_YES }
+            shell("settings put system font_scale 1.3")
+            awaitResumedConfiguration { it.resources.configuration.fontScale>=1.29f }
+            start();fill("12.34")
+            shell("settings put secure show_ime_with_hard_keyboard 1")
+            compose.onNodeWithTag("execution-price").performScrollTo().performTouchInput { click() }
+            wait { automation.windows.any { it.type==AccessibilityWindowInfo.TYPE_INPUT_METHOD } }
+            compose.onNodeWithTag("save-execution").assertIsDisplayed()
+            capture("52-v200-large-font-keyboard")
+            compose.activityRule.scenario.recreate()
+            awaitResumedConfiguration()
+            wait { compose.onAllNodesWithTag("execution-price").fetchSemanticsNodes().isNotEmpty() }
+            compose.onNodeWithTag("execution-price").performScrollTo().assertTextContains("12.34")
+            resumedActivityAction { it.requestedOrientation=ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE }
+            awaitResumedConfiguration { it.resources.configuration.orientation==android.content.res.Configuration.ORIENTATION_LANDSCAPE }
+            compose.onNodeWithTag("save-execution").assertIsDisplayed().performClick()
+            wait { !model.busy.value && runBlocking { LedgerRepository(database).read().executions.size }==1 }
+            assertEquals("12.34",runBlocking { LedgerRepository(database).read().executions.single().price })
+        } finally {
+            // BACK could finish MainActivity if the IME is already hidden. Hide the IME
+            // explicitly; keep lifecycle assertions active instead of swallowing errors.
+            resumedActivityAction {
+                (it.getSystemService(android.content.Context.INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager)
+                    .hideSoftInputFromWindow(it.window.decorView.windowToken,0)
+                it.requestedOrientation=ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+            }
+            awaitResumedConfiguration { it.resources.configuration.orientation==android.content.res.Configuration.ORIENTATION_PORTRAIT }
+            shell("settings put system font_scale ${scale.toFloatOrNull()?:1f}")
+            awaitResumedConfiguration { kotlin.math.abs(it.resources.configuration.fontScale-(scale.toFloatOrNull()?:1f))<0.01f }
+            shell("cmd uimode night no")
+            awaitResumedConfiguration { it.resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK==android.content.res.Configuration.UI_MODE_NIGHT_NO }
+            val previousSize=Regex("Override size: ([0-9]+x[0-9]+)").find(display)?.groupValues?.get(1)
+            shell("wm size ${previousSize?:"reset"}")
+            awaitResumedConfiguration()
+            if(keyboard=="null")shell("settings delete secure show_ime_with_hard_keyboard") else shell("settings put secure show_ime_with_hard_keyboard $keyboard")
+            automation.serviceInfo=automation.serviceInfo.apply { this.flags=flags }
+        }
+    }
 }
