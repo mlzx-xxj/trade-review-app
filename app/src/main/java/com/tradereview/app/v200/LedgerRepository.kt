@@ -63,7 +63,7 @@ class LedgerRepository(private val db:TradeDatabase) {
         val oldNet=completeTotal(before.matches.map{it.net});val newNet=completeTotal(after.matches.map{it.net})
         val changed=before.cycles.count{old->after.cycles.firstOrNull{it.id==old.id}!=old}+after.cycles.count{new->before.cycles.none{it.id==new.id}}
         val byExecution=after.executions.associateBy{it.id}
-        val cash=after.accounts.joinToString("\n"){a->"${a.name}：已实现 ${moneyText(completeTotal(after.matches.filter{m->byExecution.getValue(m.closeExecutionId).accountId==a.id}.map{it.net}))}；${if(a.id=="stock")"参考现金 ${LedgerStatistics.cash(after,a)?:"未知（期初/历史未完整确认）"}"else "不推算真实可用资金"}"}
+        val cash=after.accounts.joinToString("\n"){a->"${a.name}：已实现 ${moneyText(completeTotal(after.matches.filter{m->byExecution.getValue(m.closeExecutionId).accountId==a.id}.map{it.net}))}；${if(a.id=="stock")"参考现金 ${LedgerStatistics.cash(after,a)?.let(::amount)?:"未知（期初/历史未完整确认）"}"else "不推算真实可用资金"}"}
         val risk=candidate?.let{LedgerRisk.evaluate(it,before.risks.first{r->r.id==it.accountId})}
         val uncertain=existing==null && MatchingEngine.uncertainTimes(facts).any{group->group.any{it.id==candidate?.id}}
         val historyChanged=before.matches.any{m->after.matches.firstOrNull{it.id==m.id}!=m}

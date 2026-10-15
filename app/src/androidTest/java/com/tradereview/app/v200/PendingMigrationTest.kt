@@ -62,4 +62,33 @@ class PendingMigrationTest {
             query("PRAGMA foreign_key_check").use{assertEquals(0,it.count)};close()
         }
     }
+    @Test fun migrationKeepsForeignKeysWithBothEnforcementStatesAndLegacyRenameBehavior(){
+        for(enabled in listOf(false,true)){
+            context.deleteDatabase(name)
+            val db=helper.createDatabase(name,8)
+            try{
+                LedgerSchema.seed(db)
+                val a=LedgerExecution("a","stock","600000","迁移合成",20000,600,20000,1,"buy","open","10","100","0.1")
+                val b=a.copy(id="b",date=20001,tradingDay=20001,side="sell",effect="close",quantity="40",price="11",fees="0.264")
+                val result=MatchingEngine.replay(listOf(a,b))
+                db.insert("ledger_executions",a);db.insert("ledger_executions",b)
+                result.cycles.forEach{db.insert("ledger_cycles",it)};result.lots.forEach{db.insert("ledger_lots",it)};result.matches.forEach{db.insert("ledger_matches",it)}
+                db.insert("ledger_reviews",LedgerReview("r",result.cycles.single().id,20001,note="保留引用"))
+                db.setForeignKeyConstraintsEnabled(enabled)
+                // Supported engines reproduce pre-3.26 rename semantics; older
+                // Android engines already have that behavior. No FK is disabled
+                // by production migration code.
+                if(!enabled)db.execSQL("PRAGMA legacy_alter_table=ON")
+                db.beginTransaction()
+                try{
+                    MIGRATION_8_9.migrate(db)
+                    db.query("PRAGMA foreign_key_check").use{assertEquals(0,it.count)}
+                    db.query("SELECT sql FROM sqlite_master WHERE type='table'").use{while(it.moveToNext())assertFalse(it.getString(0).contains("REFERENCES `new_ledger_"))}
+                    db.query("SELECT net FROM ledger_matches").use{assertTrue(it.moveToFirst());assertEquals("39.696",it.getString(0))}
+                    db.query("SELECT note FROM ledger_reviews").use{assertTrue(it.moveToFirst());assertEquals("保留引用",it.getString(0))}
+                    db.setTransactionSuccessful()
+                }finally{db.endTransaction()}
+            }finally{db.close()}
+        }
+    }
 }

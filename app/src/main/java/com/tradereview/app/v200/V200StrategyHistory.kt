@@ -21,7 +21,7 @@ import java.time.LocalDate
         items(current,key={"execution-${it.id}"}){e->TextButton({onExecution(e.id)},Modifier.fillMaxWidth().heightIn(min=56.dp)){Text("${LocalDate.ofEpochDay(e.date)} ${e.name} ${e.code} ${actionLabel(e)}")}}
         item{Text("兼容历史（账户未推定、不计入V2统计）",style=MaterialTheme.typography.titleMedium)}
         if(old.isEmpty())item{EmptyLedger("暂无关联旧档案")}
-        items(old,key={"legacy-${it.recordKey}"}){t->LedgerPanel(t.symbol){Text("${LocalDate.ofEpochDay(t.date)} · 原币种${t.currency} · 原净盈亏${t.netPnl}");Text("稳定ID ${t.recordKey}",style=MaterialTheme.typography.labelSmall)}}
+        items(old,key={"legacy-${it.recordKey}"}){t->LedgerPanel(t.symbol){Text("${LocalDate.ofEpochDay(t.date)} · 原币种${t.currency} · 原净盈亏${historicalMoney(t.currency,t.netPnl)}");Text("稳定ID ${t.recordKey}",style=MaterialTheme.typography.labelSmall)}}
         if(old.isNotEmpty())item{OutlinedButton(onArchive,Modifier.fillMaxWidth().heightIn(min=48.dp)){Text("查看只读旧档案与原截图")}}
     }
 }

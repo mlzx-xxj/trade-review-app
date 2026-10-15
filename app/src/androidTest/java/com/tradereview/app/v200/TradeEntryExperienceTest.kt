@@ -212,8 +212,8 @@ class TradeEntryExperienceTest {
         for((action,price,qty,remaining) in listOf(listOf("buy-open","800","2","2"),listOf("sell-close","810","1","1"))){
             val before=facts();begin("futures","i2701",action,price,qty)
             waitFor("已核实乘数，无费用仍可保存"){displayed("entry-estimated-fee")=="预计手续费：待估算"}
-            ui.onNodeWithTag("entry-estimated-margin").assertTextContains("待估算")
-            ui.onNodeWithTag("entry-pending-note").assertTextContains("可保存")
+            ui.onNodeWithTag("entry-estimated-margin").assertTextEquals(if(action=="buy-open")"预计新增保证金占用：待估算"else"平仓后预计剩余占用：待估算")
+            ui.onNodeWithTag("entry-pending-note").assertTextEquals("可保存，费用待估算，净盈亏待计算")
             if(action=="buy-open"){ui.onNodeWithTag("execution-quantity").performImeAction();screenshot("79-entry-common-pending-filled")}
             tap("save-execution");waitFor("缺参考金额正常保存"){!model.busy.value && !model.editor.value && model.state.value.ledger?.executions?.size==before.executions.size+1}
             assertNull(model.pending.value)
@@ -227,7 +227,7 @@ class TradeEntryExperienceTest {
             observations+=mapOf("operation" to "pending-common-product","code" to "i2701","action" to action,"price" to price,"quantity" to qty,"multiplier" to e.multiplier,"displayedFees" to "待估算","savedFees" to e.fees,"savedMarginRate" to e.marginRate,"remaining" to c.remaining,"realized" to c.realized,"result" to "PASS")
         }
         assertEquals(2,facts().executions.count{it.id !in originals})
-        statistics("84.99");ui.onNodeWithTag("statistics-pending").assertTextContains("1 笔费用待估算");screenshot("82-entry-pending-statistics")
+        statistics("84.99");ui.onNodeWithTag("statistics-pending").assertTextEquals("1 笔费用待估算，未计入净盈亏、胜率和图表；有效样本 2");screenshot("82-entry-pending-statistics")
         ui.onNodeWithTag("statistics-market-futures").performClick();waitFor("期货已知盈亏不混入未知"){displayed("period-realized-net")=="￥91.99"};ui.onNodeWithTag("statistics-pending").assertIsDisplayed()
         ui.onNodeWithTag("statistics-market-all").performClick();statistics("84.99")
     }

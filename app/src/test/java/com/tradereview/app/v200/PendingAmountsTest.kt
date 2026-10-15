@@ -93,7 +93,7 @@ class PendingAmountsTest {
     @Test fun cnyDisplayAlwaysRoundsHalfUpAtTwoPlacesWithoutChangingRawPrecision(){
         assertEquals("￥971.83",amount("971.833333333333"));assertEquals("￥1078.85",amount("1078.846666666667"))
         assertEquals("￥1.01",amount("1.005"));assertEquals("￥-1.01",amount("-1.005"));assertEquals("￥0.00",amount("0"))
-        assertEquals("待估算",amount(null));assertEquals("￥3.00",moneyText(BigDecimal("3")))
+        assertEquals("￥971.83",historicalMoney("CNY","971.833333333333"));assertEquals("971.833333333333",historicalMoney("USD","971.833333333333"));assertEquals("待估算",amount(null));assertEquals("￥3.00",moneyText(BigDecimal("3")))
         assertEquals("971.833333333333",exact(decimal("971.833333333333")))
     }
     @Test fun previousV2Json7IsStillAcceptedButCannotPretendItSupportedNullFees(){
