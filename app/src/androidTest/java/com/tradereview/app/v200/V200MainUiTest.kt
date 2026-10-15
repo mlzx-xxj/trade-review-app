@@ -120,7 +120,15 @@ class V200MainUiTest {
     }
 
     private fun systemNight(mode:String) {
-        shell("cmd uimode night $mode")
+        // Use the public service API on both releases; `cmd uimode` shell support
+        // differs across system images. Grant only this test operation temporarily.
+        val automation=InstrumentationRegistry.getInstrumentation().uiAutomation
+        automation.adoptShellPermissionIdentity("android.permission.MODIFY_DAY_NIGHT_MODE")
+        try {
+            val manager=InstrumentationRegistry.getInstrumentation().targetContext
+                .getSystemService(android.content.Context.UI_MODE_SERVICE) as android.app.UiModeManager
+            manager.setNightMode(if(mode=="yes")android.app.UiModeManager.MODE_NIGHT_YES else android.app.UiModeManager.MODE_NIGHT_NO)
+        } finally { automation.dropShellPermissionIdentity() }
         // Android 10 can defer a system night-mode change until screen-off.
         // Exercise that real transition, then require the Activity's new config.
         if(Build.VERSION.SDK_INT==29) {
