@@ -21,6 +21,8 @@ class BootHealthTest(unittest.TestCase):
 case "$*" in
   'shell getprop ro.kernel.qemu') echo 1;;
   'shell id -u') echo 0;;
+  'shell settings get global device_provisioned') echo 1;;
+  'shell settings get secure user_setup_complete') echo 1;;
   'shell date '*) echo '10-15 09:00:00';;
   'shell getprop sys.boot_completed') echo 1;;
   'shell getprop init.svc.zygote') echo stopped;;

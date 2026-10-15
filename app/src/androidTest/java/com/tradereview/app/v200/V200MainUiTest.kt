@@ -127,7 +127,10 @@ class V200MainUiTest {
         try {
             val manager=InstrumentationRegistry.getInstrumentation().targetContext
                 .getSystemService(android.content.Context.UI_MODE_SERVICE) as android.app.UiModeManager
-            manager.setNightMode(if(mode=="yes")android.app.UiModeManager.MODE_NIGHT_YES else android.app.UiModeManager.MODE_NIGHT_NO)
+            val expectedMode=if(mode=="yes")android.app.UiModeManager.MODE_NIGHT_YES else android.app.UiModeManager.MODE_NIGHT_NO
+            manager.setNightMode(expectedMode)
+            val setup=android.provider.Settings.Secure.getInt(InstrumentationRegistry.getInstrumentation().targetContext.contentResolver,"user_setup_complete",0)
+            assertEquals("System must accept night mode (user_setup_complete=$setup)",expectedMode,manager.nightMode)
         } finally { automation.dropShellPermissionIdentity() }
         // Android 10 can defer a system night-mode change until screen-off.
         // Exercise that real transition, then require the Activity's new config.

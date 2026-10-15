@@ -6,6 +6,15 @@ mkdir -p ci-stability
 adb root > ci-stability/heap-adbd.txt
 adb wait-for-device
 [[ "$(adb shell id -u | tr -d '\r\n')" == 0 ]] || { echo 'This CI image must support root ADB for VM provisioning' >&2; exit 1; }
+# Android10 UiModeManager refuses night changes until system setup completes.
+# This is the disposable OS fixture, not App onboarding or a Google account.
+adb shell settings put global device_provisioned 1
+adb shell settings put secure user_setup_complete 1
+adb shell settings get global device_provisioned > ci-stability/provisioned-state.txt
+adb shell settings get secure user_setup_complete >> ci-stability/provisioned-state.txt
+[[ "$(adb shell settings get global device_provisioned | tr -d '\r\n')" == 1 ]] || exit 1
+[[ "$(adb shell settings get secure user_setup_complete | tr -d '\r\n')" == 1 ]] || exit 1
+sleep 1
 # -prop only accepts qemu.* on current emulators. Set actual ART properties before
 # restarting Zygote; regular App processes still run under their normal UID.
 adb shell stop
