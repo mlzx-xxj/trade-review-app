@@ -23,8 +23,18 @@ if [[ "${V100_CHECK_BOOT:-false}" == true ]]; then
     exit 1
   fi
 fi
+if [[ "${V100_CHECK_BOOT:-false}" == true ]]; then
+  # Only after the original boot-health gate. Keep the original logs/ANR result.
+  bash scripts/ci-emulator-heap.sh || exit 1
+  sleep 20
+  adb logcat -d -s ActivityManager:I ActivityTaskManager:I AndroidRuntime:E > ci-stability/post-heap-logcat.txt || exit 1
+  adb shell dumpsys activity lastanr > ci-stability/post-heap-last-anr.txt || exit 1
+  [[ -s ci-stability/post-heap-logcat.txt && -s ci-stability/post-heap-last-anr.txt ]] || exit 1
+  grep -Fq '<no ANR has occurred since boot>' ci-stability/post-heap-last-anr.txt || exit 1
+  if grep -Fq 'FATAL EXCEPTION' ci-stability/post-heap-logcat.txt; then exit 1; fi
+fi
 device_test_status=0
-./gradlew --no-daemon --build-cache --init-script scripts/ci-test-execution.gradle --stacktrace :app:connectedDebugAndroidTest || device_test_status=$?
+./gradlew --no-daemon --build-cache --init-script scripts/ci-test-execution.gradle --stacktrace -Pandroid.testInstrumentationRunnerArguments.ciExpectedHeapMiB=256 :app:connectedDebugAndroidTest || device_test_status=$?
 if [[ "${V08_STABILITY_PROBES:-false}" == true ]]; then
   # Independently collect process evidence even after a native failure. Never
   # replace its failing exit status with a successful probe or publish the run.

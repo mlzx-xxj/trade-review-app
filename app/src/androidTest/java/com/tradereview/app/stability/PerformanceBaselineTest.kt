@@ -43,6 +43,9 @@ class PerformanceBaselineTest {
         println("V08_METRICS_FILE=$name-api${Build.VERSION.SDK_INT}.json")
     }
     @Test fun deterministicLargeDataAnalyticsRoomJsonAndZipBaseline(){runBlocking {
+        InstrumentationRegistry.getArguments().getString("ciExpectedHeapMiB")?.let { expected ->
+            assertEquals("CI must measure the configured regular-app heap, not assume AVD flags applied",expected.toLong()*1024*1024,Runtime.getRuntime().maxMemory())
+        }
         val db=Room.inMemoryDatabaseBuilder(context,TradeDatabase::class.java).addCallback(CatalogSeeds.callback).build()
         val root=File(context.cacheDir,"performance-${newKey()}").apply{mkdirs()}
         try {
