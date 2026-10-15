@@ -15,13 +15,13 @@
 
 2026-10-15 实查 main protected=true；Environment deployment policy 仅 Branch main（无通配符或tag）。Variables/Secrets 管理接口返回403，不能读配置值或据此宣布配置成功。所有者在 Issue/任务说明四个 Secrets 尚未配置，本轮不添加、不索取、不生成任何私钥。
 
-本地实际执行：91 项 Python 安全/签名/启动/产物回归通过，actionlint 和工作流结构检查通过，私钥路径/内容扫描未发现跟踪的私钥；扫描不是完整 GitHub secret scanning。新增用例均使用合成字符串/模拟 apksigner/adb，不是真实新私钥签名或 Android 异证书安装验收。
+本地实际执行：93 项 Python 安全/签名/启动/产物回归通过，actionlint 和工作流结构检查通过，私钥路径/内容扫描未发现跟踪的私钥；扫描不是完整 GitHub secret scanning。新增用例均使用合成字符串/模拟 apksigner/adb，不是真实新私钥签名或 Android 异证书安装验收。
 
 完整本轮 GitHub Actions 结果将记录在关联 PR 的验证表，不能以本地脚本检查替代 Android 编译/API29/API35。PR/非main分支不能签名或发布；真实新 main 签名必须等所有者配置 Environment、审核合并后再验证。此文不把历史运行当本轮最终提交结果。
 
 ## 失败运行 38696646794 调查
 
-[原 main 运行](https://github.com/mlzx-xxj/trade-review-app/actions/runs/38696646794) attempt1：build成功；API35 在 connectedDebugAndroidTest 执行测试前解析 UTP 依赖失败（auto-service 1.1.1 / error_prone_annotations 2.23.0 的 parent POM、dagger2.48/protobuf-kotlin3.24.4/kotlin-reflect等未找到）。日志中的“POM解析”源于父POM不能解析，不是应用源码 Kotlin/财务错误。尚不能仅凭该日志区分远端临时响应与依赖负缓存；已对原代码原运行发起一次失败任务复测，不修改版本/仓库、不禁用测试。
+[原 main 运行](https://github.com/mlzx-xxj/trade-review-app/actions/runs/38696646794) attempt1：build成功；API35 在 connectedDebugAndroidTest 执行测试前解析 UTP 依赖失败（auto-service 1.1.1 / error_prone_annotations 2.23.0 的 parent POM、dagger2.48/protobuf-kotlin3.24.4/kotlin-reflect等未找到）。日志中的“POM解析”源于父POM不能解析，不是应用源码 Kotlin/财务错误。已实际复测原SHA：API35成功解析依赖并运行全124项，因此不是持续的版本不可用/源码编译错误；仍不能仅凭日志区分远端临时响应与依赖负缓存。不修改依赖版本/仓库、不禁用测试。复测API29全124项通过，API35另一项风险确认UI在30秒等待超时（见原运行attempt2），主运行仍失败，签名/发布正确skipped；不能称main全绿。
 
 API29 attempt1真实完成124项、1失败。V200大字体/键盘/重建用例多次配置变更引发 MainActivity DESTROYED→CREATED→RESUMED；清理使用 BACK 后 Activity 退出，再 onActivity 抛 NPE。未见相应生产进程 FATAL，属于生命周期同步与清理竞争线索，不能把一次复测绿色称为彻底消除不稳定。
 

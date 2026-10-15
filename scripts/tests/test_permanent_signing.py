@@ -1,5 +1,4 @@
 """Public identity and mocked failure-boundary tests; no real key/signature is created."""
-import copy
 import importlib.util
 import json
 import os
@@ -126,6 +125,42 @@ class PrivateBoundaryTest(unittest.TestCase):
         with patch.object(signer.subprocess,"run",return_value=result):
             with self.assertRaisesRegex(ValueError,"private diagnostics suppressed") as error:signer.run_private(["fake"])
         self.assertNotIn("synthetic",str(error.exception))
+    def test_mocked_success_still_compares_payload_and_does_not_claim_upgrade(self):
+        observed=[]
+        payload=load("mock_payload","adopt-signed-apk.py")
+        identity=load("mock_identity","v200-identity.py")
+        def command(args):
+            if args[1]=="sign":
+                observed.append(Path(args[args.index("--ks")+1]))
+                Path(args[args.index("--out")+1]).write_bytes(b"mock signed APK, not installable")
+                return ""
+            return "Signer #1 certificate SHA-256 digest: "+policy.PIN+"\n"
+        def module(name,file):return payload if name=="payload" else identity
+        real_load=signer.load
+        # Keep the real all-or-none credential checker; only external APK operations
+        # are mocked. No keypair, real keystore, signature or device result exists.
+        with patch.object(signer,"load",side_effect=lambda n,f:real_load(n,f) if n=="signing_state" else module(n,f)),patch.object(signer,"run_private",side_effect=command),patch.object(payload,"require_identical_payload") as compare,patch.object(identity,"prepare",return_value=gate.identity_metadata("release")):
+            signer.main();compare.assert_called_once()
+        self.assertTrue(all(not p.exists() for p in observed))
+        status=json.loads(Path("dist/SIGNING-STATUS.json").read_text())
+        self.assertTrue(status["permanentPinVerified"])
+        self.assertFalse(status["legacyV03UpgradeCompatible"])
+        self.assertNotIn("originalPinVerified",status)
+        self.assertEqual("not-confirmed",status["realPhoneAcceptance"])
+    def test_payload_mismatch_cleans_private_file_and_cannot_complete_signing(self):
+        observed=[]
+        payload=load("mismatched_payload","adopt-signed-apk.py")
+        def command(args):
+            if args[1]=="sign":
+                observed.append(Path(args[args.index("--ks")+1]))
+                Path(args[args.index("--out")+1]).write_bytes(b"mock")
+                return ""
+            return "Signer #1 certificate SHA-256 digest: "+policy.PIN+"\n"
+        real_load=signer.load
+        with patch.object(signer,"load",side_effect=lambda n,f:payload if n=="payload" else real_load(n,f)),patch.object(signer,"run_private",side_effect=command),patch.object(payload,"require_identical_payload",side_effect=ValueError("payload differs")):
+            with self.assertRaisesRegex(ValueError,"payload differs"):signer.main()
+        self.assertTrue(all(not p.exists() for p in observed))
+        self.assertFalse(Path("dist/SIGNING-STATUS.json").exists())
 
 
 class InstallCompatibilityProbeTest(unittest.TestCase):

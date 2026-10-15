@@ -49,7 +49,7 @@ PR和非main手动只走B/D，始终能下载隔离RC Artifact。签名与发布
 
 代码只读取既有Environment及分支规则；缺失、403或规则不严格均不进入签名Job，也不自动创建Environment。进入后在加载密钥的步骤之前再次检查保护并验证全部原始测试和未签名输入。不能读取Secrets真实值的API不被伪装成配置成功。
 
-签名Job不运行Gradle、不从Artifact执行脚本；只给已验证unsigned APK和公开模拟器测试fixture签名。临时密钥文件位于runner临时目录，0600，finally删除，异常不输出私有诊断。签名后使用apksigner核对提交的新永久V2 pin与Environment公开变量，并逐项比较签名APK与已验证未签名APK的应用payload。固定包在无Secrets的API29/35任务中真实安装；手动提供历史V0.3公开APK时做真实install -r被Android拒绝及旧安装/合成私有标记保留验证；不同证书不允许宣称覆盖成功。缺旧APK明确未执行，不用临时签名冒充；新身份未来版本仍需同证书且递增versionCode，真实未来升级尚待有对应包后测试。
+签名Job不运行Gradle、不从Artifact执行脚本；只给已验证unsigned Release APK签名，已移除不适用的旧升级instrumentation签名fixture。临时密钥文件位于runner临时目录，0600，finally删除，异常不输出私有诊断。签名后使用apksigner核对提交的新永久V2 pin与Environment公开变量，并逐项比较签名APK与已验证未签名APK的应用payload。固定包在无Secrets的API29/35任务中真实安装；手动提供历史V0.3公开APK时做真实install -r被Android拒绝及旧安装/合成私有标记保留验证；不同证书不允许宣称覆盖成功。缺旧APK明确未执行，不用临时签名冒充；新身份未来版本仍需同证书且递增versionCode，真实未来升级尚待有对应包后测试。
 
 缺少全部Secrets时仅RC；部分Secrets、错误证书、固定包安装失败均拒绝发布，不降级掩盖错误。所有包仍为prerelease候选，真机验收和稳定发布另行决定。
 
@@ -59,9 +59,9 @@ PR和非main手动只走B/D，始终能下载隔离RC Artifact。签名与发布
 | --- | --- | --- |
 | rc-apk-attemptN：一份RC、身份、内部SHA清单 | API29/35、可信签名/发布、手机手动下载 | 7天 |
 | build-evidence-attemptN：JVM原始XML、三种Lint XML、生成Room schemas、上下文 | API29/35、可信签名/发布 | 7天 |
-| signing-inputs-attemptN：unsigned Release与公开测试APK，仅可信main创建 | 签名 | 3天 |
+| signing-inputs-attemptN：unsigned Release，仅可信main创建 | 签名 | 3天 |
 | device-evidence-api29/35-attemptN：原始XML、每项指标一份、截图一份、SHA清单 | 签名、发布 | 7天 |
-| signing-result-attemptN：观察到的状态、可选固定签名APK/公开fixture，无私钥 | 签名安装、发布 | 3天 |
+| signing-result-attemptN：观察到的状态、可选新永久签名APK，无私钥 | 签名安装、发布 | 3天 |
 | signed-install-api29/35-attemptN | 发布 | 7天 |
 | build/device/signed-install failure诊断 | 人工排错，不作为成功证据 | 3天 |
 
@@ -77,7 +77,7 @@ PR #11 当时审查（历史）：仓库Public、main基线合并已确认；当
 
 本地安全用例覆盖实际YAML条件、同仓/Fork PR、main push/main手动、非main手动、失败/取消/跳过矩阵、缺Secrets、环境分支策略、永久pin错误、Artifact缺失/篡改/跨运行/非法ZIP、私钥步骤提前拒绝和发布白名单。原50项安全/签名/启动回归保留，actionlint实际执行。最终计数及Actions真实运行链接以本PR验证记录为准，不把条件模拟当成真实main签名。
 
-新流程尚未合并时，main push/选择main手动仍使用旧main工作流。为遵守“不自动合并”，本轮可以实际执行PR及开发分支手动路径；新main路径需所有者合并后实测。不能把旧main的运行、单元测试事件矩阵或非main手动运行冒充新main发布成功。原私钥/受保护环境未就绪时，固定签名与原证书升级均未执行。
+新流程尚未合并时，main push/选择main手动仍使用旧main工作流。为遵守“不自动合并”，本轮可以实际执行PR及开发分支手动路径；新main路径需所有者合并后实测。不能把旧main的运行、单元测试事件矩阵或非main手动运行冒充新main发布成功。Issue #12 当前：Environment已建且实查main-only，四个新永久Secrets待所有者配置；新永久签名、旧V0.3拒绝安装实测及同新证书未来升级仍未执行。
 
 ## 仅安卓手机操作
 

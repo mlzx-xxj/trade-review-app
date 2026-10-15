@@ -1,3 +1,5 @@
+> 签名政策更新：本文保留 V2 初始开发时的历史状态。Issue #12 已授权新的永久 V2 证书，旧 V0.3 私钥丢失、两者不兼容。当前门禁/验证以 [永久签名迁移记录](PERMANENT-SIGNING-V2-VALIDATION.md) 和 [手机签名指南](V200-PHONE-SIGNING.md) 为准，不能执行本文历史原证书覆盖升级假设。
+
 # V2.0 实施及安全边界
 
 基线：V1.0 PR #9 已于2026-10-13合并，main f0323e38faeb002d2f18fbe3056733b2fded8022；独立分支codex/v200-rebuild，不自动合并。
