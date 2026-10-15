@@ -53,6 +53,7 @@ class BaselineEntryExperienceTest {
         val folder=File(requireNotNull(InstrumentationRegistry.getArguments().getString("additionalTestOutputDir")),"entry-baseline").apply{mkdirs()}
         val json=GsonBuilder().setPrettyPrinting().create().toJson(observations)
         File(folder,"entry-baseline-api${android.os.Build.VERSION.SDK_INT}.json").writeText(json)
+        com.tradereview.app.stability.V08Metrics.write("entry-baseline-api${android.os.Build.VERSION.SDK_INT}.json",json)
         println("ENTRY_BASELINE="+json)
     }
 }
