@@ -37,7 +37,11 @@ class V200MainUiTest {
     private val lossDay=maxOf(today-1,LedgerPeriod.week(AutomaticEntry.today()).start,first+1)
     private val flatDay=first+1
     private val todayNet get()=if(lossDay==today)"134.696"else"137.696"
-    private fun shell(command:String)=ParcelFileDescriptor.AutoCloseInputStream(InstrumentationRegistry.getInstrumentation().uiAutomation.executeShellCommand(command)).bufferedReader().use{it.readText()}
+    private fun shell(command:String):String {
+        android.util.Log.i("TestRunner","V200 shell begin: $command")
+        return ParcelFileDescriptor.AutoCloseInputStream(InstrumentationRegistry.getInstrumentation().uiAutomation.executeShellCommand(command)).bufferedReader().use{it.readText()}
+            .also{android.util.Log.i("TestRunner","V200 shell finished: $command")}
+    }
     @Before fun reset(){require(Build.HARDWARE in listOf("ranchu","goldfish"));runBlocking{db.withTransaction{LedgerRepository(db).write(LedgerSnapshot(accounts=listOf(LedgerAccount("stock","stock","A股账户"),LedgerAccount("futures","futures","国内期货账户")),risks=listOf(MarketRisk("stock"),MarketRisk("futures")),strategies=listOf(LedgerStrategy("synthetic","合成策略"))),true)}};compose.runOnIdle{model=ViewModelProvider(compose.activity)[V200ViewModel::class.java];model.page(0);model.closeEditor();model.handle["v2-entry-fields"]=null};val expected=runBlocking{model.repository.read()};wait{model.state.value.ledger==expected};compose.onNodeWithTag("v2-home").assertIsDisplayed()}
     private fun wait(predicate:()->Boolean)=compose.waitUntil(30000){predicate()}
     private fun page(n:Int){compose.onNodeWithTag("v2-main-page-$n").performClick()}
@@ -98,6 +102,7 @@ class V200MainUiTest {
     // Inspect the lifecycle registry atomically on main, never call compose.activity
     // from a polling predicate in that gap.
     private fun awaitResumedConfiguration(predicate:(MainActivity)->Boolean = { true }) {
+        android.util.Log.i("TestRunner","V200 wait for resumed configuration")
         wait {
             var ready=false
             InstrumentationRegistry.getInstrumentation().runOnMainSync {
@@ -108,15 +113,18 @@ class V200MainUiTest {
             ready
         }
         compose.waitForIdle()
+        android.util.Log.i("TestRunner","V200 resumed configuration ready")
     }
     private fun resumedActivityAction(action:(MainActivity)->Unit) {
         awaitResumedConfiguration()
+        android.util.Log.i("TestRunner","V200 main-thread configuration action begin")
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
             val activity=androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry.getInstance()
                 .getActivitiesInStage(androidx.test.runner.lifecycle.Stage.RESUMED)
                 .filterIsInstance<MainActivity>().single()
             action(activity)
         }
+        android.util.Log.i("TestRunner","V200 main-thread configuration action finished")
     }
 
     private fun systemNight(mode:String) {
