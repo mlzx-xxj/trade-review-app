@@ -25,7 +25,7 @@ workflow=load("permanent_workflow","ci-check-workflow.py")
 SOURCE="a"*40
 
 
-def apk(cert=policy.PIN,code=20):
+def apk(cert=policy.PIN,code=21):
     return dict(applicationId="com.tradereview.app",versionName="2.0.0",versionCode=code,
                 certificateSha256=cert,debuggable=False,apkSha256="c"*64,apkBytes=100,abis=[])
 
@@ -42,13 +42,13 @@ class PermanentIdentityTest(unittest.TestCase):
             with self.assertRaisesRegex(ValueError,"permanent V2"):gate.require_identity(apk(cert),"release")
     def test_rc_rejects_both_formal_identities(self):
         for cert in (policy.PIN,policy.LEGACY_V03_PIN):
-            value=apk(cert);value.update(applicationId="com.tradereview.app.rc.v200",versionName="2.0.0-rc.1")
+            value=apk(cert);value.update(applicationId="com.tradereview.app.rc.v200",versionName="2.0.0-rc.2")
             with self.assertRaises(ValueError):gate.require_identity(value,"rc")
     def test_old_v03_and_new_v2_same_package_are_expected_incompatible(self):
         self.assertEqual("incompatible-certificate-backup-reinstall-restore-required",policy.upgrade_policy(apk(policy.LEGACY_V03_PIN,3),apk()))
     def test_future_upgrade_needs_same_new_certificate_and_increasing_code(self):
-        self.assertEqual("same-permanent-identity-upgrade-eligible-not-device-verified",policy.upgrade_policy(apk(),apk(code=21)))
-        for code in (19,20):self.assertEqual("versionCode-must-increase",policy.upgrade_policy(apk(),apk(code=code)))
+        self.assertEqual("same-permanent-identity-upgrade-eligible-not-device-verified",policy.upgrade_policy(apk(),apk(code=22)))
+        for code in (20,21):self.assertEqual("versionCode-must-increase",policy.upgrade_policy(apk(),apk(code=code)))
         self.assertEqual("not-current-permanent-identity",policy.upgrade_policy(apk("b"*64),apk("b"*64,21)))
     def test_separate_rc_is_not_an_old_data_upgrade(self):
         rc=apk();rc["applicationId"]="com.tradereview.app.rc.v200"
@@ -169,7 +169,7 @@ class InstallCompatibilityProbeTest(unittest.TestCase):
         probe=load("install_probe","run-v200-package-probes.py")
         with tempfile.TemporaryDirectory() as temp:
             root=Path(temp);(root/"TradeReview-v2.0-fixed-candidate.apk").write_bytes(b"synthetic")
-            rc=apk("b"*64);rc.update(applicationId="com.tradereview.app.rc.v200",versionName="2.0.0-rc.1")
+            rc=apk("b"*64);rc.update(applicationId="com.tradereview.app.rc.v200",versionName="2.0.0-rc.2")
             old=apk(policy.LEGACY_V03_PIN,3);old["debuggable"]=True
             calls=[]
             def adb(*args,**kwargs):

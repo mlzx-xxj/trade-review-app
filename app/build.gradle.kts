@@ -12,7 +12,7 @@ android {
         applicationId = "com.tradereview.app"
         minSdk = 26
         targetSdk = 35
-        versionCode = 20
+        versionCode = 21
         versionName = "2.0.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -32,7 +32,7 @@ android {
         create("rc") {
             initWith(getByName("release"))
             applicationIdSuffix = ".rc.v200"
-            versionNameSuffix = "-rc.1"
+            versionNameSuffix = "-rc.2"
             signingConfig = signingConfigs.getByName("debug")
             matchingFallbacks += listOf("release")
             resValue("string", "app_name", "交易复盘 RC")
@@ -75,6 +75,7 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.test:runner:1.6.2")
+    androidTestImplementation("androidx.test.uiautomator:uiautomator:2.3.0")
     androidTestImplementation("androidx.room:room-testing:2.7.2")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     // Optional IDE inspector, not needed in the delivered Debug APK. Models/ABIs remain complete.

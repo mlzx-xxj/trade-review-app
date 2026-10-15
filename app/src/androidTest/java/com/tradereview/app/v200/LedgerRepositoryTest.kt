@@ -24,6 +24,47 @@ class LedgerRepositoryTest {
     @After fun close(){db.close()}
     private fun buy(id:String="buy")=LedgerExecution(id,"stock","600000","合成股票",day,600,day,0,"buy","open","10","100","0",feeSource="rule")
     private suspend fun save(e:LedgerExecution)=repo.confirm(repo.preview(e))
+    @Test fun deletingTheLastFactDoesNotReuseItsAuditedSaveOrder()=runBlocking{
+        save(buy().copy(feeSource=AutomaticEntry.SOURCE));save(buy("second").copy(feeSource=AutomaticEntry.SOURCE))
+        repo.confirm(repo.preview(null,"second"),true)
+        save(buy("third").copy(feeSource=AutomaticEntry.SOURCE))
+        assertEquals(3L,repo.read().executions.first{it.id=="third"}.ordinal)
+    }
+    @Test fun automaticOrderNeedsNoConfirmationAndAnEditCannotMoveTheOriginalFact()=runBlocking{
+        save(buy().copy(feeSource=AutomaticEntry.SOURCE,ordinal=999))
+        val second=repo.preview(buy("second").copy(feeSource=AutomaticEntry.SOURCE,ordinal=999))
+        assertFalse(second.orderWarning);repo.confirm(second)
+        val first=repo.read().executions.first{it.id=="buy"}
+        assertEquals(1L,first.ordinal);assertEquals(2L,repo.read().executions.first{it.id=="second"}.ordinal)
+        repo.confirm(repo.preview(first.copy(price="11",minute=1,date=day+1,tradingDay=day+1,ordinal=500)))
+        val edited=repo.read().executions.first{it.id==first.id}
+        assertEquals(first.ordinal,edited.ordinal);assertEquals(first.minute,edited.minute);assertEquals(first.date,edited.date)
+        assertEquals(1,repo.read().audits.size)
+    }
+    @Test fun changedMatchingRepricesLaterAutoCloseOnlyFromItsSavedRuleAndAuditsIt()=runBlocking{
+        val rule=LedgerContractRule("synthetic_auto","zz2701","合成测试","10","0.12","per_lot","1.735","2","3",effectiveDay=day,verified=true)
+        repo.rule(rule)
+        fun e(id:String,date:Long=day,side:String="buy",effect:String="open",qty:String="2")=LedgerExecution(id,"futures","zz2701","合成测试",date,600,date,0,side,effect,"3500",qty,"0",feeSource=AutomaticEntry.SOURCE)
+        save(e("a"));save(e("b",day+1));save(e("c",day+1,"sell","close","3"))
+        assertEquals("7.01",repo.read().executions.first{it.id=="c"}.fees)
+        repo.rule(rule.copy(openFee="900",closeFee="900",todayFee="900"))
+        val first=repo.read().executions.first{it.id=="a"};val change=repo.preview(first.copy(quantity="1"))
+        assertEquals("7.01",repo.read().executions.first{it.id=="c"}.fees)
+        assertEquals("8.01",change.after.executions.first{it.id=="c"}.fees)
+        repo.confirm(change,true)
+        assertEquals("1.75",repo.read().executions.first{it.id=="a"}.fees)
+        assertEquals(setOf("a","c"),repo.read().audits.map{it.executionId}.toSet())
+        LedgerValidation.snapshot(repo.read())
+    }
+    @Test fun newAutomaticStockUsesPersonalFixedRatesWhileHistoricalAccountAndFactsStayIntact()=runBlocking{
+        repo.account(LedgerAccount("stock","stock","A股账户",buyRate="0.001",sellRate="0.002"))
+        save(buy().copy(feeSource=AutomaticEntry.SOURCE,quantity="1000"))
+        assertEquals("1.00",repo.read().executions.single().fees)
+        assertEquals("0.001",repo.read().accounts.first{it.id=="stock"}.buyRate)
+        val before=repo.read();val backup=BackupRepository(db);val data=backup.export()
+        backup.restore(backup.preview(BackupCodec.decode(BackupCodec.encode(data))),RestoreMode.REPLACE)
+        assertEquals(before,repo.read())
+    }
     @Test fun saveThenPartialSaleAndPreviewedEditRebuildAuthoritativePnlAndKeepsOriginalAudit()=runBlocking{save(buy());save(buy("sell").copy(date=day+1,tradingDay=day+1,side="sell",effect="close",price="11",quantity="40"));val before=repo.read();assertEquals("39.696",before.matches.single().net);val closing=before.executions.first{it.id=="sell"};val preview=repo.preview(closing.copy(price="12"));assertEquals(before,repo.read());repo.confirm(preview);val after=repo.read();assertEquals("79.672",after.matches.single().net);assertEquals("11",LedgerJson.execution(after.audits.single().beforeJson).price);assertEquals("12",after.executions.first{it.id=="sell"}.price);assertEquals("buy",after.executions.first{it.side=="buy"}.id)}
     @Test fun stalePreviewAndOverSellingCannotLeaveHalfChangedFacts()=runBlocking{save(buy());val preview=repo.preview(buy("another"));repo.risk(MarketRisk("stock","1000"));val before=repo.read();try{repo.confirm(preview);fail()}catch(_:IllegalArgumentException){};assertEquals(before,repo.read());try{save(buy("sell").copy(date=day+1,tradingDay=day+1,side="sell",effect="close",quantity="101"));fail()}catch(_:IllegalArgumentException){};assertEquals(before,repo.read())}
     @Test fun oversizeRiskRequiresExplicitAcknowledgementAndRemainsStableAfterRulesChange()=runBlocking{repo.risk(MarketRisk("stock","10000","amount","5"));val preview=repo.preview(buy().copy(stopLoss="9"));assertTrue(preview.risk!!.exceeded);val before=repo.read();try{repo.confirm(preview);fail()}catch(_:IllegalArgumentException){};assertEquals(before,repo.read());repo.confirm(preview,true);val fact=repo.read().executions.single();assertTrue(fact.riskConfirmed);assertEquals("100",fact.riskAmount);repo.risk(MarketRisk("stock","100000","amount","500"));assertEquals(fact,repo.read().executions.single())}

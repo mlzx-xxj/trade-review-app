@@ -12,10 +12,14 @@ import kotlinx.coroutines.flow.*
 
 data class LedgerScreenState(val ledger:LedgerSnapshot?=null,val closed:List<ClosedEvent> = emptyList(),val daily:Map<Long,java.math.BigDecimal> = emptyMap(),val error:String?=null)
 class V200ViewModel(val database:TradeDatabase,val handle:SavedStateHandle):ViewModel() {
+    // A clock dependency lets instrumentation cross midnight without changing device time.
+    var entryClock:java.time.Clock=java.time.Clock.systemUTC()
+    fun entryNow()=AutomaticEntry.now(entryClock)
     val repository=LedgerRepository(database)
     @OptIn(ExperimentalCoroutinesApi::class)
     val state=repository.observe().mapLatest{s->withContext(Dispatchers.Default){val closed=LedgerStatistics.closed(s);LedgerScreenState(s,closed,LedgerStatistics.days(closed))}}.catch{e->emit(LedgerScreenState(error="账本读取失败，未修改数据"))}.stateIn(viewModelScope,SharingStarted.WhileSubscribed(5000),LedgerScreenState())
     val busy=MutableStateFlow(false);val problem=MutableStateFlow<String?>(null);val message=MutableStateFlow<String?>(null);val pending=MutableStateFlow<LedgerChange?>(null)
+    val savedExecution=MutableStateFlow<String?>(null)
     val instruments=database.trades().observeInstruments().stateIn(viewModelScope,SharingStarted.WhileSubscribed(5000),emptyList())
     val legacy=database.trades().observeTrades().stateIn(viewModelScope,SharingStarted.WhileSubscribed(5000),emptyList())
     val attachments=database.trades().observeAttachments().stateIn(viewModelScope,SharingStarted.WhileSubscribed(5000),emptyList())
@@ -27,10 +31,13 @@ class V200ViewModel(val database:TradeDatabase,val handle:SavedStateHandle):View
     fun closeEditor(){handle["v2-editor"]=false}
     private fun action(success:String?,block:suspend()->Unit){if(busy.value)return;busy.value=true;problem.value=null;viewModelScope.launch{try{withContext(Dispatchers.IO){block()};if(success!=null)message.value=success}catch(e:Exception){if(e is CancellationException)throw e;problem.value=e.message?.takeIf{e is IllegalArgumentException}?:"操作失败，未修改数据";message.value=problem.value}finally{busy.value=false}}}
     fun execution(value:LedgerExecution){action(null){
-        val preview=repository.preview(value)
+        val now=entryNow()
+        val isNew=value.ordinal==0L
+        val stamped=if(isNew && value.feeSource==AutomaticEntry.SOURCE)value.copy(date=now.toLocalDate().toEpochDay(),tradingDay=now.toLocalDate().toEpochDay(),minute=now.hour*60+now.minute,second=now.second)else value
+        val preview=repository.preview(stamped)
         val existing=preview.before.executions.any{it.id==value.id}
         if(existing || preview.orderWarning || preview.affectsHistory || preview.risk?.exceeded==true && preview.after.executions.first{it.id==value.id}.riskWarningEnabled){pending.value=preview;message.value=null}
-        else{repository.confirm(preview);withContext(Dispatchers.Main){closeEditor();handle["v2-entry-fields"]=null;message.value="成交已保存，持仓与统计已重算"}}
+        else{repository.confirm(preview);withContext(Dispatchers.Main){closeEditor();savedExecution.value=value.id;handle["v2-entry-fields"]=null;handle["v2-last-account"]=value.accountId;message.value="成交已保存，持仓与统计已重算"}}
     }}
     fun deleteExecution(value:LedgerExecution)=action("请核对成交删除影响"){pending.value=repository.preview(null,value.id)}
     fun confirmChange(){val value=pending.value?:return;action(if(value.deleting)"成交已删除，原事实修订已保留"else"成交已保存并事务重算"){
@@ -51,6 +58,6 @@ class V200ViewModel(val database:TradeDatabase,val handle:SavedStateHandle):View
         LedgerValidation.code(account,code);LedgerValidation.word(name);val old=database.trades().allInstruments().firstOrNull{it.market==account && it.code==code}
         database.trades().saveInstrument(old?.copy(favorite=true,lastUsed=System.currentTimeMillis())?:Instrument("ledger_${newKey()}",account,"${name.take(16)} $code",code,1000,true,System.currentTimeMillis()))
     }
-    fun draft(values:Map<String,String>){handle["v2-entry-fields"]=HashMap(values)}
+    fun draft(values:Map<String,String>){if(!editor.value || values["mode"]=="new" && state.value.ledger?.executions?.any{it.id==values["id"]}==true)return;handle["v2-entry-fields"]=HashMap(values)}
     fun restoredDraft():Map<String,String> = handle.get<HashMap<String,String>>("v2-entry-fields")?:emptyMap()
 }

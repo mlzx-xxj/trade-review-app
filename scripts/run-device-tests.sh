@@ -52,6 +52,11 @@ if [[ "${V200_PACKAGE_PROBES:-false}" == true ]]; then
   python3 scripts/run-v200-package-probes.py "${args[@]}" || package_status=$?
   if [[ "$device_test_status" == 0 ]]; then device_test_status=$package_status; fi
 fi
+if [[ "$device_test_status" == 0 && "${V200_MAIN_PROBES:-false}" == true ]]; then
+  # Full unfiltered suite has already succeeded; this additional real-form journey
+  # and force-stop reopen retain its raw XML and do not replace/shorten that suite.
+  python3 scripts/run-entry-experience.py || device_test_status=$?
+fi
 mkdir -p ci-screenshots
 mkdir -p ci-metrics
 if command -v adb >/dev/null; then
@@ -64,6 +69,9 @@ fi
 while IFS= read -r screenshot_path; do
   cp "$screenshot_path" "ci-screenshots/${screenshot_path##*/}" || exit 1
 done < <(if command -v rg >/dev/null; then rg --files --no-ignore app/build/outputs ci-v200 ci-device-screenshots ci-v05-device-screenshots ci-v06-device-screenshots ci-v07-device-screenshots -g '*.png' 2>/dev/null || true; else find app/build/outputs ci-v200 ci-device-screenshots ci-v05-device-screenshots ci-v06-device-screenshots ci-v07-device-screenshots -type f -name '*.png' 2>/dev/null; fi)
+while IFS= read -r entry_screenshot; do
+  cp "$entry_screenshot" "ci-screenshots/${entry_screenshot##*/}" || exit 1
+done < <(find ci-v200/entry-experience -type f -name '*.png' 2>/dev/null)
 if [[ -s ci-stability/26-v08-process-restart-font.png ]]; then
   cp ci-stability/26-v08-process-restart-font.png ci-screenshots/
 fi
@@ -77,6 +85,9 @@ if [[ "$device_test_status" == 0 ]]; then
   if [[ "${V200_PACKAGE_PROBES:-false}" == true ]]; then
     for prefix in {27..32} {40..55}; do
       compgen -G "ci-screenshots/${prefix}-*.png" >/dev/null || { echo "Missing V2.0 screenshot $prefix" >&2; exit 1; }
+    done
+    for prefix in {70..77}; do
+      compgen -G "ci-screenshots/${prefix}-*.png" >/dev/null || { echo "Missing actual entry screenshot $prefix" >&2; exit 1; }
     done
   fi
 fi
