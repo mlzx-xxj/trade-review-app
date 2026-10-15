@@ -7,6 +7,7 @@ import json
 import os
 from pathlib import Path
 import re
+import runpy
 import stat
 import subprocess
 import sys
@@ -91,6 +92,17 @@ class WorkflowSecurityTest(unittest.TestCase):
     def test_read_only_pr_jobs_and_only_publisher_writes(self):
         for name in ("build","device-tests","trusted-signing","signed-install"):self.assertEqual("read",self.document["jobs"][name]["permissions"]["contents"])
         self.assertEqual("write",self.document["jobs"]["publish"]["permissions"]["contents"])
+    def test_build_requires_environment_metadata_read_without_any_write_scope(self):
+        self.assertEqual({"contents":"read","actions":"read"},self.document["jobs"]["build"]["permissions"])
+        for permission in (None,"none","write"):
+            value=copy.deepcopy(self.document)
+            if permission is None:value["jobs"]["build"]["permissions"].pop("actions")
+            else:value["jobs"]["build"]["permissions"]["actions"]=permission
+            with self.subTest(actions=permission),self.assertRaises(ValueError):workflow.check(value)
+    def test_no_job_can_gain_actions_write_even_the_publisher(self):
+        for name in self.document["jobs"]:
+            value=copy.deepcopy(self.document);value["jobs"][name]["permissions"]["actions"]="write"
+            with self.subTest(job=name),self.assertRaises(ValueError):workflow.check(value)
     def test_mutations_exposing_secrets_or_write_token_are_rejected(self):
         for mutate in (lambda d:d["jobs"]["build"]["permissions"].update(contents="write"),lambda d:d["jobs"]["build"]["steps"].append({"run":"echo blocked","env":{"KEY":"${{ secrets.PRIVATE }}"}}),lambda d:d["on"].update(pull_request_target={}),lambda d:d["jobs"]["trusted-signing"].update(environment="unprotected")):
             value=copy.deepcopy(self.document);mutate(value)
@@ -116,6 +128,56 @@ class ContextAndEnvironmentTest(unittest.TestCase):
         self.assertTrue(security.environment_safe(env,{"branch_policies":[{"name":"main","type":"branch"}]}))
         for rules in ([],[{"name":"*","type":"branch"}],[{"name":"main","type":"tag"}],[{"name":"main","type":"branch"},{"name":"codex/*","type":"branch"}]):self.assertFalse(security.environment_safe(env,{"branch_policies":rules}))
         self.assertFalse(security.environment_safe(dict(env,deployment_branch_policy=None),{"branch_policies":[{"name":"main","type":"branch"}]}))
+    def run_preflight(self,c,responses):
+        """Execute the build entrypoint; only metadata HTTP and git are simulated."""
+        with tempfile.TemporaryDirectory() as temp:
+            root=Path(temp);previous=Path.cwd();printed=io.StringIO()
+            try:
+                os.chdir(root)
+                with patch.object(security,"context",return_value=c),patch.object(security,"api",side_effect=responses) as api,patch.object(security.subprocess,"run",return_value=subprocess.CompletedProcess(["git"],0,c["source"]+"\n","")),patch.dict(os.environ,{"GITHUB_OUTPUT":str(root/"outputs")},clear=True),patch("sys.stdout",printed):
+                    runpy.run_path(str(SCRIPTS/"ci-trusted-context.py"),run_name="__main__")
+                return json.loads((root/"ci-context.json").read_text()),(root/"outputs").read_text(),printed.getvalue(),api.call_args_list
+            finally:os.chdir(previous)
+    def test_main_preflight_reads_both_metadata_endpoints_before_allowing_signing(self):
+        env={"name":security.ENVIRONMENT,"deployment_branch_policy":{"custom_branch_policies":True,"protected_branches":False}}
+        policies={"branch_policies":[{"name":"main","type":"branch"}]}
+        base="repos/"+security.REPOSITORY+"/environments/"+security.ENVIRONMENT
+        for event in ("push","workflow_dispatch"):
+            with self.subTest(event=event):
+                result,outputs,_,calls=self.run_preflight(dict(self.c,event=event),[env,policies])
+                self.assertTrue(result["trustedMain"]);self.assertTrue(result["signingEnvironmentReady"])
+                self.assertFalse(result["credentialsInspected"])
+                self.assertIn("signing_allowed=true\n",outputs)
+                self.assertEqual([((base,),{}),((base+"/deployment-branch-policies",),{})],calls)
+    def test_403_at_either_environment_endpoint_denies_signing_without_logging_response(self):
+        env={"name":security.ENVIRONMENT,"deployment_branch_policy":{"custom_branch_policies":True,"protected_branches":False}}
+        private_marker="synthetic-response-must-not-be-logged"
+        for endpoint in ("environment","deployment-branch-policies"):
+            error=subprocess.CalledProcessError(1,["gh","api"],output=private_marker,stderr="HTTP 403 "+private_marker)
+            responses=[error] if endpoint=="environment" else [env,error]
+            with self.subTest(endpoint=endpoint):
+                result,outputs,printed,calls=self.run_preflight(self.c,responses)
+                self.assertTrue(result["trustedMain"]);self.assertFalse(result["signingEnvironmentReady"])
+                self.assertFalse(result["credentialsInspected"])
+                self.assertIn("signing_allowed=false\n",outputs)
+                self.assertIn("missing or unreadable",result["reason"])
+                self.assertNotIn(private_marker,json.dumps(result)+outputs+printed)
+                self.assertEqual(len(responses),len(calls))
+    def test_pr_fork_and_non_main_manual_preflight_never_call_environment_api(self):
+        contexts=[dict(self.c,event="pull_request",ref="refs/pull/14/merge"),dict(self.c,repository="fork/trade-review-app",event="pull_request"),dict(self.c,event="workflow_dispatch",ref="refs/heads/feature")]
+        for c in contexts:
+            with self.subTest(context=c):
+                result,outputs,_,calls=self.run_preflight(c,AssertionError("Untrusted context must not call Environment API"))
+                self.assertFalse(result["trustedMain"]);self.assertFalse(result["signingEnvironmentReady"])
+                self.assertFalse(result["credentialsInspected"]);self.assertEqual([],calls)
+                self.assertIn("signing_allowed=false\n",outputs)
+    def test_successful_api_requests_do_not_bypass_exact_main_policy_validation(self):
+        env={"name":security.ENVIRONMENT,"deployment_branch_policy":{"custom_branch_policies":True,"protected_branches":False}}
+        for branches in ([],[{"name":"main","type":"tag"}],[{"name":"*","type":"branch"}],[{"name":"main","type":"branch"},{"name":"feature","type":"branch"}]):
+            with self.subTest(branches=branches):
+                result,outputs,_,calls=self.run_preflight(self.c,[env,{"branch_policies":branches}])
+                self.assertFalse(result["signingEnvironmentReady"]);self.assertEqual(2,len(calls))
+                self.assertIn("signing_allowed=false\n",outputs)
     def test_private_signer_rejects_pr_before_decoding_or_process_execution(self):
         with patch.dict(os.environ,{"GITHUB_EVENT_NAME":"pull_request"},clear=True),patch.object(signer.base64,"b64decode") as decode,patch.object(signer.subprocess,"run") as run:
             with self.assertRaises(ValueError):signer.main()
@@ -132,13 +194,13 @@ class ContextAndEnvironmentTest(unittest.TestCase):
     def test_wrong_public_pin_rejected_before_opening_private_material(self):
         with tempfile.TemporaryDirectory() as temp:
             root=Path(temp);(root/"verified-signing-inputs").mkdir();(root/"verified-signing-inputs/app-release-unsigned.apk").write_bytes(b"synthetic unsigned fixture")
-            environment={"GITHUB_REPOSITORY":security.REPOSITORY,"GITHUB_EVENT_NAME":"push","GITHUB_REF":"refs/heads/main","GITHUB_SHA":"a"*40,"SOURCE_COMMIT":"a"*40,"GITHUB_WORKFLOW_REF":self.c["workflow"],"GITHUB_RUN_ID":"123","GITHUB_RUN_ATTEMPT":"1","VERIFIED_INPUTS":"verified-signing-inputs","TRADE_REVIEW_UPGRADE_CERT_SHA256":"f"*64,"EXISTING_KEY_BASE64":"synthetic","EXISTING_STORE_PASSWORD":"synthetic","EXISTING_KEY_ALIAS":"synthetic","EXISTING_KEY_PASSWORD":"synthetic"}
+            environment={"GITHUB_REPOSITORY":security.REPOSITORY,"GITHUB_EVENT_NAME":"push","GITHUB_REF":"refs/heads/main","GITHUB_SHA":"a"*40,"SOURCE_COMMIT":"a"*40,"GITHUB_WORKFLOW_REF":self.c["workflow"],"GITHUB_RUN_ID":"123","GITHUB_RUN_ATTEMPT":"1","VERIFIED_INPUTS":"verified-signing-inputs","TRADE_REVIEW_SIGNING_CERT_SHA256":"f"*64,"EXISTING_KEY_BASE64":"synthetic","EXISTING_STORE_PASSWORD":"synthetic","EXISTING_KEY_ALIAS":"synthetic","EXISTING_KEY_PASSWORD":"synthetic"}
             old=Path.cwd()
             try:
                 os.chdir(root)
                 with patch.dict(os.environ,environment):
                     sha=security.manifest("verified-signing-inputs","signing-inputs");os.environ["INPUTS_DIGEST"]=sha
-                    (root/"docs").mkdir();(root/"docs/V03-CERTIFICATE-SHA256.txt").write_text(security.PIN)
+                    (root/"docs").mkdir();(root/"docs/V03-CERTIFICATE-SHA256.txt").write_text(security.LEGACY_V03_PIN)
                     with patch.object(signer.base64,"b64decode") as decode:
                         with self.assertRaisesRegex(ValueError,"pin"):signer.main()
                         decode.assert_not_called()

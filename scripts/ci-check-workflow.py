@@ -11,10 +11,12 @@ def check(document):
     require(document["permissions"]=={"contents":"read"},"Default token must be read-only")
     jobs=document["jobs"]
     require(set(jobs)=={"build","device-tests","trusted-signing","signed-install","publish"},"Unexpected privilege-bearing jobs")
+    require(jobs["build"].get("permissions")=={"contents":"read","actions":"read"},"Build needs only contents/actions read, including authenticated Environment preflight")
     writes=[];secret_steps=[]
     for name,job in jobs.items():
         permissions=job.get("permissions",{})
         require(set(permissions)<= {"contents","actions"},"Unexpected token capability")
+        require(permissions.get("actions") in (None,"read"),"Actions permission must never allow writes")
         require(permissions.get("contents")==("write" if name=="publish" else "read"),"Wrong contents permission")
         if "write" in permissions.values():writes.append(name)
         require(0<int(job["timeout-minutes"])<=45,"Every job needs a bounded timeout")
@@ -29,6 +31,8 @@ def check(document):
                 require(3<=int(step["with"]["retention-days"])<=7,"Temporary retention must be bounded")
     require(writes==["publish"],"Only publisher may write")
     require(len(secret_steps)==1 and secret_steps[0][0]=="trusted-signing","Secrets escaped dedicated signing step")
+    signing_env=secret_steps[0][1]["env"]
+    require(signing_env.get("TRADE_REVIEW_SIGNING_CERT_SHA256")=="${{ vars.TRADE_REVIEW_SIGNING_CERT_SHA256 }}" and "TRADE_REVIEW_UPGRADE_CERT_SHA256" not in signing_env,"Use permanent Environment public pin, never the old V0.3 upgrade variable")
     require(jobs["trusted-signing"]["environment"]==ENVIRONMENT,"Signing must bind protected Environment")
     for name in ("trusted-signing","signed-install","publish"):
         condition=jobs[name]["if"]

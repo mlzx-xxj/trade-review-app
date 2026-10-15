@@ -11,6 +11,4 @@ if json.loads(Path("dist/SIGNING-STATUS.json").read_text())["configured"]:
     names += ["TradeReview-v2.0-fixed-candidate.apk","FIXED-IDENTITY.json"]
 for name in names:
     m.copy_file(Path("dist")/name,Path("ci-signed/dist")/name)
-if len(names)>1:
-    m.copy_file("signing-fixture/original-signed-test.apk","ci-signed/signing-fixture/original-signed-test.apk")
 output("digest",manifest("ci-signed","signing-result"))

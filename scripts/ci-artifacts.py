@@ -90,7 +90,6 @@ def pack_build():
     if os.environ.get("TRUSTED_MAIN") == "true":
         inputs = Path("ci-trusted-inputs")
         copy_file("app/build/outputs/apk/release/app-release-unsigned.apk", inputs / "app-release-unsigned.apk")
-        copy_file("app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk", inputs / "app-debug-androidTest.apk")
         output("inputs_digest", manifest(inputs, "signing-inputs"))
 
 

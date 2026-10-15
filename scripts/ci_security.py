@@ -7,10 +7,10 @@ import re
 import subprocess
 import urllib.error
 import urllib.request
+from signing_identity import PIN, LEGACY_V03_PIN
 
 REPOSITORY = "mlzx-xxj/trade-review-app"
 ENVIRONMENT = "v03-signing-main"
-PIN = "30d5e88ac7f0ade3d8c5f10d7d894681e7953002377c85b5fa094ee7b71e071c"
 
 
 def require(value, message):

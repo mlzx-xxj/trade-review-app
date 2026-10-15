@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 # Only the repository owner's existing V0.3 identity; never generate a key.
 set -euo pipefail
+# Issue #12: old V0.3 private key is lost; this historical signing route is retired.
+printf '%s\n' 'Historical V1 signing disabled. Use the reviewed V2 protected-main pipeline and V200-PHONE-SIGNING.md.' >&2
+exit 1
 configured=$(python3 scripts/signing-config-state.py)
 mkdir -p dist signing-fixture
 if [[ "$configured" == true ]]; then

@@ -11,15 +11,15 @@ SOURCE='a'*40
 
 
 def rc():return dict(applicationId='com.tradereview.app.rc.v200',versionCode=20,versionName='2.0.0-rc.1',debuggable=False,certificateSha256='b'*64,apkSha256='c'*64,apkBytes=100,abis=['arm64-v8a','armeabi-v7a','x86','x86_64'])
-def status(configured=False):return dict(sourceCommit=SOURCE,configured=configured,originalPinVerified=configured,realPhoneAcceptance='not-confirmed')
+def status(configured=False):return dict(sourceCommit=SOURCE,configured=configured,permanentPinVerified=configured,legacyV03UpgradeCompatible=False,realPhoneAcceptance='not-confirmed')
 
 
 class IdentityTest(unittest.TestCase):
     def test_non_debuggable_isolated_rc_is_allowed(self):gate.require_identity(rc(),'rc')
-    def test_rc_cannot_impersonate_original_identity(self):
+    def test_rc_cannot_impersonate_permanent_identity(self):
         data=rc();data['certificateSha256']=gate.PIN
         with self.assertRaises(ValueError):gate.require_identity(data,'rc')
-    def test_formal_release_requires_original_pin(self):
+    def test_formal_release_requires_permanent_pin(self):
         data=rc();data.update(applicationId='com.tradereview.app',versionName='2.0.0')
         with self.assertRaises(ValueError):gate.require_identity(data,'release')
         data['certificateSha256']=gate.PIN;gate.require_identity(data,'release')
@@ -31,7 +31,7 @@ class IdentityTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as folder:
             root=Path(folder);(root/'TradeReview-v2.0-RC.apk').write_bytes(b'fake-unit-fixture')
             (root/'SIGNING-STATUS.json').write_text(json.dumps(status()))
-            data=rc();saved=dict(data,sourceCommit=SOURCE,stablePublished=False,phoneAcceptance='not-confirmed',upgradeIdentityVerified=False,buildType='rc',classification='isolated-rc')
+            data=rc();saved=dict(data,sourceCommit=SOURCE,**gate.identity_metadata('rc'))
             meta=root/'RC-IDENTITY.json';meta.write_text(json.dumps(saved))
             with patch.object(gate,'inspect',return_value=data):
                 gate.verify_delivery(root,'fake-aapt','fake-signer',SOURCE)
@@ -41,7 +41,7 @@ class IdentityTest(unittest.TestCase):
     def test_configured_secrets_cannot_be_claimed_without_fixed_apk(self):
         with tempfile.TemporaryDirectory() as folder:
             root=Path(folder)
-            for value in [status(True),dict(status(),originalPinVerified=True),dict(status(),realPhoneAcceptance='passed'),dict(status(),configured=0)]:
+            for value in [status(True),dict(status(),permanentPinVerified=True),dict(status(),realPhoneAcceptance='passed'),dict(status(),configured=0)]:
                 (root/'SIGNING-STATUS.json').write_text(json.dumps(value))
                 with self.subTest(value=value),self.assertRaises(ValueError):gate.verify_delivery(root,'fake-aapt','fake-signer',SOURCE)
     def test_unexpected_apk_is_rejected_before_inspection(self):
