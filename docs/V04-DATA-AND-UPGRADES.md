@@ -1,5 +1,7 @@
 # V0.4 数据、统计与升级
 
+> Public 仓库安全更新：本文的旧 Repository Secrets/旧分支签名步骤仅作历史记录，请勿执行。当前必须使用仅允许 main 的受保护 Environment，并移除 Repository 签名副本；见 [当前 CI 安全及手机操作指南](PUBLIC-CI-SECURITY.md)。旧 configure-v03-signing.sh 已停用，不读取私有材料。
+
 0.4.0 / versionCode 4，applicationId 仍为 com.tradereview.app。保留原四页、离线录入、标签、品种、草稿、SAF 备份/恢复和 CSV；新增日历入口。不新增 INTERNET 或宽泛存储权限，不连接行情服务。
 
 ## 数据与备份

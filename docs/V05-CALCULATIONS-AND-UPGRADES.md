@@ -1,5 +1,7 @@
 # V0.5 计算、数据与持续升级
 
+> Public 仓库安全更新：本文的旧 Repository Secrets/旧分支签名步骤仅作历史记录，请勿执行。当前必须使用仅允许 main 的受保护 Environment，并移除 Repository 签名副本；见 [当前 CI 安全及手机操作指南](PUBLIC-CI-SECURITY.md)。旧 configure-v03-signing.sh 已停用，不读取私有材料。
+
 版本 0.5.0 / versionCode 5 / com.tradereview.app；无新增 INTERNET 或宽泛存储权限，不接账户、行情或自动交易。全部金额来自用户本地记录，不汇总不同币种。
 
 ## 专业录入与精度

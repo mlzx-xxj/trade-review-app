@@ -1,5 +1,7 @@
 # 仅用安卓手机配置既有长期签名
 
+> Public 仓库安全更新：本文的旧 Repository Secrets/旧分支签名步骤仅作历史记录，请勿执行。当前必须使用仅允许 main 的受保护 Environment，并移除 Repository 签名副本；见 [当前 CI 安全及手机操作指南](PUBLIC-CI-SECURITY.md)。旧 configure-v03-signing.sh 已停用，不读取私有材料。
+
 固定身份必须仍是 V0.3，公开证书 SHA-256：
 
 ```
