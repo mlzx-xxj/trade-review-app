@@ -20,7 +20,7 @@ class PendingMigrationTest {
     private fun SupportSQLiteDatabase.insert(table:String,value:Any){
         val fields=LedgerJson.element(value).asJsonObject
         val columns=fields.keySet().toList()
-        val args=columns.map { k -> val v=fields[k];when{v.isJsonNull->null;v.asJsonPrimitive.isBoolean->if(v.asBoolean)1 else 0;v.asJsonPrimitive.isNumber->v.asLong;else->v.asString} }.toTypedArray()
+        val args=columns.map<String,Any?> { k -> val v=fields[k];when{v.isJsonNull->null;v.asJsonPrimitive.isBoolean->if(v.asBoolean)1 else 0;v.asJsonPrimitive.isNumber->v.asLong;else->v.asString} }.toTypedArray()
         execSQL("INSERT INTO `$table` (${columns.joinToString(","){"`$it`"}}) VALUES (${columns.joinToString(","){"?"}})",args)
     }
     @Test fun v8ToV9PreservesAllKnownFactsCachesReviewPlanAuditAndLegacyImage(){

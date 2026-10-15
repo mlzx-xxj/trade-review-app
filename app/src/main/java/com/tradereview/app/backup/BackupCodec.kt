@@ -25,7 +25,7 @@ class BackupException(message: String) : IllegalArgumentException(message)
 
 data class BackupData(val exportedAt: String, val trades: List<Trade>, val dailyReviews: List<DailyReview>,
     val tags: List<ManagedTag> = CatalogSeeds.tags, val instruments: List<Instrument> = CatalogSeeds.instruments,
-    val settings: AppSettings = AppSettings(), val drafts: List<EntryDraft> = emptyList(), val sourceSchemaVersion: Int = 7,
+    val settings: AppSettings = AppSettings(), val drafts: List<EntryDraft> = emptyList(), val sourceSchemaVersion: Int = BackupCodec.SCHEMA_VERSION,
     val savedFilters: List<SavedFilter> = emptyList(), val riskRules: List<RiskRules> = emptyList(),
     val contractTemplates: List<ContractTemplate> = emptyList(), val attachments: List<Attachment> = emptyList(),
     val goals: List<ReviewGoal> = emptyList(), val evidenceSettings: EvidenceSettings = EvidenceSettings(),
