@@ -85,6 +85,20 @@ class V200MainUiTest {
         }
     }
 
+    private fun systemNight(mode:String) {
+        shell("cmd uimode night $mode")
+        // Android 10 can defer a system night-mode change until screen-off.
+        // Exercise that real transition, then require the Activity's new config.
+        if(Build.VERSION.SDK_INT==29) {
+            shell("input keyevent KEYCODE_SLEEP")
+            wait { shell("dumpsys power").contains("mWakefulness=Asleep") }
+            shell("input keyevent KEYCODE_WAKEUP")
+            shell("wm dismiss-keyguard")
+        }
+        val expected=if(mode=="yes")android.content.res.Configuration.UI_MODE_NIGHT_YES else android.content.res.Configuration.UI_MODE_NIGHT_NO
+        awaitResumedConfiguration { it.resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK==expected }
+    }
+
     @Test fun realMainDraftLargeFontDarkKeyboardAndRecreationKeepSaveVisible() {
         val display=shell("wm size")
         val scale=shell("settings get system font_scale").trim()
@@ -96,8 +110,7 @@ class V200MainUiTest {
             automation.serviceInfo=automation.serviceInfo.apply { this.flags=this.flags or AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS }
             shell("wm size 640x1136")
             awaitResumedConfiguration { it.resources.displayMetrics.widthPixels==640 }
-            shell("cmd uimode night yes")
-            awaitResumedConfiguration { it.resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK==android.content.res.Configuration.UI_MODE_NIGHT_YES }
+            systemNight("yes")
             shell("settings put system font_scale 1.3")
             awaitResumedConfiguration { it.resources.configuration.fontScale>=1.29f }
             start();fill("12.34")
@@ -126,8 +139,7 @@ class V200MainUiTest {
             awaitResumedConfiguration { it.resources.configuration.orientation==android.content.res.Configuration.ORIENTATION_PORTRAIT }
             shell("settings put system font_scale ${scale.toFloatOrNull()?:1f}")
             awaitResumedConfiguration { kotlin.math.abs(it.resources.configuration.fontScale-(scale.toFloatOrNull()?:1f))<0.01f }
-            shell("cmd uimode night no")
-            awaitResumedConfiguration { it.resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK==android.content.res.Configuration.UI_MODE_NIGHT_NO }
+            systemNight("no")
             val previousSize=Regex("Override size: ([0-9]+x[0-9]+)").find(display)?.groupValues?.get(1)
             shell("wm size ${previousSize?:"reset"}")
             awaitResumedConfiguration()
