@@ -93,11 +93,10 @@
       "fees": null
     },
     "dce-eg": {
-      "url": "https://www.dce.com.cn/dalianshangpin/resource/cms/2018/12/2018120618351815245.pdf",
-      "readCopy": "https://hsqhyx202507141706.oss-cn-beijing.aliyuncs.com/2025/12/03/8da57a36174d432fa2d297f5607276a7%E4%B9%99%E4%BA%8C%E9%86%87%E6%9C%9F%E8%B4%A7%E4%BA%A4%E6%98%93%E6%89%8B%E5%86%8C.pdf",
+      "url": "https://hsqhyx202507141706.oss-cn-beijing.aliyuncs.com/2025/12/03/8da57a36174d432fa2d297f5607276a7%E4%B9%99%E4%BA%8C%E9%86%87%E6%9C%9F%E8%B4%A7%E4%BA%A4%E6%98%93%E6%89%8B%E5%86%8C.pdf",
       "title": "大连商品交易所乙二醇期货交易手册，2024年10月",
       "location": "原手册印刷页10，PDF第7页右侧合约表",
-      "access": "Original official URL inaccessible; independently viewed complete DCE-authored manual via broker-hosted mirror. Not a broker-estimated parameter.",
+      "access": "Complete DCE-authored October 2024 manual read via broker-hosted mirror; cover and contract table independently viewed. No claim that bytes equal the older related official URL.",
       "sha256": "2a245e377e5d89c7b3ce45302fe1d8ee73a3fffa0c3b412a53cb3ec3b4a02110",
       "bytes": 21514189,
       "verifiedDate": "2026-10-15",
@@ -105,7 +104,9 @@
         "eg": "10"
       },
       "marginRate": null,
-      "fees": null
+      "fees": null,
+      "officialRelatedDocument": "https://www.dce.com.cn/dalianshangpin/resource/cms/2018/12/2018120618351815245.pdf",
+      "publisher": "大连商品交易所（手册封面与版权联系页）"
     }
   },
   "unverified": [],
@@ -130,5 +131,19 @@
     "ih",
     "ic",
     "im"
+  ],
+  "referenceAmountChecks": [
+    {
+      "url": "https://www.czce.com.cn/cn/gyjys/jysdt/ggytz/webinfo/2026/6/b4badd9ad3654d43a79ed8577f247ace.htm",
+      "result": "HTTP412; do not infer current product rates from broker summaries or contract minimum margin"
+    },
+    {
+      "url": "https://www.dce.com.cn/dce/file/2026-01-15/17684624156122c9a882b9ae6dcbb289019bc092f6fc1681.pdf",
+      "result": "HTTP503 for raw document; indexed contract unit only. Minimum margin not used as current margin."
+    },
+    {
+      "url": "https://www.cffex.com.cn/u/cms/www/202003/27165822h30l.pdf",
+      "result": "HTTP503 for raw document; indexed multiplier only. Fees stated separately, not inferred."
+    }
   ]
 }

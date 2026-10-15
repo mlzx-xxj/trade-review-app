@@ -7,7 +7,7 @@ import java.time.YearMonth
 
 data class ChartAxis(val minimum:BigDecimal,val maximum:BigDecimal,val step:BigDecimal,val ticks:List<BigDecimal>,val unitPower:Int) {
     val unitLabel get()=when{unitPower==8->"亿元";unitPower==4->"万元";unitPower<0->"×10^${unitPower}元";else->"元"}
-    fun label(value:BigDecimal)=exact(value.movePointLeft(unitPower))
+    fun label(value:BigDecimal)=AutomaticEntry.cents(value.movePointLeft(unitPower))
 }
 object ChartScale {
     fun axis(values:List<BigDecimal>):ChartAxis {

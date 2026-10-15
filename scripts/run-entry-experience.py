@@ -12,7 +12,7 @@ APP="com.tradereview.app"
 CLASS=APP+".v200.TradeEntryExperienceTest"
 ROOT=Path("ci-v200/entry-experience")
 REMOTE="files/entry-experience"
-SCREENSHOTS=("70-entry-stock-filled.png","71-entry-futures-filled.png","72-entry-saved-list.png","73-entry-partial-position.png","74-entry-statistics.png","75-entry-keyboard.png","76-entry-unknown-contract.png","77-entry-after-process-restart.png","78-entry-statistics-bars.png","79-entry-common-pending-filled.png","80-entry-pending-saved-list.png","81-entry-pending-position.png","82-entry-pending-statistics.png")
+SCREENSHOTS=("70-entry-stock-filled.png","71-entry-futures-filled.png","72-entry-saved-list.png","73-entry-partial-position.png","74-entry-statistics.png","75-entry-keyboard.png","76-entry-unknown-contract.png","77-entry-after-process-restart.png","78-entry-statistics-bars.png","79-entry-common-pending-filled.png","80-entry-pending-saved-list.png","81-entry-pending-position.png","82-entry-pending-statistics.png","83-entry-rounded-review.png")
 
 
 def adb(*args,timeout=60):

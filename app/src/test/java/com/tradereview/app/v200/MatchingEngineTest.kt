@@ -9,7 +9,7 @@ class MatchingEngineTest {
     private val day=LocalDate.of(2025,1,2).toEpochDay()
     private fun stock(id:String,price:String="10",qty:String="100",date:Long=day,side:String="buy",fees:String="1")=LedgerExecution(id,"stock","600000","合成A股",date,600,date,0,side,if(side=="buy")"open"else"close",price,qty,fees)
     private fun future(id:String,price:String="3500",qty:String="2",date:Long=day,side:String="buy",effect:String="open",fees:String="2")=LedgerExecution(id,"futures","rb2701","螺纹钢",date,600,date,0,side,effect,price,qty,fees,multiplier="10",parametersConfirmed=true)
-    private fun equal(expected:String,actual:String)=assertEquals(0,decimal(expected).compareTo(decimal(actual)))
+    private fun equal(expected:String,actual:String?){assertNotNull("费用完整的原用例必须得到已知金额",actual);assertEquals(0,decimal(expected).compareTo(decimal(actual)))}
     private fun rejects(block:()->Unit){try{block();fail("invalid facts accepted")}catch(_:LedgerException){}}
     @Test fun stockBuyAndFollowingDaySellUsesActualFees(){val s=MatchingEngine.replay(listOf(stock("a",fees="0.1"),stock("b","11",date=day+1,side="sell",fees="0.66")));equal("100",s.matches.single().gross);equal("99.24",s.matches.single().net);equal("0",s.cycles.single().remaining);equal("10",s.cycles.single().averagePrice)}
     @Test fun stockSameTradingDaySellingIsRejected(){rejects{MatchingEngine.replay(listOf(stock("a"),stock("b",side="sell")))}}

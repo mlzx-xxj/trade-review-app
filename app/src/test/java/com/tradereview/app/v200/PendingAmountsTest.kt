@@ -16,6 +16,14 @@ class PendingAmountsTest {
         val r=MatchingEngine.replay(facts)
         return LedgerSnapshot(accounts=listOf(LedgerAccount("stock","stock","A股"),LedgerAccount("futures","futures","期货")),risks=listOf(MarketRisk("stock"),MarketRisk("futures")),executions=facts,lots=r.lots,matches=r.matches,cycles=r.cycles)
     }
+    @Test fun allNineteenPreviouslyBlockedProductsCanEnterTheLedgerWithoutGuessedAmounts(){
+        val units=mapOf("i" to "100","jm" to "60","j" to "100","eg" to "10","l" to "5","pp" to "5","v" to "5","m" to "10","y" to "10","p" to "10","c" to "10","fg" to "20","sa" to "20","ma" to "10","ta" to "5","if" to "300","ih" to "300","ic" to "200","im" to "200")
+        val facts=units.entries.mapIndexed { index,(code,multiplier) ->
+            val e=prepare(raw("p$index",index.toLong()+1).copy(code=code+"2701"))
+            assertEquals(code,multiplier,e.multiplier);assertNull(e.fees);assertNull(e.marginRate);e
+        }
+        val s=snapshot(facts);assertEquals(19,s.cycles.size);assertTrue(s.cycles.all{it.remaining=="2" && it.fees==null && it.referenceMargin==null});LedgerValidation.snapshot(s)
+    }
     @Test fun confirmedMultiplierAllowsOpeningWithoutInventingFeeMarginOrCost(){
         val e=prepare(raw("a",1));val s=snapshot(listOf(e))
         assertEquals("100",e.multiplier);assertNull(e.fees);assertNull(e.marginRate)
