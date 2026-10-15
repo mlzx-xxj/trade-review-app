@@ -33,7 +33,11 @@ flowchart LR
 
 PR和非main手动只走B/D，始终能下载隔离RC Artifact。签名与发布的表达式同时要求本仓库、push或workflow_dispatch、refs/heads/main、构建/完整模拟器矩阵成功。Python入口再验证事件、workflow_ref、事件SHA=源码SHA，并核对git实际检出SHA。没有pull_request_target、workflow_run、外部产物输入或用户指定源码SHA。
 
-所有checkout均persist-credentials:false；全局和普通构建contents:read，设备/签名还需要actions:read以读取本次Artifact。只有publish声明contents:write。第三方Actions固定完整40位commit；actionlint固定版本及SHA-256。PR Gradle缓存只读，main可写；编译缓存复用，但JVM Test输出不使用up-to-date或build-cache，确保每轮执行测试体。API29/35不删测试，fail-fast:false，保留超时、并发取消、启动ANR拒绝及失败证据。
+所有checkout均persist-credentials:false；全局contents:read，build明确且仅授予contents:read和actions:read。后者用于认证读取Environment及deployment-branch-policies元数据，不授予Secrets、环境管理或部署写权限；PR仍不调用该预检API、不绑定签名Environment。设备/签名还需要actions:read以读取本次Artifact。只有publish声明contents:write，所有Job均禁止actions:write。第三方Actions固定完整40位commit；actionlint固定版本及SHA-256。PR Gradle缓存只读，main可写；编译缓存复用，但JVM Test输出不使用up-to-date或build-cache，确保每轮执行测试体。API29/35不删测试，fail-fast:false，保留超时、并发取消、启动ANR拒绝及失败证据。
+
+GitHub官方REST文档对认证的[Get an environment](https://docs.github.com/en/rest/deployments/environments#get-an-environment)和[List deployment branch policies](https://docs.github.com/en/rest/deployments/branch-policies#list-deployment-branch-policies)均列出Actions repository permissions (read)。Public资源可无需该权限访问，但不以匿名重试或跳过安全校验作为权限修复。2026-10-15的main运行[38720007969](https://github.com/mlzx-xxj/trade-review-app/actions/runs/38720007969)日志显示build Token仅Contents/Metadata read，预检仍返回Verified existing main-only signing Environment；本次未观察到该运行因403关闭签名。补齐显式只读权限消除对公开资源例外的依赖；不将管理Secrets接口403或日志下载403误认为环境预检403。
+
+安全回归实际执行build预检入口：main push/manual必须成功读取两个端点且规则严格；任一端点403仍输出signing_allowed=false，不输出API原始响应；PR/Fork/非main manual从不调用环境API。结构测试拒绝移除build actions:read、扩大PR权限或任何Job的actions:write。新权限下真实main Token预检仍需审核合并后验证；PR全套回归不能冒充该路径实测。
 
 ## 长期私钥必须使用外部保护
 

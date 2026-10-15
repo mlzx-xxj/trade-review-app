@@ -11,10 +11,12 @@ def check(document):
     require(document["permissions"]=={"contents":"read"},"Default token must be read-only")
     jobs=document["jobs"]
     require(set(jobs)=={"build","device-tests","trusted-signing","signed-install","publish"},"Unexpected privilege-bearing jobs")
+    require(jobs["build"].get("permissions")=={"contents":"read","actions":"read"},"Build needs only contents/actions read, including authenticated Environment preflight")
     writes=[];secret_steps=[]
     for name,job in jobs.items():
         permissions=job.get("permissions",{})
         require(set(permissions)<= {"contents","actions"},"Unexpected token capability")
+        require(permissions.get("actions") in (None,"read"),"Actions permission must never allow writes")
         require(permissions.get("contents")==("write" if name=="publish" else "read"),"Wrong contents permission")
         if "write" in permissions.values():writes.append(name)
         require(0<int(job["timeout-minutes"])<=45,"Every job needs a bounded timeout")

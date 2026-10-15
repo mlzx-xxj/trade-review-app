@@ -1,6 +1,6 @@
 # V2 永久签名迁移验证记录（Issue #12）
 
-基线 main `337ac2c9bd5ccc2e70cdf2e7a3abb93be97eff8e`，PR #11 已合并；本轮分支 `codex/permanent-signing-v2`。签名PR依赖独立的 [CI测试修复PR #13](https://github.com/mlzx-xxj/trade-review-app/pull/13)，以其分支为审核基线，签名diff不改变App目录；组合代码的App生产源码/版本、正式applicationId、财务计算、Room或备份格式仍与main一致。请先审核/合并#13，再将本签名PR基线切回main，不自动合并。
+初始基线 main `337ac2c9bd5ccc2e70cdf2e7a3abb93be97eff8e`，PR #11 已合并；本轮分支 `codex/permanent-signing-v2`。独立的 [CI测试修复PR #13](https://github.com/mlzx-xxj/trade-review-app/pull/13)现已合并到main `805a114e08cbca8234eccceae147f3e0bd6ee383`，PR #14改以main为审核目标。签名diff不改变App目录；组合代码的App生产源码/版本、正式applicationId、财务计算、Room或备份格式仍与main一致。不自动合并。
 
 ## 实施内容
 
@@ -15,7 +15,9 @@
 
 2026-10-15 实查 main protected=true；Environment deployment policy 仅 Branch main（无通配符或tag）。Variables/Secrets 管理接口返回403，不能读配置值或据此宣布配置成功。所有者在 Issue/任务说明四个 Secrets 尚未配置，本轮不添加、不索取、不生成任何私钥。
 
-本地实际执行：96 项 Python 安全/签名/启动/产物回归通过，actionlint 和工作流结构检查通过，私钥路径/内容扫描未发现跟踪的私钥；扫描不是完整 GitHub secret scanning。新增用例均使用合成字符串/模拟 apksigner/adb，不是真实新私钥签名或 Android 异证书安装验收。
+此前签名提交实际执行96项Python安全/签名/启动/产物回归，完整Actions见PR中的历史验证表。本次Environment预检修复增加6项回归：build最小只读权限、禁止所有actions写权限、main两个元数据端点成功、任一端点403拒绝且诊断不泄露、PR/Fork/非main不调用API、成功响应仍严格校验main-only规则。本轮最终测试计数和Android结果以PR更新后的Actions记录为准。私钥路径/内容扫描不是完整GitHub secret scanning；合成/模拟apksigner/adb不是真实新私钥签名或Android异证书安装验收。
+
+权限核实：GitHub官方文档为两个认证GET端点列出actions:read，build此前未声明，现补齐该只读权限。最新main运行[38720007969](https://github.com/mlzx-xxj/trade-review-app/actions/runs/38720007969)实际日志显示Contents/Metadata read且Environment预检成功，未发现所疑403；公开资源访问例外不代替显式最小权限。没有更改安全预检本身，403/不安全规则仍禁止签名，PR不绑定Environment、不触碰Secrets。新权限下的main实测须审核合并后完成，不以PR或本地模拟充当真实main凭据验证。
 
 完整本轮 GitHub Actions 结果将记录在关联 PR 的验证表，不能以本地脚本检查替代 Android 编译/API29/API35。PR/非main分支不能签名或发布；真实新 main 签名必须等所有者配置 Environment、审核合并后再验证。Base gh手动触发后续返回HTTP401，连接器仍可维护PR及核对自动CI；不能把旧SHA的手动运行冒充最终SHA手动验证。此文不把历史运行当本轮最终提交结果。
 
