@@ -21,6 +21,12 @@ done
 adb shell setprop dalvik.vm.heapgrowthlimit 256m
 adb shell setprop dalvik.vm.heapsize 512m
 adb shell setprop sys.boot_completed 0
+# Intentional teardown can emit DeadSystemException from clients of the old
+# server. Retain it; do not confuse it with a crash during the NEW boot.
+sleep 2
+adb logcat -d -s ActivityManager:I ActivityTaskManager:I AndroidRuntime:E > ci-stability/heap-controlled-shutdown-logcat.txt
+adb shell 'date "+%m-%d %H:%M:%S"' > ci-stability/heap-new-boot-since.txt
+grep -Eq '^[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}$' ci-stability/heap-new-boot-since.txt
 adb shell start
 for ((attempt=0; attempt<120; attempt++)); do
   if [[ "$(adb shell getprop sys.boot_completed | tr -d '\r\n')" == 1 ]]; then break; fi

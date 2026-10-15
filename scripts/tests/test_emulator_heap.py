@@ -17,6 +17,7 @@ printf '%s\\n' "$*" >> "$TEST_ADB_CALLS"
 case "$*" in
  'shell getprop ro.kernel.qemu') printf '%s\\n' "$TEST_QEMU";;
  'shell id -u') echo 0;;
+ 'shell date '*) echo '10-15 09:00:00';;
  'shell getprop sys.boot_completed') echo 1;;
   'shell getprop init.svc.zygote') echo stopped;;
   'shell getprop init.svc.surfaceflinger') echo stopped;;

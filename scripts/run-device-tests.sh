@@ -27,7 +27,8 @@ if [[ "${V100_CHECK_BOOT:-false}" == true ]]; then
   # Only after the original boot-health gate. Keep the original logs/ANR result.
   bash "$(dirname "${BASH_SOURCE[0]}")/ci-emulator-heap.sh" || exit 1
   sleep 20
-  adb logcat -d -s ActivityManager:I ActivityTaskManager:I AndroidRuntime:E > ci-stability/post-heap-logcat.txt || exit 1
+  IFS= read -r new_boot_since < ci-stability/heap-new-boot-since.txt
+  adb logcat -d -T "$new_boot_since.000" -s ActivityManager:I ActivityTaskManager:I AndroidRuntime:E > ci-stability/post-heap-logcat.txt || exit 1
   adb shell dumpsys activity lastanr > ci-stability/post-heap-last-anr.txt || exit 1
   [[ -s ci-stability/post-heap-logcat.txt && -s ci-stability/post-heap-last-anr.txt ]] || exit 1
   grep -Fq '<no ANR has occurred since boot>' ci-stability/post-heap-last-anr.txt || exit 1
