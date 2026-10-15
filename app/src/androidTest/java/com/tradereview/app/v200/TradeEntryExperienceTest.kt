@@ -60,7 +60,15 @@ class TradeEntryExperienceTest {
     private fun page(index:Int){ui.onNodeWithTag("v2-main-page-$index").performClick()}
     private fun screenshot(name:String){ui.waitForIdle();android.os.SystemClock.sleep(150);val bitmap=requireNotNull(instrumentation.uiAutomation.takeScreenshot());File(output(),"$name.png").outputStream().use{assertTrue(bitmap.compress(android.graphics.Bitmap.CompressFormat.PNG,100,it))};bitmap.recycle()}
     private fun output()=File(requireNotNull(InstrumentationRegistry.getArguments().getString("additionalTestOutputDir")),"entry-experience").apply{mkdirs()}
-    private fun row(e:LedgerExecution){ui.onNodeWithTag("v2-trades").performScrollToNode(hasTestTag("execution-${e.id}"));ui.onNodeWithTag("execution-${e.id}").assertIsDisplayed();ui.onNode(hasText("${e.quantity}${if(e.accountId=="stock")"股"else"手"} × ${e.price} · 费用 ￥${e.fees}") and hasAnyAncestor(hasTestTag("execution-${e.id}")),useUnmergedTree=true).assertIsDisplayed()}
+    private fun row(e:LedgerExecution){
+        ui.onNodeWithTag("v2-trades").performScrollToNode(hasTestTag("execution-${e.id}"))
+        ui.onNodeWithTag("execution-${e.id}").assertIsDisplayed()
+        ui.onNode(hasText("${e.quantity}${if(e.accountId=="stock")"股"else"手"} × ${e.price} · 费用 ￥${e.fees}") and hasAnyAncestor(hasTestTag("execution-${e.id}")),useUnmergedTree=true).assertIsDisplayed()
+        if(e.effect!="open"){
+            val net=exact(sum(facts().matches.filter{it.closeExecutionId==e.id}.map{decimal(it.net)}))
+            ui.onNode(hasText("￥$net") and hasAnyAncestor(hasTestTag("execution-${e.id}")),useUnmergedTree=true).assertIsDisplayed()
+        }
+    }
     private fun begin(market:String,code:String,action:String,price:String,quantity:String){
         page(1);taps=0;scrolls=0;fields.clear();steps.clear();tap("new-execution");selected("entry-market-$market")
         text("execution-code",code)
@@ -103,6 +111,10 @@ class TradeEntryExperienceTest {
         ui.onNode(hasText(" · $direction",substring=true) and hasAnyAncestor(hasTestTag(tag)),useUnmergedTree=true).assertIsDisplayed()
         ui.onNode(hasText(" · $remaining${if(e.accountId=="stock")"股"else"手"}",substring=true) and hasAnyAncestor(hasTestTag(tag)),useUnmergedTree=true).assertIsDisplayed()
         margin?.let{equal(it,requireNotNull(cycle.referenceMargin));ui.onNode(hasText("参考保证金 ￥${BigDecimal(it).stripTrailingZeros().toPlainString()}") and hasAnyAncestor(hasTestTag(tag)),useUnmergedTree=true).assertIsDisplayed()}
+        ui.onNodeWithTag(tag).performClick()
+        ui.onNodeWithTag("v2-position-details").performScrollToNode(hasText("￥${cycle.realized}"))
+        ui.onNodeWithText("￥${cycle.realized}").assertIsDisplayed()
+        back()
     }
     private fun history(){page(1);ui.onNodeWithText("历史成交").performClick()}
     private fun openDetails(e:LedgerExecution){history();row(e);ui.onNodeWithTag("execution-${e.id}").performClick()}
