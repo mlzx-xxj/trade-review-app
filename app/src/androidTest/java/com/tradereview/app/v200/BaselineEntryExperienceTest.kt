@@ -50,7 +50,9 @@ class BaselineEntryExperienceTest {
             assertEquals(if(market=="stock")"1"else"4",saved.fees)
             observations+=mapOf("market" to market,"controlTapsIncludingEntry" to taps,"textFields" to fields.toList(),"requiredScrollCommands" to scrolls,"savedFees" to saved.fees,"feeAndMarginLiveQuoteAvailable" to false,"syntheticFuturesMultiplier" to "10","syntheticFuturesMarginRate" to "0.12","syntheticFuturesActualFees" to "4","result" to "PASS")
         }
-        val folder=File(requireNotNull(InstrumentationRegistry.getArguments().getString("additionalTestOutputDir"))).apply{mkdirs()}
-        File(folder,"entry-baseline-api${android.os.Build.VERSION.SDK_INT}.json").writeText(GsonBuilder().setPrettyPrinting().create().toJson(observations))
+        val folder=File(requireNotNull(InstrumentationRegistry.getArguments().getString("additionalTestOutputDir")),"entry-baseline").apply{mkdirs()}
+        val json=GsonBuilder().setPrettyPrinting().create().toJson(observations)
+        File(folder,"entry-baseline-api${android.os.Build.VERSION.SDK_INT}.json").writeText(json)
+        println("ENTRY_BASELINE="+json)
     }
 }
