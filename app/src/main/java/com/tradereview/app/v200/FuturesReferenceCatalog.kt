@@ -6,7 +6,7 @@ import java.time.LocalDate
 object FuturesReferenceCatalog {
     const val verifiedDate="2026-10-15"
     private val effective=LocalDate.of(2026,10,14).toEpochDay()
-    data class Product(val prefix:String,val name:String,val exchange:String,val multiplier:String?,val margin:String?,val mode:String="per_lot",val open:String?=null,val close:String?=null,val today:String?=null,val referenceContract:String?=null)
+    data class Product(val prefix:String,val name:String,val exchange:String,val multiplier:String?,val margin:String?,val mode:String="unknown",val open:String?=null,val close:String?=null,val today:String?=null,val referenceContract:String?=null)
     val products=listOf(
         Product("cu","铜","SHFE","5","0.11","turnover_rate","0.00005","0.00005","0.00010","cu2701"),
         Product("bc","铜(BC)","INE","5","0.11","turnover_rate","0.00001","0.00001","0.00000","bc2701"),

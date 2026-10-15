@@ -20,7 +20,7 @@ class PendingAmountsTest {
         val units=mapOf("i" to "100","jm" to "60","j" to "100","eg" to "10","l" to "5","pp" to "5","v" to "5","m" to "10","y" to "10","p" to "10","c" to "10","fg" to "20","sa" to "20","ma" to "10","ta" to "5","if" to "300","ih" to "300","ic" to "200","im" to "200")
         val facts=units.entries.mapIndexed { index,(code,multiplier) ->
             val e=prepare(raw("p$index",index.toLong()+1).copy(code=code+"2701"))
-            assertEquals(code,multiplier,e.multiplier);assertNull(e.fees);assertNull(e.marginRate);e
+            assertEquals(code,multiplier,e.multiplier);assertNull(e.fees);assertNull(e.marginRate);assertEquals("unknown",LedgerJson.rule(e.ruleSnapshot!!).feeMode);e
         }
         val s=snapshot(facts);assertEquals(19,s.cycles.size);assertTrue(s.cycles.all{it.remaining=="2" && it.fees==null && it.referenceMargin==null});LedgerValidation.snapshot(s)
     }
@@ -41,12 +41,17 @@ class PendingAmountsTest {
         assertEquals(0,n.wins+n.losses+n.flats);assertTrue(n.daily.isEmpty());assertTrue(n.distribution.isEmpty())
     }
     @Test fun unknownOnePartMakesTheWholeCloseUnknownIncludingKnownOtherLots(){
-        val unknown=prepare(raw("a",1,qty="1"));val r=LedgerJson.rule(unknown.ruleSnapshot!!).copy(openFee="2",todayFee="3")
+        val unknown=prepare(raw("a",1,qty="1"));val r=LedgerJson.rule(unknown.ruleSnapshot!!).copy(feeMode="per_lot",openFee="2",todayFee="3")
         val known=AutomaticEntry.prepare(raw("b",2,qty="1").copy(ruleSnapshot=LedgerJson.text(r)),null,listOf(unknown),emptyList())
         val close=AutomaticEntry.prepare(raw("c",3,"sell","close","810","2").copy(ruleSnapshot=LedgerJson.text(r)),null,listOf(unknown,known),emptyList())
         val s=snapshot(listOf(unknown,known,close));assertEquals(2,s.matches.size)
         assertEquals(1,s.matches.count{it.net!=null});assertNull(LedgerStatistics.closed(s).single().net)
         assertNull(s.cycles.single().realized);LedgerValidation.snapshot(s)
+    }
+    @Test fun unknownFeeTypeCannotBeCombinedWithAGuessedRate(){
+        val e=prepare(raw("a",1));val r=LedgerJson.rule(e.ruleSnapshot!!)
+        assertEquals("unknown",r.feeMode)
+        assertThrows(LedgerException::class.java){LedgerValidation.rule(r.copy(openFee="2"))}
     }
     @Test fun zeroOfficialBaseFeeIsKnownAndReceivesExactlyOnePenny(){
         val r=LedgerContractRule("synthetic","i2701","仅合成","100",null,"per_lot","0","0","0",effectiveDay=day,verified=true)
@@ -54,12 +59,12 @@ class PendingAmountsTest {
         val quote=AutomaticEntry.estimate(e,snapshot(listOf(e)));assertEquals("0.01",quote.fees);assertNull(quote.margin)
     }
     @Test fun missingOpeningFeeDoesNotHideKnownClosingFeeButNetStaysUnknown(){
-        val a=prepare(raw("a",1));val r=LedgerJson.rule(a.ruleSnapshot!!).copy(todayFee="2")
+        val a=prepare(raw("a",1));val r=LedgerJson.rule(a.ruleSnapshot!!).copy(feeMode="per_lot",todayFee="2")
         val b=AutomaticEntry.prepare(raw("b",2,"sell","close","810","1").copy(ruleSnapshot=LedgerJson.text(r)),null,listOf(a),emptyList())
         assertEquals("2.01",b.fees);val m=snapshot(listOf(a,b)).matches.single();assertEquals("2.01",m.closeFees);assertNull(m.net)
     }
     @Test fun futureCatalogUpdateNeverBackfillsUnknownHistoricalFeesSilently(){
-        val e=prepare(raw("a",1));val future=LedgerJson.rule(e.ruleSnapshot!!).copy(openFee="50",marginRate="0.15")
+        val e=prepare(raw("a",1));val future=LedgerJson.rule(e.ruleSnapshot!!).copy(feeMode="per_lot",openFee="50",marginRate="0.15")
         val unchanged=AutomaticEntry.prepare(e,e,emptyList(),listOf(future));assertEquals(e,unchanged)
     }
     @Test fun strictValidationRejectsZeroForgeryAndMissingActualFees(){
@@ -79,7 +84,7 @@ class PendingAmountsTest {
     @Test fun pendingAmountsSurviveJsonZipMergeAndCsvWithoutTurningIntoZero(){
         val a=prepare(raw("a",1));val b=prepare(raw("b",2,"sell","close","810","1"),listOf(a));val s=snapshot(listOf(a,b))
         val data=BackupData("2026-10-15T00:00:00Z",emptyList(),emptyList(),ledger=s)
-        val encoded=BackupCodec.encode(data);assertTrue(encoded.contains("\"schemaVersion\":8"));assertEquals(s,BackupCodec.decode(encoded).ledger)
+        val encoded=BackupCodec.encode(data);assertEquals(8,BackupCodec.strictObject(encoded)["schemaVersion"].asInt);assertEquals(s,BackupCodec.decode(encoded).ledger)
         assertEquals(s,LedgerRepository.merge(s,s));assertTrue(LedgerCsv.encode(s).contains("待估算"));assertTrue(LedgerCsv.encode(s).contains("待计算"))
         val root=kotlin.io.path.createTempDirectory("pending-zip").toFile()
         try{val target=File(root,"full.zip");FullZipArchive.write(data.copy(backupScope="with-attachment-files"),{error("no images")},target)
@@ -90,5 +95,19 @@ class PendingAmountsTest {
         assertEquals("￥1.01",amount("1.005"));assertEquals("￥-1.01",amount("-1.005"));assertEquals("￥0.00",amount("0"))
         assertEquals("待估算",amount(null));assertEquals("￥3.00",moneyText(BigDecimal("3")))
         assertEquals("971.833333333333",exact(decimal("971.833333333333")))
+    }
+    @Test fun previousV2Json7IsStillAcceptedButCannotPretendItSupportedNullFees(){
+        fun version7(data:BackupData):String {
+            val root=BackupCodec.strictObject(BackupCodec.encode(data));root.remove("checksumSha256");root.addProperty("schemaVersion",7)
+            val gson=com.google.gson.GsonBuilder().serializeNulls().disableHtmlEscaping().create()
+            val bytes=gson.toJson(root).toByteArray(Charsets.UTF_8)
+            root.addProperty("checksumSha256",java.security.MessageDigest.getInstance("SHA-256").digest(bytes).joinToString(""){"%02x".format(it)})
+            return gson.toJson(root)
+        }
+        val known=raw("legacy",1).copy(feeSource="actual",fees="1.123456",multiplier="100",parametersConfirmed=true)
+        val s=snapshot(listOf(known));val data=BackupData("2026-10-15T00:00:00Z",emptyList(),emptyList(),ledger=s)
+        val restored=BackupCodec.decode(version7(data));assertEquals(7,restored.sourceSchemaVersion);assertEquals(s,restored.ledger)
+        val pending=snapshot(listOf(prepare(raw("pending",1))))
+        assertThrows(BackupException::class.java){BackupCodec.decode(version7(data.copy(ledger=pending)))}
     }
 }

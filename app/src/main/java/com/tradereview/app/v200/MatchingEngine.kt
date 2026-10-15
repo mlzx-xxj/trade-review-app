@@ -106,7 +106,7 @@ object LedgerRisk {
 object LedgerFees {
     fun stock(price:String,quantity:String,rate:String)=exact(decimal(price)*decimal(quantity)*decimal(rate))
     private fun cost(rule:LedgerContractRule,e:LedgerExecution,q:BigDecimal,rate:String?):BigDecimal {
-        ledgerRequire(rate!=null,"本次开平手续费规则缺失")
+        ledgerRequire(rate!=null && rule.feeMode!="unknown","本次开平手续费规则缺失")
         val turnover=decimal(e.price)*q*decimal(requireNotNull(rule.multiplier))
         val base=if(rule.feeMode=="per_lot")decimal(rate!!)*q else decimal(rate!!)*turnover
         val additional=when(rule.addMode){"per_lot"->decimal(requireNotNull(rule.addValue))*q;"turnover_rate"->decimal(requireNotNull(rule.addValue))*turnover;else->ZERO}

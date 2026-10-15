@@ -127,7 +127,7 @@ object BackupCodec {
                 counts.integer("plans") == data.planCount.toLong() && counts.integer("reviews") == data.reviewCount.toLong(), "数量不一致，备份可能不完整")
             if(version>=7)requireBackup(counts.integer("ledgerRecords")==ledgerRecords(data).toLong(),"新账本数量校验不一致")
             if(version<8)data.ledger?.let { l ->
-                requireBackup(l.executions.all{it.fees!=null} && l.cycles.all{it.openCost!=null && it.fees!=null && it.realized!=null} && l.lots.all{it.allocatedFees!=null} && l.matches.all{it.openFees!=null && it.closeFees!=null && it.net!=null},"旧格式不支持待估算金额")
+                requireBackup(l.rules.none{it.feeMode=="unknown"} && l.executions.none{it.ruleSnapshot?.let(com.tradereview.app.v200.LedgerJson::rule)?.feeMode=="unknown"} && l.executions.all{it.fees!=null} && l.cycles.all{it.openCost!=null && it.fees!=null && it.realized!=null} && l.lots.all{it.allocatedFees!=null} && l.matches.all{it.openFees!=null && it.closeFees!=null && it.net!=null},"旧格式不支持待估算金额")
             }
             val checksum = root.string("checksumSha256")
             val canonical = digest(gson.toJson(payload(data, version)))
