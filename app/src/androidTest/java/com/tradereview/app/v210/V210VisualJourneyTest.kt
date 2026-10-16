@@ -160,8 +160,8 @@ class V210VisualJourneyTest {
             ui.onNodeWithTag(dirTag,useUnmergedTree=true).assertTextEquals(directionLabel(c))
             val actual=renderedColor(dirTag,direction)
             listOf("quantity","price","net","fees").forEach{field->ui.onNodeWithTag("position-$field-${c.id}",useUnmergedTree=true).performScrollTo().assertIsDisplayed()}
-            if(c.id==long.id){ui.onNodeWithTag("position-net-${c.id}").assertTextEquals("￥971.83");renderedColor("position-net-${c.id}",profit);capture("density-long",tag,densityScreens)}
-            if(c.id==short.id){ui.onNodeWithTag("position-net-${c.id}").assertTextEquals("￥-108.03");renderedColor("position-net-${c.id}",loss);capture("density-short",tag,densityScreens)}
+            if(c.id==long.id){ui.onNodeWithTag("position-net-${c.id}",useUnmergedTree=true).assertTextEquals("￥971.83");renderedColor("position-net-${c.id}",profit);capture("density-long",tag,densityScreens)}
+            if(c.id==short.id){ui.onNodeWithTag("position-net-${c.id}",useUnmergedTree=true).assertTextEquals("￥-108.03");renderedColor("position-net-${c.id}",loss);capture("density-short",tag,densityScreens)}
             if(c.code=="i2701")capture("density-pending",tag,densityScreens)
             mapOf("code" to c.code,"direction" to c.direction,"directionLabel" to directionLabel(c),"directionArgb" to actual,"remaining" to c.remaining,"averagePrice" to c.averagePrice,"realized" to c.realized,"displayedNet" to moneyText(c.realized?.let(::decimal)),"fees" to c.fees,"referenceMargin" to c.referenceMargin,"heightDp" to bounds.bottom.value-bounds.top.value)
         }
