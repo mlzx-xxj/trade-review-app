@@ -61,7 +61,7 @@ class V210LayoutTest {
         ui.runOnIdle{model.page(1);model.closeEditor();model.handle["v2-entry-fields"]=null}
         waitFor{model.state.value.ledger==facts()}
         ui.onNodeWithTag("new-execution").performClick();ui.onNodeWithTag("entry-market-stock").performClick()
-        listOf("entry-market-stock","entry-market-futures","save-execution","entry-instrument-picker").forEach{tag->val bounds=ui.onNodeWithTag(tag).getUnclippedBoundsInRoot();assertTrue("48dp target: $tag",bounds.height.value>=48f&&bounds.width.value>=48f)}
+        listOf("entry-market-stock","entry-market-futures","save-execution","entry-instrument-picker").forEach{tag->val bounds=ui.onNodeWithTag(tag).getUnclippedBoundsInRoot();assertTrue("48dp target: $tag",bounds.bottom.value-bounds.top.value>=48f&&bounds.right.value-bounds.left.value>=48f)}
         field("execution-code","688888");field("execution-price","123456.78");field("execution-quantity","123456")
         ui.onNodeWithTag("entry-options").performScrollTo().performClick();field("execution-name","超长名称合成股票用于验证大字体和持仓信息的完整呈现")
         waitFor{ui.onNodeWithTag("entry-estimated-fee").fetchSemanticsNode().config[androidx.compose.ui.semantics.SemanticsProperties.Text].joinToString(""){it.text}=="预计手续费：¥1,524,148.02"}
