@@ -62,6 +62,16 @@ def main():
             assert abs(data['fontScale']-(1.3 if profile.startswith('narrow') else 1.0))<.01
             assert len(data['observations'])==5 and len(data['screenshots'])==11
             assert all(s['file'] in names for s in data['screenshots'])
+            density=data['directionDensity']
+            assert density['result']=='PASS' and density['allExecutionsCreatedViaRealForm'] is True
+            assert density['positionCount']==4 and density['executionCount']==7 and density['additionalExecutions']==2
+            assert len(density['positions'])==4 and {s['scene'] for s in density['screenshots']}=={'density-top','density-long','density-short','density-pending'}
+            assert all(s['file'] in names for s in density['screenshots'])
+            expected='#FFB4CBF7' if data['night'] else '#FF304C75'
+            assert all(p['directionArgb']==expected for p in density['positions'])
+            rb=[p for p in density['positions'] if p['code']=='rb2701']
+            assert {p['direction'] for p in rb}=={'long','short'}
+            assert {p['displayedNet'] for p in rb}=={'￥971.83','￥-108.03'}
         visual_runner=list(directory.rglob(f'v210-runner-api{api}.json'));assert len(visual_runner)==1
         visual=json.loads(visual_runner[0].read_text());assert visual['complete'] is True and visual['actualInstrumentations']==4 and visual['result']=='PASS'
         layout_reports=list(directory.rglob(f'v210-layout-api{api}.json'));assert len(layout_reports)==1

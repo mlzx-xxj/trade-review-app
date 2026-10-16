@@ -6,6 +6,10 @@ import android.os.Build
 import android.os.ParcelFileDescriptor
 import android.view.accessibility.AccessibilityWindowInfo
 import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.semantics.SemanticsActions
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.lifecycle.ViewModelProvider
@@ -54,6 +58,7 @@ class V210VisualJourneyTest {
     private lateinit var model:V200ViewModel
     private val results=mutableListOf<Map<String,Any?>>()
     private val screens=mutableListOf<Map<String,Any?>>()
+    private val densityScreens=mutableListOf<Map<String,Any?>>()
     private var taps=0;private var scrolls=0;private val fields=linkedSetOf<String>()
     private fun output()=File(requireNotNull(InstrumentationRegistry.getArguments().getString("additionalTestOutputDir")),"v210-visual").apply{check(isDirectory||mkdirs())}
     private fun shell(command:String)=ParcelFileDescriptor.AutoCloseInputStream(instrumentation.uiAutomation.executeShellCommand(command)).bufferedReader().use{it.readText()}
@@ -77,13 +82,13 @@ class V210VisualJourneyTest {
     private fun type(tag:String,value:String){tap(tag);ui.onNodeWithTag(tag).performTextReplacement(value);fields+=tag;waitFor{instrumentation.uiAutomation.windows.any{it.type==AccessibilityWindowInfo.TYPE_INPUT_METHOD}};settledViewport()}
     private fun select(tag:String){if(!ui.onNodeWithTag(tag).fetchSemanticsNode().config.getOrElse(SemanticsProperties.Selected){false})tap(tag)}
     private fun shown(tag:String)=ui.onNodeWithTag(tag).fetchSemanticsNode().config[SemanticsProperties.Text].joinToString(""){it.text}
-    private fun capture(scene:String,tag:String?=null){
+    private fun capture(scene:String,tag:String?=null,collection:MutableList<Map<String,Any?>> = screens){
         ui.waitForIdle();android.os.SystemClock.sleep(200)
         val bitmap=requireNotNull(instrumentation.uiAutomation.takeScreenshot())
         val name="v210-$profile-$scene.png"
         File(output(),name).outputStream().use{assertTrue(bitmap.compress(android.graphics.Bitmap.CompressFormat.PNG,100,it))}
         val bounds=tag?.let{ui.onNodeWithTag(it).getUnclippedBoundsInRoot()}
-        screens+=mapOf("scene" to scene,"file" to name,"pixels" to listOf(bitmap.width,bitmap.height),"componentDp" to bounds?.let{listOf(it.left.value,it.top.value,it.right.value,it.bottom.value)})
+        collection+=mapOf("scene" to scene,"file" to name,"pixels" to listOf(bitmap.width,bitmap.height),"componentDp" to bounds?.let{listOf(it.left.value,it.top.value,it.right.value,it.bottom.value)})
         bitmap.recycle()
     }
     private fun begin(market:String,code:String,action:String,price:String,quantity:String,fee:String,margin:String?=null){
@@ -107,6 +112,61 @@ class V210VisualJourneyTest {
         return e
     }
     private fun position(e:LedgerExecution,scene:String){page(1);ui.onNodeWithText("当前持仓").performClick();val tag="position-cycle_${e.id}";ui.onNodeWithTag("v2-trades").performScrollToNode(hasTestTag(tag));ui.onNodeWithTag(tag).assertIsDisplayed();capture(scene,tag)}
+
+    /** Two additional real-form trades; never mixed into the five baseline operation counts. */
+    private fun saveDirectionFixture(fee:String):LedgerExecution{
+        val before=facts();tap("save-execution")
+        waitFor{!model.busy.value&&!model.editor.value&&model.state.value.ledger?.executions?.size==before.executions.size+1}
+        assertNull(model.pending.value)
+        val e=facts().executions.single{v->before.executions.none{it.id==v.id}}
+        assertEquals(fee,e.fees)
+        ui.onNodeWithTag("v2-trades").performScrollToNode(hasTestTag("execution-${e.id}"));ui.onNodeWithTag("execution-${e.id}").assertIsDisplayed()
+        return e
+    }
+    private fun renderedColor(tag:String,expected:Color):String{
+        val layouts=mutableListOf<TextLayoutResult>()
+        ui.onNodeWithTag(tag,useUnmergedTree=true).assertIsDisplayed().performSemanticsAction(SemanticsActions.GetTextLayoutResult){assertTrue(it(layouts))}
+        assertEquals(1,layouts.size)
+        val color=layouts.single().layoutInput.style.color
+        assertEquals("Actual rendered color: $tag",expected.toArgb(),color.toArgb())
+        return String.format("#%08X",color.toArgb())
+    }
+    private fun directionDensity():Map<String,Any?>{
+        begin("futures","rb2701","sell-open","4000","2","¥8.01","预计新增保证金占用：¥5,600.00")
+        saveDirectionFixture("8.01")
+        begin("futures","rb2701","buy-close","4010","1","¥4.02","平仓后预计剩余占用：¥5,257.00")
+        saveDirectionFixture("4.02")
+        val ledger=facts();assertEquals(7,ledger.executions.size)
+        val current=ledger.cycles.filter{decimal(it.remaining)>BigDecimal.ZERO};assertEquals(4,current.size)
+        val long=current.single{it.code=="rb2701"&&it.direction=="long"};val short=current.single{it.code=="rb2701"&&it.direction=="short"}
+        assertEquals("1",long.remaining);assertEquals("1",short.remaining)
+        assertEquals(0,BigDecimal("971.833333333333").compareTo(decimal(requireNotNull(long.realized))))
+        assertEquals(0,BigDecimal("-108.025").compareTo(decimal(requireNotNull(short.realized))))
+        val night=app.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK==Configuration.UI_MODE_NIGHT_YES
+        val direction=if(night)Color(0xFFB4CBF7)else Color(0xFF304C75)
+        val profit=if(night)Color(0xFFFFB4B0)else Color(0xFFAF273C)
+        val loss=if(night)Color(0xFF80D5AF)else Color(0xFF087044)
+        page(1);ui.onNodeWithText("当前持仓").performClick();waitFor{model.message.value==null}
+        ui.onNodeWithTag("v2-trades").performScrollToIndex(0);capture("density-top",collection=densityScreens)
+        val rows=current.map{c->
+            val tag="position-${c.id}"
+            ui.onNodeWithTag("v2-trades").performScrollToNode(hasTestTag(tag))
+            val bounds=ui.onNodeWithTag(tag).getUnclippedBoundsInRoot()
+            if(profile!="suite"){
+                val expected=if(c.accountId=="stock")if(profile.startsWith("narrow"))293.5 else 236.5 else if(profile.startsWith("narrow"))258.5 else 208.5
+                assertEquals("No density regression: ${c.code} ${c.direction}",expected,(bounds.bottom.value-bounds.top.value).toDouble(),.6)
+            }
+            val dirTag="position-direction-${c.id}"
+            ui.onNodeWithTag(dirTag,useUnmergedTree=true).assertTextEquals(directionLabel(c))
+            val actual=renderedColor(dirTag,direction)
+            listOf("quantity","price","net","fees").forEach{field->ui.onNodeWithTag("position-$field-${c.id}",useUnmergedTree=true).performScrollTo().assertIsDisplayed()}
+            if(c.id==long.id){ui.onNodeWithTag("position-net-${c.id}").assertTextEquals("￥971.83");renderedColor("position-net-${c.id}",profit);capture("density-long",tag,densityScreens)}
+            if(c.id==short.id){ui.onNodeWithTag("position-net-${c.id}").assertTextEquals("￥-108.03");renderedColor("position-net-${c.id}",loss);capture("density-short",tag,densityScreens)}
+            if(c.code=="i2701")capture("density-pending",tag,densityScreens)
+            mapOf("code" to c.code,"direction" to c.direction,"directionLabel" to directionLabel(c),"directionArgb" to actual,"remaining" to c.remaining,"averagePrice" to c.averagePrice,"realized" to c.realized,"displayedNet" to moneyText(c.realized?.let(::decimal)),"fees" to c.fees,"referenceMargin" to c.referenceMargin,"heightDp" to bounds.bottom.value-bounds.top.value)
+        }
+        return mapOf("allExecutionsCreatedViaRealForm" to true,"additionalExecutions" to 2,"executionCount" to 7,"positionCount" to 4,"positions" to rows,"screenshots" to densityScreens,"result" to "PASS")
+    }
 
     @Test fun sameRealFormDataAndDeviceVisualEvidence(){
         assertEquals("Disposable emulator only","1",shell("getprop ro.kernel.qemu").trim())
@@ -142,13 +202,14 @@ class V210VisualJourneyTest {
         val pending=save("i2701",null,"2");position(pending,"pending-position")
         assertNull(facts().cycles.single{it.code=="i2701"}.referenceMargin)
         page(3);ui.onNodeWithTag("statistics-period-month").performClick();waitFor{ui.onAllNodesWithTag("period-realized-net").fetchSemanticsNodes().isNotEmpty()};capture("statistics")
+        val density=directionDensity()
         val conf=app.resources.configuration
         if(profile!="suite"){
             assertEquals(profile.contains("dark"),conf.uiMode and Configuration.UI_MODE_NIGHT_MASK==Configuration.UI_MODE_NIGHT_YES)
             assertEquals(if(profile.startsWith("narrow"))1.3f else 1f,conf.fontScale,0.01f)
             assertTrue("Expected narrow/regular portrait device",conf.screenWidthDp in (if(profile.startsWith("narrow"))318..322 else 358..362))
         }
-        val proof=mapOf("profile" to profile,"api" to Build.VERSION.SDK_INT,"device" to Build.MODEL,"screenWidthDp" to conf.screenWidthDp,"screenHeightDp" to conf.screenHeightDp,"fontScale" to conf.fontScale,"night" to (conf.uiMode and Configuration.UI_MODE_NIGHT_MASK==Configuration.UI_MODE_NIGHT_YES),"syntheticOnly" to true,"clockBeijing" to "2026-10-14T10:00:00+08:00","allExecutionsCreatedViaRealForm" to true,"ledger" to LedgerJson.element(facts()),"observations" to results,"screenshots" to screens,"realPhone" to "not-executed","result" to "PASS")
+        val proof=mapOf("profile" to profile,"api" to Build.VERSION.SDK_INT,"device" to Build.MODEL,"screenWidthDp" to conf.screenWidthDp,"screenHeightDp" to conf.screenHeightDp,"fontScale" to conf.fontScale,"night" to (conf.uiMode and Configuration.UI_MODE_NIGHT_MASK==Configuration.UI_MODE_NIGHT_YES),"syntheticOnly" to true,"clockBeijing" to "2026-10-14T10:00:00+08:00","allExecutionsCreatedViaRealForm" to true,"ledger" to LedgerJson.element(facts()),"observations" to results,"screenshots" to screens,"directionDensity" to density,"realPhone" to "not-executed","result" to "PASS")
         File(output(),"v210-visual-$profile-api${Build.VERSION.SDK_INT}.json").writeText(GsonBuilder().serializeNulls().setPrettyPrinting().create().toJson(proof))
     }
 }

@@ -62,7 +62,8 @@ fun sellable(state:LedgerSnapshot,cycle:LedgerCycle,day:Long):String {val facts=
                     Text(c.name,Modifier.weight(1f,fill=false).testTag("position-name-${c.id}"),style=MaterialTheme.typography.titleMedium,maxLines=2,overflow=TextOverflow.Ellipsis)
                     if(c.name!=c.code)Text(c.code,style=MaterialTheme.typography.labelMedium,color=MaterialTheme.colorScheme.onSurfaceVariant)
                 }
-                StatusPill(directionLabel(c),color=if(stock)MaterialTheme.colorScheme.primary else if(c.direction=="long")profitColor()else lossColor(),modifier=Modifier.testTag("position-direction-${c.id}"))
+                // Direction describes the position, never its financial result.
+                StatusPill(directionLabel(c),color=MaterialTheme.colorScheme.primary,modifier=Modifier.testTag("position-direction-${c.id}"))
             }
             Row(horizontalArrangement=Arrangement.spacedBy(12.dp)){
                 PositionMetric("剩余持仓", "${c.remaining} $unit","position-quantity-${c.id}",Modifier.weight(1f),large=true)

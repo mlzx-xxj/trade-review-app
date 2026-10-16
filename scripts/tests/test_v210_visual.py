@@ -26,6 +26,7 @@ class VisualRunnerTest(unittest.TestCase):
         self.assertEqual(("regular-light","regular-dark","narrow-light","narrow-dark"),runner.PROFILES)
         self.assertTrue({"stock-filled","futures-filled","keyboard","stock-position","futures-position","partial-position","pending-filled","pending-position","empty"}.issubset(runner.SCENES))
         self.assertEqual(len(runner.SCENES),len(set(runner.SCENES)))
+        self.assertEqual({'density-top','density-long','density-short','density-pending'},set(runner.DENSITY_SCENES))
 
     def test_physical_phone_rejected_before_any_mutation(self):
         with patch.object(runner.entry,"adb",return_value="0") as adb:

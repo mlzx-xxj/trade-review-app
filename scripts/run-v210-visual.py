@@ -17,10 +17,11 @@ APP = entry.APP
 ROOT = Path("ci-v200/v210-visual")
 PROFILES = ("regular-light", "regular-dark", "narrow-light", "narrow-dark")
 SCENES = ("empty", "stock-filled", "stock-position", "futures-filled", "keyboard", "futures-position", "saved-list", "partial-position", "pending-filled", "pending-position", "statistics")
+DENSITY_SCENES = ("density-top", "density-long", "density-short", "density-pending")
 
 
 def collect(api, profile):
-    names = tuple(f"v210-{profile}-{scene}.png" for scene in SCENES + ("failure",)) + (f"v210-visual-{profile}-api{api}.json", f"v210-{profile}-failure.txt")
+    names = tuple(f"v210-{profile}-{scene}.png" for scene in SCENES + DENSITY_SCENES + ("failure",)) + (f"v210-visual-{profile}-api{api}.json", f"v210-{profile}-failure.txt")
     for name in names:
         result = subprocess.run(["adb", "shell", "-T", "run-as", APP, "cat", f"files/v210-evidence/{profile}/v210-visual/{name}"], capture_output=True, timeout=30, check=False)
         if result.returncode:
@@ -74,7 +75,10 @@ def main():
             report = json.loads((ROOT / profile / f"v210-visual-{profile}-api{api}.json").read_text())
             assert report["result"] == "PASS" and report["allExecutionsCreatedViaRealForm"] is True
             assert len(report["observations"]) == 5 and {s["scene"] for s in report["screenshots"]} == set(SCENES)
-            for scene in SCENES:
+            density=report["directionDensity"]
+            assert density["result"]=="PASS" and density["positionCount"]==4 and density["executionCount"]==7 and density["additionalExecutions"]==2
+            assert {s["scene"] for s in density["screenshots"]}==set(DENSITY_SCENES)
+            for scene in SCENES + DENSITY_SCENES:
                 assert (ROOT / profile / f"v210-{profile}-{scene}.png").is_file()
             profiles.append(dict(profile=profile, runnerLogSha256=hashlib.sha256(log.read_bytes()).hexdigest(), result="PASS"))
     finally:
