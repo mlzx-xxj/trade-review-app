@@ -121,9 +121,9 @@ class TradeEntryExperienceTest {
         ui.onNodeWithTag("v2-trades").performScrollToNode(hasTestTag(tag))
         ui.onNodeWithTag(tag).assertIsDisplayed()
         val direction=if(e.accountId=="stock")"股票"else if(cycle.direction=="long")"多头"else"空头"
-        ui.onNode(hasText(" · $direction",substring=true) and hasAnyAncestor(hasTestTag(tag)),useUnmergedTree=true).assertIsDisplayed()
-        ui.onNode(hasText(" · $remaining${if(e.accountId=="stock")"股"else"手"}",substring=true) and hasAnyAncestor(hasTestTag(tag)),useUnmergedTree=true).assertIsDisplayed()
-        margin?.let{equal(it,requireNotNull(cycle.referenceMargin));ui.onNode(hasText("参考保证金 ${amount(it)}") and hasAnyAncestor(hasTestTag(tag)),useUnmergedTree=true).assertIsDisplayed()}
+        ui.onNodeWithTag("position-direction-${cycle.id}",useUnmergedTree=true).assertTextEquals(direction).assertIsDisplayed()
+        ui.onNodeWithTag("position-quantity-${cycle.id}",useUnmergedTree=true).assertTextEquals("$remaining ${if(e.accountId=="stock")"股"else"手"}").assertIsDisplayed()
+        margin?.let{equal(it,requireNotNull(cycle.referenceMargin));ui.onNodeWithTag("position-margin-${cycle.id}",useUnmergedTree=true).assertTextEquals(amount(it)).assertIsDisplayed()}
         ui.onNodeWithTag(tag).performClick()
         ui.onNodeWithTag("v2-position-details").performScrollToNode(hasText(amount(cycle.realized)))
         ui.onNodeWithText(amount(cycle.realized)).assertIsDisplayed()
@@ -223,7 +223,7 @@ class TradeEntryExperienceTest {
             val c=after.cycles.single{it.code=="i2701"};assertEquals(remaining,c.remaining);assertNull(c.fees);assertNull(c.referenceMargin)
             if(action=="sell-close"){val match=after.matches.single{it.closeExecutionId==e.id};assertEquals("1000",match.gross);assertNull(match.openFees);assertNull(match.closeFees);assertNull(match.net);assertNull(c.realized)}
             verifyPositionUi(after,e,remaining,null)
-            page(1);ui.onNodeWithText("当前持仓").performClick();ui.onNodeWithTag("v2-trades").performScrollToNode(hasTestTag("position-${c.id}"));ui.onNode(hasText("累计手续费 待估算") and hasAnyAncestor(hasTestTag("position-${c.id}")),useUnmergedTree=true).assertIsDisplayed();screenshot("81-entry-pending-position")
+            page(1);ui.onNodeWithText("当前持仓").performClick();ui.onNodeWithTag("v2-trades").performScrollToNode(hasTestTag("position-${c.id}"));ui.onNodeWithTag("position-fees-${c.id}",useUnmergedTree=true).assertTextEquals("待估算").assertIsDisplayed();screenshot("81-entry-pending-position")
             observations+=mapOf("operation" to "pending-common-product","code" to "i2701","action" to action,"price" to price,"quantity" to qty,"multiplier" to e.multiplier,"displayedFees" to "待估算","savedFees" to e.fees,"savedMarginRate" to e.marginRate,"remaining" to c.remaining,"realized" to c.realized,"result" to "PASS")
         }
         assertEquals(2,facts().executions.count{it.id !in originals})

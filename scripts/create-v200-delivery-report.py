@@ -45,7 +45,7 @@ def main():
     metrics={}
     for api in [29,35]:
         directory=root/'devices'/f'android-test-reports-api{api}'
-        counts[f'api{api}']=junit(directory,'/androidTest-results/',134,{'ExperienceDataTest':5,'ReleaseExperienceUiTest':4,'LedgerMigrationTest':2,'PendingMigrationTest':3,'LedgerRepositoryTest':19,'TradeEntryExperienceTest':1,'V200MainUiTest':6})
+        counts[f'api{api}']=junit(directory,'/androidTest-results/',136,{'ExperienceDataTest':5,'ReleaseExperienceUiTest':4,'LedgerMigrationTest':2,'PendingMigrationTest':3,'LedgerRepositoryTest':19,'TradeEntryExperienceTest':1,'V200MainUiTest':6,'V210VisualJourneyTest':1,'V210LayoutTest':1})
         names={f.name for f in (Path(a.screenshots)/f'v200-emulator-screenshots-api{api}').rglob('*.png')}
         for prefix in [f'{i:02}-' for i in list(range(1,33))+list(range(40,56))+list(range(70,84))]:assert any(n.startswith(prefix) for n in names),f'Missing API {api} screenshot {prefix}'
         files=[f'{kind}-api{api}.json' for kind in ['performance','images','activity','ocr-evaluation','process-probes','attachment-queries','package-probes','trade-entry-experience','entry-reopen','entry-runner']]
@@ -53,6 +53,18 @@ def main():
             paths=list(directory.rglob(filename));assert paths,filename
             contents=[json.loads(f.read_text()) for f in paths];assert all(c==contents[0] for c in contents)
             metrics[filename]=contents[0]
+        for profile in ['regular-light','regular-dark','narrow-light','narrow-dark']:
+            filename=f'v210-visual-{profile}-api{api}.json'
+            paths=list(directory.rglob(filename));assert len(paths)==1,filename
+            data=json.loads(paths[0].read_text());metrics[filename]=data
+            assert data['result']=='PASS' and data['syntheticOnly'] is True and data['allExecutionsCreatedViaRealForm'] is True
+            assert data['profile']==profile and data['api']==api and data['night']==profile.endswith('dark')
+            assert abs(data['fontScale']-(1.3 if profile.startswith('narrow') else 1.0))<.01
+            assert len(data['observations'])==5 and len(data['screenshots'])==11
+            assert all(s['file'] in names for s in data['screenshots'])
+        visual_runner=list(directory.rglob(f'v210-runner-api{api}.json'));assert len(visual_runner)==1
+        visual=json.loads(visual_runner[0].read_text());assert visual['complete'] is True and visual['actualInstrumentations']==4 and visual['result']=='PASS'
+        for layout in ['v210-layout-long-name-large-money-portrait.png','v210-layout-long-name-large-money-landscape.png']:assert layout in names,layout
         assert metrics[f'performance-api{api}.json'].get('complete') is True
         assert metrics[f'process-probes-api{api}.json']['allSixteenTablesUnchanged'] and metrics[f'process-probes-api{api}.json']['allLedgerTablesUnchanged']
         assert metrics[f'entry-runner-api{api}.json']['complete'] is True
