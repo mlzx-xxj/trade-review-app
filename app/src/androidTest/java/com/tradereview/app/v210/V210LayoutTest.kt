@@ -40,7 +40,13 @@ class V210LayoutTest {
         }
     }
     @get:Rule(order=1) val ui=createAndroidComposeRule<MainActivity>()
+    @get:Rule(order=2) val failures=object:org.junit.rules.TestWatcher(){override fun failed(error:Throwable,description:org.junit.runner.Description){
+        runCatching{File(output(),"v210-layout-failure.txt").writeText(error.stackTraceToString()+"\n"+checks.toString())}
+        runCatching{val image=requireNotNull(instrumentation.uiAutomation.takeScreenshot());File(output(),"v210-layout-failure.png").outputStream().use{image.compress(android.graphics.Bitmap.CompressFormat.PNG,100,it)};image.recycle()}
+    }}
     private lateinit var model:V200ViewModel
+    private val checks=mutableListOf<Map<String,Any?>>()
+    private fun output()=File(requireNotNull(InstrumentationRegistry.getArguments().getString("additionalTestOutputDir")),"v210-layout").apply{mkdirs()}
     private fun facts()=runBlocking{model.repository.read()}
     private fun waitFor(predicate:()->Boolean)=ui.waitUntil(45000){predicate()}
     private fun field(tag:String,value:String){ui.onNodeWithTag(tag).performScrollTo().performTextReplacement(value)}
@@ -48,8 +54,11 @@ class V210LayoutTest {
     private fun numericFits(tag:String){
         val results=mutableListOf<TextLayoutResult>()
         ui.onNodeWithTag(tag,useUnmergedTree=true).performScrollTo().assertIsDisplayed().performSemanticsAction(SemanticsActions.GetTextLayoutResult){assertTrue(it(results))}
-        assertEquals(1,results.size);assertFalse("Numeric width overflow: $tag",results.single().didOverflowWidth);assertFalse("Numeric height overflow: $tag",results.single().didOverflowHeight)
-        assertTrue("Numbers remain readable",results.single().layoutInput.style.fontSize.value>=14f)
+        assertEquals(1,results.size);val result=results.single()
+        val detail=mapOf("tag" to tag,"text" to result.layoutInput.text.text,"sizePx" to listOf(result.size.width,result.size.height),"paragraphWidthPx" to result.multiParagraph.width,"lineRightPx" to result.getLineRight(0),"fontSp" to result.layoutInput.style.fontSize.value,"overflowWidth" to result.didOverflowWidth,"overflowHeight" to result.didOverflowHeight)
+        checks+=detail
+        assertFalse("Numeric width overflow: $detail",result.didOverflowWidth);assertFalse("Numeric height overflow: $detail",result.didOverflowHeight)
+        assertTrue("Numbers remain readable",result.layoutInput.style.fontSize.value>=14f)
     }
     @Test fun largeAmountsRemainReadableOnNarrowDarkLargeFontAndRecreation(){
         val app=ui.activity.application as TradeReviewApplication
@@ -69,14 +78,18 @@ class V210LayoutTest {
         assertEquals("1524148.02",facts().executions.single().fees)
         ui.onNodeWithText("当前持仓").performClick();val c=facts().cycles.single();val card="position-${c.id}"
         waitFor{model.message.value==null};ui.onNodeWithTag("v2-trades").performScrollToNode(hasTestTag(card))
+        capture("before-numeric-checks")
         listOf("quantity","price","net","fees","cost").forEach{numericFits("position-$it-${c.id}")}
         capture("long-name-large-money-portrait")
         ui.runOnIdle{ui.activity.requestedOrientation=ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE}
         waitFor{var landscape=false;instrumentation.runOnMainSync{landscape=androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(androidx.test.runner.lifecycle.Stage.RESUMED).filterIsInstance<MainActivity>().any{it.resources.configuration.orientation==android.content.res.Configuration.ORIENTATION_LANDSCAPE}};landscape}
+        ui.onNodeWithTag("trade-mode-positions").assertIsSelected()
         ui.onNodeWithTag("v2-trades").performScrollToNode(hasTestTag(card));numericFits("position-price-${c.id}");numericFits("position-cost-${c.id}");capture("long-name-large-money-landscape")
         ui.activityRule.scenario.recreate();waitFor{ui.onAllNodesWithTag("v2-trades").fetchSemanticsNodes().isNotEmpty()}
+        ui.onNodeWithTag("trade-mode-positions").assertIsSelected()
         ui.onNodeWithTag("v2-trades").performScrollToNode(hasTestTag(card));numericFits("position-quantity-${c.id}");assertEquals("1524148.02",facts().executions.single().fees)
         ui.runOnIdle{ui.activity.requestedOrientation=ActivityInfo.SCREEN_ORIENTATION_PORTRAIT}
         waitFor{var portrait=false;instrumentation.runOnMainSync{portrait=androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(androidx.test.runner.lifecycle.Stage.RESUMED).filterIsInstance<MainActivity>().any{it.resources.configuration.orientation==android.content.res.Configuration.ORIENTATION_PORTRAIT}};portrait}
+        File(output(),"v210-layout-api${android.os.Build.VERSION.SDK_INT}.json").writeText(com.google.gson.GsonBuilder().setPrettyPrinting().create().toJson(mapOf("api" to android.os.Build.VERSION.SDK_INT,"syntheticOnly" to true,"widthDp" to 320,"fontScale" to 1.3,"night" to true,"checks" to checks,"result" to "PASS")))
     }
 }

@@ -42,10 +42,11 @@ fun historicalMoney(currency:String,value:String)=if(currency=="CNY")amount(valu
 @Composable fun NumericText(value:String,modifier:Modifier=Modifier,style:TextStyle=MaterialTheme.typography.titleMedium,color:Color=MaterialTheme.colorScheme.onSurface){
     val measurer=rememberTextMeasurer();val density=LocalDensity.current
     BoxWithConstraints(Modifier.fillMaxWidth()){
-        val width=with(density){maxWidth.toPx()};val fontScale=density.fontScale
+        // Leave room for integer constraint rounding and fallback CJK glyphs.
+        val width=with(density){(maxWidth-2.dp).coerceAtLeast(1.dp).toPx()};val fontScale=density.fontScale
         val size=remember(value,width,fontScale,density.density,style){
             var size=style.fontSize.value
-            while(size>14f && measurer.measure(AnnotatedString(value),style.copy(fontSize=size.sp,fontFeatureSettings="tnum"),softWrap=false).size.width>width)size-=1f
+            while(size>14f && measurer.measure(AnnotatedString(value),style.copy(fontSize=size.sp,fontFeatureSettings="tnum"),softWrap=false).getLineRight(0)>width)size-=1f
             size.coerceAtLeast(14f).sp
         }
         Text(value,modifier,color=color,style=style.copy(fontSize=size,lineHeight=(size.value*1.3f).sp,fontFeatureSettings="tnum"),softWrap=true)
