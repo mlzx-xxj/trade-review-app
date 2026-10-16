@@ -64,6 +64,10 @@ def main():
             assert all(s['file'] in names for s in data['screenshots'])
         visual_runner=list(directory.rglob(f'v210-runner-api{api}.json'));assert len(visual_runner)==1
         visual=json.loads(visual_runner[0].read_text());assert visual['complete'] is True and visual['actualInstrumentations']==4 and visual['result']=='PASS'
+        layout_reports=list(directory.rglob(f'v210-layout-api{api}.json'));assert len(layout_reports)==1
+        layout=json.loads(layout_reports[0].read_text());metrics[f'v210-layout-api{api}.json']=layout
+        assert layout['result']=='PASS' and layout['widthDp']==320 and layout['syntheticOnly'] is True
+        assert len(layout['checks'])==8 and all(not c['overflowWidth'] and not c['overflowHeight'] and c['fontSp']>=14 for c in layout['checks'])
         for layout in ['v210-layout-long-name-large-money-portrait.png','v210-layout-long-name-large-money-landscape.png']:assert layout in names,layout
         assert metrics[f'performance-api{api}.json'].get('complete') is True
         assert metrics[f'process-probes-api{api}.json']['allSixteenTablesUnchanged'] and metrics[f'process-probes-api{api}.json']['allLedgerTablesUnchanged']

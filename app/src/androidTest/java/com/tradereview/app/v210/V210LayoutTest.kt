@@ -55,7 +55,7 @@ class V210LayoutTest {
         val results=mutableListOf<TextLayoutResult>()
         ui.onNodeWithTag(tag,useUnmergedTree=true).performScrollTo().assertIsDisplayed().performSemanticsAction(SemanticsActions.GetTextLayoutResult){assertTrue(it(results))}
         assertEquals(1,results.size);val result=results.single()
-        val detail=mapOf("tag" to tag,"text" to result.layoutInput.text.text,"sizePx" to listOf(result.size.width,result.size.height),"paragraphWidthPx" to result.multiParagraph.width,"lineRightPx" to result.getLineRight(0),"fontSp" to result.layoutInput.style.fontSize.value,"overflowWidth" to result.didOverflowWidth,"overflowHeight" to result.didOverflowHeight)
+        val detail=mapOf("tag" to tag,"text" to result.layoutInput.text.text,"sizePx" to listOf(result.size.width,result.size.height),"paragraphWidthPx" to result.multiParagraph.width,"lineRightPx" to result.getLineRight(0),"fontSp" to result.layoutInput.style.fontSize.value,"letterSpacingSp" to result.layoutInput.style.letterSpacing.value.let{if(it.isNaN())null else it},"overflowWidth" to result.didOverflowWidth,"overflowHeight" to result.didOverflowHeight)
         checks+=detail
         assertFalse("Numeric width overflow: $detail",result.didOverflowWidth);assertFalse("Numeric height overflow: $detail",result.didOverflowHeight)
         assertTrue("Numbers remain readable",result.layoutInput.style.fontSize.value>=14f)
@@ -90,6 +90,9 @@ class V210LayoutTest {
         ui.onNodeWithTag("v2-trades").performScrollToNode(hasTestTag(card));numericFits("position-quantity-${c.id}");assertEquals("1524148.02",facts().executions.single().fees)
         ui.runOnIdle{ui.activity.requestedOrientation=ActivityInfo.SCREEN_ORIENTATION_PORTRAIT}
         waitFor{var portrait=false;instrumentation.runOnMainSync{portrait=androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(androidx.test.runner.lifecycle.Stage.RESUMED).filterIsInstance<MainActivity>().any{it.resources.configuration.orientation==android.content.res.Configuration.ORIENTATION_PORTRAIT}};portrait}
-        File(output(),"v210-layout-api${android.os.Build.VERSION.SDK_INT}.json").writeText(com.google.gson.GsonBuilder().setPrettyPrinting().create().toJson(mapOf("api" to android.os.Build.VERSION.SDK_INT,"syntheticOnly" to true,"widthDp" to 320,"fontScale" to 1.3,"night" to true,"checks" to checks,"result" to "PASS")))
+        val report=com.google.gson.GsonBuilder().setPrettyPrinting().create().toJson(mapOf("api" to android.os.Build.VERSION.SDK_INT,"syntheticOnly" to true,"widthDp" to 320,"fontScale" to 1.3,"night" to true,"checks" to checks,"result" to "PASS"))
+        // AGP does not pull JSON from additionalTestOutputDir on every API. Use
+        // the existing test-only MediaStore transport, with no storage permission.
+        com.tradereview.app.stability.V08Metrics.write("v210-layout-api${android.os.Build.VERSION.SDK_INT}.json",report)
     }
 }

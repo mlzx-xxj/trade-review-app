@@ -41,15 +41,18 @@ fun historicalMoney(currency:String,value:String)=if(currency=="CNY")amount(valu
 /** Fit visible numbers to available width; never ellipsize or change their precision. */
 @Composable fun NumericText(value:String,modifier:Modifier=Modifier,style:TextStyle=MaterialTheme.typography.titleMedium,color:Color=MaterialTheme.colorScheme.onSurface){
     val measurer=rememberTextMeasurer();val density=LocalDensity.current
+    // Material Text inherits unspecified properties (including letter spacing).
+    // Measure the same resolved style that will actually be drawn.
+    val resolved=LocalTextStyle.current.merge(style)
     BoxWithConstraints(Modifier.fillMaxWidth()){
         // Leave room for integer constraint rounding and fallback CJK glyphs.
         val width=with(density){(maxWidth-2.dp).coerceAtLeast(1.dp).toPx()};val fontScale=density.fontScale
-        val size=remember(value,width,fontScale,density.density,style){
-            var size=style.fontSize.value
-            while(size>14f && measurer.measure(AnnotatedString(value),style.copy(fontSize=size.sp,fontFeatureSettings="tnum"),softWrap=false).getLineRight(0)>width)size-=1f
+        val size=remember(value,width,fontScale,density.density,resolved){
+            var size=resolved.fontSize.value
+            while(size>14f && measurer.measure(AnnotatedString(value),resolved.copy(fontSize=size.sp,fontFeatureSettings="tnum"),softWrap=false).getLineRight(0)>width)size-=1f
             size.coerceAtLeast(14f).sp
         }
-        Text(value,modifier,color=color,style=style.copy(fontSize=size,lineHeight=(size.value*1.3f).sp,fontFeatureSettings="tnum"),softWrap=true)
+        Text(value,modifier,color=color,style=resolved.copy(fontSize=size,lineHeight=(size.value*1.3f).sp,fontFeatureSettings="tnum"),softWrap=true)
     }
 }
 @Composable fun NetText(value:BigDecimal?,modifier:Modifier=Modifier,stateLabel:String?=null,showState:Boolean=true){Column(verticalArrangement=Arrangement.spacedBy(2.dp)){
