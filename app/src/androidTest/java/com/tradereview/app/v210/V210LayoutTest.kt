@@ -53,6 +53,9 @@ class V210LayoutTest {
     }
     @Test fun largeAmountsRemainReadableOnNarrowDarkLargeFontAndRecreation(){
         val app=ui.activity.application as TradeReviewApplication
+        assertEquals(320,app.resources.configuration.screenWidthDp)
+        assertEquals(1.3f,app.resources.configuration.fontScale,.01f)
+        assertEquals(android.content.res.Configuration.UI_MODE_NIGHT_YES,app.resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK)
         ui.runOnIdle{model=ViewModelProvider(ui.activity)[V200ViewModel::class.java]}
         runBlocking{app.database.withTransaction{model.repository.write(LedgerSnapshot(accounts=listOf(LedgerAccount("stock","stock","A股账户"),LedgerAccount("futures","futures","国内期货账户")),risks=listOf(MarketRisk("stock"),MarketRisk("futures"))),true)}}
         ui.runOnIdle{model.page(1);model.closeEditor();model.handle["v2-entry-fields"]=null}
@@ -73,5 +76,7 @@ class V210LayoutTest {
         ui.onNodeWithTag("v2-trades").performScrollToNode(hasTestTag(card));numericFits("position-price-${c.id}");numericFits("position-cost-${c.id}");capture("long-name-large-money-landscape")
         ui.activityRule.scenario.recreate();waitFor{ui.onAllNodesWithTag("v2-trades").fetchSemanticsNodes().isNotEmpty()}
         ui.onNodeWithTag("v2-trades").performScrollToNode(hasTestTag(card));numericFits("position-quantity-${c.id}");assertEquals("1524148.13",facts().executions.single().fees)
+        ui.runOnIdle{ui.activity.requestedOrientation=ActivityInfo.SCREEN_ORIENTATION_PORTRAIT}
+        waitFor{var portrait=false;instrumentation.runOnMainSync{portrait=androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(androidx.test.runner.lifecycle.Stage.RESUMED).filterIsInstance<MainActivity>().any{it.resources.configuration.orientation==android.content.res.Configuration.ORIENTATION_PORTRAIT}};portrait}
     }
 }
