@@ -55,13 +55,19 @@ class V200MainUiTest {
         }
     }
     private fun page(n:Int){compose.onNodeWithTag("v2-main-page-$n").performClick()}
+    private fun settledEntryViewport(){
+        var previous:androidx.compose.ui.geometry.Rect?=null;var stableSince=android.os.SystemClock.elapsedRealtime()
+        compose.waitUntil(10000){val nodes=compose.onAllNodesWithTag("entry-scroll").fetchSemanticsNodes();if(nodes.isEmpty())true else{val bounds=nodes.single().boundsInRoot;val now=android.os.SystemClock.elapsedRealtime();if(bounds!=previous){previous=bounds;stableSince=now};now-stableSince>=150}}
+    }
     private fun field(tag:String,text:String,scroll:Boolean=true){
+        settledEntryViewport()
         if(tag in listOf("execution-name","execution-stop","execution-tp") && compose.onAllNodesWithTag(tag).fetchSemanticsNodes().isEmpty()){
-            compose.onNodeWithTag("entry-options").performScrollTo().assertIsDisplayed().assertIsEnabled().performClick()
+            compose.onNodeWithTag("entry-options").performScrollTo();settledEntryViewport()
+            compose.onNodeWithTag("entry-options").assertIsDisplayed().assertIsEnabled().performClick()
             try{wait{compose.onAllNodesWithTag(tag).fetchSemanticsNodes().isNotEmpty()}}
             catch(error:androidx.compose.ui.test.ComposeTimeoutException){capture("v210-optional-expand-failure");throw error}
         }
-        val node=compose.onNodeWithTag(tag);if(scroll)node.performScrollTo()else node.assertIsDisplayed();node.performTextReplacement(text)
+        val node=compose.onNodeWithTag(tag);if(scroll)node.performScrollTo()else node.assertIsDisplayed();settledEntryViewport();node.performTextReplacement(text).assertTextContains(text)
     }
     private fun start(){page(1);compose.onNodeWithTag("new-execution").performClick();compose.onNodeWithTag("execution-code").assertExists()}
     private fun fill(price:String="10",quantity:String="100"){field("execution-code","600000");field("execution-name","合成股票");field("execution-price",price);field("execution-quantity",quantity)}
@@ -193,8 +199,11 @@ class V200MainUiTest {
             systemNight("yes")
             shell("settings put system font_scale 1.3")
             awaitResumedConfiguration { it.resources.configuration.fontScale>=1.29f }
-            start();fill("12.34")
             shell("settings put secure show_ime_with_hard_keyboard 1")
+            start();settledEntryViewport()
+            compose.onNodeWithTag("execution-code").performScrollTo().performTouchInput{click()}
+            wait { automation.windows.any { it.type==AccessibilityWindowInfo.TYPE_INPUT_METHOD } }
+            settledEntryViewport();fill("12.34")
             compose.onNodeWithTag("execution-price").performScrollTo().performTouchInput { click() }
             wait { automation.windows.any { it.type==AccessibilityWindowInfo.TYPE_INPUT_METHOD } }
             compose.onNodeWithTag("save-execution").assertIsDisplayed()

@@ -30,7 +30,7 @@ import java.time.Clock
 import java.time.LocalDate
 import java.time.ZoneOffset
 
-/** Same real MainActivity, inputs and screenshots on the V2.0 tag and V2.1.
+/** Same five-trade MainActivity comparison as V2.0, then a two-trade direction/density fixture.
  * Only the empty synthetic ledger and device clock are injected. No execution inserts.
  * Profile changes happen in the external runner BEFORE launching this process.
  */
@@ -146,7 +146,15 @@ class V210VisualJourneyTest {
         val direction=if(night)Color(0xFFB4CBF7)else Color(0xFF304C75)
         val profit=if(night)Color(0xFFFFB4B0)else Color(0xFFAF273C)
         val loss=if(night)Color(0xFF80D5AF)else Color(0xFF087044)
-        page(1);ui.onNodeWithText("当前持仓").performClick();waitFor{model.message.value==null}
+        page(1);ui.onNodeWithText("当前持仓").performClick()
+        // Screenshot readiness is the rendered snackbar/viewport, not a private
+        // message flow that can retain the same text across consecutive saves.
+        var previous:androidx.compose.ui.geometry.Rect?=null;var stableSince=android.os.SystemClock.elapsedRealtime()
+        waitFor{
+            val bounds=ui.onNodeWithTag("v2-trades").fetchSemanticsNode().boundsInRoot
+            val now=android.os.SystemClock.elapsedRealtime();if(bounds!=previous){previous=bounds;stableSince=now}
+            ui.onAllNodesWithText("成交已保存，持仓与统计已重算").fetchSemanticsNodes().isEmpty() && now-stableSince>=150
+        }
         ui.onNodeWithTag("v2-trades").performScrollToIndex(0);capture("density-top",collection=densityScreens)
         val rows=current.map{c->
             val tag="position-${c.id}"
