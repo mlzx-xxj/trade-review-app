@@ -67,7 +67,7 @@ class V200MainUiTest {
             try{wait{compose.onAllNodesWithTag(tag).fetchSemanticsNodes().isNotEmpty()}}
             catch(error:androidx.compose.ui.test.ComposeTimeoutException){capture("v210-optional-expand-failure");throw error}
         }
-        val node=compose.onNodeWithTag(tag);if(scroll)node.performScrollTo()else node.assertIsDisplayed();settledEntryViewport();node.performTextReplacement(text).assertTextContains(text)
+        val node=compose.onNodeWithTag(tag);if(scroll)node.performScrollTo()else node.assertIsDisplayed();settledEntryViewport();node.performTextReplacement(text);node.assertTextContains(text)
     }
     private fun start(){page(1);compose.onNodeWithTag("new-execution").performClick();compose.onNodeWithTag("execution-code").assertExists()}
     private fun fill(price:String="10",quantity:String="100"){field("execution-code","600000");field("execution-name","合成股票");field("execution-price",price);field("execution-quantity",quantity)}

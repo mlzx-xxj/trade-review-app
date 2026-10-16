@@ -76,7 +76,7 @@ class TradeEntryExperienceTest {
     }
     private fun visible(node:SemanticsNodeInteraction):SemanticsNodeInteraction {settledViewport();if(runCatching{node.assertIsDisplayed()}.isFailure){node.performScrollTo();scrolls++;settledViewport()};return node.assertIsDisplayed()}
     private fun tap(tag:String){visible(ui.onNodeWithTag(tag)).assertIsEnabled().performClick();taps++;steps+=tag}
-    private fun text(tag:String,value:String){tap(tag);ui.onNodeWithTag(tag).performTextReplacement(value).assertTextContains(value);fields+=tag;waitFor("真实输入法已显示"){instrumentation.uiAutomation.windows.any{it.type==AccessibilityWindowInfo.TYPE_INPUT_METHOD}};settledViewport()}
+    private fun text(tag:String,value:String){tap(tag);val node=ui.onNodeWithTag(tag);node.performTextReplacement(value);node.assertTextContains(value);fields+=tag;waitFor("真实输入法已显示"){instrumentation.uiAutomation.windows.any{it.type==AccessibilityWindowInfo.TYPE_INPUT_METHOD}};settledViewport()}
     private fun selected(tag:String){val n=ui.onNodeWithTag(tag);if(n.fetchSemanticsNode().config.getOrElse(SemanticsProperties.Selected){false}!=true)tap(tag)}
     private fun displayed(tag:String)=ui.onNodeWithTag(tag).fetchSemanticsNode().config[SemanticsProperties.Text].joinToString(""){it.text}
     private fun numberOnScreen(tag:String):String?=Regex("¥([0-9,]+\\.[0-9]{2})").find(displayed(tag))?.groupValues?.get(1)?.replace(",","")
