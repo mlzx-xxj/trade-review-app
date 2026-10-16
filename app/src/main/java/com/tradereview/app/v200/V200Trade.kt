@@ -155,7 +155,7 @@ import java.math.BigDecimal
 /** One accessible field reads the full label and value; visual children can have distinct type sizes. */
 @Composable private fun EstimateMetric(label:String,value:String,tag:String,modifier:Modifier,compact:Boolean){
     Column(modifier.clearAndSetSemantics{text=AnnotatedString("$label：$value");testTag=tag},verticalArrangement=Arrangement.spacedBy(4.dp)){
-        Text(when(label){"预计新增保证金占用"->"预计新增保证金";"平仓后预计剩余占用"->"平仓后剩余保证金";else->label},style=MaterialTheme.typography.labelMedium,color=MaterialTheme.colorScheme.onSurfaceVariant)
+        Text(when(label){"预计新增保证金占用"->"预计新增保证金";"平仓后预计剩余占用"->"预计剩余保证金";else->label},style=MaterialTheme.typography.labelMedium,color=MaterialTheme.colorScheme.onSurfaceVariant)
         NumericText(value,style=if(compact)MaterialTheme.typography.bodyLarge.copy(fontWeight=FontWeight.SemiBold)else MaterialTheme.typography.titleMedium,color=if(value=="待估算" || value=="暂无法估算")MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onSurface)
     }
 }

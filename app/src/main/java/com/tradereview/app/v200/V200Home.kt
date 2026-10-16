@@ -66,7 +66,7 @@ fun sellable(state:LedgerSnapshot,cycle:LedgerCycle,day:Long):String {val facts=
             }
             Row(horizontalArrangement=Arrangement.spacedBy(12.dp)){
                 PositionMetric("剩余持仓", "${c.remaining} $unit","position-quantity-${c.id}",Modifier.weight(1f),large=true)
-                PositionMetric(if(stock)"持仓成本均价"else"平均开仓价",average,"position-price-${c.id}",Modifier.weight(1f),large=true)
+                PositionMetric(if(stock && decimal(c.remaining)>BigDecimal.ZERO)"持仓成本均价"else"平均开仓价",average,"position-price-${c.id}",Modifier.weight(1f),large=true)
             }
             HorizontalDivider(color=MaterialTheme.colorScheme.outlineVariant)
             Row(horizontalArrangement=Arrangement.spacedBy(12.dp)){
