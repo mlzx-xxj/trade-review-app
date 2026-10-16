@@ -2,6 +2,7 @@ package com.tradereview.app.v200
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.background
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -75,8 +76,8 @@ import java.math.BigDecimal
     BackHandler{model.closeEditor()}
     Dialog(onDismissRequest={model.closeEditor()},properties=DialogProperties(usePlatformDefaultWidth=false,decorFitsSystemWindows=false)){
         val view=LocalView.current;val dark=isSystemInDarkTheme()
-        SideEffect{(view.parent as? DialogWindowProvider)?.window?.let{w->w.setSoftInputMode(android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);WindowCompat.getInsetsController(w,view).isAppearanceLightStatusBars=!dark}}
-        Surface(Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.safeDrawing).imePadding(),color=MaterialTheme.colorScheme.background){Column{
+        SideEffect{(view.parent as? DialogWindowProvider)?.window?.let{w->w.setSoftInputMode(android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);w.setDimAmount(0f);w.statusBarColor=android.graphics.Color.TRANSPARENT;w.navigationBarColor=android.graphics.Color.TRANSPARENT;WindowCompat.getInsetsController(w,view).let{it.isAppearanceLightStatusBars=!dark;it.isAppearanceLightNavigationBars=!dark}}}
+        Surface(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background).windowInsetsPadding(WindowInsets.safeDrawing).imePadding(),color=MaterialTheme.colorScheme.background){Column{
             Row(Modifier.fillMaxWidth().padding(horizontal=8.dp),verticalAlignment=androidx.compose.ui.Alignment.CenterVertically){
                 TextButton({model.closeEditor()},Modifier.heightIn(min=48.dp).testTag("entry-cancel")){Text("返回")}
                 Text(if(value==null)"记一笔"else"修改成交",Modifier.weight(1f),style=MaterialTheme.typography.titleMedium)
