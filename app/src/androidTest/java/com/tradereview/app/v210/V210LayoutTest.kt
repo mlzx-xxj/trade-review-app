@@ -58,6 +58,7 @@ class V210LayoutTest {
         val detail=mapOf("tag" to tag,"text" to result.layoutInput.text.text,"sizePx" to listOf(result.size.width,result.size.height),"paragraphWidthPx" to result.multiParagraph.width,"lineRightPx" to result.getLineRight(0),"fontSp" to result.layoutInput.style.fontSize.value,"letterSpacingSp" to result.layoutInput.style.letterSpacing.value.let{if(it.isNaN())null else it},"overflowWidth" to result.didOverflowWidth,"overflowHeight" to result.didOverflowHeight)
         checks+=detail
         assertFalse("Numeric width overflow: $detail",result.didOverflowWidth);assertFalse("Numeric height overflow: $detail",result.didOverflowHeight)
+        repeat(result.lineCount){line->assertTrue("Numeric glyphs exceed their column: $detail",result.getLineLeft(line)>=-.5f && result.getLineRight(line)<=result.size.width+.5f)}
         assertTrue("Numbers remain readable",result.layoutInput.style.fontSize.value>=14f)
     }
     @Test fun largeAmountsRemainReadableOnNarrowDarkLargeFontAndRecreation(){

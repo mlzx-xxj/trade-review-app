@@ -60,9 +60,21 @@ class V210VisualJourneyTest {
     private fun facts()=runBlocking{model.repository.read()}
     private fun waitFor(predicate:()->Boolean)=ui.waitUntil(45000){predicate()}
     private fun page(index:Int){ui.onNodeWithTag("v2-main-page-$index").performClick()}
-    private fun visible(node:SemanticsNodeInteraction):SemanticsNodeInteraction{if(runCatching{node.assertIsDisplayed()}.isFailure){node.performScrollTo();scrolls++};return node.assertIsDisplayed()}
+    private fun settledViewport(){
+        var previous:androidx.compose.ui.geometry.Rect?=null
+        var stableSince=android.os.SystemClock.elapsedRealtime()
+        ui.waitUntil(10000){
+            val nodes=ui.onAllNodesWithTag("entry-scroll").fetchSemanticsNodes()
+            if(nodes.isEmpty())true else{
+                val bounds=nodes.single().boundsInRoot;val now=android.os.SystemClock.elapsedRealtime()
+                if(bounds!=previous){previous=bounds;stableSince=now}
+                now-stableSince>=150
+            }
+        }
+    }
+    private fun visible(node:SemanticsNodeInteraction):SemanticsNodeInteraction{settledViewport();if(runCatching{node.assertIsDisplayed()}.isFailure){node.performScrollTo();scrolls++;settledViewport()};return node.assertIsDisplayed()}
     private fun tap(tag:String){visible(ui.onNodeWithTag(tag)).assertIsEnabled().performClick();taps++}
-    private fun type(tag:String,value:String){tap(tag);ui.onNodeWithTag(tag).performTextReplacement(value);fields+=tag}
+    private fun type(tag:String,value:String){tap(tag);ui.onNodeWithTag(tag).performTextReplacement(value);fields+=tag;waitFor{instrumentation.uiAutomation.windows.any{it.type==AccessibilityWindowInfo.TYPE_INPUT_METHOD}};settledViewport()}
     private fun select(tag:String){if(!ui.onNodeWithTag(tag).fetchSemanticsNode().config.getOrElse(SemanticsProperties.Selected){false})tap(tag)}
     private fun shown(tag:String)=ui.onNodeWithTag(tag).fetchSemanticsNode().config[SemanticsProperties.Text].joinToString(""){it.text}
     private fun capture(scene:String,tag:String?=null){
@@ -84,14 +96,14 @@ class V210VisualJourneyTest {
         for(tag in listOf("execution-second","execution-sequence","execution-multiplier","execution-margin","execution-trading-day","execution-parameters"))ui.onNodeWithTag(tag).assertDoesNotExist()
     }
     private fun save(code:String,fee:String?,remaining:String):LedgerExecution{
-        val before=facts();tap("save-execution")
+        val before=facts();val keyboardAtSave=instrumentation.uiAutomation.windows.any{it.type==AccessibilityWindowInfo.TYPE_INPUT_METHOD};tap("save-execution")
         waitFor{!model.busy.value&&!model.editor.value&&model.state.value.ledger?.executions?.size==before.executions.size+1}
         assertNull("普通新增无额外确认",model.pending.value)
         val after=facts();val e=after.executions.single{v->before.executions.none{it.id==v.id}}
         assertEquals(code,e.code);assertEquals(fee,e.fees)
         val c=after.cycles.single{it.code==code};assertEquals(remaining,c.remaining)
         ui.onNodeWithTag("v2-trades").performScrollToNode(hasTestTag("execution-${e.id}"));ui.onNodeWithTag("execution-${e.id}").assertIsDisplayed()
-        results+=mapOf("code" to code,"action" to actionLabel(e),"price" to e.price,"quantity" to e.quantity,"savedFees" to e.fees,"remaining" to c.remaining,"realized" to c.realized,"tapsIncludingEntryAndSave" to taps,"fieldsTyped" to fields.toList(),"requiredScrollCommands" to scrolls,"extraConfirmation" to false,"saveVisible" to true,"result" to "PASS")
+        results+=mapOf("code" to code,"action" to actionLabel(e),"price" to e.price,"quantity" to e.quantity,"savedFees" to e.fees,"remaining" to c.remaining,"realized" to c.realized,"tapsIncludingEntryAndSave" to taps,"fieldsTyped" to fields.toList(),"requiredScrollCommands" to scrolls,"extraConfirmation" to false,"saveVisible" to true,"keyboardVisibleAtSave" to keyboardAtSave,"result" to "PASS")
         return e
     }
     private fun position(e:LedgerExecution,scene:String){page(1);ui.onNodeWithText("当前持仓").performClick();val tag="position-cycle_${e.id}";ui.onNodeWithTag("v2-trades").performScrollToNode(hasTestTag(tag));ui.onNodeWithTag(tag).assertIsDisplayed();capture(scene,tag)}

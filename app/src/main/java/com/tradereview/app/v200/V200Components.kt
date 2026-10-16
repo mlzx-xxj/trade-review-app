@@ -52,7 +52,7 @@ fun historicalMoney(currency:String,value:String)=if(currency=="CNY")amount(valu
             while(size>14f && measurer.measure(AnnotatedString(value),resolved.copy(fontSize=size.sp,fontFeatureSettings="tnum"),softWrap=false).getLineRight(0)>width)size-=1f
             size.coerceAtLeast(14f).sp
         }
-        Text(value,modifier,color=color,style=resolved.copy(fontSize=size,lineHeight=(size.value*1.3f).sp,fontFeatureSettings="tnum"),softWrap=true)
+        Text(value,modifier.fillMaxWidth(),color=color,style=resolved.copy(fontSize=size,lineHeight=(size.value*1.3f).sp,fontFeatureSettings="tnum"),softWrap=true)
     }
 }
 @Composable fun NetText(value:BigDecimal?,modifier:Modifier=Modifier,stateLabel:String?=null,showState:Boolean=true){Column(verticalArrangement=Arrangement.spacedBy(2.dp)){
