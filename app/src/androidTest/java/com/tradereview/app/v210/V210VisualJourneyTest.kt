@@ -35,9 +35,18 @@ class V210VisualJourneyTest {
     @get:Rule(order=0) val ui=createAndroidComposeRule<MainActivity>()
     @get:Rule(order=1) val evidence=object:org.junit.rules.TestWatcher(){
         private var service:AccessibilityServiceInfo?=null
-        override fun starting(description:org.junit.runner.Description){service=instrumentation.uiAutomation.serviceInfo}
+        private var keyboard="null"
+        override fun starting(description:org.junit.runner.Description){
+            service=instrumentation.uiAutomation.serviceInfo
+            instrumentation.uiAutomation.serviceInfo=instrumentation.uiAutomation.serviceInfo.apply{flags=flags or AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS}
+            keyboard=shell("settings get secure show_ime_with_hard_keyboard").trim()
+            shell("settings put secure show_ime_with_hard_keyboard 1")
+        }
         override fun failed(error:Throwable,description:org.junit.runner.Description){runCatching{File(output(),"v210-$profile-failure.txt").writeText(error.stackTraceToString())};runCatching{capture("failure")}}
-        override fun finished(description:org.junit.runner.Description){service?.let{instrumentation.uiAutomation.setOnAccessibilityEventListener(null);instrumentation.uiAutomation.serviceInfo=it}}
+        override fun finished(description:org.junit.runner.Description){
+            if(keyboard=="null")shell("settings delete secure show_ime_with_hard_keyboard")else shell("settings put secure show_ime_with_hard_keyboard $keyboard")
+            service?.let{instrumentation.uiAutomation.setOnAccessibilityEventListener(null);instrumentation.uiAutomation.serviceInfo=it}
+        }
     }
     private val instrumentation=InstrumentationRegistry.getInstrumentation()
     private val profile=InstrumentationRegistry.getArguments().getString("visualProfile")?:"suite"
