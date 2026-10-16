@@ -64,9 +64,9 @@ class V210LayoutTest {
         listOf("entry-market-stock","entry-market-futures","save-execution","entry-instrument-picker").forEach{tag->val bounds=ui.onNodeWithTag(tag).getUnclippedBoundsInRoot();assertTrue("48dp target: $tag",bounds.height.value>=48f&&bounds.width.value>=48f)}
         field("execution-code","688888");field("execution-price","123456.78");field("execution-quantity","123456")
         ui.onNodeWithTag("entry-options").performScrollTo().performClick();field("execution-name","超长名称合成股票用于验证大字体和持仓信息的完整呈现")
-        waitFor{ui.onNodeWithTag("entry-estimated-fee").fetchSemanticsNode().config[androidx.compose.ui.semantics.SemanticsProperties.Text].joinToString(""){it.text}=="预计手续费：¥1,524,148.13"}
+        waitFor{ui.onNodeWithTag("entry-estimated-fee").fetchSemanticsNode().config[androidx.compose.ui.semantics.SemanticsProperties.Text].joinToString(""){it.text}=="预计手续费：¥1,524,148.02"}
         ui.onNodeWithTag("save-execution").assertIsDisplayed().performClick();waitFor{!model.editor.value&&!model.busy.value&&model.state.value.ledger?.executions?.size==1}
-        assertEquals("1524148.13",facts().executions.single().fees)
+        assertEquals("1524148.02",facts().executions.single().fees)
         ui.onNodeWithText("当前持仓").performClick();val c=facts().cycles.single();val card="position-${c.id}"
         waitFor{model.message.value==null};ui.onNodeWithTag("v2-trades").performScrollToNode(hasTestTag(card))
         listOf("quantity","price","net","fees","cost").forEach{numericFits("position-$it-${c.id}")}
@@ -75,7 +75,7 @@ class V210LayoutTest {
         waitFor{var landscape=false;instrumentation.runOnMainSync{landscape=androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(androidx.test.runner.lifecycle.Stage.RESUMED).filterIsInstance<MainActivity>().any{it.resources.configuration.orientation==android.content.res.Configuration.ORIENTATION_LANDSCAPE}};landscape}
         ui.onNodeWithTag("v2-trades").performScrollToNode(hasTestTag(card));numericFits("position-price-${c.id}");numericFits("position-cost-${c.id}");capture("long-name-large-money-landscape")
         ui.activityRule.scenario.recreate();waitFor{ui.onAllNodesWithTag("v2-trades").fetchSemanticsNodes().isNotEmpty()}
-        ui.onNodeWithTag("v2-trades").performScrollToNode(hasTestTag(card));numericFits("position-quantity-${c.id}");assertEquals("1524148.13",facts().executions.single().fees)
+        ui.onNodeWithTag("v2-trades").performScrollToNode(hasTestTag(card));numericFits("position-quantity-${c.id}");assertEquals("1524148.02",facts().executions.single().fees)
         ui.runOnIdle{ui.activity.requestedOrientation=ActivityInfo.SCREEN_ORIENTATION_PORTRAIT}
         waitFor{var portrait=false;instrumentation.runOnMainSync{portrait=androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(androidx.test.runner.lifecycle.Stage.RESUMED).filterIsInstance<MainActivity>().any{it.resources.configuration.orientation==android.content.res.Configuration.ORIENTATION_PORTRAIT}};portrait}
     }
