@@ -2,7 +2,7 @@
 
 本轮将成交录入和持仓摘要重组为统一蓝灰视觉，保留全部财务计算与数据格式。实际对照结果：**点击、必填字段和必要滚动没有增加，也没有减少**；主要收益是选择、数量、均价和金额的视觉层次。部分卡片因补充已实现净盈亏与费用而更高，不能宣称所有卡片都变得更矮。
 
-本文固定数据和原图来自完整成功的 [Actions 38909249672](https://github.com/mlzx-xxj/trade-review-app/actions/runs/38909249672)，源码 `8341c8406ddbd247bacb2ab82b189301281e4e7d`。最终文档提交及两处语义文案校正另接受完整 CI，结果和最新原始截图见 [PR #16 最新检查](https://github.com/mlzx-xxj/trade-review-app/pull/16/checks)。不把此处固定图源冒称其他提交。
+本文固定数据和原图来自完整成功的 [Actions 38978915022](https://github.com/mlzx-xxj/trade-review-app/actions/runs/38978915022)，源码 `40ec54cdc6ddac1b8b823e8b620939007b1e34d7`。最终报告提交的生产树与此固定图源相同，另接受完整 CI；结果和最新原始截图见 [PR #16 最新检查](https://github.com/mlzx-xxj/trade-review-app/pull/16/checks)。不把此处固定图源冒称其他提交。
 
 ## 实际验证
 
@@ -20,7 +20,7 @@
 | 永久签名与发布 | PR 安全隔离，相关作业跳过；不代表 Secrets 未配置 |
 | 用户手机 | 未执行，不能以模拟器替代 |
 
-已独立下载校验归档 SHA-256、来源 SHA 与逐文件清单，再解析原始 JUnit、Lint、JSON 和实际截图。未用静态检查、Compose Preview 或直接写入成交替代录入测试。[API29 原始证据](https://github.com/mlzx-xxj/trade-review-app/actions/runs/38909249672/artifacts/12049904411) · [API35 原始证据](https://github.com/mlzx-xxj/trade-review-app/actions/runs/38909249672/artifacts/12050293110)（Actions 临时产物需登录且保留 7 天；文中选图随代码保留）。
+已独立下载校验归档 SHA-256、来源 SHA 与逐文件清单，再解析原始 JUnit、Lint、JSON 和实际截图。未用静态检查、Compose Preview 或直接写入成交替代录入测试。[API29 原始证据](https://github.com/mlzx-xxj/trade-review-app/actions/runs/38978915022/artifacts/12080573338) · [API35 原始证据](https://github.com/mlzx-xxj/trade-review-app/actions/runs/38978915022/artifacts/12081545078)（Actions 临时产物需登录且保留 7 天；文中选图随代码保留）。
 
 ## 基线与配置
 
@@ -29,7 +29,7 @@
 - [基线 Actions 38897172571](https://github.com/mlzx-xxj/trade-review-app/actions/runs/38897172571)：110 Python、241 JVM、各 API 135 项完整测试及附加实录通过。[来源与计数](v210/baseline-provenance.json)。
 - 两个 API 均为 Nexus 4 配置的 x86_64 真实 AVD；360dp = 720×1280px、320dpi、字体 1.0；320dp = 640×1136px、320dpi、字体 1.3；各自浅色和深色，共 8 组。
 - 同一生产 MainActivity、同一录入步骤和合成价格／数量。视觉样本仅注入空账本及 `2026-10-14T10:00:00+08:00` 时钟；成交全由界面填写保存。状态栏时间随真实运行不同，不做像素完全相同的承诺。
-- 每版每组 11 张指定场景图，共 88 张／版，另有全量回归和压力图。原 PNG 未编辑；没有生成式重绘或静态假 App。[并排总览 HTML](v210/gallery/index.html) · [40 条逐项比较与图片摘要](v210/gallery/comparison.json) · [源提交、产物与原图 SHA](v210/gallery/provenance.json)。GitHub 手机直接查看以下 Markdown 对照，HTML 可下载随原图离线打开。
+- 每版每组 11 张指定对照场景图，共 88 张／版；本轮收尾另增加每组 4 张多空密度图，共 32 张，另有全量回归和压力图。原 PNG 未编辑；没有生成式重绘或静态假 App。[并排总览 HTML](v210/gallery/index.html) · [40 条逐项比较与图片摘要](v210/gallery/comparison.json) · [源提交、产物与原图 SHA](v210/gallery/provenance.json)。GitHub 手机直接查看以下 Markdown 对照，HTML 可下载随原图离线打开。
 
 ## 设计与改动范围
 
@@ -60,7 +60,7 @@
 | 期货买平 | 6 → 6 | 3 | 2 → 2 | 无 |
 | 搜索沪铝买开 | 7 → 7 | 3 | 0 → 0 | 无 |
 
-四组视觉配置每个 API 各五笔、共 40 条前后比较，财务事实一致，点击／字段／滚动均未增加。视觉探针的首笔期货额外聚焦一次以拍真实输入法，因此是 7 次；两版相同，不能与上表日常 6 次混算。分批第二笔和卖平在 IME 仍显示时直接点击保存并成功落库（`keyboardVisibleAtSave=true`），同屏金额与保存按钮可见。
+四组视觉配置的原五笔，两个 API 共 40 条前后比较，财务事实一致，点击／字段／滚动均未增加。视觉探针的首笔期货额外聚焦一次以拍真实输入法，因此是 7 次；两版相同，不能与上表日常 6 次混算。分批第二笔和卖平在 IME 仍显示时直接点击保存并成功落库（`keyboardVisibleAtSave=true`），同屏金额与保存按钮可见。
 
 保存后自动切到历史成交并找到新记录；持仓、统计与复盘使用原有同一数据源。界面不能证明真人单手速度或其他输入法的字符切换次数。
 
@@ -91,8 +91,8 @@
 
 实际 SAF ZIP 导出、回读摘要验证、删除一笔、预览及二次确认覆盖恢复后，8 条成交与全部账本事实一致。强制停止后从不同 PID 重开，8 条成交、3 条审计及持仓／统计再次核对：
 
-- API 29：PID 12104 → 12240，`allFactsIdentical=true`。
-- API 35：PID 6200 → 6401，`allFactsIdentical=true`。
+- API 29：PID 12085 → 12245，`allFactsIdentical=true`。
+- API 35：PID 6251 → 6491，`allFactsIdentical=true`。
 
 另有三次进程探针，28 张表和截图文件摘要一致。原 Room 完整迁移、非法备份、事务回滚和旧备份回归保留并执行。本轮 Room 仍 v9、JSON 8、ZIP 1；没有新增数据结构或 Migration，没有修改 recordKey、FIFO、费率、保证金或统计口径。导航保存事件仅是可恢复界面状态，不复制业务数据。
 
@@ -163,6 +163,40 @@
 
 发现的问题：此前多头标签调用盈利红色、空头调用亏损绿色，容易把方向与实际盈亏混淆。现统一为主色蓝灰标签，用“多头／空头”文字明确区分；红盈绿亏只用于真正的盈亏。生产修改仅这一处配色，不删除字段、不调整卡片尺寸或财务计算。
 
-追加实际界面场景：原五笔基线比较之后，再录入 rb2701 卖开 2 手 4000、买平 1 手 4010，形成股票、rb 多头、i 待估算多头、rb 空头共四个持仓。两笔追加操作不混入原五笔点击计数。记录标签实际渲染色、卡片高度和原始截图，要求浅／深色、360dp／320dp 的所有配置通过；未获得新模拟器结果前不将本节标记通过。
+追加实际界面场景：原五笔基线比较之后，再从真实表单录入 rb2701 卖开 2 手 4000、买平 1 手 4010，形成股票、rb 多头、i 待估算多头、rb 空头共四个持仓。两笔追加操作不混入原五笔点击计数。
+
+[收尾完整 CI 38978915022](https://github.com/mlzx-xxj/trade-review-app/actions/runs/38978915022) 已实际通过：116 Python、241 JVM、API29/35 各136项全量测试（零失败／错误／跳过），另各6项实录、重开及四组视觉配置。原有 FIFO、费用、保证金、编辑删除、统计、迁移、ZIP/JSON 恢复测试全部保留并执行。包名／权限及安装探针也通过，签名和发布按 PR 隔离跳过。
+
+8组配置共测量32张卡片，实际 TextLayoutResult 的方向前景色均为浅色 `#304C75`／深色 `#B4CBF7`。多头与空头都使用蓝灰，不调用 profitColor/lossColor；每组另验证真正净盈亏的红／绿渲染色。多头剩1手，净额原值 `971.833333333333`、显示 `￥971.83`；空头剩1手，净额原值 `-108.025`、显示 `￥-108.03`，费用12.03、剩余参考保证金2800。独立 Decimal 复算：`(4000-4010)×10 - 8.01/2 - 4.02 = -108.025`，没有修改生产公式。
+
+持仓密度对照本轮修正前 PR 提交58804e6的真实数据，两个API、两种主题结果相同：
+
+| 配置 | 股票高度：修正前→后 | 期货高度：修正前→后 | 四卡及3个8dp间隔 |
+|---|---|---|---|
+| 360dp／字体1.0 | 236.5 → 236.5dp | 208.5 → 208.5dp | 886dp |
+| 320dp／字体1.3 | 293.5 → 293.5dp | 258.5 → 258.5dp | 1093dp |
+
+四卡总高度不含列表上下内边距和档案入口，必须纵向滚动，不能把“一眼清楚”误称“四张完整同屏”。每卡的数量、均价、净额及费用均通过真实滚动检查；可卖数量、成本、参考保证金等原字段仍保留。320dp/1.3字体时部分辅助标签换行，核心数字未截断，本轮没有删除字段、缩小字体或增加卡片高度。i2701在本多空截图中尚无平仓，灰色0表示尚未发生已实现结果；费用／保证金仍待估算，含平仓的未知净额另由完整实录严格验证为空。
+
+以下是API35本轮实际原图，四种配置均含相同七笔真实表单成交。API29同配置也实际执行，全部原图见CI产物。点击查看完整分辨率，PNG未编辑：
+
+| 配置 | 多头（方向蓝灰／盈利红） | 空头（方向蓝灰／亏损绿） |
+|---|---|---|
+| 360dp浅色 | [![多头](v210/direction-density/api35/v210-regular-light-density-long.png)](v210/direction-density/api35/v210-regular-light-density-long.png) | [![空头](v210/direction-density/api35/v210-regular-light-density-short.png)](v210/direction-density/api35/v210-regular-light-density-short.png) |
+| 360dp深色 | [![多头](v210/direction-density/api35/v210-regular-dark-density-long.png)](v210/direction-density/api35/v210-regular-dark-density-long.png) | [![空头](v210/direction-density/api35/v210-regular-dark-density-short.png)](v210/direction-density/api35/v210-regular-dark-density-short.png) |
+| 320dp／1.3浅色 | [![多头](v210/direction-density/api35/v210-narrow-light-density-long.png)](v210/direction-density/api35/v210-narrow-light-density-long.png) | [![空头](v210/direction-density/api35/v210-narrow-light-density-short.png)](v210/direction-density/api35/v210-narrow-light-density-short.png) |
+| 320dp／1.3深色 | [![多头](v210/direction-density/api35/v210-narrow-dark-density-long.png)](v210/direction-density/api35/v210-narrow-dark-density-long.png) | [![空头](v210/direction-density/api35/v210-narrow-dark-density-short.png)](v210/direction-density/api35/v210-narrow-dark-density-short.png) |
+
+连续四持仓列表顶部：[浅色360](v210/direction-density/api35/v210-regular-light-density-top.png) · [深色360](v210/direction-density/api35/v210-regular-dark-density-top.png) · [浅色320](v210/direction-density/api35/v210-narrow-light-density-top.png) · [深色320](v210/direction-density/api35/v210-narrow-dark-density-top.png)。费用待估算持仓：[浅色360](v210/direction-density/api35/v210-regular-light-density-pending.png) · [深色360](v210/direction-density/api35/v210-regular-dark-density-pending.png) · [浅色320](v210/direction-density/api35/v210-narrow-light-density-pending.png) · [深色320](v210/direction-density/api35/v210-narrow-dark-density-pending.png)。
+
+[8组实际渲染色、金额、卡片高度、原图SHA与来源](v210/direction-density/provenance.json)。已独立校验归档、来源和逐文件摘要，再核对32张截图的实际尺寸、32张卡片高度及40笔原对照输入／费用／操作计数，均通过。
 
 versionCode 22 仅用于本阶段验证。真正准备 V2.1 安装升级包时必须递增 versionCode，并同步维护 CI 身份检查，不能以 V2.0.0/code22 作为正式 V2.1 升级包。本轮不改版本、正式包名、永久签名或 V2.0.0 标签，不合并、不发布 Stable。
+
+收尾期间实际失败与修复：
+
+- [38975942785](https://github.com/mlzx-xxj/trade-review-app/actions/runs/38975942785)：API35 全量136项中2项原有UI测试失败，一项在测试注入跨日后的股票卖出估算等待超时，一项在大字体输入法展开时未展开可选区。日志未给出估算失败原因，不将其冒称费用公式错误。测试现等待取消后的表单真正移除，再切换测试时钟；输入时等待实际IME和视口稳定，补充精确输入值与仅含合成数据的失败诊断。原金额、T+1、保存及恢复断言保留。
+- 同轮 API29 全量136项零失败／错误／跳过，附加实录和常规浅深色多空场景通过；新增320dp浅色截图流程在等待内部消息字段清空时超时。失败图已无提示条，故截图就绪条件改为实际提示条消失和列表视口稳定；方向颜色、净额、字段与卡片高度断言保持。
+- [38978423623](https://github.com/mlzx-xxj/trade-review-app/actions/runs/38978423623)：新增测试把返回Unit的 `performTextReplacement` 与断言链式调用，导致测试编译失败；改为分别调用替换与断言。此轮未执行模拟器测试，不能标为通过。
+
+以上失败运行、被新提交替代的取消运行均不计入成功结果；没有删测试、降低财务断言、增加重试点击或修改生产计算来获得通过。
