@@ -22,9 +22,14 @@ class LedgerRepository(private val db:TradeDatabase) {
         val candidate=e?.let { input->
             val account=before.accounts.firstOrNull{it.id==input.accountId}?:throw LedgerException("账户不存在")
             ledgerRequire(input.strategyId==null || before.strategies.any{it.id==input.strategyId && (it.active || existing?.strategyId==it.id)},"策略已停用，请选择有效策略")
-            val ordinal=if(input.ordinal>0)input.ordinal else existing?.ordinal?:((before.executions.maxOfOrNull{it.ordinal}?:0)+1)
+            val auditHigh=before.audits.maxOfOrNull{maxOf(LedgerJson.execution(it.beforeJson).ordinal,it.afterJson?.let(LedgerJson::execution)?.ordinal?:0)}?:0
+            val lastOrdinal=maxOf(before.executions.maxOfOrNull{it.ordinal}?:0,auditHigh)
+            ledgerRequire(existing!=null || lastOrdinal<Long.MAX_VALUE,"保存顺序已到上限，未修改数据")
+            val ordinal=existing?.ordinal?:if(input.feeSource==AutomaticEntry.SOURCE)lastOrdinal+1 else if(input.ordinal>0)input.ordinal else lastOrdinal+1
             LedgerValidation.number(input.price,true);LedgerValidation.number(input.quantity,true);input.stopLoss?.let{LedgerValidation.number(it,true)};input.multiplier?.let{LedgerValidation.number(it,true)};input.marginRate?.let{LedgerValidation.number(it)}
             var prepared=input.copy(ordinal=ordinal)
+            if(existing!=null)prepared=prepared.copy(date=existing.date,minute=existing.minute,second=existing.second,tradingDay=existing.tradingDay,feeSource=existing.feeSource)
+            if(prepared.feeSource==AutomaticEntry.SOURCE)prepared=AutomaticEntry.prepare(prepared,existing,prior,before.rules)
             if(prepared.feeSource=="rule") {
                 if(input.accountId=="stock") {
                     val rate=input.feeRateSnapshot?:if(input.side=="buy")account.buyRate else account.sellRate
@@ -41,20 +46,28 @@ class LedgerRepository(private val db:TradeDatabase) {
             }
             val config=before.risks.firstOrNull{it.id==input.accountId}?:MarketRisk(input.accountId)
             val risk=LedgerRisk.evaluate(prepared,config)
-            prepared.copy(orderConfirmed=false,riskAmount=risk.amount,riskFundSnapshot=risk.fund,riskLimitSnapshot=risk.limit,riskExceeded=risk.exceeded,riskWarningEnabled=config.warnEnabled,riskConfirmed=if(existing==input)existing?.riskConfirmed?:false else false)
+            prepared.copy(orderConfirmed=existing?.orderConfirmed?:false,riskAmount=risk.amount,riskFundSnapshot=risk.fund,riskLimitSnapshot=risk.limit,riskExceeded=risk.exceeded,riskWarningEnabled=config.warnEnabled,riskConfirmed=if(existing==input)existing?.riskConfirmed?:false else false)
         }
-        val facts=(prior+listOfNotNull(candidate)).sortedBy{it.id};MatchingEngine.uncertainTimes(facts).forEach{group->ledgerRequire(group.map{it.ordinal}.distinct().size==group.size,"先后序号重复，请核实同时间成交顺序；未修改记录")};val result=MatchingEngine.replay(facts)
+        val originalFacts=(prior+listOfNotNull(candidate)).sortedBy{it.id}
+        MatchingEngine.uncertainTimes(originalFacts).forEach{group->ledgerRequire(group.map{it.ordinal}.distinct().size==group.size,"历史成交顺序冲突；未修改记录")}
+        val initialResult=MatchingEngine.replay(originalFacts)
+        val byClose=initialResult.matches.groupBy{it.closeExecutionId};val byId=originalFacts.associateBy{it.id}
+        // Explicit history edits may change today/yesterday allocation. Reprice only
+        // automatic closes using THEIR saved snapshot, never the updated catalog.
+        val facts=originalFacts.map{fact->if(fact.feeSource==AutomaticEntry.SOURCE && fact.accountId=="futures" && fact.effect!="open")fact.copy(fees=LedgerFees.fromMatches(LedgerJson.rule(requireNotNull(fact.ruleSnapshot)),fact,byClose[fact.id].orEmpty(),byId))else fact}
+        val result=if(facts==originalFacts)initialResult else MatchingEngine.replay(facts)
+        val repriced=before.executions.mapNotNull{old->facts.firstOrNull{it.id==old.id && it.id!=id && it.fees!=old.fees}?.let{fresh->ExecutionAudit(com.tradereview.app.data.newKey(),old.id,"edit",LedgerJson.text(old),LedgerJson.text(fresh),System.currentTimeMillis())}}
         ledgerRequire(before.reviews.all{r->result.cycles.any{it.id==r.cycleId}},"此次更改会使已有持仓复盘失去关联，请先处理该复盘；未修改任何成交")
         val audit=existing?.takeIf{it!=candidate}?.let{ExecutionAudit(com.tradereview.app.data.newKey(),it.id,if(candidate==null)"delete"else"edit",LedgerJson.text(it),candidate?.let(LedgerJson::text),System.currentTimeMillis())}
-        val after=before.copy(executions=facts,lots=result.lots,matches=result.matches,cycles=result.cycles,audits=before.audits+listOfNotNull(audit))
-        val oldNet=sum(before.matches.map{decimal(it.net)});val newNet=sum(after.matches.map{decimal(it.net)})
+        val after=before.copy(executions=facts,lots=result.lots,matches=result.matches,cycles=result.cycles,audits=before.audits+listOfNotNull(audit)+repriced)
+        val oldNet=completeTotal(before.matches.map{it.net});val newNet=completeTotal(after.matches.map{it.net})
         val changed=before.cycles.count{old->after.cycles.firstOrNull{it.id==old.id}!=old}+after.cycles.count{new->before.cycles.none{it.id==new.id}}
         val byExecution=after.executions.associateBy{it.id}
-        val cash=after.accounts.joinToString("\n"){a->"${a.name}：已实现 ${exact(sum(after.matches.filter{m->byExecution.getValue(m.closeExecutionId).accountId==a.id}.map{decimal(it.net)}))}；${if(a.id=="stock")"参考现金 ${LedgerStatistics.cash(after,a)?:"未知（期初/历史未完整确认）"}"else "不推算真实可用资金"}"}
+        val cash=after.accounts.joinToString("\n"){a->"${a.name}：已实现 ${moneyText(completeTotal(after.matches.filter{m->byExecution.getValue(m.closeExecutionId).accountId==a.id}.map{it.net}))}；${if(a.id=="stock")"参考现金 ${LedgerStatistics.cash(after,a)?.let(::amount)?:"未知（期初/历史未完整确认）"}"else "不推算真实可用资金"}"}
         val risk=candidate?.let{LedgerRisk.evaluate(it,before.risks.first{r->r.id==it.accountId})}
-        val uncertain=MatchingEngine.uncertainTimes(facts).any{group->group.any{it.id==candidate?.id}}
+        val uncertain=existing==null && MatchingEngine.uncertainTimes(facts).any{group->group.any{it.id==candidate?.id}}
         val historyChanged=before.matches.any{m->after.matches.firstOrNull{it.id==m.id}!=m}
-        LedgerChange(before,after,candidate?.id,deleteId!=null,risk,(if(uncertain)"本组秒数不完整或同秒无法区分，按明确序号FIFO；请核对先后顺序。\n"else "")+"影响 $changed 个持仓周期、${after.matches.count{m->before.matches.firstOrNull{it.id==m.id}!=m}} 项匹配。\n已实现净盈亏：${exact(oldNet)} → ${exact(newNet)}\n$cash\n费用不会重复扣除；确认后事务重算。",uncertain,historyChanged)
+        LedgerChange(before,after,candidate?.id,deleteId!=null,risk,(if(uncertain)"本组秒数不完整或同秒无法区分，按明确序号FIFO；请核对先后顺序。\n"else "")+"后续 ${repriced.size} 笔费用按各自原快照重算（不使用新费率）。\n影响 $changed 个持仓周期、${after.matches.count{m->before.matches.firstOrNull{it.id==m.id}!=m}} 项匹配。\n已实现净盈亏：${moneyText(oldNet)} → ${moneyText(newNet)}\n$cash\n费用不会重复扣除；确认后事务重算。",uncertain,historyChanged)
     }
     suspend fun confirm(change:LedgerChange,riskAcknowledged:Boolean=false)=withContext(Dispatchers.IO) {
         val context=kotlinx.coroutines.currentCoroutineContext()

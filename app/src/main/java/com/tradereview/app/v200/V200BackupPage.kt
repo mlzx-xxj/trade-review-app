@@ -21,7 +21,7 @@ import java.time.LocalDate
     val csv=rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("text/csv")){it?.let(backup::exportLedgerCsv)}
     val oldCsv=rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("text/csv")){it?.let(backup::exportCsv)}
     val restore=rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()){it?.let(backup::readBackup)}
-    val date=LocalDate.now().toString()
+    val date=AutomaticEntry.today().toString()
     LazyColumn(Modifier.fillMaxSize().testTag("v2-backup"),contentPadding=PaddingValues(12.dp),verticalArrangement=Arrangement.spacedBy(12.dp)){
         item{Button({exportChoice=true},enabled=!busy,modifier=Modifier.fillMaxWidth().heightIn(min=56.dp).testTag("v2-export-backup")){Text("保存完整 ZIP 备份")}}
         item{OutlinedButton({restore.launch(arrayOf("application/zip","application/json","application/octet-stream"))},enabled=!busy,modifier=Modifier.fillMaxWidth().heightIn(min=56.dp).testTag("v2-import-backup")){Text("从 ZIP／JSON 恢复")}}
@@ -33,6 +33,7 @@ import java.time.LocalDate
             val incoming=p.backup.ledger;val local=p.before.ledger
             if(incoming==null)Text("旧版档案备份，不含V2成交账本；本机V2成交及资金保持原样，可靠旧策略可加入列表。")else{
                 Text("V2：${incoming.executions.size}笔成交、${incoming.cycles.size}个周期、${incoming.plans.size}个标的计划、${incoming.reviews.size}条持仓复盘、${incoming.cashFlows.size}笔资金流水")
+                Text("待估算费用 ${incoming.executions.count{it.fees==null}} 笔；相关未知净盈亏会原样恢复，不补成零。")
                 Text("账户${incoming.accounts.size}、策略${incoming.strategies.size}、风险配置${incoming.risks.size}、合约规则${incoming.rules.size}、匹配${incoming.matches.size}、原始成交修订${incoming.audits.size}")
                 val existing=local?.executions.orEmpty().associateBy{it.id};val repeated=incoming.executions.count{existing[it.id]==it};val conflicts=incoming.executions.count{existing[it.id]?.let{old->old!=it}==true}
                 Text("成交新增${incoming.executions.count{it.id !in existing}} · 重复$repeated · 冲突$conflicts；合并保留本地冲突记录，并重新校验配对。")

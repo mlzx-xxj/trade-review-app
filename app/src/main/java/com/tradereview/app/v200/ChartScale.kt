@@ -7,7 +7,7 @@ import java.time.YearMonth
 
 data class ChartAxis(val minimum:BigDecimal,val maximum:BigDecimal,val step:BigDecimal,val ticks:List<BigDecimal>,val unitPower:Int) {
     val unitLabel get()=when{unitPower==8->"亿元";unitPower==4->"万元";unitPower<0->"×10^${unitPower}元";else->"元"}
-    fun label(value:BigDecimal)=exact(value.movePointLeft(unitPower))
+    fun label(value:BigDecimal)=AutomaticEntry.cents(value.movePointLeft(unitPower))
 }
 object ChartScale {
     fun axis(values:List<BigDecimal>):ChartAxis {
@@ -33,8 +33,9 @@ data class LedgerPeriod(val start:Long,val end:Long) {
         fun month(date:LocalDate,offset:Int=0):LedgerPeriod{val month=YearMonth.from(date).plusMonths(offset.toLong());return LedgerPeriod(month.atDay(1).toEpochDay(),month.atEndOfMonth().toEpochDay())}
     }
 }
-data class PeriodNumbers(val records:List<ClosedEvent>,val wins:Int,val losses:Int,val flats:Int,val net:BigDecimal,val average:BigDecimal?,val winRate:BigDecimal?,val daily:Map<Long,BigDecimal>,val distribution:List<Pair<String,BigDecimal>>)
+data class PeriodNumbers(val records:List<ClosedEvent>,val wins:Int,val losses:Int,val flats:Int,val net:BigDecimal?,val average:BigDecimal?,val winRate:BigDecimal?,val daily:Map<Long,BigDecimal>,val distribution:List<Pair<String,BigDecimal>>,val pending:Int=0)
 fun periodNumbers(values:List<ClosedEvent>,period:LedgerPeriod,market:String="all"):PeriodNumbers {
-    val selected=values.filter{it.execution.tradingDay in period.start..period.end && (market=="all" || it.execution.accountId==market)};val net=sum(selected.map{it.net});val wins=selected.count{it.net.signum()>0}
-    return PeriodNumbers(selected,wins,selected.count{it.net.signum()<0},selected.count{it.net.signum()==0},net,if(selected.isEmpty())null else ratio(net,BigDecimal(selected.size)),if(selected.isEmpty())null else ratio(BigDecimal(wins)*BigDecimal(100),BigDecimal(selected.size)),LedgerStatistics.days(selected),selected.groupBy{it.execution.accountId to it.execution.code}.map{(key,records)->("${records.first().execution.name} ${key.second}") to sum(records.map{it.net})}.sortedWith(compareByDescending<Pair<String,BigDecimal>>{it.second.abs()}.thenBy{it.first}))
+    val selected=values.filter{it.execution.tradingDay in period.start..period.end && (market=="all" || it.execution.accountId==market)}
+    val known=selected.filter{it.net!=null};val total=sum(known.map{requireNotNull(it.net)});val wins=known.count{requireNotNull(it.net).signum()>0}
+    return PeriodNumbers(selected,wins,known.count{requireNotNull(it.net).signum()<0},known.count{requireNotNull(it.net).signum()==0},if(selected.isNotEmpty() && known.isEmpty())null else total,if(known.isEmpty())null else ratio(total,BigDecimal(known.size)),if(known.isEmpty())null else ratio(BigDecimal(wins)*BigDecimal(100),BigDecimal(known.size)),LedgerStatistics.days(known),known.groupBy{it.execution.accountId to it.execution.code}.map{(key,records)->("${records.first().execution.name} ${key.second}") to sum(records.map{requireNotNull(it.net)})}.sortedWith(compareByDescending<Pair<String,BigDecimal>>{it.second.abs()}.thenBy{it.first}),selected.size-known.size)
 }

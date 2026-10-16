@@ -26,7 +26,7 @@ class MigrationTest {
             close()
         }
         helper.runMigrationsAndValidate(name, 7, true, MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7).close()
-        fun open() = Room.databaseBuilder(context, TradeDatabase::class.java, name).addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7, com.tradereview.app.v200.MIGRATION_7_8).build()
+        fun open() = Room.databaseBuilder(context, TradeDatabase::class.java, name).addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7, com.tradereview.app.v200.MIGRATION_7_8, com.tradereview.app.v200.MIGRATION_8_9).build()
         var db = open()
         try {
             val trade = requireNotNull(db.trades().findTrade(7))
@@ -47,7 +47,7 @@ class MigrationTest {
     @Test fun emptyV1DatabaseMigratesAndAcceptsNewRecords() = runBlocking {
         helper.createDatabase(name, 1).close()
         helper.runMigrationsAndValidate(name, 7, true, MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7).close()
-        val db = Room.databaseBuilder(context, TradeDatabase::class.java, name).addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7, com.tradereview.app.v200.MIGRATION_7_8).build()
+        val db = Room.databaseBuilder(context, TradeDatabase::class.java, name).addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7, com.tradereview.app.v200.MIGRATION_7_8, com.tradereview.app.v200.MIGRATION_8_9).build()
         try {
             val record = Trade()
             val id = db.trades().insert(record)
@@ -61,7 +61,7 @@ class MigrationTest {
             close()
         }
         helper.runMigrationsAndValidate(name, 3, true, MIGRATION_2_3).close()
-        val db = Room.databaseBuilder(context, TradeDatabase::class.java, name).addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7, com.tradereview.app.v200.MIGRATION_7_8).build()
+        val db = Room.databaseBuilder(context, TradeDatabase::class.java, name).addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7, com.tradereview.app.v200.MIGRATION_7_8, com.tradereview.app.v200.MIGRATION_8_9).build()
         try {
             val trade = requireNotNull(db.trades().findTrade(7))
             assertEquals("老品种文字", trade.symbol); assertEquals("", trade.note)
@@ -87,7 +87,7 @@ class MigrationTest {
             close()
         }
         helper.runMigrationsAndValidate(name, 4, true, MIGRATION_3_4).close()
-        val db = Room.databaseBuilder(context, TradeDatabase::class.java, name).addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7, com.tradereview.app.v200.MIGRATION_7_8).build()
+        val db = Room.databaseBuilder(context, TradeDatabase::class.java, name).addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7, com.tradereview.app.v200.MIGRATION_7_8, com.tradereview.app.v200.MIGRATION_8_9).build()
         try {
             assertEquals("旧备注", db.trades().findTrade(7)!!.note); assertEquals("-123.45", db.trades().findTrade(7)!!.netPnl)
             assertEquals("0123456789abcdef0123456789abcdef", db.trades().findTrade(7)!!.recordKey)
@@ -100,7 +100,7 @@ class MigrationTest {
             db.trades().saveFilter(filter); assertEquals(filter, db.trades().allFilters().single())
             db.trades().saveSettings(db.trades().settings()!!.copy(pnlPalette = "red_profit"))
             db.close()
-            val reopened = Room.databaseBuilder(context, TradeDatabase::class.java, name).addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7, com.tradereview.app.v200.MIGRATION_7_8).build()
+            val reopened = Room.databaseBuilder(context, TradeDatabase::class.java, name).addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7, com.tradereview.app.v200.MIGRATION_7_8, com.tradereview.app.v200.MIGRATION_8_9).build()
             try { assertEquals(filter, reopened.trades().allFilters().single()); assertEquals("red_profit", reopened.trades().settings()!!.pnlPalette) }
             finally { reopened.close() }
         } finally { db.close() }
@@ -119,7 +119,7 @@ class MigrationTest {
             close()
         }
         helper.runMigrationsAndValidate(name,5,true,MIGRATION_4_5).close()
-        fun openCurrent()=Room.databaseBuilder(context,TradeDatabase::class.java,name).addMigrations(MIGRATION_1_2,MIGRATION_2_3,MIGRATION_3_4,MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7, com.tradereview.app.v200.MIGRATION_7_8).build()
+        fun openCurrent()=Room.databaseBuilder(context,TradeDatabase::class.java,name).addMigrations(MIGRATION_1_2,MIGRATION_2_3,MIGRATION_3_4,MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7, com.tradereview.app.v200.MIGRATION_7_8, com.tradereview.app.v200.MIGRATION_8_9).build()
         var db=openCurrent()
         try {
             val old=db.trades().findTrade(7)!!
@@ -149,7 +149,7 @@ class MigrationTest {
             close()
         }
         helper.runMigrationsAndValidate(name,6,true,MIGRATION_5_6).close()
-        val db=Room.databaseBuilder(context,TradeDatabase::class.java,name).addMigrations(MIGRATION_1_2,MIGRATION_2_3,MIGRATION_3_4,MIGRATION_4_5,MIGRATION_5_6, MIGRATION_6_7, com.tradereview.app.v200.MIGRATION_7_8).build()
+        val db=Room.databaseBuilder(context,TradeDatabase::class.java,name).addMigrations(MIGRATION_1_2,MIGRATION_2_3,MIGRATION_3_4,MIGRATION_4_5,MIGRATION_5_6, MIGRATION_6_7, com.tradereview.app.v200.MIGRATION_7_8, com.tradereview.app.v200.MIGRATION_8_9).build()
         try {
             val old=db.trades().findTrade(7)!!;assertEquals("-123.45",old.netPnl);assertEquals("0123456789abcdef0123456789abcdef",old.recordKey);assertEquals("200.00",old.professional!!.manualRisk)
             assertEquals(4,db.trades().findReview(20000)!!.rating);assertEquals("10000.00",db.trades().allRiskRules().single().accountEquity);assertEquals("旧参数",db.trades().allTemplates().single().name)
@@ -171,7 +171,7 @@ class MigrationTest {
             close()
         }
         helper.runMigrationsAndValidate(name,7,true,MIGRATION_6_7).close()
-        val db=Room.databaseBuilder(context,TradeDatabase::class.java,name).addMigrations(MIGRATION_1_2,MIGRATION_2_3,MIGRATION_3_4,MIGRATION_4_5,MIGRATION_5_6,MIGRATION_6_7, com.tradereview.app.v200.MIGRATION_7_8).build()
+        val db=Room.databaseBuilder(context,TradeDatabase::class.java,name).addMigrations(MIGRATION_1_2,MIGRATION_2_3,MIGRATION_3_4,MIGRATION_4_5,MIGRATION_5_6,MIGRATION_6_7, com.tradereview.app.v200.MIGRATION_7_8, com.tradereview.app.v200.MIGRATION_8_9).build()
         try {
             val t=db.trades().findTrade(7)!!;assertEquals(key,t.recordKey);assertEquals("-123.45",t.netPnl);assertEquals("200.00",t.professional!!.manualRisk)
             assertEquals("旧证据",db.trades().allAttachments().single().caption);assertEquals("旧文字目标",db.trades().allGoals().single().title)

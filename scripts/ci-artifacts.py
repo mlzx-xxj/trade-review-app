@@ -108,6 +108,8 @@ def pack_device(api_number):
                 copy_file(source, target)
     for source in Path("ci-screenshots").glob("*.png"):
         copy_file(source, root / "screenshots" / source.name)
+    for source in Path("ci-v200/entry-experience").glob("*-instrumentation.txt"):
+        copy_file(source,root / "entry-run-logs" / source.name)
     output("evidence_digest", manifest(root, f"device-{api_number}"))
 
 

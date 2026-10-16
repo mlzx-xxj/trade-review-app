@@ -60,7 +60,7 @@ def snapshot(name):
         if result.returncode == 0 and result.stdout and not result.stdout.startswith(b"run-as:"):
             (folder / ("trade-review.db" + suffix)).write_bytes(result.stdout)
     with sqlite3.connect(folder / "trade-review.db") as db:
-        assert db.execute("PRAGMA user_version").fetchone()[0] == 8
+        assert db.execute("PRAGMA user_version").fetchone()[0] == 9
         assert not db.execute("PRAGMA foreign_key_check").fetchall()
         tables = [r[0] for r in db.execute("SELECT name FROM sqlite_master WHERE type='table'") if r[0] not in ["android_metadata", "sqlite_sequence", "room_master_table"]]
         rows = {table: sorted(db.execute('SELECT * FROM "'+table+'"').fetchall(), key=repr) for table in tables}
@@ -125,7 +125,7 @@ def main():
         start();wait_for_home()
     finally:adb("shell", "settings", "put", "system", "font_scale", "1.0")
     (ROOT / "launch-times.txt").write_text("\n".join(logs))
-    report = {"api": api, "processRestarts": 3, "allSixteenTablesUnchanged": set(["trades","daily_reviews","tags","instruments","app_settings","entry_drafts","saved_filters","risk_rules","contract_templates","attachments","review_goals","evidence_settings","smart_settings","preflight_items","preflight_checks","ocr_drafts"]).issubset(before), "allLedgerTablesUnchanged": len(before) == 28, "tablesVerified": len(before), "schemaVersion": 8, "attachmentShaVerified": True,
+    report = {"api": api, "processRestarts": 3, "allSixteenTablesUnchanged": set(["trades","daily_reviews","tags","instruments","app_settings","entry_drafts","saved_filters","risk_rules","contract_templates","attachments","review_goals","evidence_settings","smart_settings","preflight_items","preflight_checks","ocr_drafts"]).issubset(before), "allLedgerTablesUnchanged": len(before) == 28, "tablesVerified": len(before), "schemaVersion": 9, "attachmentShaVerified": True,
               "coldProcessLaunch": cold, "warmProcessLaunch": warm,
               "definition": "am start -W system launch times; OS/page caches warmed by prior tests; warm start omits force-stop and may reuse/create Activity; not phone/end-to-end data-ready latency. After Gradle UTP cleanup, the same locally compiled test APKs are manually installed and one existing Activity test seeds synthetic facts; this setup is not a fixed-signer old-to-new upgrade."}
     assert report["allSixteenTablesUnchanged"] and report["allLedgerTablesUnchanged"]

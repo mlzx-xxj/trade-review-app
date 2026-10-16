@@ -10,7 +10,7 @@ spec=importlib.util.spec_from_file_location('v200',Path(__file__).resolve().pare
 SOURCE='a'*40
 
 
-def rc():return dict(applicationId='com.tradereview.app.rc.v200',versionCode=20,versionName='2.0.0-rc.1',debuggable=False,certificateSha256='b'*64,apkSha256='c'*64,apkBytes=100,abis=['arm64-v8a','armeabi-v7a','x86','x86_64'])
+def rc():return dict(applicationId='com.tradereview.app.rc.v200',versionCode=22,versionName='2.0.0-rc.3',debuggable=False,certificateSha256='b'*64,apkSha256='c'*64,apkBytes=100,abis=['arm64-v8a','armeabi-v7a','x86','x86_64'])
 def status(configured=False):return dict(sourceCommit=SOURCE,configured=configured,permanentPinVerified=configured,legacyV03UpgradeCompatible=False,realPhoneAcceptance='not-confirmed')
 
 

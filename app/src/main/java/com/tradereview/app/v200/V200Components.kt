@@ -22,10 +22,13 @@ import java.math.BigDecimal
 @Composable fun profitColor()=if(isSystemInDarkTheme())Color(0xffef9a9a)else Color(0xffb3262d)
 @Composable fun lossColor()=if(isSystemInDarkTheme())Color(0xff81c784)else Color(0xff087c49)
 @Composable fun pnlColor(value:BigDecimal)=when(value.signum()){1->profitColor();-1->lossColor();else->MaterialTheme.colorScheme.onSurfaceVariant}
-fun amount(value:String?)=value?.let{"￥$it"}?:"未知"
-@Composable fun NetText(value:BigDecimal,modifier:Modifier=Modifier){Text("￥${exact(value)}",modifier,color=pnlColor(value),style=MaterialTheme.typography.titleMedium)}
+/** Presentation only: HALF_UP to fen, preserving all persisted/replay precision. */
+fun amount(value:String?)=value?.let{"￥${AutomaticEntry.cents(decimal(it))}"}?:"待估算"
+fun moneyText(value:BigDecimal?)=value?.let{amount(exact(it))}?:"待估算"
+fun historicalMoney(currency:String,value:String)=if(currency=="CNY")amount(value)else value
+@Composable fun NetText(value:BigDecimal?,modifier:Modifier=Modifier){Text(moneyText(value),modifier,color=value?.let{pnlColor(it)}?:MaterialTheme.colorScheme.onSurfaceVariant,style=MaterialTheme.typography.titleMedium)}
 @Composable fun LedgerPanel(title:String,modifier:Modifier=Modifier,content:@Composable ColumnScope.()->Unit){Card(modifier.fillMaxWidth()){Column(Modifier.padding(12.dp),verticalArrangement=Arrangement.spacedBy(8.dp)){Text(title,style=MaterialTheme.typography.titleMedium,fontWeight=FontWeight.SemiBold);content()}}}
-@Composable fun EntryField(label:String,value:String,onValue:(String)->Unit,tag:String="",number:Boolean=false,modifier:Modifier=Modifier,lines:Int=1){OutlinedTextField(value,onValue,modifier=modifier.fillMaxWidth().testTag(tag),label={Text(label)},singleLine=lines==1,minLines=lines,keyboardOptions=KeyboardOptions(keyboardType=if(number)KeyboardType.Decimal else KeyboardType.Text))}
+@Composable fun EntryField(label:String,value:String,onValue:(String)->Unit,tag:String="",number:Boolean=false,modifier:Modifier=Modifier,lines:Int=1,keyboardType:KeyboardType?=null){val keyboard=androidx.compose.ui.platform.LocalSoftwareKeyboardController.current;OutlinedTextField(value,onValue,modifier=modifier.fillMaxWidth().testTag(tag),label={Text(label)},singleLine=lines==1,minLines=lines,keyboardOptions=KeyboardOptions(keyboardType=keyboardType?:(if(number)KeyboardType.Decimal else KeyboardType.Text),imeAction=if(lines==1)androidx.compose.ui.text.input.ImeAction.Done else androidx.compose.ui.text.input.ImeAction.Default),keyboardActions=androidx.compose.foundation.text.KeyboardActions(onDone={keyboard?.hide()}))}
 @Composable fun DateControl(day:Long,onDate:(Long)->Unit,label:String="日期",tag:String=""){val context=LocalContext.current;OutlinedButton(onClick={val d=LocalDate.ofEpochDay(day);DatePickerDialog(context,{_,y,m,n->onDate(LocalDate.of(y,m+1,n).toEpochDay())},d.year,d.monthValue-1,d.dayOfMonth).show()},modifier=Modifier.heightIn(min=48.dp).testTag(tag)){Text("$label ${LocalDate.ofEpochDay(day)}")}}
 @Composable fun TimeControl(minute:Int,onTime:(Int)->Unit){val context=LocalContext.current;OutlinedButton(onClick={TimePickerDialog(context,{_,h,m->onTime(h*60+m)},minute/60,minute%60,true).show()},modifier=Modifier.heightIn(min=48.dp)){Text("%02d:%02d".format(minute/60,minute%60))}}
 @OptIn(ExperimentalLayoutApi::class)

@@ -35,6 +35,28 @@ class ActivityCompatibilityTest {
     private val key="00000000000000000000000000000808"
     private lateinit var model:TradeViewModel
     private fun shell(command:String):String=ParcelFileDescriptor.AutoCloseInputStream(InstrumentationRegistry.getInstrumentation().uiAutomation.executeShellCommand(command)).bufferedReader().use{it.readText()}
+    // Configuration changes replace the Activity. Poll the actual resumed instance
+    // on main instead of reading the Compose rule's previously captured Activity.
+    private fun awaitResumedConfiguration(predicate:(LegacyCompatibilityActivity)->Boolean={true}) {
+        compose.waitUntil(20000){
+            var ready=false
+            InstrumentationRegistry.getInstrumentation().runOnMainSync{
+                ready=androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry.getInstance()
+                    .getActivitiesInStage(androidx.test.runner.lifecycle.Stage.RESUMED)
+                    .filterIsInstance<LegacyCompatibilityActivity>().any(predicate)
+            }
+            ready
+        }
+        compose.waitForIdle()
+    }
+    private fun resumedActivityAction(action:(LegacyCompatibilityActivity)->Unit) {
+        awaitResumedConfiguration()
+        InstrumentationRegistry.getInstrumentation().runOnMainSync{
+            action(androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry.getInstance()
+                .getActivitiesInStage(androidx.test.runner.lifecycle.Stage.RESUMED)
+                .filterIsInstance<LegacyCompatibilityActivity>().single())
+        }
+    }
     @Before fun seed(){
         val freshDraft=EntryDraft(amount="12.")
         application.deviceExperience.initialize(true);application.deviceExperience.finishOnboarding()
@@ -69,11 +91,13 @@ class ActivityCompatibilityTest {
         val oldKeyboard=shell("settings get secure show_ime_with_hard_keyboard").trim()
         val automation=InstrumentationRegistry.getInstrumentation().uiAutomation
         val oldFlags=automation.serviceInfo.flags
+        val database=db
+        val expectedScale=oldScale.toFloatOrNull()?:1f
         try {
             automation.serviceInfo=automation.serviceInfo.apply{flags=flags or AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS}
             runBlocking{db.trades().saveSettings(AppSettings(theme="dark",pnlPalette="red_profit"))}
             shell("settings put system font_scale 1.3")
-            compose.waitUntil(20000){compose.activity.resources.configuration.fontScale>=1.29f && model.state.value.settings.theme=="dark"}
+            awaitResumedConfiguration{it.resources.configuration.fontScale>=1.29f && model.state.value.settings.theme=="dark"}
             compose.onNodeWithContentDescription("新增交易").performClick()
             compose.onNodeWithTag("entry-amount").performScrollTo().performClick().performTextReplacement("77.77")
             // Emulator hardware keyboards can suppress the soft IME; require real
@@ -81,22 +105,30 @@ class ActivityCompatibilityTest {
             shell("settings put secure show_ime_with_hard_keyboard 1")
             showKeyboard()
             compose.onNodeWithText("保存交易").assertIsDisplayed();capture("23-v08-large-font-keyboard")
-            compose.activityRule.scenario.onActivity{it.requestedOrientation=ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE}
-            compose.waitUntil(20000){compose.activity.resources.configuration.orientation==android.content.res.Configuration.ORIENTATION_LANDSCAPE}
+            resumedActivityAction{it.requestedOrientation=ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE}
+            awaitResumedConfiguration{it.resources.configuration.orientation==android.content.res.Configuration.ORIENTATION_LANDSCAPE}
             compose.onNodeWithTag("entry-amount").performScrollTo().assertTextContains("77.77")
             compose.onNodeWithText("保存交易").assertIsDisplayed();capture("24-v08-landscape")
             compose.onNodeWithText("保存交易").performClick()
             compose.waitUntil(15000){!model.busy.value && compose.onAllNodesWithTag("entry-amount").fetchSemanticsNodes().isEmpty()}
             runBlocking{assertEquals("123.45",db.trades().findTradeByKey(key)!!.netPnl)}
         }finally{
-            if(automation.windows.any{it.type==AccessibilityWindowInfo.TYPE_INPUT_METHOD})shell("input keyevent KEYCODE_BACK")
-            automation.serviceInfo=automation.serviceInfo.apply{flags=oldFlags}
+            // BACK can finish the Activity if the IME disappears between querying
+            // the windows and injecting the key. Hide input without navigating.
+            resumedActivityAction{
+                (it.getSystemService(android.content.Context.INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager)
+                    .hideSoftInputFromWindow(it.window.decorView.windowToken,0)
+                it.requestedOrientation=ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+            }
+            awaitResumedConfiguration{it.resources.configuration.orientation==android.content.res.Configuration.ORIENTATION_PORTRAIT}
             if(oldKeyboard=="null")shell("settings delete secure show_ime_with_hard_keyboard")
             else shell("settings put secure show_ime_with_hard_keyboard $oldKeyboard")
-            shell("settings put system font_scale ${oldScale.toFloatOrNull() ?: 1f}")
-            compose.activityRule.scenario.onActivity{it.requestedOrientation=ActivityInfo.SCREEN_ORIENTATION_PORTRAIT}
-            compose.waitUntil(20000){compose.activity.resources.configuration.orientation==android.content.res.Configuration.ORIENTATION_PORTRAIT}
-            runBlocking{db.trades().saveSettings(AppSettings())}
+            // Serialize the two configuration changes; otherwise a font-triggered
+            // recreation can race the portrait request on Android 10.
+            shell("settings put system font_scale $expectedScale")
+            awaitResumedConfiguration{kotlin.math.abs(it.resources.configuration.fontScale-expectedScale)<0.01f}
+            automation.serviceInfo=automation.serviceInfo.apply{flags=oldFlags}
+            runBlocking{database.trades().saveSettings(AppSettings())}
         }
     }
     private fun showKeyboard(){
