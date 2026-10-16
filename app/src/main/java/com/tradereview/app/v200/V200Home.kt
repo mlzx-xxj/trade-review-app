@@ -58,9 +58,9 @@ fun sellable(state:LedgerSnapshot,cycle:LedgerCycle,day:Long):String {val facts=
     Card(onClick={onClick(c.id)},modifier=Modifier.fillMaxWidth().testTag("position-${c.id}"),colors=CardDefaults.cardColors(containerColor=MaterialTheme.colorScheme.surface),border=BorderStroke(1.dp,MaterialTheme.colorScheme.outlineVariant)){
         Column(Modifier.padding(LedgerUi.inset),verticalArrangement=Arrangement.spacedBy(LedgerUi.gap)){
             Row(verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(8.dp)){
-                Column(Modifier.weight(1f)){
-                    Text(c.name,Modifier.testTag("position-name-${c.id}"),style=MaterialTheme.typography.titleMedium,maxLines=2,overflow=TextOverflow.Ellipsis)
-                    Text(c.code,style=MaterialTheme.typography.labelMedium,color=MaterialTheme.colorScheme.onSurfaceVariant)
+                Row(Modifier.weight(1f),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(8.dp)){
+                    Text(c.name,Modifier.weight(1f,fill=false).testTag("position-name-${c.id}"),style=MaterialTheme.typography.titleMedium,maxLines=2,overflow=TextOverflow.Ellipsis)
+                    if(c.name!=c.code)Text(c.code,style=MaterialTheme.typography.labelMedium,color=MaterialTheme.colorScheme.onSurfaceVariant)
                 }
                 StatusPill(directionLabel(c),color=if(stock)MaterialTheme.colorScheme.primary else if(c.direction=="long")profitColor()else lossColor(),modifier=Modifier.testTag("position-direction-${c.id}"))
             }
@@ -71,20 +71,14 @@ fun sellable(state:LedgerSnapshot,cycle:LedgerCycle,day:Long):String {val facts=
             HorizontalDivider(color=MaterialTheme.colorScheme.outlineVariant)
             Row(horizontalArrangement=Arrangement.spacedBy(12.dp)){
                 Column(Modifier.weight(1f),verticalArrangement=Arrangement.spacedBy(4.dp)){
-                    Text("已实现净盈亏",style=MaterialTheme.typography.labelMedium,color=MaterialTheme.colorScheme.onSurfaceVariant)
-                    NetText(c.realized?.let(::decimal),Modifier.testTag("position-net-${c.id}"),stateLabel=if(state.matches.none{it.cycleId==c.id})"尚无平仓"else null)
+                    val status=if(state.matches.none{it.cycleId==c.id})"尚无平仓"else c.realized?.let{when(decimal(it).signum()){1->"+ 盈利";-1->"亏损";else->"持平"}}?:"待计算"
+                    Text("已实现净盈亏 · $status",style=MaterialTheme.typography.labelMedium,color=MaterialTheme.colorScheme.onSurfaceVariant)
+                    NetText(c.realized?.let(::decimal),Modifier.testTag("position-net-${c.id}"),showState=false)
                 }
                 PositionMetric(if(stock)"当前可卖"else"参考保证金",if(stock)"${sellable(state,c,AutomaticEntry.today().toEpochDay())} 股"else amount(c.referenceMargin),if(stock)"position-sellable-${c.id}"else"position-margin-${c.id}",Modifier.weight(1f))
             }
-            Row(horizontalArrangement=Arrangement.spacedBy(12.dp)){
-                PositionMetric("已记录手续费",amount(c.fees),"position-fees-${c.id}",Modifier.weight(1f))
-                if(stock)PositionMetric("持仓成本（非市值）",amount(c.openCost),"position-cost-${c.id}",Modifier.weight(1f))
-                else Column(Modifier.weight(1f),verticalArrangement=Arrangement.spacedBy(4.dp)){
-                    Text("首次开仓",style=MaterialTheme.typography.labelMedium,color=MaterialTheme.colorScheme.onSurfaceVariant)
-                    Text(LocalDate.ofEpochDay(c.firstDay).toString(),style=MaterialTheme.typography.bodyMedium)
-                }
-            }
-            if(stock)Text("首次买入 ${LocalDate.ofEpochDay(c.firstDay)} · 均价含未卖出买入费用",style=MaterialTheme.typography.bodySmall,color=MaterialTheme.colorScheme.onSurfaceVariant)
+            PositionMoneyLine("已记录手续费",amount(c.fees),"position-fees-${c.id}")
+            if(stock)PositionMoneyLine("持仓成本",amount(c.openCost),"position-cost-${c.id}")
             if(c.takeProfit!=null || c.stopLoss!=null)Text("止盈 ${c.takeProfit?.let(::amount)?:"未设置"} · 止损 ${c.stopLoss?.let(::amount)?:"未设置"}",style=MaterialTheme.typography.bodySmall,color=MaterialTheme.colorScheme.onSurfaceVariant)
         }
     }
