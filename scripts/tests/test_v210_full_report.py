@@ -11,6 +11,7 @@ report=importlib.util.module_from_spec(spec);spec.loader.exec_module(report)
 class FullReportTest(unittest.TestCase):
     def fixture(self):
         value=dict(dateAnchor='2026-10-17',expectedClosed=[dict(net='1')],checks=[dict(net='1',valid=1)],observations=[dict(code='600000',action='买入',price='10',quantity='1000',savedFees='1.00',remaining='1000',realized='0',extraConfirmation=False,fieldsTyped=['code','price','quantity'],saveVisible=True,tapsIncludingEntryAndSave=5,requiredScrollCommands=1)],moneyLayouts=[dict(tag='home-realized-week',text='￥1.00',fontSp=18,lines=1,overflowWidth=False,overflowHeight=False,visible=True,argb='#FFAF273C')])
+        value['toolbarSafety']=[dict(orientation=o,result='PASS',safeLeft=0,safeRight=720,safeTop=24,buttons=[dict(tag=t,left=500,right=600,top=30) for t in ['open-backup','open-risk-strategy']]) for o in (1,2)]
         return value,copy.deepcopy(value)
 
     def test_real_larger_type_with_same_facts_is_recorded(self):
@@ -27,6 +28,12 @@ class FullReportTest(unittest.TestCase):
         for key,value in [('overflowWidth',True),('overflowHeight',True),('fontSp',13),('argb','#FF087044')]:
             a,b=self.fixture();b['moneyLayouts'][0][key]=value
             with self.subTest(key=key),self.assertRaises(AssertionError):report.compare(a,b)
+
+    def test_system_navigation_overlap_or_missing_orientation_rejected(self):
+        a,b=self.fixture();b['toolbarSafety'][0]['buttons'][0]['right']=721.5
+        with self.assertRaises(AssertionError):report.compare(a,b)
+        a,b=self.fixture();b['toolbarSafety']=b['toolbarSafety'][:1]
+        with self.assertRaises(AssertionError):report.compare(a,b)
 
     def test_previously_visible_amount_cannot_disappear(self):
         a,b=self.fixture();b['moneyLayouts'][0]['visible']=False

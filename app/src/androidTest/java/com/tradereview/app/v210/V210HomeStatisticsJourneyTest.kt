@@ -128,6 +128,24 @@ class V210HomeStatisticsJourneyTest {
     private val expected=mutableListOf<Expected>()
     private val checks=mutableListOf<Map<String,Any?>>()
     private val moneyLayouts=mutableListOf<Map<String,Any?>>()
+    private val toolbarSafety=mutableListOf<Map<String,Any?>>()
+    private fun safeToolbar(){
+        ui.waitForIdle()
+        var safeLeft=0;var safeRight=0;var safeTop=0
+        instrumentation.runOnMainSync{
+            val activity=androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(androidx.test.runner.lifecycle.Stage.RESUMED).filterIsInstance<MainActivity>().single()
+            val decor=activity.window.decorView
+            val insets=requireNotNull(androidx.core.view.ViewCompat.getRootWindowInsets(decor)).getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars() or androidx.core.view.WindowInsetsCompat.Type.displayCutout())
+            safeLeft=insets.left;safeRight=decor.width-insets.right;safeTop=insets.top
+        }
+        val buttons=listOf("open-risk-strategy","open-backup").map{tag->
+            val node=ui.onNodeWithTag(tag).assertIsDisplayed().assertHasClickAction().fetchSemanticsNode()
+            val bounds=node.boundsInWindow
+            assertTrue("$tag must stay outside system navigation/cutouts: $bounds within $safeLeft..$safeRight",bounds.left>=safeLeft-1 && bounds.right<=safeRight+1 && bounds.top>=safeTop-1)
+            mapOf("tag" to tag,"left" to bounds.left,"right" to bounds.right,"top" to bounds.top)
+        }
+        toolbarSafety+=mapOf("orientation" to app.resources.configuration.orientation,"safeLeft" to safeLeft,"safeRight" to safeRight,"safeTop" to safeTop,"buttons" to buttons,"result" to "PASS")
+    }
     private fun moneyLayout(tag:String,value:BigDecimal?){
         val node=ui.onNodeWithTag(tag,useUnmergedTree=true);val layouts=mutableListOf<TextLayoutResult>()
         node.performSemanticsAction(SemanticsActions.GetTextLayoutResult){assertTrue(it(layouts))}
@@ -290,11 +308,12 @@ class V210HomeStatisticsJourneyTest {
         ui.activityRule.scenario.recreate();waitFor{model.state.value.ledger==facts()}
         ui.onNodeWithTag("statistics-period-month").assertIsSelected();capture("recreated-statistics")
         orientation(android.content.pm.ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE,Configuration.ORIENTATION_LANDSCAPE)
-        top("v2-statistics");capture("landscape-statistics");home("landscape-home")
+        safeToolbar();top("v2-statistics");capture("landscape-statistics");home("landscape-home")
         orientation(android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT,Configuration.ORIENTATION_PORTRAIT)
+        safeToolbar()
         page(3);ui.onNodeWithTag("statistics-period-month").assertIsSelected()
         val conf=app.resources.configuration
-        val proof=mapOf("api" to Build.VERSION.SDK_INT,"profile" to profile,"pid" to android.os.Process.myPid(),"dateAnchor" to today.toString(),"screenWidthDp" to conf.screenWidthDp,"fontScale" to conf.fontScale,"night" to (conf.uiMode and Configuration.UI_MODE_NIGHT_MASK==Configuration.UI_MODE_NIGHT_YES),"syntheticOnly" to true,"allExecutionsCreatedViaRealForm" to true,"expectedClosed" to expected,"observations" to results,"checks" to checks,"moneyLayouts" to moneyLayouts,"orientationRestored" to true,"ledger" to LedgerJson.element(facts()),"screenshots" to screens,"reviewSavedViaUi" to true,"result" to "PASS")
+        val proof=mapOf("api" to Build.VERSION.SDK_INT,"profile" to profile,"pid" to android.os.Process.myPid(),"dateAnchor" to today.toString(),"screenWidthDp" to conf.screenWidthDp,"fontScale" to conf.fontScale,"night" to (conf.uiMode and Configuration.UI_MODE_NIGHT_MASK==Configuration.UI_MODE_NIGHT_YES),"syntheticOnly" to true,"allExecutionsCreatedViaRealForm" to true,"expectedClosed" to expected,"observations" to results,"checks" to checks,"moneyLayouts" to moneyLayouts,"toolbarSafety" to toolbarSafety,"orientationRestored" to true,"ledger" to LedgerJson.element(facts()),"screenshots" to screens,"reviewSavedViaUi" to true,"result" to "PASS")
         saved.writeText(GsonBuilder().serializeNulls().setPrettyPrinting().create().toJson(proof))
     }
 }

@@ -33,7 +33,7 @@ import java.time.LocalDate
     LaunchedEffect(message){message?.let{snack.showSnackbar(it);model.message.value=null}}
     fun back(){if(route=="rules" || route=="strategy"){route="risk"}else if(resumeEntry){route="";resumeEntry=false;model.openEditor()}else route=""}
     BackHandler(enabled=route.isNotEmpty() && !editor){back()}
-    Scaffold(topBar={Row(Modifier.fillMaxWidth().windowInsetsPadding(WindowInsets.statusBars).padding(horizontal=8.dp).heightIn(min=56.dp),horizontalArrangement=Arrangement.spacedBy(4.dp),verticalAlignment=androidx.compose.ui.Alignment.CenterVertically){
+    Scaffold(topBar={Row(Modifier.fillMaxWidth().windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal)).padding(horizontal=8.dp).heightIn(min=56.dp),horizontalArrangement=Arrangement.spacedBy(4.dp),verticalAlignment=androidx.compose.ui.Alignment.CenterVertically){
         if(route.isNotEmpty())IconButton({back()}){Icon(Icons.AutoMirrored.Filled.ArrowBack,"返回主页面")}
         Text(when(route){"risk"->"风险与策略";"rules"->"合约参数";"backup"->"备份与导出";"position"->"持仓详情";"execution"->"成交详情";"archive"->"兼容历史";"strategy"->"策略关联历史";else->labels.getOrElse(page){"首页"}},Modifier.weight(1f).padding(vertical=14.dp),style=MaterialTheme.typography.titleLarge)
         FlowRow(Modifier.widthIn(max=250.dp),horizontalArrangement=Arrangement.End){
