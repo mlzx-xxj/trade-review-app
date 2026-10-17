@@ -69,7 +69,7 @@ class V210PlanReviewJourneyTest {
             shell("settings put secure show_ime_with_hard_keyboard 1")
         }
         override fun failed(error:Throwable,description:org.junit.runner.Description){
-            runCatching{File(output(),"v210-review-$profile-failure.txt").writeText("$lastStep\n"+error.stackTraceToString()+"\n"+ui.onAllNodes(isRoot(),useUnmergedTree=true).printToString())}
+            runCatching{val tree=runCatching{ui.onAllNodes(isRoot(),useUnmergedTree=true).printToString()}.getOrElse{"Semantics unavailable: ${it.message}"};File(output(),"v210-review-$profile-failure.txt").writeText("$lastStep\n"+error.stackTraceToString()+"\n"+tree)}
             runCatching{capture("failure")}
         }
         override fun finished(description:org.junit.runner.Description){
@@ -209,10 +209,18 @@ class V210PlanReviewJourneyTest {
         assertTrue(facts().executions.isEmpty());openPlan(stock.id);reset()
         field("plan-entry","9.5");labeled("计划止盈价（可选）","12");labeled("计划止损价（可选）","9")
         tap("execution-strategy");ui.onNode(hasText("合成趋势策略") and hasAnyAncestor(isPopup())).performClick();taps++
-        labeled("价位","9",0);labeled("价位","11",1);tapText("增加关键价位",true)
-        val labels=ui.onAllNodes(hasSetTextAction() and hasText("名称") and hasAnyAncestor(isDialog()))
-        visible(labels[labels.fetchSemanticsNodes().lastIndex]).performClick();taps++;labels[labels.fetchSemanticsNodes().lastIndex].performTextReplacement("观察");typed+="关键价位名称"
-        labeled("价位","10.5",2)
+        // The first save deliberately had blank optional prices: those rows
+        // are omitted by the existing protocol. Reopening is therefore empty.
+        // Add each row through the actual UI, rather than assuming defaults.
+        listOf("支撑" to "9","压力" to "11","观察" to "10.5").forEach{(label,price)->
+            tapText("增加关键价位",true)
+            val names=ui.onAllNodes(hasSetTextAction() and hasText("名称") and hasAnyAncestor(isDialog()))
+            val lastName=names.fetchSemanticsNodes().lastIndex
+            visible(names[lastName]).performClick();taps++;names[lastName].performTextReplacement(label);typed+="关键价位名称"
+            val prices=ui.onAllNodes(hasSetTextAction() and hasText("价位") and hasAnyAncestor(isDialog()))
+            val lastPrice=prices.fetchSemanticsNodes().lastIndex
+            labeled("价位",price,lastPrice)
+        }
         val deletes=ui.onAllNodes(hasText("删") and hasClickAction() and hasAnyAncestor(isDialog()))
         if(deletes.fetchSemanticsNodes().isNotEmpty())visible(deletes[1]).performClick()else visible(ui.onNodeWithContentDescription("删除关键价位2")).performClick()
         taps++;field("plan-note",longPlan+"已修改计划");hideKeyboard();capture("plan-editor-long");orientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE,Configuration.ORIENTATION_LANDSCAPE);capture("plan-landscape");orientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT,Configuration.ORIENTATION_PORTRAIT);save("save-plan","保存计划","edit-stock-plan")
