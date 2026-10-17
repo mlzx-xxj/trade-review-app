@@ -1,403 +1,58 @@
-name: Android CI
-
-on:
-  push:
-    branches: [main]
-  pull_request:
-  workflow_dispatch:
-    inputs:
-      old_fixed_release_tag:
-        description: 'Optional V0.3 public Release tag for expected incompatible-install test; main only'
-        required: false
-        type: string
-      old_fixed_asset_name:
-        description: 'Exact historical V0.3 APK asset name; never a compatible upgrade fixture'
-        required: false
-        type: string
-
-# PR head is compiled without persisted checkout credentials. It is never a signing source.
-env:
-  SOURCE_COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
+name: Focused V210 review diagnostics (not full CI)
+on: workflow_dispatch
 permissions:
   contents: read
 concurrency:
-  group: android-${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || github.ref }}
+  group: v210-review-diagnostics-${{ github.ref }}
   cancel-in-progress: true
-
 jobs:
-  build:
-    name: Read-only builds, JVM, lint and security
+  focused-api35:
+    name: Focused production UI only, no signing or publishing
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 25
     permissions:
       contents: read
-      # Authenticated GET of Environment and deployment-branch-policies metadata.
-      actions: read
-    outputs:
-      artifact_attempt: ${{ github.run_attempt }}
-      trusted_main: ${{ steps.context.outputs.trusted_main }}
-      signing_allowed: ${{ steps.context.outputs.signing_allowed }}
-      rc_digest: ${{ steps.pack.outputs.rc_digest }}
-      reports_digest: ${{ steps.pack.outputs.reports_digest }}
-      inputs_digest: ${{ steps.pack.outputs.inputs_digest }}
     steps:
-      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
         with:
-          ref: ${{ env.SOURCE_COMMIT }}
+          ref: ${{ github.sha }}
           persist-credentials: false
-      - name: Read-only source and protected-environment preflight
-        id: context
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: python3 scripts/ci-trusted-context.py
-      - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5
+      - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961
         with:
           distribution: temurin
           java-version: '17'
-      - uses: android-actions/setup-android@9fc6c4e9069bf8d3d10b2204b1fb8f6ef7065407 # v3
+      - uses: android-actions/setup-android@9fc6c4e9069bf8d3d10b2204b1fb8f6ef7065407
         with:
           packages: platform-tools
           log-accepted-android-sdk-licenses: false
       - run: sdkmanager 'platforms;android-35' 'build-tools;35.0.0'
-      - uses: gradle/actions/setup-gradle@ed408507eac070d1f99cc633dbcf757c94c7933a # v4
-        with:
-          gradle-version: '8.11.1'
-          cache-read-only: ${{ github.event_name == 'pull_request' }}
-      - uses: gradle/actions/wrapper-validation@ed408507eac070d1f99cc633dbcf757c94c7933a # v4
-      - name: Install pinned workflow parser
-        run: python3 -m pip install --disable-pip-version-check PyYAML==6.0.3
-      - name: Security regression tests, no private keys
-        run: |
-          python3 -m unittest discover -s scripts/tests -v
-          bash scripts/ci-actionlint.sh
-          python3 scripts/ci-check-workflow.py
-          python3 scripts/ci-scan-private-files.py
-      - name: Compile all existing variants, all JVM tests and all lint variants
-        run: ./gradlew --no-daemon --build-cache --init-script scripts/ci-test-execution.gradle --stacktrace :app:assembleDebug :app:assembleDebugAndroidTest :app:assembleRc :app:assembleRelease :app:testDebugUnitTest :app:lintDebug :app:lintRc :app:lintRelease
-      - name: Verify isolated RC identity and prepare immutable evidence
-        id: pack
-        env:
-          TRUSTED_MAIN: ${{ steps.context.outputs.trusted_main }}
-        run: |
-          mkdir -p dist
-          python3 scripts/v200-identity.py --apk app/build/outputs/apk/rc/app-rc.apk --kind rc --directory dist --aapt "$ANDROID_HOME/build-tools/35.0.0/aapt" --apksigner "$ANDROID_HOME/build-tools/35.0.0/apksigner" --source "$SOURCE_COMMIT"
-          python3 scripts/ci-artifacts.py pack-build
-      - name: Downloadable RC; no long-term key used
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
-        with:
-          name: rc-apk-attempt${{ github.run_attempt }}
-          path: ci-rc/
-          retention-days: 7
-          if-no-files-found: error
-      - name: Compact JVM, lint and migration evidence
-        if: success()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
-        with:
-          name: build-evidence-attempt${{ github.run_attempt }}
-          path: ci-build-evidence/
-          retention-days: 7
-          if-no-files-found: error
-      - name: Unsigned trusted inputs; never created for PR/non-main
-        if: steps.context.outputs.trusted_main == 'true'
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
-        with:
-          name: signing-inputs-attempt${{ github.run_attempt }}
-          path: ci-trusted-inputs/
-          retention-days: 3
-          if-no-files-found: error
-      - name: Failed build diagnostics
-        if: failure()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
-        with:
-          name: build-failure-attempt${{ github.run_attempt }}
-          path: |
-            app/build/reports/
-            app/build/test-results/
-            ci-context.json
-          retention-days: 3
-
-  device-tests:
-    name: API ${{ matrix.api }} full read-only regressions
-    needs: build
-    runs-on: ubuntu-latest
-    timeout-minutes: 45
-    permissions:
-      contents: read
-      actions: read
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - api: 29
-            target: google_apis
-          - api: 35
-            target: default
-    env:
-      V08_STABILITY_PROBES: 'true'
-      V200_MAIN_PROBES: 'true'
-      V200_PACKAGE_PROBES: 'true'
-      V100_CHECK_BOOT: 'true'
-    steps:
-      - name: Reserve emulator disk space
-        run: sudo rm -rf /usr/share/dotnet
-      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
-        with:
-          ref: ${{ env.SOURCE_COMMIT }}
-          persist-credentials: false
-      - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5
-        with:
-          distribution: temurin
-          java-version: '17'
-      - uses: android-actions/setup-android@9fc6c4e9069bf8d3d10b2204b1fb8f6ef7065407 # v3
-        with:
-          packages: platform-tools
-          log-accepted-android-sdk-licenses: false
-      - run: sdkmanager 'platforms;android-35' 'build-tools;35.0.0'
-      - uses: gradle/actions/setup-gradle@ed408507eac070d1f99cc633dbcf757c94c7933a # v4
+      - uses: gradle/actions/setup-gradle@ed408507eac070d1f99cc633dbcf757c94c7933a
         with:
           gradle-version: '8.11.1'
           cache-read-only: true
-      - name: Verify same-run RC and generated migration schemas
-        env:
-          GH_TOKEN: ${{ github.token }}
-          BUILD_ATTEMPT: ${{ needs.build.outputs.artifact_attempt }}
-          RC_DIGEST: ${{ needs.build.outputs.rc_digest }}
-          REPORTS_DIGEST: ${{ needs.build.outputs.reports_digest }}
-        run: |
-          python3 scripts/ci-artifacts.py download --name "rc-apk-attempt$BUILD_ATTEMPT" --destination delivered-packages --kind rc --expected "$RC_DIGEST"
-          python3 scripts/ci-artifacts.py download --name "build-evidence-attempt$BUILD_ATTEMPT" --destination ci-reports --kind build-reports --expected "$REPORTS_DIGEST"
-          cp -R ci-reports/schemas/. app/schemas/
+      - uses: gradle/actions/wrapper-validation@ed408507eac070d1f99cc633dbcf757c94c7933a
+      - run: ./gradlew --no-daemon --build-cache --stacktrace :app:assembleDebug :app:assembleDebugAndroidTest
       - name: Enable KVM
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
-          chmod +x gradlew
-      - name: Full instrumentation, boot health, actual RC install and restart
-        uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2
+      - uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d
         with:
-          api-level: ${{ matrix.api }}
-          target: ${{ matrix.target }}
+          api-level: 35
+          target: default
           arch: x86_64
           profile: Nexus 4
           heap-size: 512M
           emulator-boot-timeout: 300
           emulator-options: -no-window -gpu swiftshader_indirect -feature -Vulkan -memory 3072 -cores 2 -no-snapshot -noaudio -no-boot-anim -no-metrics -partition-size 2048
           disable-animations: true
-          script: bash scripts/run-device-tests.sh
-      - name: Pack one copy of native XML, metrics and screenshots
-        env:
-          API_LEVEL: ${{ matrix.api }}
-        run: python3 scripts/ci-artifacts.py pack-device --api "$API_LEVEL"
-      - name: Successful complete native evidence
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+          script: python3 scripts/run-v210-review-smoke.py
+      - name: Raw focused evidence, never full-suite evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: device-evidence-api${{ matrix.api }}-attempt${{ github.run_attempt }}
-          path: ci-device-evidence/
-          retention-days: 7
-          if-no-files-found: error
-      - name: Failed native diagnostics; never marked as successful evidence
-        if: failure()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
-        with:
-          name: device-failure-api${{ matrix.api }}-attempt${{ github.run_attempt }}
-          path: |
-            app/build/reports/androidTests/
-            app/build/outputs/androidTest-results/
-            app/build/outputs/androidTest-additional-output/
-            ci-screenshots/
-            ci-metrics/
-            ci-stability/
-            ci-v200/
-          retention-days: 3
-
-  trusted-signing:
-    name: Permanent V2 signing, protected main only
-    needs: [build, device-tests]
-    if: >-
-      github.repository == 'mlzx-xxj/trade-review-app' &&
-      github.ref == 'refs/heads/main' &&
-      (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
-      needs.build.result == 'success' && needs.device-tests.result == 'success' &&
-      needs.build.outputs.trusted_main == 'true' && needs.build.outputs.signing_allowed == 'true'
-    environment: v03-signing-main
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    permissions:
-      contents: read
-      actions: read
-    outputs:
-      configured: ${{ steps.signing.outputs.configured }}
-      artifact_attempt: ${{ github.run_attempt }}
-      signed_digest: ${{ steps.signed.outputs.digest }}
-    steps:
-      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
-        with:
-          ref: ${{ env.SOURCE_COMMIT }}
-          persist-credentials: false
-      - uses: android-actions/setup-android@9fc6c4e9069bf8d3d10b2204b1fb8f6ef7065407 # v3
-        with:
-          packages: platform-tools
-          log-accepted-android-sdk-licenses: false
-      - run: sdkmanager 'build-tools;35.0.0'
-      - name: Revalidate context, environment, complete evidence and unsigned inputs before key access
-        env:
-          GH_TOKEN: ${{ github.token }}
-          BUILD_RESULT: ${{ needs.build.result }}
-          DEVICE_RESULT: ${{ needs.device-tests.result }}
-          BUILD_ATTEMPT: ${{ needs.build.outputs.artifact_attempt }}
-          RC_DIGEST: ${{ needs.build.outputs.rc_digest }}
-          REPORTS_DIGEST: ${{ needs.build.outputs.reports_digest }}
-          INPUTS_DIGEST: ${{ needs.build.outputs.inputs_digest }}
-        run: |
-          python3 scripts/ci-require-signing-environment.py
-          python3 scripts/ci-stage-candidate.py --for-signing
-      - name: Use only owner-held permanent V2 main-protected credentials
-        id: signing
-        env:
-          EXISTING_KEY_BASE64: ${{ secrets.TRADE_REVIEW_KEYSTORE_BASE64 }}
-          EXISTING_STORE_PASSWORD: ${{ secrets.TRADE_REVIEW_KEYSTORE_PASSWORD }}
-          EXISTING_KEY_ALIAS: ${{ secrets.TRADE_REVIEW_KEY_ALIAS }}
-          EXISTING_KEY_PASSWORD: ${{ secrets.TRADE_REVIEW_KEY_PASSWORD }}
-          TRADE_REVIEW_SIGNING_CERT_SHA256: ${{ vars.TRADE_REVIEW_SIGNING_CERT_SHA256 }}
-          VERIFIED_INPUTS: verified-signing-inputs
-          INPUTS_DIGEST: ${{ needs.build.outputs.inputs_digest }}
-        run: bash scripts/sign-v200-existing.sh
-      - name: Prepare signing status and optional public-only candidate
-        id: signed
-        run: python3 scripts/ci-pack-signed.py
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
-        with:
-          name: signing-result-attempt${{ github.run_attempt }}
-          path: ci-signed/
+          name: focused-review-only-api35
+          path: ci-v200/v210-visual/
           retention-days: 3
           if-no-files-found: error
-
-  signed-install:
-    name: API ${{ matrix.api }} permanent-V2 install
-    needs: [build, device-tests, trusted-signing]
-    if: >-
-      github.repository == 'mlzx-xxj/trade-review-app' && github.ref == 'refs/heads/main' &&
-      (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
-      needs.trusted-signing.result == 'success' && needs.trusted-signing.outputs.configured == 'true'
-    permissions:
-      contents: read
-      actions: read
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - api: 29
-            target: google_apis
-          - api: 35
-            target: default
-    steps:
-      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
-        with:
-          ref: ${{ env.SOURCE_COMMIT }}
-          persist-credentials: false
-      - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5
-        with:
-          distribution: temurin
-          java-version: '17'
-      - uses: android-actions/setup-android@9fc6c4e9069bf8d3d10b2204b1fb8f6ef7065407 # v3
-        with:
-          packages: platform-tools
-          log-accepted-android-sdk-licenses: false
-      - run: sdkmanager 'build-tools;35.0.0'
-      - name: Verify exact signed candidate and optional real old public APK
-        env:
-          GH_TOKEN: ${{ github.token }}
-          BUILD_ATTEMPT: ${{ needs.build.outputs.artifact_attempt }}
-          RC_DIGEST: ${{ needs.build.outputs.rc_digest }}
-          SIGNING_ATTEMPT: ${{ needs.trusted-signing.outputs.artifact_attempt }}
-          SIGNED_DIGEST: ${{ needs.trusted-signing.outputs.signed_digest }}
-          OLD_TAG: ${{ inputs.old_fixed_release_tag }}
-          OLD_ASSET: ${{ inputs.old_fixed_asset_name }}
-        run: python3 scripts/ci-prepare-signed-install.py
-      - name: Enable KVM
-        run: |
-          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
-          sudo udevadm control --reload-rules
-          sudo udevadm trigger --name-match=kvm
-      - name: Actual permanent APK install and optional incompatible V0.3 rejection
-        uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2
-        with:
-          api-level: ${{ matrix.api }}
-          target: ${{ matrix.target }}
-          arch: x86_64
-          profile: Nexus 4
-          emulator-boot-timeout: 300
-          emulator-options: -no-window -gpu swiftshader_indirect -feature -Vulkan -memory 3072 -cores 2 -no-snapshot -noaudio -no-boot-anim -no-metrics -partition-size 2048
-          disable-animations: true
-          script: bash scripts/ci-signed-install.sh
-      - name: Package signed-install evidence
-        env:
-          API_LEVEL: ${{ matrix.api }}
-        run: python3 scripts/ci-pack-signed-install.py
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
-        with:
-          name: signed-install-api${{ matrix.api }}-attempt${{ github.run_attempt }}
-          path: ci-signed-install/
-          retention-days: 7
-          if-no-files-found: error
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
-        if: failure()
-        with:
-          name: signed-install-failure-api${{ matrix.api }}-attempt${{ github.run_attempt }}
-          path: ci-v200/
-          retention-days: 3
-
-  publish:
-    name: Publish verified main candidates only
-    needs: [build, device-tests, trusted-signing, signed-install]
-    if: >-
-      !cancelled() && github.repository == 'mlzx-xxj/trade-review-app' &&
-      github.ref == 'refs/heads/main' &&
-      (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
-      needs.build.result == 'success' && needs.device-tests.result == 'success' &&
-      needs.build.outputs.trusted_main == 'true' &&
-      (needs.trusted-signing.result == 'skipped' || needs.trusted-signing.result == 'success') &&
-      (needs.signed-install.result == 'skipped' || needs.signed-install.result == 'success') &&
-      (needs.trusted-signing.outputs.configured != 'true' || needs.signed-install.result == 'success')
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    permissions:
-      contents: write
-      actions: read
-    steps:
-      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
-        with:
-          ref: ${{ env.SOURCE_COMMIT }}
-          persist-credentials: false
-      - uses: android-actions/setup-android@9fc6c4e9069bf8d3d10b2204b1fb8f6ef7065407 # v3
-        with:
-          packages: platform-tools
-          log-accepted-android-sdk-licenses: false
-      - run: sdkmanager 'build-tools;35.0.0'
-      - name: Recheck actual same-run APKs, tests, signer, permissions and hashes
-        env:
-          GH_TOKEN: ${{ github.token }}
-          BUILD_RESULT: ${{ needs.build.result }}
-          DEVICE_RESULT: ${{ needs.device-tests.result }}
-          BUILD_ATTEMPT: ${{ needs.build.outputs.artifact_attempt }}
-          RC_DIGEST: ${{ needs.build.outputs.rc_digest }}
-          REPORTS_DIGEST: ${{ needs.build.outputs.reports_digest }}
-          SIGNING_RESULT: ${{ needs.trusted-signing.result }}
-          SIGNING_ATTEMPT: ${{ needs.trusted-signing.outputs.artifact_attempt }}
-          SIGNED_DIGEST: ${{ needs.trusted-signing.outputs.signed_digest }}
-          FIXED_READY: ${{ needs.trusted-signing.outputs.configured }}
-        run: |
-          if [ "$FIXED_READY" = true ]; then
-            python3 scripts/ci-stage-candidate.py --signed
-          else
-            python3 scripts/ci-stage-candidate.py
-          fi
-      - name: Immutable source-deduplicated prerelease; never stable automatically
-        env:
-          GH_TOKEN: ${{ github.token }}
-          BUILD_RESULT: ${{ needs.build.result }}
-          DEVICE_RESULT: ${{ needs.device-tests.result }}
-        run: python3 scripts/ci-publish.py
