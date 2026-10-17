@@ -32,7 +32,8 @@ import java.time.ZoneOffset
 
 /** Real production UI: thirteen synthetic executions, independent period assertions, a saved
  * position review and an externally force-stopped reopen. Only the empty ledger and clock
- * are injected; screenshots are actual UiAutomation PNGs. No user database is accessed.
+ * and an explicitly synthetic historical contract rule are injected; no execution inserts.
+ * Screenshots are actual UiAutomation PNGs. No user database is accessed.
  */
 @RunWith(AndroidJUnit4::class)
 class V210HomeStatisticsJourneyTest {
@@ -46,7 +47,11 @@ class V210HomeStatisticsJourneyTest {
             keyboard=shell("settings get secure show_ime_with_hard_keyboard").trim()
             shell("settings put secure show_ime_with_hard_keyboard 1")
         }
-        override fun failed(error:Throwable,description:org.junit.runner.Description){runCatching{File(output(),"v210-full-$profile-failure.txt").writeText(error.stackTraceToString())};runCatching{capture("failure")}}
+        override fun failed(error:Throwable,description:org.junit.runner.Description){
+            runCatching{File(output(),"v210-full-$profile-failure.txt").writeText(error.stackTraceToString())}
+            runCatching{com.tradereview.app.stability.V08Metrics.write("v210-full-failure-api${Build.VERSION.SDK_INT}.json",GsonBuilder().setPrettyPrinting().create().toJson(mapOf("syntheticOnly" to true,"profile" to profile,"lastStep" to lastStep,"error" to error.stackTraceToString(),"semantics" to runCatching{ui.onRoot(useUnmergedTree=true).printToString()}.getOrElse{it.javaClass.simpleName}))))}
+            runCatching{capture("failure")}
+        }
         override fun finished(description:org.junit.runner.Description){
             if(keyboard=="null")shell("settings delete secure show_ime_with_hard_keyboard")else shell("settings put secure show_ime_with_hard_keyboard $keyboard")
             service?.let{instrumentation.uiAutomation.setOnAccessibilityEventListener(null);instrumentation.uiAutomation.serviceInfo=it}
@@ -60,6 +65,7 @@ class V210HomeStatisticsJourneyTest {
     private val screens=mutableListOf<Map<String,Any?>>()
     private val densityScreens=mutableListOf<Map<String,Any?>>()
     private var taps=0;private var scrolls=0;private val fields=linkedSetOf<String>()
+    private var lastStep="initial"
     private fun output()=File(requireNotNull(InstrumentationRegistry.getArguments().getString("additionalTestOutputDir")),"v210-full").apply{check(isDirectory||mkdirs())}
     private fun shell(command:String)=ParcelFileDescriptor.AutoCloseInputStream(instrumentation.uiAutomation.executeShellCommand(command)).bufferedReader().use{it.readText()}
     private fun facts()=runBlocking{model.repository.read()}
@@ -92,6 +98,7 @@ class V210HomeStatisticsJourneyTest {
         bitmap.recycle()
     }
     private fun begin(market:String,code:String,action:String,price:String,quantity:String,fee:String,margin:String?=null){
+        lastStep="$market $code $action price=$price quantity=$quantity expectedFee=$fee"
         page(1);taps=0;scrolls=0;fields.clear();tap("new-execution");select("entry-market-$market")
         type("execution-code",code);select(if(market=="stock")"execution-side-$action"else"execution-action-$action")
         type("execution-price",price);type("execution-quantity",quantity)
@@ -219,7 +226,11 @@ class V210HomeStatisticsJourneyTest {
             File(output(),"v210-full-reopen-$profile-api${Build.VERSION.SDK_INT}.json").writeText(GsonBuilder().serializeNulls().setPrettyPrinting().create().toJson(mapOf("api" to Build.VERSION.SDK_INT,"profile" to profile,"pid" to android.os.Process.myPid(),"previousPid" to previous["pid"].asInt,"allFactsIdentical" to true,"reviewPreserved" to true,"screenshots" to screens,"result" to "PASS")))
             return
         }
-        runBlocking{app.database.withTransaction{model.repository.write(LedgerSnapshot(accounts=listOf(LedgerAccount("stock","stock","A股账户"),LedgerAccount("futures","futures","国内期货账户")),risks=listOf(MarketRisk("stock"),MarketRisk("futures"))),true)}}
+        // The production catalog intentionally refuses dates before 2026-10-14.
+        // Explicit test configuration supplies a synthetic past rule for the previous-week
+        // sample. Do not backdate the production catalog or invent historical exchange fees.
+        val historical=LedgerContractRule("synthetic_al_history","al2701","合成历史参数（非交易所资料）","5","0.11","per_lot","3","3","3","per_execution","0.01",today.minusMonths(3).toEpochDay(),true)
+        runBlocking{app.database.withTransaction{model.repository.write(LedgerSnapshot(accounts=listOf(LedgerAccount("stock","stock","A股账户"),LedgerAccount("futures","futures","国内期货账户")),risks=listOf(MarketRisk("stock"),MarketRisk("futures")),rules=listOf(historical)),true)}}
         ui.runOnIdle{model.closeEditor();model.handle["v2-entry-fields"]=null}
         waitFor{model.state.value.ledger==facts()};home("empty-home");statistic("week","all",captureScene="empty-statistics")
         val pm=today.withDayOfMonth(1).minusDays(1);val pw=today.minusDays((today.dayOfWeek.value-1).toLong()).minusDays(1)
