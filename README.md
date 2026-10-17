@@ -1,3 +1,11 @@
+# V2.1 UI/UX 开发分支（未发布）
+
+当前稳定基线是不可变的 [v2.0.0](https://github.com/mlzx-xxj/trade-review-app/releases/tag/v2.0.0)。本分支只重构成交录入与持仓的视觉层级，保留账本、数据库、备份、版本和签名身份。
+
+[设计规范](docs/V210-DESIGN.md) · [真实模拟器体验与对照](docs/V210-UI-UX-EXPERIENCE.md) · [待审核 PR #16](https://github.com/mlzx-xxj/trade-review-app/pull/16)
+
+本轮不发布 V2.1，不修改 V2.0 标签或已有 APK；真正生成下一安装候选时还需要递增 versionCode，并使用现有可信 main 签名流程。以下保留历史交付记录。
+
 # 交易复盘 V2.0 候选版
 
 基于已合并V1.0的现有工程，重组为国内期货与普通A股个人交易管理：真实成交 → FIFO开平配对 → 当前持仓 → 独立风险金/策略 → 标的计划及持仓复盘 → 周月已实现盈亏。五页首页/交易/复盘/统计/账户；风险与策略固定顶部入口，备份设置仅ZIP/恢复/CSV。离线CNY新账本，无INTERNET、行情、浮盈亏、在线AI或CSV批量成交导入。

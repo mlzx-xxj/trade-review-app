@@ -1,0 +1,462 @@
+{
+  "baselineRun": "https://github.com/mlzx-xxj/trade-review-app/actions/runs/38897172571",
+  "candidateRun": "https://github.com/mlzx-xxj/trade-review-app/actions/runs/38978915022",
+  "operationComparison": {
+    "api29-regular-light": [
+      {
+        "code": "600000",
+        "action": "买入",
+        "beforeTaps": 5,
+        "afterTaps": 5,
+        "beforeScrolls": 1,
+        "afterScrolls": 1,
+        "fields": 3,
+        "financialFactsEqual": true
+      },
+      {
+        "code": "rb2701",
+        "action": "买入开仓",
+        "beforeTaps": 7,
+        "afterTaps": 7,
+        "beforeScrolls": 1,
+        "afterScrolls": 1,
+        "fields": 3,
+        "financialFactsEqual": true
+      },
+      {
+        "code": "rb2701",
+        "action": "买入开仓",
+        "beforeTaps": 5,
+        "afterTaps": 5,
+        "beforeScrolls": 1,
+        "afterScrolls": 1,
+        "fields": 3,
+        "financialFactsEqual": true
+      },
+      {
+        "code": "rb2701",
+        "action": "卖出平仓",
+        "beforeTaps": 6,
+        "afterTaps": 6,
+        "beforeScrolls": 2,
+        "afterScrolls": 2,
+        "fields": 3,
+        "financialFactsEqual": true
+      },
+      {
+        "code": "i2701",
+        "action": "买入开仓",
+        "beforeTaps": 5,
+        "afterTaps": 5,
+        "beforeScrolls": 1,
+        "afterScrolls": 1,
+        "fields": 3,
+        "financialFactsEqual": true
+      }
+    ],
+    "api29-regular-dark": [
+      {
+        "code": "600000",
+        "action": "买入",
+        "beforeTaps": 5,
+        "afterTaps": 5,
+        "beforeScrolls": 1,
+        "afterScrolls": 1,
+        "fields": 3,
+        "financialFactsEqual": true
+      },
+      {
+        "code": "rb2701",
+        "action": "买入开仓",
+        "beforeTaps": 7,
+        "afterTaps": 7,
+        "beforeScrolls": 1,
+        "afterScrolls": 1,
+        "fields": 3,
+        "financialFactsEqual": true
+      },
+      {
+        "code": "rb2701",
+        "action": "买入开仓",
+        "beforeTaps": 5,
+        "afterTaps": 5,
+        "beforeScrolls": 1,
+        "afterScrolls": 1,
+        "fields": 3,
+        "financialFactsEqual": true
+      },
+      {
+        "code": "rb2701",
+        "action": "卖出平仓",
+        "beforeTaps": 6,
+        "afterTaps": 6,
+        "beforeScrolls": 2,
+        "afterScrolls": 2,
+        "fields": 3,
+        "financialFactsEqual": true
+      },
+      {
+        "code": "i2701",
+        "action": "买入开仓",
+        "beforeTaps": 5,
+        "afterTaps": 5,
+        "beforeScrolls": 1,
+        "afterScrolls": 1,
+        "fields": 3,
+        "financialFactsEqual": true
+      }
+    ],
+    "api29-narrow-light": [
+      {
+        "code": "600000",
+        "action": "买入",
+        "beforeTaps": 5,
+        "afterTaps": 5,
+        "beforeScrolls": 1,
+        "afterScrolls": 1,
+        "fields": 3,
+        "financialFactsEqual": true
+      },
+      {
+        "code": "rb2701",
+        "action": "买入开仓",
+        "beforeTaps": 7,
+        "afterTaps": 7,
+        "beforeScrolls": 1,
+        "afterScrolls": 1,
+        "fields": 3,
+        "financialFactsEqual": true
+      },
+      {
+        "code": "rb2701",
+        "action": "买入开仓",
+        "beforeTaps": 5,
+        "afterTaps": 5,
+        "beforeScrolls": 1,
+        "afterScrolls": 1,
+        "fields": 3,
+        "financialFactsEqual": true
+      },
+      {
+        "code": "rb2701",
+        "action": "卖出平仓",
+        "beforeTaps": 6,
+        "afterTaps": 6,
+        "beforeScrolls": 2,
+        "afterScrolls": 2,
+        "fields": 3,
+        "financialFactsEqual": true
+      },
+      {
+        "code": "i2701",
+        "action": "买入开仓",
+        "beforeTaps": 5,
+        "afterTaps": 5,
+        "beforeScrolls": 1,
+        "afterScrolls": 1,
+        "fields": 3,
+        "financialFactsEqual": true
+      }
+    ],
+    "api29-narrow-dark": [
+      {
+        "code": "600000",
+        "action": "买入",
+        "beforeTaps": 5,
+        "afterTaps": 5,
+        "beforeScrolls": 1,
+        "afterScrolls": 1,
+        "fields": 3,
+        "financialFactsEqual": true
+      },
+      {
+        "code": "rb2701",
+        "action": "买入开仓",
+        "beforeTaps": 7,
+        "afterTaps": 7,
+        "beforeScrolls": 1,
+        "afterScrolls": 1,
+        "fields": 3,
+        "financialFactsEqual": true
+      },
+      {
+        "code": "rb2701",
+        "action": "买入开仓",
+        "beforeTaps": 5,
+        "afterTaps": 5,
+        "beforeScrolls": 1,
+        "afterScrolls": 1,
+        "fields": 3,
+        "financialFactsEqual": true
+      },
+      {
+        "code": "rb2701",
+        "action": "卖出平仓",
+        "beforeTaps": 6,
+        "afterTaps": 6,
+        "beforeScrolls": 2,
+        "afterScrolls": 2,
+        "fields": 3,
+        "financialFactsEqual": true
+      },
+      {
+        "code": "i2701",
+        "action": "买入开仓",
+        "beforeTaps": 5,
+        "afterTaps": 5,
+        "beforeScrolls": 1,
+        "afterScrolls": 1,
+        "fields": 3,
+        "financialFactsEqual": true
+      }
+    ],
+    "api35-regular-light": [
+      {
+        "code": "600000",
+        "action": "买入",
+        "beforeTaps": 5,
+        "afterTaps": 5,
+        "beforeScrolls": 1,
+        "afterScrolls": 1,
+        "fields": 3,
+        "financialFactsEqual": true
+      },
+      {
+        "code": "rb2701",
+        "action": "买入开仓",
+        "beforeTaps": 7,
+        "afterTaps": 7,
+        "beforeScrolls": 1,
+        "afterScrolls": 1,
+        "fields": 3,
+        "financialFactsEqual": true
+      },
+      {
+        "code": "rb2701",
+        "action": "买入开仓",
+        "beforeTaps": 5,
+        "afterTaps": 5,
+        "beforeScrolls": 1,
+        "afterScrolls": 1,
+        "fields": 3,
+        "financialFactsEqual": true
+      },
+      {
+        "code": "rb2701",
+        "action": "卖出平仓",
+        "beforeTaps": 6,
+        "afterTaps": 6,
+        "beforeScrolls": 2,
+        "afterScrolls": 2,
+        "fields": 3,
+        "financialFactsEqual": true
+      },
+      {
+        "code": "i2701",
+        "action": "买入开仓",
+        "beforeTaps": 5,
+        "afterTaps": 5,
+        "beforeScrolls": 1,
+        "afterScrolls": 1,
+        "fields": 3,
+        "financialFactsEqual": true
+      }
+    ],
+    "api35-regular-dark": [
+      {
+        "code": "600000",
+        "action": "买入",
+        "beforeTaps": 5,
+        "afterTaps": 5,
+        "beforeScrolls": 1,
+        "afterScrolls": 1,
+        "fields": 3,
+        "financialFactsEqual": true
+      },
+      {
+        "code": "rb2701",
+        "action": "买入开仓",
+        "beforeTaps": 7,
+        "afterTaps": 7,
+        "beforeScrolls": 1,
+        "afterScrolls": 1,
+        "fields": 3,
+        "financialFactsEqual": true
+      },
+      {
+        "code": "rb2701",
+        "action": "买入开仓",
+        "beforeTaps": 5,
+        "afterTaps": 5,
+        "beforeScrolls": 1,
+        "afterScrolls": 1,
+        "fields": 3,
+        "financialFactsEqual": true
+      },
+      {
+        "code": "rb2701",
+        "action": "卖出平仓",
+        "beforeTaps": 6,
+        "afterTaps": 6,
+        "beforeScrolls": 2,
+        "afterScrolls": 2,
+        "fields": 3,
+        "financialFactsEqual": true
+      },
+      {
+        "code": "i2701",
+        "action": "买入开仓",
+        "beforeTaps": 5,
+        "afterTaps": 5,
+        "beforeScrolls": 1,
+        "afterScrolls": 1,
+        "fields": 3,
+        "financialFactsEqual": true
+      }
+    ],
+    "api35-narrow-light": [
+      {
+        "code": "600000",
+        "action": "买入",
+        "beforeTaps": 5,
+        "afterTaps": 5,
+        "beforeScrolls": 1,
+        "afterScrolls": 1,
+        "fields": 3,
+        "financialFactsEqual": true
+      },
+      {
+        "code": "rb2701",
+        "action": "买入开仓",
+        "beforeTaps": 7,
+        "afterTaps": 7,
+        "beforeScrolls": 1,
+        "afterScrolls": 1,
+        "fields": 3,
+        "financialFactsEqual": true
+      },
+      {
+        "code": "rb2701",
+        "action": "买入开仓",
+        "beforeTaps": 5,
+        "afterTaps": 5,
+        "beforeScrolls": 1,
+        "afterScrolls": 1,
+        "fields": 3,
+        "financialFactsEqual": true
+      },
+      {
+        "code": "rb2701",
+        "action": "卖出平仓",
+        "beforeTaps": 6,
+        "afterTaps": 6,
+        "beforeScrolls": 2,
+        "afterScrolls": 2,
+        "fields": 3,
+        "financialFactsEqual": true
+      },
+      {
+        "code": "i2701",
+        "action": "买入开仓",
+        "beforeTaps": 5,
+        "afterTaps": 5,
+        "beforeScrolls": 1,
+        "afterScrolls": 1,
+        "fields": 3,
+        "financialFactsEqual": true
+      }
+    ],
+    "api35-narrow-dark": [
+      {
+        "code": "600000",
+        "action": "买入",
+        "beforeTaps": 5,
+        "afterTaps": 5,
+        "beforeScrolls": 1,
+        "afterScrolls": 1,
+        "fields": 3,
+        "financialFactsEqual": true
+      },
+      {
+        "code": "rb2701",
+        "action": "买入开仓",
+        "beforeTaps": 7,
+        "afterTaps": 7,
+        "beforeScrolls": 1,
+        "afterScrolls": 1,
+        "fields": 3,
+        "financialFactsEqual": true
+      },
+      {
+        "code": "rb2701",
+        "action": "买入开仓",
+        "beforeTaps": 5,
+        "afterTaps": 5,
+        "beforeScrolls": 1,
+        "afterScrolls": 1,
+        "fields": 3,
+        "financialFactsEqual": true
+      },
+      {
+        "code": "rb2701",
+        "action": "卖出平仓",
+        "beforeTaps": 6,
+        "afterTaps": 6,
+        "beforeScrolls": 2,
+        "afterScrolls": 2,
+        "fields": 3,
+        "financialFactsEqual": true
+      },
+      {
+        "code": "i2701",
+        "action": "买入开仓",
+        "beforeTaps": 5,
+        "afterTaps": 5,
+        "beforeScrolls": 1,
+        "afterScrolls": 1,
+        "fields": 3,
+        "financialFactsEqual": true
+      }
+    ]
+  },
+  "screenshotSha256": {
+    "before/v210-regular-light-empty.png": "1dd801e46c7c2a1a87f4ef3d417bbf9ee095797beddc3ac4f0a7816baac3cfbe",
+    "after/v210-regular-light-empty.png": "53d014ad9f38e2a333849ceed35eb0659fb58fb0041572993796ac3e0797bf80",
+    "before/v210-regular-light-stock-filled.png": "1be617c051513e2507bc12860acc75d09b8e4e8046060c05a9d8e6ddcbbedf95",
+    "after/v210-regular-light-stock-filled.png": "2570e06b7d2ab2b703b2e637021453db0fdd523c01c77f5e7563b7e3b9f0388c",
+    "before/v210-regular-light-stock-position.png": "f743fb8b51c4288db57f58fdb8ed75689e7a7058c91c37f4158d9fa522d21557",
+    "after/v210-regular-light-stock-position.png": "5fa0e2cdff599beefa47ee0d91b75db858853d3a6fbb1d76d19f0c63867397e3",
+    "before/v210-regular-light-futures-filled.png": "cd4afd22ce2c0c2a7c21c19a263685fd8fb1dc357950559b36bd257c9c0b7362",
+    "after/v210-regular-light-futures-filled.png": "f2758a38760dd7393886738d639d035ddb2990af5c2b8c6def908e10507c0911",
+    "before/v210-regular-light-keyboard.png": "09e79f2c9d260f9649bf40eb531e0adf3ccddf2a875253a9e9629468dfdcf20c",
+    "after/v210-regular-light-keyboard.png": "c73ac0175404196d963a9cd6010a28a13ee9974707414c77cae7ba263bef1dc2",
+    "before/v210-regular-light-futures-position.png": "5cc86b008da803007223e9b8b5f6968172646d7f203af52b784bae78a93d9658",
+    "after/v210-regular-light-futures-position.png": "a40d167f7b70b920842b8b04903966149c323d2877091a0c3b1ba6300e524ede",
+    "before/v210-regular-light-saved-list.png": "0eb06e05495ce2661ec2f06a8615ec6e4070d971aa77e73a247473bbfb849538",
+    "after/v210-regular-light-saved-list.png": "82c5a0404aa56070fd3dbd79403c41b5ce70ac5e45956a98a03b5f223d251bd5",
+    "before/v210-regular-light-partial-position.png": "55c98c225da121c9d4f4d11359477c19b2987f1edf15d2f2eeb647c4956d2cd2",
+    "after/v210-regular-light-partial-position.png": "e60c58fbeff05dd601432d923e60a7403488e6f3abd7e47baf2e13833605a60f",
+    "before/v210-regular-light-pending-filled.png": "e399ce7971ec389940ebbf78c976cf471a4553a329bdaa4a340c656f62fd92c1",
+    "after/v210-regular-light-pending-filled.png": "a47fe8f2709f862332cc533b6a44418ae5ce86e1699ce8456b3c9d0c7bce5a56",
+    "before/v210-regular-light-pending-position.png": "c00c262970b26a8b771e87f60a9b816988f4a803162cb5efa0af0790cf500925",
+    "after/v210-regular-light-pending-position.png": "0116a393386ce85e3592d4dca88c0f402abf7a355233f3437d677ce25a815037",
+    "before/v210-regular-light-statistics.png": "c879b329eb5ba7f4f86c0c3381a564fa45545eedbfa631a2179ccd691f6aaf0b",
+    "after/v210-regular-light-statistics.png": "c91da55306c7cb4725a36b63dde9b887ec64acd90a67dbb38dcb1f195d80d7f7",
+    "before/v210-regular-dark-futures-filled.png": "e272d6ee8a5da42b1d1c271a539a1d3a33a4d53c0eb6ea62f1b71ca20b963290",
+    "after/v210-regular-dark-futures-filled.png": "65a1861b300e76122ffa0f0da65d796af63c4b460cbbe5b71eedf149bec361b2",
+    "before/v210-regular-dark-partial-position.png": "760c9061b11532abc005528e383b421800ac80f96c99905b8d4b29ac58b97f37",
+    "after/v210-regular-dark-partial-position.png": "0029e1e552a7616ab75e26efbfce6ea981fdec5bc36460ea0074a1d1a0462344",
+    "before/v210-regular-dark-empty.png": "82366934f8a92fc63acdf05cd4148fbc8092b35be524bfd537f19ed7ba961e5d",
+    "after/v210-regular-dark-empty.png": "4ae871997bee89a22c63ec912b613f439994fc6bcd8396e65dc4177303af4bf7",
+    "before/v210-narrow-light-keyboard.png": "8dc9052a743cb92366a36aded042352560551d159d82685fdbb43bdf6afa2b88",
+    "after/v210-narrow-light-keyboard.png": "9a38c7776471048173fc539df7a905522731f02a3437eaf2d5e469b5494697b5",
+    "before/v210-narrow-light-partial-position.png": "136c447ef6744f641c6e5d43623d2fb32f4bb6cb98bd168cd5afc60de81c387f",
+    "after/v210-narrow-light-partial-position.png": "e0b2827f708d0a98856208bda8acfd3f1de99c4fa193f1b557f01df7a13a94ac",
+    "before/v210-narrow-dark-keyboard.png": "d8cdd689ae41a052a23670870d29711b35c34f7b4cc52a665a36679af81d7bc3",
+    "after/v210-narrow-dark-keyboard.png": "131286a1e9ac48b2b6fb5d67c7ab2610ca5519d7badafd2eb72bdd17d727c3bc",
+    "before/v210-narrow-dark-partial-position.png": "220ca27005fe5f216eae118fa87360bef7e51a4a8cee18ba02f7373c9d9d9004",
+    "after/v210-narrow-dark-partial-position.png": "d75596566fca8ee8827d6367ed5c90756c390c80e5e405ea5b459ff155b388d8"
+  },
+  "images": "unaltered original UiAutomation PNG; CSS scales display only",
+  "realPhone": "not-executed"
+}

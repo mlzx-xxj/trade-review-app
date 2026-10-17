@@ -1,6 +1,7 @@
 package com.tradereview.app.v200
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -10,6 +11,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.*
 import androidx.compose.ui.unit.dp
@@ -48,11 +52,36 @@ fun sellable(state:LedgerSnapshot,cycle:LedgerCycle,day:Long):String {val facts=
     }
 }
 @Composable private fun DayCell(day:Long,value:BigDecimal?,onDay:(Long)->Unit,compact:Boolean=false,pending:Boolean=false){Column(Modifier.widthIn(min=48.dp).heightIn(min=64.dp).clickable{onDay(day)}.padding(3.dp).semantics{contentDescription="${LocalDate.ofEpochDay(day)}，${value?.let{"${if(pending)"已知部分"else"已实现"}净盈亏${AutomaticEntry.cents(it)}元${if(pending)"，另有费用待估算的平仓"else""}"}?:if(pending)"费用待估算，净盈亏待计算"else"无平仓记录"}"}.testTag("v2-day-$day")){Text(if(compact)LocalDate.ofEpochDay(day).dayOfMonth.toString()else"${LocalDate.ofEpochDay(day).monthValue}/${LocalDate.ofEpochDay(day).dayOfMonth}",style=MaterialTheme.typography.labelMedium);Text(if(pending)if(value==null)"待计算"else"已知 ${calendarLabel(value)}"else calendarLabel(value),color=value?.let{pnlColor(it)}?:MaterialTheme.colorScheme.onSurfaceVariant,style=MaterialTheme.typography.labelSmall)}}
-@Composable fun PositionCard(state:LedgerSnapshot,c:LedgerCycle,onClick:(String)->Unit){LedgerPanel("${c.name} ${c.code} · ${directionLabel(c)}",Modifier.clickable{onClick(c.id)}.testTag("position-${c.id}")){
-    Text("首次${if(c.accountId=="stock")"买入"else"开仓"} ${LocalDate.ofEpochDay(c.firstDay)} · ${c.remaining}${if(c.accountId=="stock")"股"else"手"}")
-    Text("${if(c.accountId=="stock" && decimal(c.remaining)>BigDecimal.ZERO)"持仓成本均价（含未卖出买入费用）"else"平均开仓价"} ${if(c.accountId=="stock" && decimal(c.remaining)>BigDecimal.ZERO)amount(exact(ratio(decimal(c.openCost),decimal(c.remaining))))else amount(c.averagePrice)}")
-    if(c.accountId=="stock")Text("可卖 ${sellable(state,c,AutomaticEntry.today().toEpochDay())}股 · 持仓成本 ${amount(c.openCost)}")
-    Text("止盈 ${c.takeProfit?.let(::amount)?:"未设置"} · 止损 ${c.stopLoss?.let(::amount)?:"未设置"}")
-    if(c.accountId=="futures"){Text("参考保证金 ${amount(c.referenceMargin)}");Text("累计手续费 ${amount(c.fees)}")}
-}}
+@Composable fun PositionCard(state:LedgerSnapshot,c:LedgerCycle,onClick:(String)->Unit){
+    val stock=c.accountId=="stock";val unit=if(stock)"股"else"手"
+    val average=if(stock && decimal(c.remaining)>BigDecimal.ZERO)amount(exact(ratio(decimal(c.openCost),decimal(c.remaining))))else amount(c.averagePrice)
+    Card(onClick={onClick(c.id)},modifier=Modifier.fillMaxWidth().testTag("position-${c.id}"),colors=CardDefaults.cardColors(containerColor=MaterialTheme.colorScheme.surface),border=BorderStroke(1.dp,MaterialTheme.colorScheme.outlineVariant)){
+        Column(Modifier.padding(LedgerUi.inset),verticalArrangement=Arrangement.spacedBy(LedgerUi.gap)){
+            Row(verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(8.dp)){
+                Row(Modifier.weight(1f),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(8.dp)){
+                    Text(c.name,Modifier.weight(1f,fill=false).testTag("position-name-${c.id}"),style=MaterialTheme.typography.titleMedium,maxLines=2,overflow=TextOverflow.Ellipsis)
+                    if(c.name!=c.code)Text(c.code,style=MaterialTheme.typography.labelMedium,color=MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+                // Direction describes the position, never its financial result.
+                StatusPill(directionLabel(c),color=MaterialTheme.colorScheme.primary,modifier=Modifier.testTag("position-direction-${c.id}"))
+            }
+            Row(horizontalArrangement=Arrangement.spacedBy(12.dp)){
+                PositionMetric("剩余持仓", "${c.remaining} $unit","position-quantity-${c.id}",Modifier.weight(1f),large=true)
+                PositionMetric(if(stock && decimal(c.remaining)>BigDecimal.ZERO)"持仓成本均价"else"平均开仓价",average,"position-price-${c.id}",Modifier.weight(1f),large=true)
+            }
+            HorizontalDivider(color=MaterialTheme.colorScheme.outlineVariant)
+            Row(horizontalArrangement=Arrangement.spacedBy(12.dp)){
+                Column(Modifier.weight(1f),verticalArrangement=Arrangement.spacedBy(4.dp)){
+                    val status=if(state.matches.none{it.cycleId==c.id})"尚无平仓"else c.realized?.let{when(decimal(it).signum()){1->"+ 盈利";-1->"亏损";else->"持平"}}?:"待计算"
+                    Text("已实现净盈亏 · $status",style=MaterialTheme.typography.labelMedium,color=MaterialTheme.colorScheme.onSurfaceVariant)
+                    NetText(c.realized?.let(::decimal),Modifier.testTag("position-net-${c.id}"),showState=false)
+                }
+                PositionMetric(if(stock)"当前可卖"else"参考保证金",if(stock)"${sellable(state,c,AutomaticEntry.today().toEpochDay())} 股"else amount(c.referenceMargin),if(stock)"position-sellable-${c.id}"else"position-margin-${c.id}",Modifier.weight(1f))
+            }
+            PositionMoneyLine("已记录手续费",amount(c.fees),"position-fees-${c.id}")
+            if(stock)PositionMoneyLine("持仓成本",amount(c.openCost),"position-cost-${c.id}")
+            if(c.takeProfit!=null || c.stopLoss!=null)Text("止盈 ${c.takeProfit?.let(::amount)?:"未设置"} · 止损 ${c.stopLoss?.let(::amount)?:"未设置"}",style=MaterialTheme.typography.bodySmall,color=MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+    }
+}
 @Composable fun ClosedDayDialog(state:LedgerScreenState,day:Long,onDismiss:()->Unit){val values=state.closed.filter{it.execution.tradingDay==day};AlertDialog(onDismissRequest=onDismiss,title={Text("${LocalDate.ofEpochDay(day)} 已实现")},text={Column{if(values.isEmpty())EmptyLedger("当日没有平仓记录")else{NetText(completeTotal(values.map{exactOrNull(it.net)}));if(values.any{it.net==null})Text("含待计算平仓，明细未作为零计入");LazyColumn(Modifier.heightIn(max=350.dp)){items(values,key={it.execution.id}){v->Column(Modifier.padding(vertical=8.dp)){Text("${v.execution.name} ${v.execution.code} · ${actionLabel(v.execution)}");Text("${v.execution.quantity}${if(v.execution.accountId=="stock")"股"else"手"} · 成交价${amount(v.execution.price)}");NetText(v.net)}}}}}},confirmButton={TextButton(onDismiss,modifier=Modifier.heightIn(min=48.dp)){Text("关闭")}})}

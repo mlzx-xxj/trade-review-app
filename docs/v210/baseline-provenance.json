@@ -1,0 +1,523 @@
+{
+  "tag": "v2.0.0",
+  "tagCommit": "dc4e20259eeb4248b66cedbedc644e9e559c98a9",
+  "baselineTestCommit": "9b6e7e256e591f54e761cc1ea4cce71bacd3006b",
+  "productionMainTreeIdenticalToTag": "349e16cb8f1f313fdf3123542fe3ff160303e306",
+  "run": "https://github.com/mlzx-xxj/trade-review-app/actions/runs/38897172571",
+  "artifacts": {
+    "api29": {
+      "id": 12045386663,
+      "sha256": "b8258dfa701d5c9ff85de29b226ab281576868e6c22d119028ab31e0bea5e566"
+    },
+    "api35": {
+      "id": 12044538409,
+      "sha256": "1830f2ef64198cb71cb961dbeb0a465aa5f6d9697c4545d6b7f14fa9512031d7"
+    }
+  },
+  "measurements": {
+    "api29-regular-light": {
+      "metricSha256": "8c6533f6336b54840435470cc1d86db1de2214929fc885a3a9f3365f9a972e39",
+      "screenWidthDp": 360,
+      "fontScale": 1.0,
+      "night": false,
+      "operations": [
+        {
+          "code": "600000",
+          "action": "买入",
+          "tapsIncludingEntryAndSave": 5,
+          "fieldsTyped": [
+            "execution-code",
+            "execution-price",
+            "execution-quantity"
+          ],
+          "requiredScrollCommands": 1
+        },
+        {
+          "code": "rb2701",
+          "action": "买入开仓",
+          "tapsIncludingEntryAndSave": 7,
+          "fieldsTyped": [
+            "execution-code",
+            "execution-price",
+            "execution-quantity"
+          ],
+          "requiredScrollCommands": 1
+        },
+        {
+          "code": "rb2701",
+          "action": "买入开仓",
+          "tapsIncludingEntryAndSave": 5,
+          "fieldsTyped": [
+            "execution-code",
+            "execution-price",
+            "execution-quantity"
+          ],
+          "requiredScrollCommands": 1
+        },
+        {
+          "code": "rb2701",
+          "action": "卖出平仓",
+          "tapsIncludingEntryAndSave": 6,
+          "fieldsTyped": [
+            "execution-code",
+            "execution-price",
+            "execution-quantity"
+          ],
+          "requiredScrollCommands": 2
+        },
+        {
+          "code": "i2701",
+          "action": "买入开仓",
+          "tapsIncludingEntryAndSave": 5,
+          "fieldsTyped": [
+            "execution-code",
+            "execution-price",
+            "execution-quantity"
+          ],
+          "requiredScrollCommands": 1
+        }
+      ]
+    },
+    "api29-narrow-dark": {
+      "metricSha256": "9be33f60fd7592501a80bf7632716a770556de1ea3432bed047ca4d5933bfc23",
+      "screenWidthDp": 320,
+      "fontScale": 1.3,
+      "night": true,
+      "operations": [
+        {
+          "code": "600000",
+          "action": "买入",
+          "tapsIncludingEntryAndSave": 5,
+          "fieldsTyped": [
+            "execution-code",
+            "execution-price",
+            "execution-quantity"
+          ],
+          "requiredScrollCommands": 1
+        },
+        {
+          "code": "rb2701",
+          "action": "买入开仓",
+          "tapsIncludingEntryAndSave": 7,
+          "fieldsTyped": [
+            "execution-code",
+            "execution-price",
+            "execution-quantity"
+          ],
+          "requiredScrollCommands": 1
+        },
+        {
+          "code": "rb2701",
+          "action": "买入开仓",
+          "tapsIncludingEntryAndSave": 5,
+          "fieldsTyped": [
+            "execution-code",
+            "execution-price",
+            "execution-quantity"
+          ],
+          "requiredScrollCommands": 1
+        },
+        {
+          "code": "rb2701",
+          "action": "卖出平仓",
+          "tapsIncludingEntryAndSave": 6,
+          "fieldsTyped": [
+            "execution-code",
+            "execution-price",
+            "execution-quantity"
+          ],
+          "requiredScrollCommands": 2
+        },
+        {
+          "code": "i2701",
+          "action": "买入开仓",
+          "tapsIncludingEntryAndSave": 5,
+          "fieldsTyped": [
+            "execution-code",
+            "execution-price",
+            "execution-quantity"
+          ],
+          "requiredScrollCommands": 1
+        }
+      ]
+    },
+    "api29-regular-dark": {
+      "metricSha256": "9cb02d480a58c992d006e91cfbbceb0b455a8f7a65d983b6890fd2f6b708ed19",
+      "screenWidthDp": 360,
+      "fontScale": 1.0,
+      "night": true,
+      "operations": [
+        {
+          "code": "600000",
+          "action": "买入",
+          "tapsIncludingEntryAndSave": 5,
+          "fieldsTyped": [
+            "execution-code",
+            "execution-price",
+            "execution-quantity"
+          ],
+          "requiredScrollCommands": 1
+        },
+        {
+          "code": "rb2701",
+          "action": "买入开仓",
+          "tapsIncludingEntryAndSave": 7,
+          "fieldsTyped": [
+            "execution-code",
+            "execution-price",
+            "execution-quantity"
+          ],
+          "requiredScrollCommands": 1
+        },
+        {
+          "code": "rb2701",
+          "action": "买入开仓",
+          "tapsIncludingEntryAndSave": 5,
+          "fieldsTyped": [
+            "execution-code",
+            "execution-price",
+            "execution-quantity"
+          ],
+          "requiredScrollCommands": 1
+        },
+        {
+          "code": "rb2701",
+          "action": "卖出平仓",
+          "tapsIncludingEntryAndSave": 6,
+          "fieldsTyped": [
+            "execution-code",
+            "execution-price",
+            "execution-quantity"
+          ],
+          "requiredScrollCommands": 2
+        },
+        {
+          "code": "i2701",
+          "action": "买入开仓",
+          "tapsIncludingEntryAndSave": 5,
+          "fieldsTyped": [
+            "execution-code",
+            "execution-price",
+            "execution-quantity"
+          ],
+          "requiredScrollCommands": 1
+        }
+      ]
+    },
+    "api29-narrow-light": {
+      "metricSha256": "5b104abc9a52914f536d745f9698f2e8738bee577b8a2fdc21621c29968ca550",
+      "screenWidthDp": 320,
+      "fontScale": 1.3,
+      "night": false,
+      "operations": [
+        {
+          "code": "600000",
+          "action": "买入",
+          "tapsIncludingEntryAndSave": 5,
+          "fieldsTyped": [
+            "execution-code",
+            "execution-price",
+            "execution-quantity"
+          ],
+          "requiredScrollCommands": 1
+        },
+        {
+          "code": "rb2701",
+          "action": "买入开仓",
+          "tapsIncludingEntryAndSave": 7,
+          "fieldsTyped": [
+            "execution-code",
+            "execution-price",
+            "execution-quantity"
+          ],
+          "requiredScrollCommands": 1
+        },
+        {
+          "code": "rb2701",
+          "action": "买入开仓",
+          "tapsIncludingEntryAndSave": 5,
+          "fieldsTyped": [
+            "execution-code",
+            "execution-price",
+            "execution-quantity"
+          ],
+          "requiredScrollCommands": 1
+        },
+        {
+          "code": "rb2701",
+          "action": "卖出平仓",
+          "tapsIncludingEntryAndSave": 6,
+          "fieldsTyped": [
+            "execution-code",
+            "execution-price",
+            "execution-quantity"
+          ],
+          "requiredScrollCommands": 2
+        },
+        {
+          "code": "i2701",
+          "action": "买入开仓",
+          "tapsIncludingEntryAndSave": 5,
+          "fieldsTyped": [
+            "execution-code",
+            "execution-price",
+            "execution-quantity"
+          ],
+          "requiredScrollCommands": 1
+        }
+      ]
+    },
+    "api35-narrow-dark": {
+      "metricSha256": "1b27fd84785d3f903fee8d3055b5160caf27f81ae310c9e61de7a8427ed8bcbd",
+      "screenWidthDp": 320,
+      "fontScale": 1.3,
+      "night": true,
+      "operations": [
+        {
+          "code": "600000",
+          "action": "买入",
+          "tapsIncludingEntryAndSave": 5,
+          "fieldsTyped": [
+            "execution-code",
+            "execution-price",
+            "execution-quantity"
+          ],
+          "requiredScrollCommands": 1
+        },
+        {
+          "code": "rb2701",
+          "action": "买入开仓",
+          "tapsIncludingEntryAndSave": 7,
+          "fieldsTyped": [
+            "execution-code",
+            "execution-price",
+            "execution-quantity"
+          ],
+          "requiredScrollCommands": 1
+        },
+        {
+          "code": "rb2701",
+          "action": "买入开仓",
+          "tapsIncludingEntryAndSave": 5,
+          "fieldsTyped": [
+            "execution-code",
+            "execution-price",
+            "execution-quantity"
+          ],
+          "requiredScrollCommands": 1
+        },
+        {
+          "code": "rb2701",
+          "action": "卖出平仓",
+          "tapsIncludingEntryAndSave": 6,
+          "fieldsTyped": [
+            "execution-code",
+            "execution-price",
+            "execution-quantity"
+          ],
+          "requiredScrollCommands": 2
+        },
+        {
+          "code": "i2701",
+          "action": "买入开仓",
+          "tapsIncludingEntryAndSave": 5,
+          "fieldsTyped": [
+            "execution-code",
+            "execution-price",
+            "execution-quantity"
+          ],
+          "requiredScrollCommands": 1
+        }
+      ]
+    },
+    "api35-narrow-light": {
+      "metricSha256": "a20a8f913368604b9bb0488f56dd42e70a2f8ffc26c027c82121f8b1a9912769",
+      "screenWidthDp": 320,
+      "fontScale": 1.3,
+      "night": false,
+      "operations": [
+        {
+          "code": "600000",
+          "action": "买入",
+          "tapsIncludingEntryAndSave": 5,
+          "fieldsTyped": [
+            "execution-code",
+            "execution-price",
+            "execution-quantity"
+          ],
+          "requiredScrollCommands": 1
+        },
+        {
+          "code": "rb2701",
+          "action": "买入开仓",
+          "tapsIncludingEntryAndSave": 7,
+          "fieldsTyped": [
+            "execution-code",
+            "execution-price",
+            "execution-quantity"
+          ],
+          "requiredScrollCommands": 1
+        },
+        {
+          "code": "rb2701",
+          "action": "买入开仓",
+          "tapsIncludingEntryAndSave": 5,
+          "fieldsTyped": [
+            "execution-code",
+            "execution-price",
+            "execution-quantity"
+          ],
+          "requiredScrollCommands": 1
+        },
+        {
+          "code": "rb2701",
+          "action": "卖出平仓",
+          "tapsIncludingEntryAndSave": 6,
+          "fieldsTyped": [
+            "execution-code",
+            "execution-price",
+            "execution-quantity"
+          ],
+          "requiredScrollCommands": 2
+        },
+        {
+          "code": "i2701",
+          "action": "买入开仓",
+          "tapsIncludingEntryAndSave": 5,
+          "fieldsTyped": [
+            "execution-code",
+            "execution-price",
+            "execution-quantity"
+          ],
+          "requiredScrollCommands": 1
+        }
+      ]
+    },
+    "api35-regular-light": {
+      "metricSha256": "9a6a5e14694115dbffe11ee92ea5a3e3f15cb092e2b86d5554e72deb79de5a69",
+      "screenWidthDp": 360,
+      "fontScale": 1.0,
+      "night": false,
+      "operations": [
+        {
+          "code": "600000",
+          "action": "买入",
+          "tapsIncludingEntryAndSave": 5,
+          "fieldsTyped": [
+            "execution-code",
+            "execution-price",
+            "execution-quantity"
+          ],
+          "requiredScrollCommands": 1
+        },
+        {
+          "code": "rb2701",
+          "action": "买入开仓",
+          "tapsIncludingEntryAndSave": 7,
+          "fieldsTyped": [
+            "execution-code",
+            "execution-price",
+            "execution-quantity"
+          ],
+          "requiredScrollCommands": 1
+        },
+        {
+          "code": "rb2701",
+          "action": "买入开仓",
+          "tapsIncludingEntryAndSave": 5,
+          "fieldsTyped": [
+            "execution-code",
+            "execution-price",
+            "execution-quantity"
+          ],
+          "requiredScrollCommands": 1
+        },
+        {
+          "code": "rb2701",
+          "action": "卖出平仓",
+          "tapsIncludingEntryAndSave": 6,
+          "fieldsTyped": [
+            "execution-code",
+            "execution-price",
+            "execution-quantity"
+          ],
+          "requiredScrollCommands": 2
+        },
+        {
+          "code": "i2701",
+          "action": "买入开仓",
+          "tapsIncludingEntryAndSave": 5,
+          "fieldsTyped": [
+            "execution-code",
+            "execution-price",
+            "execution-quantity"
+          ],
+          "requiredScrollCommands": 1
+        }
+      ]
+    },
+    "api35-regular-dark": {
+      "metricSha256": "b0a90cf74cbb64ac6d8a244191d3c526317607cecea500f20947c9242de985c0",
+      "screenWidthDp": 360,
+      "fontScale": 1.0,
+      "night": true,
+      "operations": [
+        {
+          "code": "600000",
+          "action": "买入",
+          "tapsIncludingEntryAndSave": 5,
+          "fieldsTyped": [
+            "execution-code",
+            "execution-price",
+            "execution-quantity"
+          ],
+          "requiredScrollCommands": 1
+        },
+        {
+          "code": "rb2701",
+          "action": "买入开仓",
+          "tapsIncludingEntryAndSave": 7,
+          "fieldsTyped": [
+            "execution-code",
+            "execution-price",
+            "execution-quantity"
+          ],
+          "requiredScrollCommands": 1
+        },
+        {
+          "code": "rb2701",
+          "action": "买入开仓",
+          "tapsIncludingEntryAndSave": 5,
+          "fieldsTyped": [
+            "execution-code",
+            "execution-price",
+            "execution-quantity"
+          ],
+          "requiredScrollCommands": 1
+        },
+        {
+          "code": "rb2701",
+          "action": "卖出平仓",
+          "tapsIncludingEntryAndSave": 6,
+          "fieldsTyped": [
+            "execution-code",
+            "execution-price",
+            "execution-quantity"
+          ],
+          "requiredScrollCommands": 2
+        },
+        {
+          "code": "i2701",
+          "action": "买入开仓",
+          "tapsIncludingEntryAndSave": 5,
+          "fieldsTyped": [
+            "execution-code",
+            "execution-price",
+            "execution-quantity"
+          ],
+          "requiredScrollCommands": 1
+        }
+      ]
+    }
+  }
+}

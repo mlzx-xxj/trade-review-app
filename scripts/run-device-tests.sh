@@ -63,6 +63,9 @@ if [[ "$device_test_status" == 0 && "${V200_MAIN_PROBES:-false}" == true ]]; the
   # and force-stop reopen retain its raw XML and do not replace/shorten that suite.
   python3 scripts/run-entry-experience.py || device_test_status=$?
 fi
+if [[ "$device_test_status" == 0 && "${V200_MAIN_PROBES:-false}" == true ]]; then
+  python3 scripts/run-v210-visual.py || device_test_status=$?
+fi
 mkdir -p ci-screenshots
 mkdir -p ci-metrics
 if command -v adb >/dev/null; then

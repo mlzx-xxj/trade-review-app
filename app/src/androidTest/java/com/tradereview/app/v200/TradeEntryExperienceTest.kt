@@ -35,14 +35,21 @@ class TradeEntryExperienceTest {
     @get:Rule(order=0) val ui=createAndroidComposeRule<MainActivity>()
     @get:Rule(order=1) val failures=object:org.junit.rules.TestWatcher(){
         private var previousService:AccessibilityServiceInfo?=null
+        private var keyboard="null"
         override fun starting(description:org.junit.runner.Description){
-            if(shell("getprop ro.kernel.qemu").trim()=="1")previousService=instrumentation.uiAutomation.serviceInfo
+            if(shell("getprop ro.kernel.qemu").trim()=="1"){
+                previousService=instrumentation.uiAutomation.serviceInfo
+                instrumentation.uiAutomation.serviceInfo=instrumentation.uiAutomation.serviceInfo.apply{flags=flags or AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS}
+                keyboard=shell("settings get secure show_ime_with_hard_keyboard").trim()
+                shell("settings put secure show_ime_with_hard_keyboard 1")
+            }
         }
         override fun failed(error:Throwable,description:org.junit.runner.Description){
             if(runCatching{shell("getprop ro.kernel.qemu").trim()}.getOrNull()!="1")return
             runCatching{File(output(),"entry-failure.txt").writeText(error.stackTraceToString())}
             runCatching{UiDevice.getInstance(instrumentation).dumpWindowHierarchy(File(output(),"entry-failure.xml"))}
             runCatching{screenshot("entry-failure")}
+            runCatching{com.tradereview.app.stability.V08Metrics.write("entry-failure-api${Build.VERSION.SDK_INT}.json",gson.toJson(mapOf("syntheticOnly" to true,"clock" to model.entryNow().toString(),"draft" to model.restoredDraft(),"ledger" to LedgerJson.element(facts()),"steps" to steps,"observations" to observations,"semantics" to ui.onRoot(useUnmergedTree=true).printToString())))}
         }
         override fun finished(description:org.junit.runner.Description){
             // UiAutomator 2.3 installs a process-wide event listener and enables
@@ -51,6 +58,7 @@ class TradeEntryExperienceTest {
             previousService?.let{service->
                 instrumentation.uiAutomation.setOnAccessibilityEventListener(null)
                 instrumentation.uiAutomation.serviceInfo=service
+                if(keyboard=="null")shell("settings delete secure show_ime_with_hard_keyboard")else shell("settings put secure show_ime_with_hard_keyboard $keyboard")
             }
         }
     }
@@ -62,9 +70,13 @@ class TradeEntryExperienceTest {
     private var taps=0;private var scrolls=0;private val fields=linkedSetOf<String>();private val steps=mutableListOf<String>()
     private fun waitFor(label:String,p:()->Boolean){try{ui.waitUntil(45000){p()}}catch(e:ComposeTimeoutException){throw AssertionError("$label; busy=${model.busy.value}; problem=${model.problem.value}; pending=${model.pending.value!=null}",e)}}
     private fun facts()=runBlocking{model.repository.read()}
-    private fun visible(node:SemanticsNodeInteraction):SemanticsNodeInteraction {if(runCatching{node.assertIsDisplayed()}.isFailure){node.performScrollTo();scrolls++};return node.assertIsDisplayed()}
+    private fun settledViewport(){
+        var previous:androidx.compose.ui.geometry.Rect?=null;var stableSince=android.os.SystemClock.elapsedRealtime()
+        ui.waitUntil(10000){val nodes=ui.onAllNodesWithTag("entry-scroll").fetchSemanticsNodes();if(nodes.isEmpty())true else{val bounds=nodes.single().boundsInRoot;val now=android.os.SystemClock.elapsedRealtime();if(bounds!=previous){previous=bounds;stableSince=now};now-stableSince>=150}}
+    }
+    private fun visible(node:SemanticsNodeInteraction):SemanticsNodeInteraction {settledViewport();if(runCatching{node.assertIsDisplayed()}.isFailure){node.performScrollTo();scrolls++;settledViewport()};return node.assertIsDisplayed()}
     private fun tap(tag:String){visible(ui.onNodeWithTag(tag)).assertIsEnabled().performClick();taps++;steps+=tag}
-    private fun text(tag:String,value:String){tap(tag);ui.onNodeWithTag(tag).performTextReplacement(value);fields+=tag}
+    private fun text(tag:String,value:String){tap(tag);val node=ui.onNodeWithTag(tag);node.performTextReplacement(value);node.assertTextContains(value);fields+=tag;waitFor("真实输入法已显示"){instrumentation.uiAutomation.windows.any{it.type==AccessibilityWindowInfo.TYPE_INPUT_METHOD}};settledViewport()}
     private fun selected(tag:String){val n=ui.onNodeWithTag(tag);if(n.fetchSemanticsNode().config.getOrElse(SemanticsProperties.Selected){false}!=true)tap(tag)}
     private fun displayed(tag:String)=ui.onNodeWithTag(tag).fetchSemanticsNode().config[SemanticsProperties.Text].joinToString(""){it.text}
     private fun numberOnScreen(tag:String):String?=Regex("¥([0-9,]+\\.[0-9]{2})").find(displayed(tag))?.groupValues?.get(1)?.replace(",","")
@@ -121,9 +133,9 @@ class TradeEntryExperienceTest {
         ui.onNodeWithTag("v2-trades").performScrollToNode(hasTestTag(tag))
         ui.onNodeWithTag(tag).assertIsDisplayed()
         val direction=if(e.accountId=="stock")"股票"else if(cycle.direction=="long")"多头"else"空头"
-        ui.onNode(hasText(" · $direction",substring=true) and hasAnyAncestor(hasTestTag(tag)),useUnmergedTree=true).assertIsDisplayed()
-        ui.onNode(hasText(" · $remaining${if(e.accountId=="stock")"股"else"手"}",substring=true) and hasAnyAncestor(hasTestTag(tag)),useUnmergedTree=true).assertIsDisplayed()
-        margin?.let{equal(it,requireNotNull(cycle.referenceMargin));ui.onNode(hasText("参考保证金 ${amount(it)}") and hasAnyAncestor(hasTestTag(tag)),useUnmergedTree=true).assertIsDisplayed()}
+        ui.onNodeWithTag("position-direction-${cycle.id}",useUnmergedTree=true).assertTextEquals(direction).assertIsDisplayed()
+        ui.onNodeWithTag("position-quantity-${cycle.id}",useUnmergedTree=true).assertTextEquals("$remaining ${if(e.accountId=="stock")"股"else"手"}").assertIsDisplayed()
+        margin?.let{equal(it,requireNotNull(cycle.referenceMargin));ui.onNodeWithTag("position-margin-${cycle.id}",useUnmergedTree=true).assertTextEquals(amount(it)).assertIsDisplayed()}
         ui.onNodeWithTag(tag).performClick()
         ui.onNodeWithTag("v2-position-details").performScrollToNode(hasText(amount(cycle.realized)))
         ui.onNodeWithText(amount(cycle.realized)).assertIsDisplayed()
@@ -150,7 +162,9 @@ class TradeEntryExperienceTest {
         // The SAME real form rejects T+1; the test changes only the injected clock afterwards.
         begin("stock","600000","sell","10","1000");tap("save-execution")
         waitFor("T+1拒绝"){!model.busy.value && model.problem.value?.contains("T+1")==true}
-        assertEquals(1,facts().executions.size);tap("entry-cancel");clock(today)
+        assertEquals(1,facts().executions.size);tap("entry-cancel")
+        waitFor("取消表单已从界面移除"){!model.editor.value && ui.onAllNodesWithTag("save-execution").fetchSemanticsNodes().isEmpty()}
+        clock(today)
         enter("stock","600000","sell","10","1000","6.00",null,"0","-7")
         val a=enter("futures","rb2701","buy-open","3500","2","7.01","4900.00","2",capture="71-entry-futures-filled",positionMargin="4900")
         val b=enter("futures","rb2701","buy-open","3510","3","10.54","7371.00","5",positionMargin="12271",symbolSource="recent")
@@ -223,7 +237,7 @@ class TradeEntryExperienceTest {
             val c=after.cycles.single{it.code=="i2701"};assertEquals(remaining,c.remaining);assertNull(c.fees);assertNull(c.referenceMargin)
             if(action=="sell-close"){val match=after.matches.single{it.closeExecutionId==e.id};assertEquals("1000",match.gross);assertNull(match.openFees);assertNull(match.closeFees);assertNull(match.net);assertNull(c.realized)}
             verifyPositionUi(after,e,remaining,null)
-            page(1);ui.onNodeWithText("当前持仓").performClick();ui.onNodeWithTag("v2-trades").performScrollToNode(hasTestTag("position-${c.id}"));ui.onNode(hasText("累计手续费 待估算") and hasAnyAncestor(hasTestTag("position-${c.id}")),useUnmergedTree=true).assertIsDisplayed();screenshot("81-entry-pending-position")
+            page(1);ui.onNodeWithText("当前持仓").performClick();ui.onNodeWithTag("v2-trades").performScrollToNode(hasTestTag("position-${c.id}"));ui.onNodeWithTag("position-fees-${c.id}",useUnmergedTree=true).assertTextEquals("待估算").assertIsDisplayed();screenshot("81-entry-pending-position")
             observations+=mapOf("operation" to "pending-common-product","code" to "i2701","action" to action,"price" to price,"quantity" to qty,"multiplier" to e.multiplier,"displayedFees" to "待估算","savedFees" to e.fees,"savedMarginRate" to e.marginRate,"remaining" to c.remaining,"realized" to c.realized,"result" to "PASS")
         }
         assertEquals(2,facts().executions.count{it.id !in originals})
