@@ -24,7 +24,7 @@
 
 ## main 的独立回归问题
 
-[main CI 39003413037](https://github.com/mlzx-xxj/trade-review-app/actions/runs/39003413037) 第二次执行中，API 35 原有成交 UI 测试出现取消后费用预览超时。已另建 [PR #19](https://github.com/mlzx-xxj/trade-review-app/pull/19) 增强表单退出、输入法和方向选中的测试同步，并增加十轮真实输入回归。先前新增失败证据显示脚本等待卖出时仍选中买入；加强同步后，39009241043 又在方向与输入正确的情况下重现预览卡住。因此该独立 PR 对费用预览的异步结果归属作最小修复，公式、保存计算和账本不变。该修复单独审核，本视觉 PR 以它为基底。不得将该 main 执行描述为全部通过。 独立修复最终提交 `e118f4bd7c9dea01c9d3d7d13cca2a186ddc1847` 的 [CI 39011708765](https://github.com/mlzx-xxj/trade-review-app/actions/runs/39011708765) 已实际全部通过：JVM241，API29/35各140项原生、原有额外UI与实装/进程探针；各22次预览独立核对通过。该 PR 已可审核，尚未合并。
+[main CI 39003413037](https://github.com/mlzx-xxj/trade-review-app/actions/runs/39003413037) 第二次执行中，API 35 原有成交 UI 测试出现取消后费用预览超时。已另建 [PR #19](https://github.com/mlzx-xxj/trade-review-app/pull/19) 增强表单退出、输入法和方向选中的测试同步，并增加十轮真实输入回归。先前新增失败证据显示脚本等待卖出时仍选中买入；加强同步后，39009241043 又在方向与输入正确的情况下重现预览卡住。因此该独立 PR 对费用预览的异步结果归属作最小修复，公式、保存计算和账本不变。该修复单独审核，视觉开发阶段以其分支为基底。不得将该 main 执行描述为全部通过。 独立修复最终提交 `e118f4bd7c9dea01c9d3d7d13cca2a186ddc1847` 的 [CI 39011708765](https://github.com/mlzx-xxj/trade-review-app/actions/runs/39011708765) 已实际全部通过：JVM241，API29/35各140项原生、原有额外UI与实装/进程探针；各22次预览独立核对通过。#19 已于 2026-10-17 合并至 main（`59f49f1ac294dc5bd194b589ab92e3323722847e`）；合并后的 [完整 main CI 39022383059](https://github.com/mlzx-xxj/trade-review-app/actions/runs/39022383059) 已全部成功，包括两 API 全量回归和永久签名安装验证。
 
 ## 截图实测后的修正
 
@@ -154,3 +154,12 @@ Actions临时产物按原策略保留7天（本次至2026-10-24），不是永�
 本次截图来源RC：`com.tradereview.app.rc.v200`、`2.0.0-rc.3 / code22`、非debuggable，APK SHA-256 `f4d61d945abe93c4dd27e9d5bc04c4d43d6fbb1c63dd4a95b69bd79e7cca6442`。两个API实际安装、启动、重开均匹配该哈希。它使用临时测试证书，`permanentIdentityVerified=false`；PR没有读取长期凭据，不代表仓库永久签名不可用，也不构成正式升级验证。
 
 报告与画廊提交只含文档/证据，生产代码保持与截图来源 `76acd0847ca30f9e7b0e55989a199a5569495272` 相同。最终交付提交仍重新执行全部CI，结果和链接写入PR最新说明，不使用 skip ci，也不因文档提交省略模拟器回归。
+
+
+## 合并前基底核验（2026-10-17）
+
+PR #18 已改为指向 `main`，同步的基底为 `59f49f1ac294dc5bd194b589ab92e3323722847e`。#19 的成交预览修复已属于 main，不在本 PR 差异中重复引入；本次仅同步合并历史并更新此状态说明，未再改 UI。
+
+生产代码与此前已验证提交 `15a927a89108e0c5c3601a29ae18c8094a99fbed` 以及截图来源 `76acd0847ca30f9e7b0e55989a199a5569495272` 逐字节一致。34 张原始 PNG 和 138 份原始日志/JSON/JUnit 保持不变，172 份文件的原 SHA-256 均重新核验。相对最新 main 的生产差异仍仅为本报告所列 5 个视觉文件；FIFO、费用、保证金、统计计算口径、Room/schema9、备份、版本身份及签名/发布规则均未改。
+
+同步后的 head 将执行完整 PR CI；最终 base/head SHA、该次 JVM、Lint、API29/API35 真实结果和产物链接统一记录在 [PR #18 最新描述](https://github.com/mlzx-xxj/trade-review-app/pull/18)，不以旧运行替代。此文档不宣称尚未完成的运行成功。仍不自动合并、升级版本、进入第二批开发或发布 Stable。
