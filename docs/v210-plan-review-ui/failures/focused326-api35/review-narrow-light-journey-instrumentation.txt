@@ -1,0 +1,83 @@
+INSTRUMENTATION_STATUS: class=com.tradereview.app.v210.V210PlanReviewJourneyTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=1
+INSTRUMENTATION_STATUS: stream=
+com.tradereview.app.v210.V210PlanReviewJourneyTest:
+INSTRUMENTATION_STATUS: test=realPlansReviewsCashAndProcessReopen
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.tradereview.app.v210.V210PlanReviewJourneyTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=1
+INSTRUMENTATION_STATUS: stack=java.lang.AssertionError: Failed: assertExists.
+The node is no longer in the tree, last known semantics:
+Node #2117 at (l=48.0, t=734.0, r=318.0, b=830.0)px, Tag: 'review-cycle-cycle_b358463f2ee24f89b805ae56e04fc33c'
+Focused = 'false'
+Role = 'Button'
+Actions = [OnClick, RequestFocus]
+MergeDescendants = 'true'
+Has 1 child, 10 siblings
+Original selector: Actual target
+
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow(SemanticsNodeInteraction.kt:165)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow$default(SemanticsNodeInteraction.kt:150)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode(SemanticsNodeInteraction.kt:84)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode$default(SemanticsNodeInteraction.kt:83)
+	at com.tradereview.app.v210.V210PlanReviewJourneyTest.visible(V210PlanReviewJourneyTest.kt:100)
+	at com.tradereview.app.v210.V210PlanReviewJourneyTest.tap(V210PlanReviewJourneyTest.kt:115)
+	at com.tradereview.app.v210.V210PlanReviewJourneyTest.openReview(V210PlanReviewJourneyTest.kt:226)
+	at com.tradereview.app.v210.V210PlanReviewJourneyTest.realPlansReviewsCashAndProcessReopen(V210PlanReviewJourneyTest.kt:293)
+
+INSTRUMENTATION_STATUS: stream=
+Error in realPlansReviewsCashAndProcessReopen(com.tradereview.app.v210.V210PlanReviewJourneyTest):
+java.lang.AssertionError: Failed: assertExists.
+The node is no longer in the tree, last known semantics:
+Node #2117 at (l=48.0, t=734.0, r=318.0, b=830.0)px, Tag: 'review-cycle-cycle_b358463f2ee24f89b805ae56e04fc33c'
+Focused = 'false'
+Role = 'Button'
+Actions = [OnClick, RequestFocus]
+MergeDescendants = 'true'
+Has 1 child, 10 siblings
+Original selector: Actual target
+
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow(SemanticsNodeInteraction.kt:165)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow$default(SemanticsNodeInteraction.kt:150)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode(SemanticsNodeInteraction.kt:84)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode$default(SemanticsNodeInteraction.kt:83)
+	at com.tradereview.app.v210.V210PlanReviewJourneyTest.visible(V210PlanReviewJourneyTest.kt:100)
+	at com.tradereview.app.v210.V210PlanReviewJourneyTest.tap(V210PlanReviewJourneyTest.kt:115)
+	at com.tradereview.app.v210.V210PlanReviewJourneyTest.openReview(V210PlanReviewJourneyTest.kt:226)
+	at com.tradereview.app.v210.V210PlanReviewJourneyTest.realPlansReviewsCashAndProcessReopen(V210PlanReviewJourneyTest.kt:293)
+
+INSTRUMENTATION_STATUS: test=realPlansReviewsCashAndProcessReopen
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_RESULT: stream=
+
+Time: 32.991
+There was 1 failure:
+1) realPlansReviewsCashAndProcessReopen(com.tradereview.app.v210.V210PlanReviewJourneyTest)
+java.lang.AssertionError: Failed: assertExists.
+The node is no longer in the tree, last known semantics:
+Node #2117 at (l=48.0, t=734.0, r=318.0, b=830.0)px, Tag: 'review-cycle-cycle_b358463f2ee24f89b805ae56e04fc33c'
+Focused = 'false'
+Role = 'Button'
+Actions = [OnClick, RequestFocus]
+MergeDescendants = 'true'
+Has 1 child, 10 siblings
+Original selector: Actual target
+
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow(SemanticsNodeInteraction.kt:165)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow$default(SemanticsNodeInteraction.kt:150)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode(SemanticsNodeInteraction.kt:84)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode$default(SemanticsNodeInteraction.kt:83)
+	at com.tradereview.app.v210.V210PlanReviewJourneyTest.visible(V210PlanReviewJourneyTest.kt:100)
+	at com.tradereview.app.v210.V210PlanReviewJourneyTest.tap(V210PlanReviewJourneyTest.kt:115)
+	at com.tradereview.app.v210.V210PlanReviewJourneyTest.openReview(V210PlanReviewJourneyTest.kt:226)
+	at com.tradereview.app.v210.V210PlanReviewJourneyTest.realPlansReviewsCashAndProcessReopen(V210PlanReviewJourneyTest.kt:293)
+
+FAILURES!!!
+Tests run: 1,  Failures: 1
+
+
+INSTRUMENTATION_CODE: -1

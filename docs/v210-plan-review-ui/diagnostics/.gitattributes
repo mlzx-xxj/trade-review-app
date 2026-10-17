@@ -1,0 +1,2 @@
+# Preserve original instrumentation and source receipt bytes.
+* -text

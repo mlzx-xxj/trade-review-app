@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.tradereview.app.v200.ChartScaleTest" tests="11" skipped="0" failures="0" errors="0" timestamp="2026-10-17T21:42:00" hostname="runnervm8k3b6" time="0.012">
+  <properties/>
+  <testcase name="monthsHaveTwentyEightTwentyNineThirtyAndThirtyOneCorrectDays" classname="com.tradereview.app.v200.ChartScaleTest" time="0.001"/>
+  <testcase name="moneyUnitsAndTinyDecimalsKeepExactTickAmounts" classname="com.tradereview.app.v200.ChartScaleTest" time="0.001"/>
+  <testcase name="touchBoundariesAndScrolledLocalCoordinatesAreDeterministic" classname="com.tradereview.app.v200.ChartScaleTest" time="0.0"/>
+  <testcase name="emptyAndFlatHaveUsableZeroAxisWithoutFabricatedSamples" classname="com.tradereview.app.v200.ChartScaleTest" time="0.0"/>
+  <testcase name="monthlyContractDistributionSumsActualSignedResults" classname="com.tradereview.app.v200.ChartScaleTest" time="0.005"/>
+  <testcase name="onlyCloseEventsInPeriodAndSelectedMarketContribute" classname="com.tradereview.app.v200.ChartScaleTest" time="0.0"/>
+  <testcase name="positiveNegativeAndMixedAxesContainRealValuesAndExactZero" classname="com.tradereview.app.v200.ChartScaleTest" time="0.0"/>
+  <testcase name="weekStartsOnMondayAcrossYearBoundary" classname="com.tradereview.app.v200.ChartScaleTest" time="0.0"/>
+  <testcase name="flatTradeAndMissingDayAreDistinctAndEmptyAverageIsNull" classname="com.tradereview.app.v200.ChartScaleTest" time="0.001"/>
+  <testcase name="previousMonthAndYearAreCorrect" classname="com.tradereview.app.v200.ChartScaleTest" time="0.0"/>
+  <testcase name="projectionNeverReversesProfitAndLoss" classname="com.tradereview.app.v200.ChartScaleTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

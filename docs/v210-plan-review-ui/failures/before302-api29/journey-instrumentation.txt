@@ -1,0 +1,53 @@
+INSTRUMENTATION_STATUS: class=com.tradereview.app.v200.TradeEntryExperienceTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=1
+INSTRUMENTATION_STATUS: stream=
+com.tradereview.app.v200.TradeEntryExperienceTest:
+INSTRUMENTATION_STATUS: test=actualFormJourneyAndReopenEvidence
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.tradereview.app.v200.TradeEntryExperienceTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=1
+INSTRUMENTATION_STATUS: stack=java.lang.AssertionError: 临时反馈自然结束; busy=false; problem=null; pending=false
+	at com.tradereview.app.v200.TradeEntryExperienceTest.waitFor(TradeEntryExperienceTest.kt:71)
+	at com.tradereview.app.v200.TradeEntryExperienceTest.actualFormJourneyAndReopenEvidence(TradeEntryExperienceTest.kt:213)
+	... 54 trimmed
+Caused by: androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 45000 ms
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:504)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:339)
+	... 57 more
+
+INSTRUMENTATION_STATUS: stream=
+Error in actualFormJourneyAndReopenEvidence(com.tradereview.app.v200.TradeEntryExperienceTest):
+java.lang.AssertionError: 临时反馈自然结束; busy=false; problem=null; pending=false
+	at com.tradereview.app.v200.TradeEntryExperienceTest.waitFor(TradeEntryExperienceTest.kt:71)
+	at com.tradereview.app.v200.TradeEntryExperienceTest.actualFormJourneyAndReopenEvidence(TradeEntryExperienceTest.kt:213)
+	... 54 trimmed
+Caused by: androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 45000 ms
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:504)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:339)
+	... 57 more
+
+INSTRUMENTATION_STATUS: test=actualFormJourneyAndReopenEvidence
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_RESULT: stream=
+
+Time: 119.183
+There was 1 failure:
+1) actualFormJourneyAndReopenEvidence(com.tradereview.app.v200.TradeEntryExperienceTest)
+java.lang.AssertionError: 临时反馈自然结束; busy=false; problem=null; pending=false
+	at com.tradereview.app.v200.TradeEntryExperienceTest.waitFor(TradeEntryExperienceTest.kt:71)
+	at com.tradereview.app.v200.TradeEntryExperienceTest.actualFormJourneyAndReopenEvidence(TradeEntryExperienceTest.kt:213)
+	... 54 trimmed
+Caused by: androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 45000 ms
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:504)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:339)
+	... 57 more
+
+FAILURES!!!
+Tests run: 1,  Failures: 1
+
+
+INSTRUMENTATION_CODE: -1

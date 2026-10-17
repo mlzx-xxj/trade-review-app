@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.tradereview.app.backup.V06BackupTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-10-17T21:42:27" hostname="runnervm8k3b6" time="0.158">
+  <properties/>
+  <testcase name="invalidGoalMetadataAndImagePolicyAreStrictlyRejected" classname="com.tradereview.app.backup.V06BackupTest" time="0.033"/>
+  <testcase name="structuredJsonIncludesGoalHistoryAndImagePolicyWithExplicitScope" classname="com.tradereview.app.backup.V06BackupTest" time="0.031"/>
+  <testcase name="allFourOldVersionsKeepFinancialFactsAndHaveNoImaginaryAttachments" classname="com.tradereview.app.backup.V06BackupTest" time="0.089"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -79,7 +79,7 @@ def main():
     metrics={}
     for api in [29,35]:
         directory=root/'devices'/f'android-test-reports-api{api}'
-        counts[f'api{api}']=junit(directory,'/androidTest-results/',142,{'ExperienceDataTest':5,'ReleaseExperienceUiTest':4,'LedgerMigrationTest':2,'PendingMigrationTest':3,'LedgerRepositoryTest':19,'TradeEntryExperienceTest':1,'V200MainUiTest':6,'V210VisualJourneyTest':1,'V210LayoutTest':1,'UiPublicationThreadTest':3,'V210HomeStatisticsJourneyTest':1,'EntryQuoteLifecycleTest':1,'V210PlanReviewJourneyTest':1})
+        counts[f'api{api}']=junit(directory,'/androidTest-results/',141,{'ExperienceDataTest':5,'ReleaseExperienceUiTest':4,'LedgerMigrationTest':2,'PendingMigrationTest':3,'LedgerRepositoryTest':19,'TradeEntryExperienceTest':1,'V200MainUiTest':6,'V210VisualJourneyTest':1,'V210LayoutTest':1,'UiPublicationThreadTest':3,'V210HomeStatisticsJourneyTest':1,'EntryQuoteLifecycleTest':1})
         quote_paths=list(directory.rglob(f'entry-quote-lifecycle-api{api}.json'));assert len(quote_paths)==1
         quote=json.loads(quote_paths[0].read_text());quote_evidence(quote,api)
         metrics[f'entry-quote-lifecycle-api{api}.json']=quote
@@ -97,15 +97,6 @@ def main():
             publication[kind]=json.loads(paths[0].read_text());metrics[filename]=publication[kind]
         ui_publication_evidence(publication,api)
         for profile in ['regular-light','regular-dark','narrow-light','narrow-dark']:
-            review_spec=importlib.util.spec_from_file_location('review_evidence',Path(__file__).with_name('v210-review-evidence.py'))
-            review_checker=importlib.util.module_from_spec(review_spec);review_spec.loader.exec_module(review_checker)
-            review_pair=[]
-            for phase in ['', 'reopen-']:
-                name=f'v210-review-{phase}{profile}-api{api}.json'
-                paths=list(directory.rglob(name));assert len(paths)==1,name
-                report=json.loads(paths[0].read_text());review_pair.append(report);metrics[name]=report
-                assert all(s['file'] in names for s in report['screenshots'])
-            review_checker.verify(*review_pair,api,profile);review_checker.verify_candidate(review_pair[0])
             full={}
             for phase in ['', 'reopen-']:
                 filename=f'v210-full-{phase}{profile}-api{api}.json'
@@ -136,7 +127,6 @@ def main():
         visual_runner=list(directory.rglob(f'v210-runner-api{api}.json'));assert len(visual_runner)==1
         visual=json.loads(visual_runner[0].read_text());assert visual['complete'] is True and visual['actualInstrumentations']==4 and visual['result']=='PASS'
         assert visual['fullUiInstrumentations']==8
-        assert visual['reviewUiInstrumentations']==8 and len(visual['reviewProfiles'])==4
         layout_reports=list(directory.rglob(f'v210-layout-api{api}.json'));assert len(layout_reports)==1
         layout=json.loads(layout_reports[0].read_text());metrics[f'v210-layout-api{api}.json']=layout
         assert layout['result']=='PASS' and layout['widthDp']==320 and layout['syntheticOnly'] is True

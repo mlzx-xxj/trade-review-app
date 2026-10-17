@@ -1,0 +1,204 @@
+[
+  {
+    "runUrl": "https://github.com/mlzx-xxj/trade-review-app/actions/runs/39037580949",
+    "sourceCommit": "5798b890df0609b1d9039ae812d317f3f35a26aa",
+    "archiveSha256": "4a18dd34867283b234b34bab9e5bee21a678e935c89ec7651094387fe693bb30",
+    "artifactId": 12102638610,
+    "files": {
+      "v210-review-suite-failure.png": "e0dd387b29c7b4cbf3a3c10ec84dffb916235af036e147db53a6cfe8249de51a",
+      "TEST-emulator-5554 - 15-_app-.xml": "16d33d6595a521f82790c0d1055ede273ae13a3dcc8e666ecdefe7fc2cda5488"
+    },
+    "classification": "test-assumed-blank-key-rows-survived-save",
+    "fix": "20e3a494cf5318a7934b53b9a981854d2cca5870"
+  },
+  {
+    "runUrl": "https://github.com/mlzx-xxj/trade-review-app/actions/runs/39037826533",
+    "sourceCommit": "070e550252aa64f018e112d82b9b81c5533ce28b",
+    "archiveSha256": "2f306a1cf980151ef5879248ea266680a33a716097a8c881fe96d57326d080c6",
+    "artifactId": 12103730605,
+    "files": {
+      "v210-review-suite-failure.png": "d7028518eaacb17d1b81d9adce2bd897bde0e7faec94095d8a9865b34467dd10",
+      "TEST-emulator-5554 - 15-_app-.xml": "b7d3f237781866702c111341bfbe08987cb3c5d4f32069fa76131be36ac1e7a5"
+    },
+    "classification": "test-assumed-blank-key-rows-survived-save",
+    "fix": "20e3a494cf5318a7934b53b9a981854d2cca5870"
+  },
+  {
+    "runUrl": "https://github.com/mlzx-xxj/trade-review-app/actions/runs/39039365226",
+    "sourceCommit": "5177ea2015ee94d1fe827ef7810b4e1931ba830a",
+    "archiveSha256": "2ad427e036037a6d5d3f3e59af341893640720a68f757e673c13e1c450da6ba6",
+    "artifactId": 12104031612,
+    "files": {
+      "v210-review-suite-failure.png": "cf221059e4be26858cdd870e02dc07a2e23f15466496279e0dd589bea2846aef",
+      "TEST-emulator-5554 - 15-_app-.xml": "9acc03b4105e986c76bc498452493f68371cf1da8f4b8890859bc6bd6d2399fc"
+    },
+    "classification": "test-did-not-lazy-scroll-prefetched-offscreen-new-cashflow-control",
+    "fix": "4bfc69b"
+  },
+  {
+    "runUrl": "https://github.com/mlzx-xxj/trade-review-app/actions/runs/39039380789",
+    "sourceCommit": "20e3a494cf5318a7934b53b9a981854d2cca5870",
+    "archiveSha256": "38f063a67c07d3090e3971d734431293bc072c559040e663b2d3656b98590fd3",
+    "artifactId": 12103569374,
+    "files": {
+      "v210-review-suite-failure.png": "3d673b96d6d9ef6861c63a016878d68b29a6f2ba9ece1f982668dd251d75e065",
+      "TEST-emulator-5554 - 10-_app-.xml": "2bd6714c32149ab26559baead0338284a29bd8b61c03c975d84ee483d6d88130"
+    },
+    "classification": "test-looked-for-old-combined-cash-caption-before-lazy-new-tag-was-composed",
+    "fix": "7b5f56dbb59b83e1d7c69e455465a5502dd4c5ae"
+  },
+  {
+    "runUrl": "https://github.com/mlzx-xxj/trade-review-app/actions/runs/39041621969",
+    "sourceCommit": "da500dc71873bbe13b3edefba3ab5dde49db0f91",
+    "archiveSha256": "821f0a0471f10dac903beec97cabb96df950b2c11cd858d6f343b838a2fb298a",
+    "artifactId": 12104762358,
+    "files": {
+      "v210-review-regular-light-stock-plan-keyboard.png": "575076bc95fe541d562abc5f0672a89786262c5d71ff19d8a66a76e57e4fafd1",
+      "TEST-emulator-5554 - 15-_app-.xml": "1ce3cff02fdeb996bbe18c50a014ca916958ea7473981b10f8abdd55cf7610e2",
+      "review-regular-light-journey-instrumentation.txt": "03c5b46645c3f9c9fb5511087bb8c2a557ec7f113fd8129bb7b94bfa81c1aa95",
+      "v210-review-regular-light-api35.json": "ab168508bb26558eebd2ba60644205e0fd370c6f2bacaed1c60da4288f57cd2f",
+      "v210-review-reopen-regular-light-api35.json": "8f6327f4f0c132fbb111b6ee3c11dcbc1e49b7ee237db6d90b8c7b34540521ea"
+    },
+    "classification": "a11y-text-query-cannot-find-virtual-save-nodes",
+    "fullCiSucceeded": false,
+    "fix": "32515d4 or 20d9a2a"
+  },
+  {
+    "runUrl": "https://github.com/mlzx-xxj/trade-review-app/actions/runs/39041614122",
+    "sourceCommit": "e8b27bb1ce94d5c6e272192d154055ef917f3d90",
+    "archiveSha256": "3148b18c7a77ef40c6e8acb2fbccb7364d1754a45aed16af775aacc69125ca22",
+    "artifactId": 12104838617,
+    "files": {
+      "v210-review-narrow-light-failure.png": "20da60d6c85d2f239b07cc4fadd9377f090689e4ffbabd160292c67ded70451f",
+      "TEST-emulator-5554 - 15-_app-.xml": "304f3cfd2c6adfbf01ee2da4129beef88cb305dc41bac9a929ed4d51e64012a8",
+      "review-narrow-light-journey-instrumentation.txt": "6d840be76dccafec5412ce6d7c35ce27e9e67380a4a899847d8166c7de81c7d4",
+      "review-regular-light-journey-instrumentation.txt": "8fbb2533b3b79d6ca3ae91a4b335f602b9c224f8c48c2d69559d424aad9a7d26",
+      "v210-review-regular-light-api35.json": "f80e6bbbfb7d676e2fb1b6def4799fc2cf9c6ae77a2383d32219992d6ac37f05",
+      "v210-review-reopen-regular-light-api35.json": "96b669cbc4c5d38f18d9c0c3e9a696c035415a4d2be50aedb1791680795b8f35"
+    },
+    "classification": "narrow-plan-selector-used-clipped-zero-button-bounds",
+    "fullCiSucceeded": false,
+    "fix": "32515d4 or 20d9a2a"
+  },
+  {
+    "runUrl": "https://github.com/mlzx-xxj/trade-review-app/actions/runs/39044475638",
+    "sourceCommit": "54e4081eb79050808794b28c09341a93e9bc7726",
+    "archiveSha256": "3e5cc897bad40f80f018187343dd951a9534c273281fcbb5feea1cfdf3c09ac5",
+    "artifactId": 12105775860,
+    "files": {
+      "v210-review-narrow-light-failure.png": "aafb6612f3803c7c4256aed841962c67824b33559dee5bab97ae046b916eddc3",
+      "FOCUSED-SOURCE.json": "171049b8da09e08a8e69b0bad40c0ccc626cb2f6c4f7325f0d443edb2d3d7911",
+      "review-narrow-light-journey-instrumentation.txt": "4ed95d2813a9dea53a2342232cab6cc89e6cd3b79aeb20ea679b8035747245f5",
+      "review-regular-light-journey-instrumentation.txt": "d838a6f1ce3c4a340c27b0e453f5480342984b0e1c7effa5dde81d5eaa47e438",
+      "v210-review-regular-light-api35.json": "ba0a50ad284bebd8d7b674a7cafab2087765ffc6ef871b055a691ad652e0b698",
+      "v210-review-reopen-regular-light-api35.json": "8364b8d49dd7207e5038aeb0263e8d4014023d5e56350dc246b44a1c2a6ae0a0"
+    },
+    "classification": "oversized-lazy-item-descendant-needs-real-swipe",
+    "fullCiSucceeded": false,
+    "fix": "32515d4 or 20d9a2a"
+  },
+  {
+    "runUrl": "https://github.com/mlzx-xxj/trade-review-app/actions/runs/39045412342",
+    "sourceCommit": "326e81e56a385e151949b7f519e67d8eaa2242ec",
+    "archiveSha256": "f296adddad78ab4e46ebfeaf81988340b89db7558db6ae9b8ed5dcf36c425477",
+    "artifactId": 12105707101,
+    "files": {
+      "review-narrow-light-journey-instrumentation.txt": "0cdf260540753f4da1a91f07d07cab96b4faa3f26c59dba4b5de1ffa1ead1283",
+      "FOCUSED-SOURCE.json": "13343626d61053b78e0541a91f294f95cb2ef2f24616ca918b6c9dafad294e04",
+      "v210-review-narrow-light-failure.txt": "8fe62bd197134d70d1c7e898180438290a3f49fec78c7a9dacf2dd3acb63a461",
+      "v210-review-narrow-light-plan-landscape.png": "8792772c346fc094b92be3e3867c7b151baf0440ff63615991a993589724371e",
+      "v210-review-narrow-light-empty-plans.png": "6e5c513065e7b79c548fa32bc3ceeecb44054cb8a9737e841b2d9ef617f23e7d",
+      "v210-review-narrow-light-futures-plan-keyboard.png": "c9b71e8d7f8f58921ff1fb4f3bf53d56a3e37aad73f0bf34164fc53d82143626",
+      "v210-review-narrow-light-plan-editor-long.png": "daf06574e7aba830bbf93334fd28caafa0153c9bd2fdf279e18c49fb847df18d",
+      "v210-review-narrow-light-failure.png": "11def1085df16bd837b506765e409fb5bf7d7329c9372026d8bdb2de59b330ff",
+      "v210-review-narrow-light-stock-plan-keyboard.png": "425b908291ac04041ebb68f6c0f3d0a65f9697da139b0fceed3cca20c109c33b",
+      "v210-review-narrow-light-plan-error.png": "aab72da26f42b520b80b711fe62ebb3b9096a583b2f1849a0b847068f748a61b",
+      "v210-review-narrow-light-plans-list.png": "7ee2349f454c6c99d00c71e751b9a90a7664531b8450238ccabdbd1748e1529f",
+      "v210-review-narrow-light-empty-reviews.png": "efad033630e5a0f262d053539a64c25b673ed366d800385c5a370dc6368838ff"
+    },
+    "classification": "recycled-compose-node-id-during-narrow-list-scroll",
+    "fullCiSucceeded": false,
+    "fix": "4a05ad1"
+  },
+  {
+    "runUrl": "https://github.com/mlzx-xxj/trade-review-app/actions/runs/39068343596",
+    "sourceCommit": "058cd97ceb3b2354e452b8bc9079a3b6bbdec0e1",
+    "files": {
+      "focused058-compile.txt": "9e25a108897164ea1bdff80248fbe943c0bc09255dba0c5037b288fb33267385"
+    },
+    "classification": "missing-test-only-compose-getOrNull-extension-import",
+    "fullCiSucceeded": false,
+    "emulatorExecuted": false,
+    "fix": "dca977b"
+  },
+  {
+    "runUrl": "https://github.com/mlzx-xxj/trade-review-app/actions/runs/39045424674",
+    "sourceCommit": "20d9a2a962256b88ffb3edd334b34c631c00e395",
+    "files": {
+      "full20d-api35.log": "1717958b174599129d1eea4cc0df18c69558897713d6432891097e49c114346f"
+    },
+    "classification": "complete-api35-native142-passed-but-extra-narrow-ui-failed",
+    "fullCiSucceeded": false,
+    "fix": "4a05ad1"
+  },
+  {
+    "runUrl": "https://github.com/mlzx-xxj/trade-review-app/actions/runs/39068678932",
+    "sourceCommit": "30266091da330efdd34e31d7a9f5d0cc779771e9",
+    "artifactId": 12115246122,
+    "archiveSha256": "c886ee837efa6c75bcc47027547c8f07059d00234942bf0f0dbf4118c4417688",
+    "files": {
+      "entry-failure.png": "0c65c8309e1249ef6a854efdb5832f41585553408539b1371f7491add0a46047",
+      "entry-failure.txt": "ca65e77a915ee8d94fcd8e8bb1d0ca13554becd1a4220d48fdab6b764e62054d",
+      "journey-instrumentation.txt": "961db18a0065e8dc7e122bc12f4e3dc4032b7b53815b9865d22901ba632ae35e",
+      "v210-baseline302-api29.log": "1f38fcbb5c588ed6c34fd688b670cfb877c9012e1f6b9bb5cafd6e9eaeeebecf",
+      "TEST-emulator-5554 - 10-_app-.xml": "d27d3482972824b76ddd5f4096b83dcc9c330ffa357a01a6a40976231f016ee8"
+    },
+    "classification": "baseline-original-TradeEntryExperienceTest-model-message-clear-timeout-after-all142-native-passed",
+    "fullCiSucceeded": false,
+    "investigation": "Untouched production UI; screenshot already has no snackbar; no suppression or assertion removed."
+  },
+  {
+    "runUrl": "https://github.com/mlzx-xxj/trade-review-app/actions/runs/39068678932/attempts/1",
+    "sourceCommit": "30266091da330efdd34e31d7a9f5d0cc779771e9",
+    "artifactId": 12114418486,
+    "archiveSha256": "2bc5c9548da54488e95dcd55bd01a809384b6a436893c0e47000ddaeedd3d43d",
+    "files": {
+      "v210-review-narrow-light-failure.txt": "07c2d95defc517003b3f8229a2b7694fc0fe194f879b85a8e3fad6ddefe27c59",
+      "v210-review-narrow-light-failure.png": "5920316d93feb6e1d245b9f4c7c07bad6789c0069afca19d5c455ecf09af9625",
+      "v210-baseline302-api35.log": "474f5d3751aede0b57c952204ba548ff4fb8a50d61884495cd78583a3d76b239"
+    },
+    "classification": "legacy-card-relation-resolved-in-mixed-merged-unmerged-trees",
+    "fix": "0035ba2",
+    "fullCiSucceeded": false
+  },
+  {
+    "runUrl": "https://github.com/mlzx-xxj/trade-review-app/actions/runs/39071011079",
+    "sourceCommit": "06bfd77a3cf3f8355d3dc553e5fb18d529b0f12d",
+    "artifactId": 12114588815,
+    "archiveSha256": "f860b7860df10433f79cb6b0ccd30a2ca38b1e7f129e885f8eac9b156b5f51c8",
+    "files": {
+      "v210-review-narrow-light-failure.png": "099752636b0c3a3cf880c7493a1efce1d1fb1c82d769b1e000f02f744b3ce9cc",
+      "v210-review-narrow-light-failure.txt": "364433fb2f07382a6bbda61282a139bf1d282dc4b5afeffcc9e1c90a00113f1d",
+      "review-narrow-light-journey-instrumentation.txt": "038d16759e3163ebc4d6349a33c25c3334ea533ee5de8f1d9528b0cca9401c7a",
+      "FOCUSED-SOURCE.json": "f57414656265db958e9947cb0cf711a341b63c5554de6d61f4c7558eabdce4e4"
+    },
+    "classification": "untouched-baseline-layout-latched-message-before-first-review",
+    "fullCiSucceeded": false,
+    "fix": "b8f5402 (shared UI feedback repair; validation pending)"
+  },
+  {
+    "runUrl": "https://github.com/mlzx-xxj/trade-review-app/actions/runs/39068680301",
+    "sourceCommit": "dca977b34d7c209a1338c23e6bb33bd734d65042",
+    "artifactId": 12115077995,
+    "archiveSha256": "eab13fd1df02ea438d1cf878fd88144dd8d0b70d5e1cab3b79750883d5ec4759",
+    "files": {
+      "v210-full-narrow-light-failure.txt": "641a2912d6908e7a19b38c48fcda3f05f6ea5be0aee33139e16c488b198471fb",
+      "v210-full-narrow-light-failure.png": "07222dc33e84c6814501e3297f218f1e7e7252d3f9089e894afb563c031db339",
+      "full-narrow-light-journey-instrumentation.txt": "2c565a82bcc961893e859ec7c63066e5ea71d77325a851d55b57944b4851b8fd",
+      "v210-candidate-dca-api35.log": "d0c0a76ca6ee228abcae4d06bdfa2bad984e4ed49a6dd0ede8a889cabbc7067f"
+    },
+    "classification": "retained-home-statistics-test-clicked-clipped-review-action",
+    "fullCiSucceeded": false,
+    "fix": "b8f5402 (scroll and strict visible assertion before click)"
+  }
+]
