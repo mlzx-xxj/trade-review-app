@@ -131,9 +131,23 @@ class V210PlanReviewJourneyTest {
     private fun controls(saveTag:String,label:String):Map<String,Any?>{
         ui.waitForIdle()
         val ime=instrumentation.uiAutomation.windows.filter{it.type==AccessibilityWindowInfo.TYPE_INPUT_METHOD}.map{w->android.graphics.Rect().also{w.getBoundsInScreen(it)}}.firstOrNull()
-        val found=instrumentation.uiAutomation.windows.filter{it.type==AccessibilityWindowInfo.TYPE_APPLICATION}.flatMap{w->w.root?.findAccessibilityNodeInfosByText(label).orEmpty()}.firstOrNull{it.isClickable&&it.isVisibleToUser}
+        // Compose's virtual provider need not implement find-by-text. Traverse
+        // actual accessible children, then resolve the clickable button ancestor.
+        val queue=java.util.ArrayDeque<android.view.accessibility.AccessibilityNodeInfo>()
+        instrumentation.uiAutomation.windows.filter{it.type==AccessibilityWindowInfo.TYPE_APPLICATION}.sortedByDescending{it.layer}.forEach{w->w.root?.let{queue.add(it)}}
+        var found:android.view.accessibility.AccessibilityNodeInfo?=null;var inspected=0
+        while(queue.isNotEmpty()&&found==null){
+            check(++inspected<=8000){"Accessibility tree exceeds probe bound"}
+            val node=queue.removeFirst()
+            if(node.text?.toString()==label||node.contentDescription?.toString()==label){
+                var candidate:android.view.accessibility.AccessibilityNodeInfo?=node;var depth=0
+                while(candidate!=null&&!candidate.isClickable&&depth++<20)candidate=candidate.parent
+                if(candidate?.isClickable==true&&candidate.isVisibleToUser)found=candidate
+            }
+            for(i in 0 until node.childCount)node.getChild(i)?.let{queue.add(it)}
+        }
         val bounds=found?.let{n->android.graphics.Rect().also{n.getBoundsInScreen(it)}}
-        return mapOf("tag" to saveTag,"composeVisible" to runCatching{ui.onNodeWithTag(saveTag).assertIsDisplayed()}.isSuccess,"keyboardVisible" to (ime!=null),"imeTopPx" to ime?.top,"buttonBoundsPx" to bounds?.let{listOf(it.left,it.top,it.right,it.bottom)},"fullyAboveKeyboard" to (bounds!=null&&(ime==null||bounds.bottom<=ime.top)),"touchHeightDp" to bounds?.let{it.height()/app.resources.displayMetrics.density})
+        return mapOf("tag" to saveTag,"composeVisible" to runCatching{ui.onNodeWithTag(saveTag).assertIsDisplayed()}.isSuccess,"keyboardVisible" to (ime!=null),"imeTopPx" to ime?.top,"buttonBoundsPx" to bounds?.let{listOf(it.left,it.top,it.right,it.bottom)},"accessibilityNodesInspected" to inspected,"accessibilityButtonClass" to found?.className?.toString(),"fullyAboveKeyboard" to (bounds!=null&&(ime==null||bounds.bottom<=ime.top)),"touchHeightDp" to bounds?.let{it.height()/app.resources.displayMetrics.density})
     }
     private fun save(tag:String,label:String,kind:String){
         val measured=controls(tag,label)
@@ -158,9 +172,9 @@ class V210PlanReviewJourneyTest {
     private fun openPlan(id:String){
         val p=facts().plans.single{it.id==id};top("v2-reviews")
         ui.onNodeWithTag("v2-reviews").performScrollToNode(hasText(p.code,substring=true))
-        val title=ui.onAllNodes(hasText(p.code,substring=true)).fetchSemanticsNodes().filter{it.boundsInRoot.height>0}.minBy{it.boundsInRoot.top}
+        val title=ui.onAllNodes(hasText(p.code,substring=true)).fetchSemanticsNodes().filter{it.size.height>0}.minBy{it.positionInRoot.y}
         val buttons=ui.onAllNodesWithText("查看与编辑计划").fetchSemanticsNodes()
-        val index=buttons.indices.filter{buttons[it].boundsInRoot.top>=title.boundsInRoot.top}.minBy{buttons[it].boundsInRoot.top}
+        val index=buttons.indices.filter{buttons[it].positionInRoot.y>=title.positionInRoot.y}.minBy{buttons[it].positionInRoot.y}
         visible(ui.onAllNodesWithText("查看与编辑计划")[index]).performClick();taps++
         ui.onNodeWithTag("plan-code").assertTextContains(p.code)
     }
@@ -279,8 +293,8 @@ class V210PlanReviewJourneyTest {
         configure("stock","10000",true);flow("stock","in","1000","合成入金");flow("stock","out","200","合成出金")
         page(4);top("v2-accounts");reset()
         val incoming=facts().cashFlows.single{it.accountId=="stock"&&it.kind=="in"}
-        ui.onNodeWithTag("v2-accounts").performScrollToNode(hasText("合成入金"));val edits=ui.onAllNodesWithText("编辑流水");val title=ui.onNodeWithText("合成入金").fetchSemanticsNode().boundsInRoot
-        val index=edits.fetchSemanticsNodes().indices.filter{edits.fetchSemanticsNodes()[it].boundsInRoot.top>=title.top}.minBy{edits.fetchSemanticsNodes()[it].boundsInRoot.top};visible(edits[index]).performClick();taps++
+        ui.onNodeWithTag("v2-accounts").performScrollToNode(hasText("合成入金"));val edits=ui.onAllNodesWithText("编辑流水");val title=ui.onNodeWithText("合成入金").fetchSemanticsNode().positionInRoot
+        val index=edits.fetchSemanticsNodes().indices.filter{edits.fetchSemanticsNodes()[it].positionInRoot.y>=title.y}.minBy{edits.fetchSemanticsNodes()[it].positionInRoot.y};visible(edits[index]).performClick();taps++
         field("cashflow-amount","1200");field("cashflow-note","合成入金已更正")
         orientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE,Configuration.ORIENTATION_LANDSCAPE);capture("cash-edit-landscape")
         cashEditTargetRetained=ui.onAllNodesWithText("原流水：",substring=true).fetchSemanticsNodes().isNotEmpty()
@@ -290,9 +304,9 @@ class V210PlanReviewJourneyTest {
             // that unsaved form and reopen the real existing flow, never save a
             // duplicate or silently repair the baseline database.
             tapText("取消",true);ui.onNodeWithTag("v2-accounts").performScrollToNode(hasText("合成入金"))
-            val old=ui.onNodeWithText("合成入金").fetchSemanticsNode().boundsInRoot
+            val old=ui.onNodeWithText("合成入金").fetchSemanticsNode().positionInRoot
             val buttons=ui.onAllNodesWithText("编辑流水");val found=buttons.fetchSemanticsNodes()
-            visible(buttons[found.indices.filter{found[it].boundsInRoot.top>=old.top}.minBy{found[it].boundsInRoot.top}]).performClick();taps++
+            visible(buttons[found.indices.filter{found[it].positionInRoot.y>=old.y}.minBy{found[it].positionInRoot.y}]).performClick();taps++
             field("cashflow-amount","1200");field("cashflow-note","合成入金已更正")
         }
         save("save-cashflow","保存流水","edit-cashflow");assertEquals(incoming.id,facts().cashFlows.single{it.accountId=="stock"&&it.kind=="in"}.id)
