@@ -141,7 +141,7 @@ PR 构建只读，不接触长期签名 Secrets，签名和发布 Job 按原门�
 以上原始 JUnit 全部为0失败、0错误、0跳过。本批原生141 = 原139 + 新费用预览压力测试1 + 新首页/统计旅程1；基线140没有新增费用压力测试。原有139个测试没有删除，原有失败断言也没有降低。
 
 - Debug、AndroidTest、隔离RC及Release变体编译成功；PR中的Release编译不等于永久签名正式包交付。
-- Python安全/证据回归136项通过；本地也实际执行。Android Lint Debug/RC/Release均0 Error/Fatal，保留已有20/21/21项Warning。
+- 截图来源CI的Python安全/证据回归136项通过；归档收尾另加逐字节保留回归后，本地137项通过，最终CI按PR最新检查记录。Android Lint Debug/RC/Release均0 Error/Fatal，保留已有20/21/21项Warning。
 - 每API另有14次实际 instrumentation 调用：原成交输入/跨进程重开2次、既有四组视觉旅程4次、新首页/统计四组输入及其重开8次。它们与原生JUnit数量分开统计，全部通过，不冒称新增了14个原生用例。
 - 八组前后比较通过；每组13笔实际表单成交、9组独立日期/市场核对、长复盘保存、不同PID重开。各旅程19张原始截图；完整API29/35产物还保留既有全部截图和运行日志。仓库对照精选34张未编辑PNG，并保留138份原始界面JSON、操作日志及JVM/Lint/原生JUnit文件。
 - 真实横竖屏按钮边界断言通过。例：API35/360dp横屏安全区右边界1184px，备份按钮右边界1160px；320dp配置也分别通过。截图不再落入侧边系统导航区。
@@ -149,7 +149,7 @@ PR 构建只读，不接触长期签名 Secrets，签名和发布 Job 按原门�
 
 [API29全量原始产物](https://github.com/mlzx-xxj/trade-review-app/actions/runs/39012109187/artifacts/12094461868) · [API35全量原始产物](https://github.com/mlzx-xxj/trade-review-app/actions/runs/39012109187/artifacts/12093288945) · [构建/JVM/Lint](https://github.com/mlzx-xxj/trade-review-app/actions/runs/39012109187/artifacts/12092564623) · [隔离RC下载](https://github.com/mlzx-xxj/trade-review-app/actions/runs/39012109187/artifacts/12093835160)
 
-Actions临时产物按原策略保留7天（本次至2026-10-24），不是永久Release文件。核心对照PNG、原始报告及逐文件哈希已同时保存在本仓库的 `docs/v210-full`，便于之后独立复核。完整六份构建/设备归档的SHA及来源见 comparison.json 的 verifiedSources；各自必须来自同一提交，不允许跨运行混装。
+Actions临时产物按原策略保留7天（本次至2026-10-24），不是永久Release文件。核心对照PNG、原始报告及逐文件哈希已同时保存在本仓库的 `docs/v210-full`，便于之后独立复核。已给证据目录单独设置 `-text`，重新按原字节入库，防止Git换行转换破坏原生XML哈希；JVM/Lint输出用 `jvm-lint` 目录，避免被项目原有build忽略规则漏掉。新增回归在干净检出后核对全部172份PNG/证据文件哈希、原生JUnit及8组真实账本数据。完整六份构建/设备归档的SHA及来源见 comparison.json 的 verifiedSources；各自必须来自同一提交，不允许跨运行混装。
 
 本次截图来源RC：`com.tradereview.app.rc.v200`、`2.0.0-rc.3 / code22`、非debuggable，APK SHA-256 `f4d61d945abe93c4dd27e9d5bc04c4d43d6fbb1c63dd4a95b69bd79e7cca6442`。两个API实际安装、启动、重开均匹配该哈希。它使用临时测试证书，`permanentIdentityVerified=false`；PR没有读取长期凭据，不代表仓库永久签名不可用，也不构成正式升级验证。
 
