@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.tradereview.app.v200.AutomaticEntryTest" tests="19" skipped="0" failures="0" errors="0" timestamp="2026-10-17T07:07:08" hostname="runnervm8k3b6" time="0.209">
+  <properties/>
+  <testcase name="unknownOrUnverifiedReferenceNeverInventsZeroFeeOrMargin" classname="com.tradereview.app.v200.AutomaticEntryTest" time="0.013"/>
+  <testcase name="duplicateOrUnknownAutoOrderIsRejectedRatherThanGuessed" classname="com.tradereview.app.v200.AutomaticEntryTest" time="0.005"/>
+  <testcase name="stockFeesRoundHalfUpOnlyAtTheCentBoundary" classname="com.tradereview.app.v200.AutomaticEntryTest" time="0.0"/>
+  <testcase name="stockTPlusOneStillRejectsSameNaturalDate" classname="com.tradereview.app.v200.AutomaticEntryTest" time="0.008"/>
+  <testcase name="conflictingIndependentSaveOrdersAreRejectedByMerge" classname="com.tradereview.app.v200.AutomaticEntryTest" time="0.023"/>
+  <testcase name="syntheticFixedPerLotFeeAddsOnePennyPerWholeExecution" classname="com.tradereview.app.v200.AutomaticEntryTest" time="0.001"/>
+  <testcase name="automaticFifoUsesSaveOrderEvenWhenClockMinuteMovesBack" classname="com.tradereview.app.v200.AutomaticEntryTest" time="0.012"/>
+  <testcase name="legacyOrderAndUnroundedHistoricalFeesRemainUntouched" classname="com.tradereview.app.v200.AutomaticEntryTest" time="0.016"/>
+  <testcase name="autoLedgerJsonRoundTripIncludesFeesSnapshotsAndSaveOrder" classname="com.tradereview.app.v200.AutomaticEntryTest" time="0.08"/>
+  <testcase name="longAndShortLotsRemainIndependent" classname="com.tradereview.app.v200.AutomaticEntryTest" time="0.009"/>
+  <testcase name="deviceTimeIsConvertedToBeijingWithoutRelyingOnSystemZone" classname="com.tradereview.app.v200.AutomaticEntryTest" time="0.001"/>
+  <testcase name="syntheticMargin8400IsNotAnOfficialReference" classname="com.tradereview.app.v200.AutomaticEntryTest" time="0.0"/>
+  <testcase name="autoClosingQuoteShowsRemainingMarginRatherThanNewOccupation" classname="com.tradereview.app.v200.AutomaticEntryTest" time="0.002"/>
+  <testcase name="stockFixedComprehensiveFeesHaveNoExtraPennyOrMinimum" classname="com.tradereview.app.v200.AutomaticEntryTest" time="0.005"/>
+  <testcase name="allV2FactsAllowBeijingTodayAndStillRejectTomorrow" classname="com.tradereview.app.v200.AutomaticEntryTest" time="0.012"/>
+  <testcase name="officialCatalogRecognizesPrefixAndKeepsUnavailableDataUnknown" classname="com.tradereview.app.v200.AutomaticEntryTest" time="0.001"/>
+  <testcase name="mixedNaturalDatesSplitCloseFeesButAddOnlyOnePenny" classname="com.tradereview.app.v200.AutomaticEntryTest" time="0.008"/>
+  <testcase name="savedRuleSnapshotWinsOverFutureCatalogUpdates" classname="com.tradereview.app.v200.AutomaticEntryTest" time="0.001"/>
+  <testcase name="syntheticTurnoverFeeUsesExactDecimalAndOneFinalRounding" classname="com.tradereview.app.v200.AutomaticEntryTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

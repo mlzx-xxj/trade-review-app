@@ -1,0 +1,29 @@
+{
+  "api": 35,
+  "profile": "regular-light",
+  "pid": 7213,
+  "previousPid": 7021,
+  "allFactsIdentical": true,
+  "reviewPreserved": true,
+  "screenshots": [
+    {
+      "scene": "reopened-home",
+      "file": "v210-full-regular-light-reopened-home.png",
+      "pixels": [
+        720,
+        1280
+      ],
+      "componentDp": null
+    },
+    {
+      "scene": "reopened-home-calendar",
+      "file": "v210-full-regular-light-reopened-home-calendar.png",
+      "pixels": [
+        720,
+        1280
+      ],
+      "componentDp": null
+    }
+  ],
+  "result": "PASS"
+}

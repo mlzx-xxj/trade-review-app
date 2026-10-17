@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.tradereview.app.backup.FullZipArchiveTest" tests="11" skipped="0" failures="0" errors="0" timestamp="2026-10-17T07:07:05" hostname="runnervm8k3b6" time="1.076">
+  <properties/>
+  <testcase name="legacyV06SchemaFiveZipRetainsItsImagesAndSuppliesSmartDefaults" classname="com.tradereview.app.backup.FullZipArchiveTest" time="0.099"/>
+  <testcase name="changingSourceBetweenValidationAndCopyStopsExport" classname="com.tradereview.app.backup.FullZipArchiveTest" time="0.02"/>
+  <testcase name="traversalAbsolutePathsBackslashesAndExtraFilesAreRejected" classname="com.tradereview.app.backup.FullZipArchiveTest" time="0.023"/>
+  <testcase name="compressedOversizeAndExpandedBombAreBoundedAndLeaveNoStage" classname="com.tradereview.app.backup.FullZipArchiveTest" time="0.508"/>
+  <testcase name="missingOrTamperedImageCannotBeSilentlyOmittedFromExport" classname="com.tradereview.app.backup.FullZipArchiveTest" time="0.014"/>
+  <testcase name="invalidManifestChecksumAndTruncatedZipAreRejected" classname="com.tradereview.app.backup.FullZipArchiveTest" time="0.041"/>
+  <testcase name="duplicateCentralNamesAreRejectedBeforeExtraction" classname="com.tradereview.app.backup.FullZipArchiveTest" time="0.01"/>
+  <testcase name="metadataReferencesUnknownTradeAndJsonScopeCannotPretendFullBackup" classname="com.tradereview.app.backup.FullZipArchiveTest" time="0.009"/>
+  <testcase name="excessiveCentralFileCountIsRejectedBeforeReadingPayload" classname="com.tradereview.app.backup.FullZipArchiveTest" time="0.305"/>
+  <testcase name="inflatedDeclaredTotalIsRejectedWithoutAllocatingExpandedFiles" classname="com.tradereview.app.backup.FullZipArchiveTest" time="0.009"/>
+  <testcase name="archiveRoundTripChecksEveryMetadataHashAndClosesTemporaryFiles" classname="com.tradereview.app.backup.FullZipArchiveTest" time="0.034"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.tradereview.app.v200.MatchingEngineTest" tests="37" skipped="0" failures="0" errors="0" timestamp="2026-10-17T05:43:39" hostname="runnervm8k3b6" time="0.029">
+  <properties/>
+  <testcase name="duplicateStableExecutionIdIsRejected" classname="com.tradereview.app.v200.MatchingEngineTest" time="0.001"/>
+  <testcase name="futuresPartialYesterdayThenTodayPreservesCycle" classname="com.tradereview.app.v200.MatchingEngineTest" time="0.001"/>
+  <testcase name="fifoAcrossMultipleStockBuyLots" classname="com.tradereview.app.v200.MatchingEngineTest" time="0.001"/>
+  <testcase name="differentOpeningAndClosingMultipliersAreRejected" classname="com.tradereview.app.v200.MatchingEngineTest" time="0.001"/>
+  <testcase name="riskMissingStopHasNoFakeZero" classname="com.tradereview.app.v200.MatchingEngineTest" time="0.0"/>
+  <testcase name="knownSecondsDetermineActualOrderRatherThanInputOrder" classname="com.tradereview.app.v200.MatchingEngineTest" time="0.0"/>
+  <testcase name="futuresCloseTodayUsesOnlyTodayLots" classname="com.tradereview.app.v200.MatchingEngineTest" time="0.0"/>
+  <testcase name="stockBoughtTodayCannotJoinOlderSellableBalance" classname="com.tradereview.app.v200.MatchingEngineTest" time="0.003"/>
+  <testcase name="futuresPerLotExtraHasExplicitUnit" classname="com.tradereview.app.v200.MatchingEngineTest" time="0.0"/>
+  <testcase name="feeAdditionalWithoutUnitIsRejected" classname="com.tradereview.app.v200.MatchingEngineTest" time="0.001"/>
+  <testcase name="unverifiedFuturesParametersCannotInventPnl" classname="com.tradereview.app.v200.MatchingEngineTest" time="0.0"/>
+  <testcase name="futuresLongAndShortNeverCrossMatch" classname="com.tradereview.app.v200.MatchingEngineTest" time="0.001"/>
+  <testcase name="marginOnlyUsesConfirmedParametersAndRemainingLots" classname="com.tradereview.app.v200.MatchingEngineTest" time="0.0"/>
+  <testcase name="stockSameTradingDaySellingIsRejected" classname="com.tradereview.app.v200.MatchingEngineTest" time="0.001"/>
+  <testcase name="decimalScaleDoesNotCreateZeroQuantityMatches" classname="com.tradereview.app.v200.MatchingEngineTest" time="0.0"/>
+  <testcase name="stockBuyAndFollowingDaySellUsesActualFees" classname="com.tradereview.app.v200.MatchingEngineTest" time="0.001"/>
+  <testcase name="equalKnownSecondsNeedConfirmationWithoutDiscardingDifferentKnownSeconds" classname="com.tradereview.app.v200.MatchingEngineTest" time="0.0"/>
+  <testcase name="openOnlyExecutionsDoNotContributeRealizedStatistics" classname="com.tradereview.app.v200.MatchingEngineTest" time="0.002"/>
+  <testcase name="futuresLongProfitUsesOpeningMultiplier" classname="com.tradereview.app.v200.MatchingEngineTest" time="0.0"/>
+  <testcase name="unknownSecondsUseExplicitOrderAndNeverInventZeroSeconds" classname="com.tradereview.app.v200.MatchingEngineTest" time="0.004"/>
+  <testcase name="futuresCloseYesterdayCannotConsumeToday" classname="com.tradereview.app.v200.MatchingEngineTest" time="0.0"/>
+  <testcase name="unsupportedSecuritiesAreNotSilentlyTreatedAsNormalStock" classname="com.tradereview.app.v200.MatchingEngineTest" time="0.001"/>
+  <testcase name="closeFeeSplitAcrossLotsIsNotRepeated" classname="com.tradereview.app.v200.MatchingEngineTest" time="0.0"/>
+  <testcase name="fullCloseThenNewOpenCreatesNewStableCycle" classname="com.tradereview.app.v200.MatchingEngineTest" time="0.0"/>
+  <testcase name="stockCannotSellUnknownOpeningHoldings" classname="com.tradereview.app.v200.MatchingEngineTest" time="0.001"/>
+  <testcase name="futuresShortProfit" classname="com.tradereview.app.v200.MatchingEngineTest" time="0.0"/>
+  <testcase name="stocksDefaultComprehensiveFeeRates" classname="com.tradereview.app.v200.MatchingEngineTest" time="0.0"/>
+  <testcase name="feeAllocationConservesRepeatingDivisionAndFinalResidual" classname="com.tradereview.app.v200.MatchingEngineTest" time="0.001"/>
+  <testcase name="futureEffectiveRuleCannotBeAppliedToEarlierExecution" classname="com.tradereview.app.v200.MatchingEngineTest" time="0.0"/>
+  <testcase name="futuresTurnoverAndPerTurnoverAdditionalAreExact" classname="com.tradereview.app.v200.MatchingEngineTest" time="0.0"/>
+  <testcase name="stockCannotOversell" classname="com.tradereview.app.v200.MatchingEngineTest" time="0.001"/>
+  <testcase name="riskFundsAreIndependentFromAccountsAndOtherMarket" classname="com.tradereview.app.v200.MatchingEngineTest" time="0.0"/>
+  <testcase name="referenceCashDoesNotSubtractRealizedFeesTwice" classname="com.tradereview.app.v200.MatchingEngineTest" time="0.001"/>
+  <testcase name="stockPartialSaleRetainsUnmatchedCost" classname="com.tradereview.app.v200.MatchingEngineTest" time="0.001"/>
+  <testcase name="longAndShortStopDirectionsAreValidated" classname="com.tradereview.app.v200.MatchingEngineTest" time="0.001"/>
+  <testcase name="mixedTodayYesterdayCloseCostsUseActualMatchedLots" classname="com.tradereview.app.v200.MatchingEngineTest" time="0.001"/>
+  <testcase name="nightTradeHasIndependentNaturalDateAndConfirmedTradingDay" classname="com.tradereview.app.v200.MatchingEngineTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

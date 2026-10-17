@@ -85,3 +85,24 @@ fun historicalMoney(currency:String,value:String)=if(currency=="CNY")amount(valu
 fun actionLabel(e:LedgerExecution)=when(e.accountId){"stock"->if(e.side=="buy")"买入"else"卖出";else->(if(e.side=="buy")"买入"else"卖出")+when(e.effect){"open"->"开仓";"close_today"->"平今";"close_yesterday"->"平昨";else->"平仓"}}
 fun directionLabel(c:LedgerCycle)=if(c.accountId=="stock")"股票"else if(c.direction=="long")"多头"else"空头"
 fun strategyLabel(state:LedgerSnapshot,id:String?)=state.strategies.firstOrNull{it.id==id}?.name?:"未选策略"
+
+/** Overview presentation only; no rounding or completeness policy changes. */
+@Composable fun OverviewMoney(label:String,value:BigDecimal?,tag:String,modifier:Modifier=Modifier,large:Boolean=false,empty:Boolean=false,showState:Boolean=true){
+    val color=value?.let{pnlColor(it)}?:MaterialTheme.colorScheme.onSurfaceVariant
+    val status=if(value==null)"费用待估算"else if(empty)"尚无平仓"else when(value.signum()){1->"+ 盈利";-1->"− 亏损";else->"持平"}
+    Column(modifier,verticalArrangement=Arrangement.spacedBy(4.dp)){
+        Row(verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(8.dp)){
+            Text(label,Modifier.weight(1f),style=MaterialTheme.typography.labelMedium,color=MaterialTheme.colorScheme.onSurfaceVariant)
+            if(large&&showState)Text(status,style=MaterialTheme.typography.labelSmall,color=if(empty)MaterialTheme.colorScheme.onSurfaceVariant else color)
+            else if(!showState&&value!=null)Text(if(empty)"无平仓"else when(value.signum()){1->"+";-1->"−";else->"持平"},style=MaterialTheme.typography.labelSmall,color=MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+        NumericText(moneyText(value),Modifier.testTag(tag),style=if(large)MaterialTheme.typography.headlineMedium.copy(fontWeight=FontWeight.SemiBold)else MaterialTheme.typography.titleLarge,color=color)
+        if(!large&&showState)Text(status,style=MaterialTheme.typography.labelSmall,color=if(empty)MaterialTheme.colorScheme.onSurfaceVariant else color)
+    }
+}
+@Composable fun OverviewHeading(title:String,detail:String?=null,action:String?=null,onAction:()->Unit={},actionTag:String=""){
+    Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(8.dp)){
+        Column(Modifier.weight(1f),verticalArrangement=Arrangement.spacedBy(2.dp)){Text(title,style=MaterialTheme.typography.titleMedium);detail?.let{Text(it,style=MaterialTheme.typography.bodySmall,color=MaterialTheme.colorScheme.onSurfaceVariant)}}
+        action?.let{TextButton(onAction,modifier=Modifier.heightIn(min=48.dp).testTag(actionTag)){Text(it)}}
+    }
+}

@@ -21,37 +21,103 @@ import java.time.LocalDate
 import java.time.YearMonth
 import java.math.BigDecimal
 import java.math.RoundingMode
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 fun calendarLabel(value:BigDecimal?)=when{value==null->"无平仓";value.signum()==0->"持平";value.abs()>=BigDecimal(10000)->AutomaticEntry.cents(value.movePointLeft(4))+"万";else->AutomaticEntry.cents(value)}
 fun sellable(state:LedgerSnapshot,cycle:LedgerCycle,day:Long):String {val facts=state.executions.associateBy{it.id};return exact(sum(state.lots.filter{it.cycleId==cycle.id && facts.getValue(it.executionId).tradingDay<day}.map{decimal(it.remaining)}))}
-@Composable fun V200Home(state:LedgerScreenState,onCycle:(String)->Unit,onDay:(Long)->Unit){
-    val ledger=state.ledger?:return;val today=AutomaticEntry.today();val epoch=today.toEpochDay();val week=today.minusDays((today.dayOfWeek.value-1).toLong()).toEpochDay();val month=today.withDayOfMonth(1).toEpochDay()
+private data class RecentHomeExecutions(val source:List<LedgerExecution>,val rows:List<LedgerExecution>)
+@Composable fun V200Home(state:LedgerScreenState,onCycle:(String)->Unit,onDay:(Long)->Unit,onTrades:()->Unit={},onReviews:()->Unit={},onExecution:(String)->Unit={}){
+    val ledger=state.ledger?:return;val today=AutomaticEntry.today();val epoch=today.toEpochDay();val week=today.minusDays((today.dayOfWeek.value-1).toLong()).toEpochDay()
     var expanded by rememberSaveable{mutableStateOf(false)};var offset by rememberSaveable{mutableIntStateOf(0)}
-    LazyColumn(Modifier.fillMaxSize().testTag("v2-home"),contentPadding=PaddingValues(12.dp),verticalArrangement=Arrangement.spacedBy(10.dp)){
-        item{LedgerPanel("累计表现 · 已实现净盈亏"){
-            Text("仅V2实际平仓，旧档案不重复计入",style=MaterialTheme.typography.labelSmall)
-            Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.spacedBy(8.dp)){
-                listOf(Triple("week","本周",state.closed.filter{it.execution.tradingDay in week..(week+6)}),Triple("month","本月",state.closed.filter{LocalDate.ofEpochDay(it.execution.tradingDay).let{d->d.year==today.year && d.monthValue==today.monthValue}}),Triple("all","历史累计",state.closed)).forEach{(key,label,values)->Column(Modifier.weight(1f)){Text(label,style=MaterialTheme.typography.labelMedium);NetText(completeTotal(values.map{exactOrNull(it.net)}),Modifier.testTag("home-realized-$key"))}}
-            }
-            if(state.closed.any{it.net==null})Text("含 ${state.closed.count{it.net==null}} 笔费用待估算的平仓；涉及周期的完整合计待估算，统计可查看已知样本。",style=MaterialTheme.typography.bodySmall)
-            Row(Modifier.horizontalScroll(rememberScrollState()),horizontalArrangement=Arrangement.spacedBy(4.dp)){(epoch-6..epoch).forEach{day->DayCell(day,state.daily[day],onDay,pending=state.closed.any{it.execution.tradingDay==day && it.net==null})}}
-            TextButton(onClick={expanded=!expanded},modifier=Modifier.heightIn(min=48.dp).testTag("calendar-expand")){Text(if(expanded)"收起日历"else"展开月历")}
-            if(expanded){val selected=YearMonth.from(today).plusMonths(offset.toLong());Row(horizontalArrangement=Arrangement.SpaceBetween,modifier=Modifier.fillMaxWidth()){TextButton({offset--},modifier=Modifier.heightIn(min=48.dp)){Text("上月")};Text("${selected.year}年${selected.monthValue}月",Modifier.padding(top=14.dp));TextButton({offset++},modifier=Modifier.heightIn(min=48.dp)){Text("下月")}}
-                BoxWithConstraints(Modifier.fillMaxWidth()){val gridWidth=maxOf(maxWidth,336.dp);Row(Modifier.horizontalScroll(rememberScrollState())){Column(Modifier.width(gridWidth)){
-                Row{listOf("一","二","三","四","五","六","日").forEach{Text(it,Modifier.weight(1f),style=MaterialTheme.typography.labelMedium)}}
-                val start=selected.atDay(1).dayOfWeek.value-1;val count=selected.lengthOfMonth()
-                repeat((start+count+6)/7){row->Row{repeat(7){col->val index=row*7+col-start;Box(Modifier.weight(1f)){if(index in 0 until count){val day=selected.atDay(index+1).toEpochDay();DayCell(day,state.daily[day],onDay,compact=true,pending=state.closed.any{it.execution.tradingDay==day && it.net==null})}}}}}
-                }}}
-            }
-        }}
-        item{Text("当前持仓",style=MaterialTheme.typography.titleLarge)}
-        ledger.accounts.forEach{account->val positions=ledger.cycles.filter{it.accountId==account.id && decimal(it.remaining)>BigDecimal.ZERO};item{Text(account.name,style=MaterialTheme.typography.titleMedium)}
-            if(positions.isEmpty())item{EmptyLedger("暂无未平仓持仓")}
+    val weekly=remember(state.closed,today){state.closed.filter{it.execution.tradingDay in week..week+6}}
+    val monthly=remember(state.closed,today){state.closed.filter{LocalDate.ofEpochDay(it.execution.tradingDay).let{d->d.year==today.year&&d.monthValue==today.monthValue}}}
+    val current=remember(ledger.cycles){ledger.cycles.filter{decimal(it.remaining)>BigDecimal.ZERO}}
+    val byExecution=remember(state.closed){state.closed.associateBy{it.execution.id}}
+    val pendingDays=remember(state.closed){state.closed.filter{it.net==null}.map{it.execution.tradingDay}.toSet()}
+    val recentResult by produceState<RecentHomeExecutions?>(null,ledger.executions){val source=ledger.executions;value=withContext(Dispatchers.Default){RecentHomeExecutions(source,MatchingEngine.ordered(source).takeLast(3).reversed())}}
+    val recent=recentResult?.takeIf{it.source==ledger.executions}?.rows
+    LazyColumn(Modifier.fillMaxSize().testTag("v2-home"),contentPadding=PaddingValues(LedgerUi.inset),verticalArrangement=Arrangement.spacedBy(LedgerUi.inset)){
+        item{
+            Card(Modifier.fillMaxWidth(),colors=CardDefaults.cardColors(containerColor=MaterialTheme.colorScheme.surface),border=BorderStroke(1.dp,MaterialTheme.colorScheme.outlineVariant)){Column(Modifier.padding(12.dp),verticalArrangement=Arrangement.spacedBy(8.dp)){
+                OverviewHeading("累计表现",action=if(expanded)"收起月历"else"展开月历",onAction={expanded=!expanded},actionTag="calendar-expand")
+                BoxWithConstraints(Modifier.fillMaxWidth()){
+                    if(maxWidth>=460.dp)Row(horizontalArrangement=Arrangement.spacedBy(16.dp)){
+                        OverviewMoney("本周已实现",completeTotal(weekly.map{exactOrNull(it.net)}),"home-realized-week",Modifier.weight(1f),large=true,empty=weekly.isEmpty(),showState=false)
+                        OverviewMoney("本月",completeTotal(monthly.map{exactOrNull(it.net)}),"home-realized-month",Modifier.weight(1f),empty=monthly.isEmpty(),showState=false)
+                        OverviewMoney("历史累计",completeTotal(state.closed.map{exactOrNull(it.net)}),"home-realized-all",Modifier.weight(1f),empty=state.closed.isEmpty(),showState=false)
+                    }else Column(verticalArrangement=Arrangement.spacedBy(8.dp)){
+                        OverviewMoney("本周已实现",completeTotal(weekly.map{exactOrNull(it.net)}),"home-realized-week",large=true,empty=weekly.isEmpty())
+                        HorizontalDivider(color=MaterialTheme.colorScheme.outlineVariant)
+                        Row(horizontalArrangement=Arrangement.spacedBy(16.dp)){
+                            OverviewMoney("本月",completeTotal(monthly.map{exactOrNull(it.net)}),"home-realized-month",Modifier.weight(1f),empty=monthly.isEmpty(),showState=false)
+                            OverviewMoney("历史累计",completeTotal(state.closed.map{exactOrNull(it.net)}),"home-realized-all",Modifier.weight(1f),empty=state.closed.isEmpty(),showState=false)
+                        }
+                    }
+                }
+                if(state.closed.any{it.net==null})Text("费用待估算的平仓使相关完整合计保持未知；统计页另列已知样本。",style=MaterialTheme.typography.bodySmall,color=MaterialTheme.colorScheme.onSurfaceVariant)
+                val strip=rememberScrollState()
+                LaunchedEffect(strip.maxValue){strip.scrollTo(strip.maxValue)}
+                Row(Modifier.fillMaxWidth().horizontalScroll(strip),horizontalArrangement=Arrangement.spacedBy(4.dp)){
+                    (epoch-6..epoch).forEach{day->DayCell(day,state.daily[day],onDay,pending=day in pendingDays,today=day==epoch)}
+                }
+                if(expanded){
+                    val selected=YearMonth.from(today).plusMonths(offset.toLong())
+                    Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically){
+                        TextButton({offset--},Modifier.heightIn(min=48.dp)){Text("上月")}
+                        Text("${selected.year}年${selected.monthValue}月",Modifier.weight(1f),style=MaterialTheme.typography.titleSmall,textAlign=androidx.compose.ui.text.style.TextAlign.Center)
+                        TextButton({offset++},Modifier.heightIn(min=48.dp)){Text("下月")}
+                    }
+                    BoxWithConstraints(Modifier.fillMaxWidth()){
+                        val width=maxOf(maxWidth,336.dp)
+                        Row(Modifier.horizontalScroll(rememberScrollState())){Column(Modifier.width(width)){
+                            Row{listOf("一","二","三","四","五","六","日").forEach{Text(it,Modifier.weight(1f),style=MaterialTheme.typography.labelMedium,textAlign=androidx.compose.ui.text.style.TextAlign.Center)}}
+                            val start=selected.atDay(1).dayOfWeek.value-1;val count=selected.lengthOfMonth()
+                            repeat((start+count+6)/7){row->Row{repeat(7){col->val index=row*7+col-start;Box(Modifier.weight(1f),contentAlignment=Alignment.Center){if(index in 0 until count){val day=selected.atDay(index+1).toEpochDay();DayCell(day,state.daily[day],onDay,compact=true,pending=day in pendingDays,today=day==epoch)}}}}}
+                        }}
+                    }
+                    Text("+ 盈利／− 亏损／持平／待算；— 无平仓。点日期看金额，窄屏可左右滑动。",style=MaterialTheme.typography.bodySmall,color=MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+            }}
+        }
+        item{OverviewHeading("当前持仓",if(current.isEmpty())"尚无未平仓持仓"else"${current.size} 个持仓周期","查看交易",onTrades)}
+        ledger.accounts.forEach{account->val positions=current.filter{it.accountId==account.id}
+            item{Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically){Text(account.name,Modifier.weight(1f),style=MaterialTheme.typography.labelLarge,color=MaterialTheme.colorScheme.onSurfaceVariant);Text("${positions.size} 个持仓 · ${exact(sum(positions.map{decimal(it.remaining)}))}${if(account.id=="stock")"股"else"手"}",style=MaterialTheme.typography.labelMedium,color=MaterialTheme.colorScheme.onSurfaceVariant)}}
+            if(positions.isEmpty())item{Text("暂无未平仓持仓",Modifier.padding(bottom=4.dp),style=MaterialTheme.typography.bodyMedium,color=MaterialTheme.colorScheme.onSurfaceVariant)}
             items(positions,key={it.id}){cycle->PositionCard(ledger,cycle,onCycle)}
+        }
+        item{OverviewHeading("近期成交",null,"去复盘",onReviews)}
+        if(recent==null)item{Text("正在整理近期成交",style=MaterialTheme.typography.bodySmall,color=MaterialTheme.colorScheme.onSurfaceVariant)}
+        else if(recent.isEmpty())item{EmptyLedger("尚无成交记录，可在交易页记下第一笔真实成交。")}
+        items(recent.orEmpty(),key={"recent-${it.id}"}){e->
+            Surface(modifier=Modifier.fillMaxWidth().clickable{onExecution(e.id)}.testTag("home-recent-${e.id}"),shape=MaterialTheme.shapes.medium,color=MaterialTheme.colorScheme.surface){
+                Row(Modifier.padding(12.dp),horizontalArrangement=Arrangement.spacedBy(12.dp),verticalAlignment=Alignment.CenterVertically){
+                    Column(Modifier.weight(1f),verticalArrangement=Arrangement.spacedBy(4.dp)){
+                        Text(if(e.name==e.code)e.code else "${e.name} ${e.code}",style=MaterialTheme.typography.titleSmall,maxLines=2,overflow=TextOverflow.Ellipsis)
+                        Text("${LocalDate.ofEpochDay(e.date)} · ${actionLabel(e)} · ${e.quantity}${if(e.accountId=="stock")"股"else"手"}",style=MaterialTheme.typography.bodySmall,color=MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
+                    Column(Modifier.weight(.7f),verticalArrangement=Arrangement.spacedBy(2.dp)){
+                        Text(if(e.effect=="open")"成交价"else"已实现净盈亏",style=MaterialTheme.typography.labelSmall,color=MaterialTheme.colorScheme.onSurfaceVariant)
+                        if(e.effect=="open")NumericText(amount(e.price),style=MaterialTheme.typography.bodyLarge)else NetText(byExecution[e.id]?.net,showState=true)
+                    }
+                }
+            }
+        }
+        item{Text("人民币 · 仅 V2 实际平仓；兼容历史档案不重复计入。",style=MaterialTheme.typography.labelSmall,color=MaterialTheme.colorScheme.onSurfaceVariant)}
+    }
+}
+@Composable private fun DayCell(day:Long,value:BigDecimal?,onDay:(Long)->Unit,compact:Boolean=false,pending:Boolean=false,today:Boolean=false){
+    val description="${LocalDate.ofEpochDay(day)}，${value?.let{"${if(pending)"已知部分"else"已实现"}净盈亏${AutomaticEntry.cents(it)}元，${when(it.signum()){1->"盈利";-1->"亏损";else->"持平"}}${if(pending)"，另有费用待估算的平仓"else""}"}?:if(pending)"费用待估算，净盈亏待计算"else"无平仓记录"}"
+    val color=value?.let{pnlColor(it)}?:MaterialTheme.colorScheme.onSurfaceVariant
+    val width=if(compact)48.dp else if(androidx.compose.ui.platform.LocalDensity.current.fontScale>1.15f)92.dp else 72.dp
+    Surface(shape=MaterialTheme.shapes.small,color=if(today)MaterialTheme.colorScheme.surfaceContainerHigh else androidx.compose.ui.graphics.Color.Transparent,modifier=Modifier.width(width).heightIn(min=72.dp).clickable{onDay(day)}.semantics{contentDescription=description}.testTag("v2-day-$day")){
+        Column(Modifier.padding(horizontal=4.dp,vertical=8.dp),horizontalAlignment=Alignment.CenterHorizontally,verticalArrangement=Arrangement.spacedBy(4.dp)){
+            Text(if(compact)LocalDate.ofEpochDay(day).dayOfMonth.toString()else"${LocalDate.ofEpochDay(day).monthValue}/${LocalDate.ofEpochDay(day).dayOfMonth}",style=MaterialTheme.typography.labelMedium,color=if(today)MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,fontWeight=if(today)FontWeight.SemiBold else FontWeight.Normal)
+            if(compact)Text(if(pending)"待算"else if(value==null)"—"else when(value.signum()){1->"+ 盈";-1->"− 亏";else->"持平"},style=MaterialTheme.typography.labelMedium,color=if(pending)MaterialTheme.colorScheme.onSurfaceVariant else color)
+            else{NumericText(if(pending&&value==null)"待计算"else if(value==null)"—"else calendarLabel(value),style=MaterialTheme.typography.labelLarge,color=color);Text(if(pending)"费用待估算"else if(value==null)"无平仓"else when(value.signum()){1->"+ 盈利";-1->"− 亏损";else->"持平"},style=MaterialTheme.typography.labelSmall,color=if(pending)MaterialTheme.colorScheme.onSurfaceVariant else color)}
         }
     }
 }
-@Composable private fun DayCell(day:Long,value:BigDecimal?,onDay:(Long)->Unit,compact:Boolean=false,pending:Boolean=false){Column(Modifier.widthIn(min=48.dp).heightIn(min=64.dp).clickable{onDay(day)}.padding(3.dp).semantics{contentDescription="${LocalDate.ofEpochDay(day)}，${value?.let{"${if(pending)"已知部分"else"已实现"}净盈亏${AutomaticEntry.cents(it)}元${if(pending)"，另有费用待估算的平仓"else""}"}?:if(pending)"费用待估算，净盈亏待计算"else"无平仓记录"}"}.testTag("v2-day-$day")){Text(if(compact)LocalDate.ofEpochDay(day).dayOfMonth.toString()else"${LocalDate.ofEpochDay(day).monthValue}/${LocalDate.ofEpochDay(day).dayOfMonth}",style=MaterialTheme.typography.labelMedium);Text(if(pending)if(value==null)"待计算"else"已知 ${calendarLabel(value)}"else calendarLabel(value),color=value?.let{pnlColor(it)}?:MaterialTheme.colorScheme.onSurfaceVariant,style=MaterialTheme.typography.labelSmall)}}
 @Composable fun PositionCard(state:LedgerSnapshot,c:LedgerCycle,onClick:(String)->Unit){
     val stock=c.accountId=="stock";val unit=if(stock)"股"else"手"
     val average=if(stock && decimal(c.remaining)>BigDecimal.ZERO)amount(exact(ratio(decimal(c.openCost),decimal(c.remaining))))else amount(c.averagePrice)

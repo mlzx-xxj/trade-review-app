@@ -1,0 +1,3408 @@
+{
+  "baselineRun": "https://github.com/mlzx-xxj/trade-review-app/actions/runs/39007253746",
+  "candidateRun": "https://github.com/mlzx-xxj/trade-review-app/actions/runs/39012109187",
+  "verifiedSources": {
+    "before-api29": {
+      "source": "64951a5e92985933078d566dfa080742bf373f56",
+      "archiveSha256": "c2f064c89f93e8040f7288560190b8e11830c7948298757d54d7a0f4f435317b",
+      "junit": {
+        "tests": 140,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    },
+    "after-api29": {
+      "source": "76acd0847ca30f9e7b0e55989a199a5569495272",
+      "archiveSha256": "a4b462def044e9d294f38dc3da3d29d547daf7fae2199c10c129d1a9640f3111",
+      "junit": {
+        "tests": 141,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    },
+    "before-api35": {
+      "source": "64951a5e92985933078d566dfa080742bf373f56",
+      "archiveSha256": "5477dd36835a426cb7b09ad686c443626a8b5508e12118d18a865c592aa73341",
+      "junit": {
+        "tests": 140,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    },
+    "after-api35": {
+      "source": "76acd0847ca30f9e7b0e55989a199a5569495272",
+      "archiveSha256": "d089b8138aa5faa4dad355aac158c8bf57b808b58a934b27b917f73f32128fc2",
+      "junit": {
+        "tests": 141,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    },
+    "before-build": {
+      "source": "64951a5e92985933078d566dfa080742bf373f56",
+      "archiveSha256": "786b2c2eea0bfe1df4527f3a9af090fd13f5882f3181390e0e241eb1b200ad6f",
+      "junit": {
+        "tests": 241,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    },
+    "after-build": {
+      "source": "76acd0847ca30f9e7b0e55989a199a5569495272",
+      "archiveSha256": "f322fd9a6f464ee77be13f1c2383576865907bd26ac1b6d0e88668788f56928c",
+      "junit": {
+        "tests": 241,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    }
+  },
+  "profiles": {
+    "api29-regular-light": {
+      "entry": [
+        {
+          "code": "600001",
+          "action": "买入",
+          "beforeTaps": 5,
+          "afterTaps": 5,
+          "beforeScrolls": 1,
+          "afterScrolls": 1,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "600001",
+          "action": "卖出",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 1,
+          "afterScrolls": 1,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "al2701",
+          "action": "买入开仓",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 1,
+          "afterScrolls": 1,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "al2701",
+          "action": "卖出平仓",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 2,
+          "afterScrolls": 2,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "600000",
+          "action": "买入",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 1,
+          "afterScrolls": 1,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "600000",
+          "action": "卖出",
+          "beforeTaps": 5,
+          "afterTaps": 5,
+          "beforeScrolls": 1,
+          "afterScrolls": 1,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "rb2701",
+          "action": "买入开仓",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 1,
+          "afterScrolls": 1,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "rb2701",
+          "action": "买入开仓",
+          "beforeTaps": 5,
+          "afterTaps": 5,
+          "beforeScrolls": 1,
+          "afterScrolls": 1,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "rb2701",
+          "action": "卖出平仓",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 2,
+          "afterScrolls": 2,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "rb2705",
+          "action": "卖出开仓",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 2,
+          "afterScrolls": 2,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "rb2705",
+          "action": "买入平仓",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 2,
+          "afterScrolls": 2,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "i2701",
+          "action": "买入开仓",
+          "beforeTaps": 5,
+          "afterTaps": 5,
+          "beforeScrolls": 1,
+          "afterScrolls": 1,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "i2701",
+          "action": "卖出平仓",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 2,
+          "afterScrolls": 2,
+          "fields": 3,
+          "financialFactsEqual": true
+        }
+      ],
+      "moneyLayouts": [
+        {
+          "tag": "home-realized-week",
+          "text": "￥0.00",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-month",
+          "text": "￥0.00",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 24.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-all",
+          "text": "￥0.00",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 24.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-week",
+          "text": "￥964.83",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-month",
+          "text": "￥1008.81",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 24.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-all",
+          "text": "￥2001.21",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 24.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥964.83",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-week",
+          "text": "待估算",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-month",
+          "text": "待估算",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 24.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-all",
+          "text": "待估算",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 24.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥964.83",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥-7.00",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥971.83",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥1008.81",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥-7.00",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥1015.81",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥43.98",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥992.40",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-week",
+          "text": "待估算",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-month",
+          "text": "待估算",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 24.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-all",
+          "text": "待估算",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 24.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        }
+      ],
+      "periodChecks": 9,
+      "financialFactsEqual": true,
+      "actualProcessReopen": true,
+      "toolbarSafety": [
+        {
+          "orientation": 2,
+          "safeLeft": 0,
+          "safeRight": 1184,
+          "safeTop": 48,
+          "buttons": [
+            {
+              "tag": "open-risk-strategy",
+              "left": 920.0,
+              "right": 1072.0,
+              "top": 63.0
+            },
+            {
+              "tag": "open-backup",
+              "left": 1080.0,
+              "right": 1160.0,
+              "top": 71.0
+            }
+          ],
+          "result": "PASS"
+        },
+        {
+          "orientation": 1,
+          "safeLeft": 0,
+          "safeRight": 720,
+          "safeTop": 48,
+          "buttons": [
+            {
+              "tag": "open-risk-strategy",
+              "left": 456.0,
+              "right": 608.0,
+              "top": 63.0
+            },
+            {
+              "tag": "open-backup",
+              "left": 616.0,
+              "right": 696.0,
+              "top": 71.0
+            }
+          ],
+          "result": "PASS"
+        }
+      ]
+    },
+    "api29-regular-dark": {
+      "entry": [
+        {
+          "code": "600001",
+          "action": "买入",
+          "beforeTaps": 5,
+          "afterTaps": 5,
+          "beforeScrolls": 1,
+          "afterScrolls": 1,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "600001",
+          "action": "卖出",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 1,
+          "afterScrolls": 1,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "al2701",
+          "action": "买入开仓",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 1,
+          "afterScrolls": 1,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "al2701",
+          "action": "卖出平仓",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 2,
+          "afterScrolls": 2,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "600000",
+          "action": "买入",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 1,
+          "afterScrolls": 1,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "600000",
+          "action": "卖出",
+          "beforeTaps": 5,
+          "afterTaps": 5,
+          "beforeScrolls": 1,
+          "afterScrolls": 1,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "rb2701",
+          "action": "买入开仓",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 1,
+          "afterScrolls": 1,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "rb2701",
+          "action": "买入开仓",
+          "beforeTaps": 5,
+          "afterTaps": 5,
+          "beforeScrolls": 1,
+          "afterScrolls": 1,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "rb2701",
+          "action": "卖出平仓",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 2,
+          "afterScrolls": 2,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "rb2705",
+          "action": "卖出开仓",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 2,
+          "afterScrolls": 2,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "rb2705",
+          "action": "买入平仓",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 2,
+          "afterScrolls": 2,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "i2701",
+          "action": "买入开仓",
+          "beforeTaps": 5,
+          "afterTaps": 5,
+          "beforeScrolls": 1,
+          "afterScrolls": 1,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "i2701",
+          "action": "卖出平仓",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 2,
+          "afterScrolls": 2,
+          "fields": 3,
+          "financialFactsEqual": true
+        }
+      ],
+      "moneyLayouts": [
+        {
+          "tag": "home-realized-week",
+          "text": "￥0.00",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-month",
+          "text": "￥0.00",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 24.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-all",
+          "text": "￥0.00",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 24.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-week",
+          "text": "￥964.83",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-month",
+          "text": "￥1008.81",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 24.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-all",
+          "text": "￥2001.21",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 24.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥964.83",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-week",
+          "text": "待估算",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-month",
+          "text": "待估算",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 24.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-all",
+          "text": "待估算",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 24.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥964.83",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥-7.00",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥971.83",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥1008.81",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥-7.00",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥1015.81",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥43.98",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥992.40",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-week",
+          "text": "待估算",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-month",
+          "text": "待估算",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 24.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-all",
+          "text": "待估算",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 24.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        }
+      ],
+      "periodChecks": 9,
+      "financialFactsEqual": true,
+      "actualProcessReopen": true,
+      "toolbarSafety": [
+        {
+          "orientation": 2,
+          "safeLeft": 0,
+          "safeRight": 1184,
+          "safeTop": 48,
+          "buttons": [
+            {
+              "tag": "open-risk-strategy",
+              "left": 920.0,
+              "right": 1072.0,
+              "top": 63.0
+            },
+            {
+              "tag": "open-backup",
+              "left": 1080.0,
+              "right": 1160.0,
+              "top": 71.0
+            }
+          ],
+          "result": "PASS"
+        },
+        {
+          "orientation": 1,
+          "safeLeft": 0,
+          "safeRight": 720,
+          "safeTop": 48,
+          "buttons": [
+            {
+              "tag": "open-risk-strategy",
+              "left": 456.0,
+              "right": 608.0,
+              "top": 63.0
+            },
+            {
+              "tag": "open-backup",
+              "left": 616.0,
+              "right": 696.0,
+              "top": 71.0
+            }
+          ],
+          "result": "PASS"
+        }
+      ]
+    },
+    "api29-narrow-light": {
+      "entry": [
+        {
+          "code": "600001",
+          "action": "买入",
+          "beforeTaps": 5,
+          "afterTaps": 5,
+          "beforeScrolls": 1,
+          "afterScrolls": 1,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "600001",
+          "action": "卖出",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 2,
+          "afterScrolls": 2,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "al2701",
+          "action": "买入开仓",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 1,
+          "afterScrolls": 1,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "al2701",
+          "action": "卖出平仓",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 2,
+          "afterScrolls": 2,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "600000",
+          "action": "买入",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 1,
+          "afterScrolls": 1,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "600000",
+          "action": "卖出",
+          "beforeTaps": 5,
+          "afterTaps": 5,
+          "beforeScrolls": 1,
+          "afterScrolls": 1,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "rb2701",
+          "action": "买入开仓",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 1,
+          "afterScrolls": 1,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "rb2701",
+          "action": "买入开仓",
+          "beforeTaps": 5,
+          "afterTaps": 5,
+          "beforeScrolls": 1,
+          "afterScrolls": 1,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "rb2701",
+          "action": "卖出平仓",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 2,
+          "afterScrolls": 2,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "rb2705",
+          "action": "卖出开仓",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 2,
+          "afterScrolls": 2,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "rb2705",
+          "action": "买入平仓",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 2,
+          "afterScrolls": 2,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "i2701",
+          "action": "买入开仓",
+          "beforeTaps": 5,
+          "afterTaps": 5,
+          "beforeScrolls": 1,
+          "afterScrolls": 1,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "i2701",
+          "action": "卖出平仓",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 2,
+          "afterScrolls": 2,
+          "fields": 3,
+          "financialFactsEqual": true
+        }
+      ],
+      "moneyLayouts": [
+        {
+          "tag": "home-realized-week",
+          "text": "￥0.00",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-month",
+          "text": "￥0.00",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 24.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-all",
+          "text": "￥0.00",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 24.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-week",
+          "text": "￥964.83",
+          "beforeFontSp": 16.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-month",
+          "text": "￥1008.81",
+          "beforeFontSp": 14.0,
+          "afterFontSp": 24.0,
+          "beforeLines": 2,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-all",
+          "text": "￥2001.21",
+          "beforeFontSp": 14.0,
+          "afterFontSp": 24.0,
+          "beforeLines": 2,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥964.83",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-week",
+          "text": "待估算",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-month",
+          "text": "待估算",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 24.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-all",
+          "text": "待估算",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 24.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥964.83",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥-7.00",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥971.83",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥1008.81",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥-7.00",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥1015.81",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥43.98",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥992.40",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-week",
+          "text": "待估算",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-month",
+          "text": "待估算",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 24.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-all",
+          "text": "待估算",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 24.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        }
+      ],
+      "periodChecks": 9,
+      "financialFactsEqual": true,
+      "actualProcessReopen": true,
+      "toolbarSafety": [
+        {
+          "orientation": 2,
+          "safeLeft": 0,
+          "safeRight": 1040,
+          "safeTop": 48,
+          "buttons": [
+            {
+              "tag": "open-risk-strategy",
+              "left": 741.0,
+              "right": 928.0,
+              "top": 66.0
+            },
+            {
+              "tag": "open-backup",
+              "left": 936.0,
+              "right": 1016.0,
+              "top": 74.0
+            }
+          ],
+          "result": "PASS"
+        },
+        {
+          "orientation": 1,
+          "safeLeft": 0,
+          "safeRight": 640,
+          "safeTop": 48,
+          "buttons": [
+            {
+              "tag": "open-risk-strategy",
+              "left": 341.0,
+              "right": 528.0,
+              "top": 66.0
+            },
+            {
+              "tag": "open-backup",
+              "left": 536.0,
+              "right": 616.0,
+              "top": 74.0
+            }
+          ],
+          "result": "PASS"
+        }
+      ]
+    },
+    "api29-narrow-dark": {
+      "entry": [
+        {
+          "code": "600001",
+          "action": "买入",
+          "beforeTaps": 5,
+          "afterTaps": 5,
+          "beforeScrolls": 1,
+          "afterScrolls": 1,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "600001",
+          "action": "卖出",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 2,
+          "afterScrolls": 2,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "al2701",
+          "action": "买入开仓",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 1,
+          "afterScrolls": 1,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "al2701",
+          "action": "卖出平仓",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 2,
+          "afterScrolls": 2,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "600000",
+          "action": "买入",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 1,
+          "afterScrolls": 1,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "600000",
+          "action": "卖出",
+          "beforeTaps": 5,
+          "afterTaps": 5,
+          "beforeScrolls": 1,
+          "afterScrolls": 1,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "rb2701",
+          "action": "买入开仓",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 1,
+          "afterScrolls": 1,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "rb2701",
+          "action": "买入开仓",
+          "beforeTaps": 5,
+          "afterTaps": 5,
+          "beforeScrolls": 1,
+          "afterScrolls": 1,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "rb2701",
+          "action": "卖出平仓",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 2,
+          "afterScrolls": 2,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "rb2705",
+          "action": "卖出开仓",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 2,
+          "afterScrolls": 2,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "rb2705",
+          "action": "买入平仓",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 2,
+          "afterScrolls": 2,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "i2701",
+          "action": "买入开仓",
+          "beforeTaps": 5,
+          "afterTaps": 5,
+          "beforeScrolls": 1,
+          "afterScrolls": 1,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "i2701",
+          "action": "卖出平仓",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 2,
+          "afterScrolls": 2,
+          "fields": 3,
+          "financialFactsEqual": true
+        }
+      ],
+      "moneyLayouts": [
+        {
+          "tag": "home-realized-week",
+          "text": "￥0.00",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-month",
+          "text": "￥0.00",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 24.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-all",
+          "text": "￥0.00",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 24.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-week",
+          "text": "￥964.83",
+          "beforeFontSp": 16.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-month",
+          "text": "￥1008.81",
+          "beforeFontSp": 14.0,
+          "afterFontSp": 24.0,
+          "beforeLines": 2,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-all",
+          "text": "￥2001.21",
+          "beforeFontSp": 14.0,
+          "afterFontSp": 24.0,
+          "beforeLines": 2,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥964.83",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-week",
+          "text": "待估算",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-month",
+          "text": "待估算",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 24.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-all",
+          "text": "待估算",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 24.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥964.83",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥-7.00",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥971.83",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥1008.81",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥-7.00",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥1015.81",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥43.98",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥992.40",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-week",
+          "text": "待估算",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-month",
+          "text": "待估算",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 24.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-all",
+          "text": "待估算",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 24.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        }
+      ],
+      "periodChecks": 9,
+      "financialFactsEqual": true,
+      "actualProcessReopen": true,
+      "toolbarSafety": [
+        {
+          "orientation": 2,
+          "safeLeft": 0,
+          "safeRight": 1040,
+          "safeTop": 48,
+          "buttons": [
+            {
+              "tag": "open-risk-strategy",
+              "left": 741.0,
+              "right": 928.0,
+              "top": 66.0
+            },
+            {
+              "tag": "open-backup",
+              "left": 936.0,
+              "right": 1016.0,
+              "top": 74.0
+            }
+          ],
+          "result": "PASS"
+        },
+        {
+          "orientation": 1,
+          "safeLeft": 0,
+          "safeRight": 640,
+          "safeTop": 48,
+          "buttons": [
+            {
+              "tag": "open-risk-strategy",
+              "left": 341.0,
+              "right": 528.0,
+              "top": 66.0
+            },
+            {
+              "tag": "open-backup",
+              "left": 536.0,
+              "right": 616.0,
+              "top": 74.0
+            }
+          ],
+          "result": "PASS"
+        }
+      ]
+    },
+    "api35-regular-light": {
+      "entry": [
+        {
+          "code": "600001",
+          "action": "买入",
+          "beforeTaps": 5,
+          "afterTaps": 5,
+          "beforeScrolls": 1,
+          "afterScrolls": 1,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "600001",
+          "action": "卖出",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 2,
+          "afterScrolls": 2,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "al2701",
+          "action": "买入开仓",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 1,
+          "afterScrolls": 1,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "al2701",
+          "action": "卖出平仓",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 2,
+          "afterScrolls": 2,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "600000",
+          "action": "买入",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 1,
+          "afterScrolls": 1,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "600000",
+          "action": "卖出",
+          "beforeTaps": 5,
+          "afterTaps": 5,
+          "beforeScrolls": 1,
+          "afterScrolls": 1,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "rb2701",
+          "action": "买入开仓",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 1,
+          "afterScrolls": 1,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "rb2701",
+          "action": "买入开仓",
+          "beforeTaps": 5,
+          "afterTaps": 5,
+          "beforeScrolls": 1,
+          "afterScrolls": 1,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "rb2701",
+          "action": "卖出平仓",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 2,
+          "afterScrolls": 2,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "rb2705",
+          "action": "卖出开仓",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 2,
+          "afterScrolls": 2,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "rb2705",
+          "action": "买入平仓",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 2,
+          "afterScrolls": 2,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "i2701",
+          "action": "买入开仓",
+          "beforeTaps": 5,
+          "afterTaps": 5,
+          "beforeScrolls": 1,
+          "afterScrolls": 1,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "i2701",
+          "action": "卖出平仓",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 2,
+          "afterScrolls": 2,
+          "fields": 3,
+          "financialFactsEqual": true
+        }
+      ],
+      "moneyLayouts": [
+        {
+          "tag": "home-realized-week",
+          "text": "￥0.00",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-month",
+          "text": "￥0.00",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 24.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-all",
+          "text": "￥0.00",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 24.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-week",
+          "text": "￥964.83",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-month",
+          "text": "￥1008.81",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 24.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-all",
+          "text": "￥2001.21",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 24.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥964.83",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-week",
+          "text": "待估算",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-month",
+          "text": "待估算",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 24.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-all",
+          "text": "待估算",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 24.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥964.83",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥-7.00",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥971.83",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥1008.81",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥-7.00",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥1015.81",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥43.98",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥992.40",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-week",
+          "text": "待估算",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-month",
+          "text": "待估算",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 24.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-all",
+          "text": "待估算",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 24.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        }
+      ],
+      "periodChecks": 9,
+      "financialFactsEqual": true,
+      "actualProcessReopen": true,
+      "toolbarSafety": [
+        {
+          "orientation": 2,
+          "safeLeft": 0,
+          "safeRight": 1184,
+          "safeTop": 48,
+          "buttons": [
+            {
+              "tag": "open-risk-strategy",
+              "left": 920.0,
+              "right": 1072.0,
+              "top": 63.0
+            },
+            {
+              "tag": "open-backup",
+              "left": 1080.0,
+              "right": 1160.0,
+              "top": 71.0
+            }
+          ],
+          "result": "PASS"
+        },
+        {
+          "orientation": 1,
+          "safeLeft": 0,
+          "safeRight": 720,
+          "safeTop": 48,
+          "buttons": [
+            {
+              "tag": "open-risk-strategy",
+              "left": 456.0,
+              "right": 608.0,
+              "top": 63.0
+            },
+            {
+              "tag": "open-backup",
+              "left": 616.0,
+              "right": 696.0,
+              "top": 71.0
+            }
+          ],
+          "result": "PASS"
+        }
+      ]
+    },
+    "api35-regular-dark": {
+      "entry": [
+        {
+          "code": "600001",
+          "action": "买入",
+          "beforeTaps": 5,
+          "afterTaps": 5,
+          "beforeScrolls": 1,
+          "afterScrolls": 1,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "600001",
+          "action": "卖出",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 2,
+          "afterScrolls": 2,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "al2701",
+          "action": "买入开仓",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 1,
+          "afterScrolls": 1,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "al2701",
+          "action": "卖出平仓",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 2,
+          "afterScrolls": 2,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "600000",
+          "action": "买入",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 1,
+          "afterScrolls": 1,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "600000",
+          "action": "卖出",
+          "beforeTaps": 5,
+          "afterTaps": 5,
+          "beforeScrolls": 1,
+          "afterScrolls": 1,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "rb2701",
+          "action": "买入开仓",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 1,
+          "afterScrolls": 1,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "rb2701",
+          "action": "买入开仓",
+          "beforeTaps": 5,
+          "afterTaps": 5,
+          "beforeScrolls": 1,
+          "afterScrolls": 1,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "rb2701",
+          "action": "卖出平仓",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 2,
+          "afterScrolls": 2,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "rb2705",
+          "action": "卖出开仓",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 2,
+          "afterScrolls": 2,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "rb2705",
+          "action": "买入平仓",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 2,
+          "afterScrolls": 2,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "i2701",
+          "action": "买入开仓",
+          "beforeTaps": 5,
+          "afterTaps": 5,
+          "beforeScrolls": 1,
+          "afterScrolls": 1,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "i2701",
+          "action": "卖出平仓",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 2,
+          "afterScrolls": 2,
+          "fields": 3,
+          "financialFactsEqual": true
+        }
+      ],
+      "moneyLayouts": [
+        {
+          "tag": "home-realized-week",
+          "text": "￥0.00",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-month",
+          "text": "￥0.00",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 24.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-all",
+          "text": "￥0.00",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 24.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-week",
+          "text": "￥964.83",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-month",
+          "text": "￥1008.81",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 24.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-all",
+          "text": "￥2001.21",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 24.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥964.83",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-week",
+          "text": "待估算",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-month",
+          "text": "待估算",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 24.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-all",
+          "text": "待估算",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 24.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥964.83",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥-7.00",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥971.83",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥1008.81",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥-7.00",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥1015.81",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥43.98",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥992.40",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-week",
+          "text": "待估算",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-month",
+          "text": "待估算",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 24.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-all",
+          "text": "待估算",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 24.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        }
+      ],
+      "periodChecks": 9,
+      "financialFactsEqual": true,
+      "actualProcessReopen": true,
+      "toolbarSafety": [
+        {
+          "orientation": 2,
+          "safeLeft": 0,
+          "safeRight": 1184,
+          "safeTop": 48,
+          "buttons": [
+            {
+              "tag": "open-risk-strategy",
+              "left": 920.0,
+              "right": 1072.0,
+              "top": 63.0
+            },
+            {
+              "tag": "open-backup",
+              "left": 1080.0,
+              "right": 1160.0,
+              "top": 71.0
+            }
+          ],
+          "result": "PASS"
+        },
+        {
+          "orientation": 1,
+          "safeLeft": 0,
+          "safeRight": 720,
+          "safeTop": 48,
+          "buttons": [
+            {
+              "tag": "open-risk-strategy",
+              "left": 456.0,
+              "right": 608.0,
+              "top": 63.0
+            },
+            {
+              "tag": "open-backup",
+              "left": 616.0,
+              "right": 696.0,
+              "top": 71.0
+            }
+          ],
+          "result": "PASS"
+        }
+      ]
+    },
+    "api35-narrow-light": {
+      "entry": [
+        {
+          "code": "600001",
+          "action": "买入",
+          "beforeTaps": 5,
+          "afterTaps": 5,
+          "beforeScrolls": 1,
+          "afterScrolls": 1,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "600001",
+          "action": "卖出",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 2,
+          "afterScrolls": 2,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "al2701",
+          "action": "买入开仓",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 1,
+          "afterScrolls": 1,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "al2701",
+          "action": "卖出平仓",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 2,
+          "afterScrolls": 2,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "600000",
+          "action": "买入",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 1,
+          "afterScrolls": 1,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "600000",
+          "action": "卖出",
+          "beforeTaps": 5,
+          "afterTaps": 5,
+          "beforeScrolls": 1,
+          "afterScrolls": 1,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "rb2701",
+          "action": "买入开仓",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 1,
+          "afterScrolls": 1,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "rb2701",
+          "action": "买入开仓",
+          "beforeTaps": 5,
+          "afterTaps": 5,
+          "beforeScrolls": 1,
+          "afterScrolls": 1,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "rb2701",
+          "action": "卖出平仓",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 2,
+          "afterScrolls": 2,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "rb2705",
+          "action": "卖出开仓",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 2,
+          "afterScrolls": 2,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "rb2705",
+          "action": "买入平仓",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 2,
+          "afterScrolls": 2,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "i2701",
+          "action": "买入开仓",
+          "beforeTaps": 5,
+          "afterTaps": 5,
+          "beforeScrolls": 1,
+          "afterScrolls": 1,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "i2701",
+          "action": "卖出平仓",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 2,
+          "afterScrolls": 2,
+          "fields": 3,
+          "financialFactsEqual": true
+        }
+      ],
+      "moneyLayouts": [
+        {
+          "tag": "home-realized-week",
+          "text": "￥0.00",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-month",
+          "text": "￥0.00",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 24.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-all",
+          "text": "￥0.00",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 24.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-week",
+          "text": "￥964.83",
+          "beforeFontSp": 16.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-month",
+          "text": "￥1008.81",
+          "beforeFontSp": 14.0,
+          "afterFontSp": 24.0,
+          "beforeLines": 2,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-all",
+          "text": "￥2001.21",
+          "beforeFontSp": 14.0,
+          "afterFontSp": 24.0,
+          "beforeLines": 2,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥964.83",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-week",
+          "text": "待估算",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-month",
+          "text": "待估算",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 24.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-all",
+          "text": "待估算",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 24.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥964.83",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥-7.00",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥971.83",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥1008.81",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥-7.00",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥1015.81",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥43.98",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥992.40",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-week",
+          "text": "待估算",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-month",
+          "text": "待估算",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 24.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-all",
+          "text": "待估算",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 24.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        }
+      ],
+      "periodChecks": 9,
+      "financialFactsEqual": true,
+      "actualProcessReopen": true,
+      "toolbarSafety": [
+        {
+          "orientation": 2,
+          "safeLeft": 0,
+          "safeRight": 1040,
+          "safeTop": 48,
+          "buttons": [
+            {
+              "tag": "open-risk-strategy",
+              "left": 741.0,
+              "right": 928.0,
+              "top": 66.0
+            },
+            {
+              "tag": "open-backup",
+              "left": 936.0,
+              "right": 1016.0,
+              "top": 74.0
+            }
+          ],
+          "result": "PASS"
+        },
+        {
+          "orientation": 1,
+          "safeLeft": 0,
+          "safeRight": 640,
+          "safeTop": 48,
+          "buttons": [
+            {
+              "tag": "open-risk-strategy",
+              "left": 341.0,
+              "right": 528.0,
+              "top": 66.0
+            },
+            {
+              "tag": "open-backup",
+              "left": 536.0,
+              "right": 616.0,
+              "top": 74.0
+            }
+          ],
+          "result": "PASS"
+        }
+      ]
+    },
+    "api35-narrow-dark": {
+      "entry": [
+        {
+          "code": "600001",
+          "action": "买入",
+          "beforeTaps": 5,
+          "afterTaps": 5,
+          "beforeScrolls": 1,
+          "afterScrolls": 1,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "600001",
+          "action": "卖出",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 2,
+          "afterScrolls": 2,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "al2701",
+          "action": "买入开仓",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 1,
+          "afterScrolls": 1,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "al2701",
+          "action": "卖出平仓",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 2,
+          "afterScrolls": 2,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "600000",
+          "action": "买入",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 1,
+          "afterScrolls": 1,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "600000",
+          "action": "卖出",
+          "beforeTaps": 5,
+          "afterTaps": 5,
+          "beforeScrolls": 1,
+          "afterScrolls": 1,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "rb2701",
+          "action": "买入开仓",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 1,
+          "afterScrolls": 1,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "rb2701",
+          "action": "买入开仓",
+          "beforeTaps": 5,
+          "afterTaps": 5,
+          "beforeScrolls": 1,
+          "afterScrolls": 1,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "rb2701",
+          "action": "卖出平仓",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 2,
+          "afterScrolls": 2,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "rb2705",
+          "action": "卖出开仓",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 2,
+          "afterScrolls": 2,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "rb2705",
+          "action": "买入平仓",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 2,
+          "afterScrolls": 2,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "i2701",
+          "action": "买入开仓",
+          "beforeTaps": 5,
+          "afterTaps": 5,
+          "beforeScrolls": 1,
+          "afterScrolls": 1,
+          "fields": 3,
+          "financialFactsEqual": true
+        },
+        {
+          "code": "i2701",
+          "action": "卖出平仓",
+          "beforeTaps": 6,
+          "afterTaps": 6,
+          "beforeScrolls": 2,
+          "afterScrolls": 2,
+          "fields": 3,
+          "financialFactsEqual": true
+        }
+      ],
+      "moneyLayouts": [
+        {
+          "tag": "home-realized-week",
+          "text": "￥0.00",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-month",
+          "text": "￥0.00",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 24.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-all",
+          "text": "￥0.00",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 24.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-week",
+          "text": "￥964.83",
+          "beforeFontSp": 16.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-month",
+          "text": "￥1008.81",
+          "beforeFontSp": 14.0,
+          "afterFontSp": 24.0,
+          "beforeLines": 2,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-all",
+          "text": "￥2001.21",
+          "beforeFontSp": 14.0,
+          "afterFontSp": 24.0,
+          "beforeLines": 2,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥964.83",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-week",
+          "text": "待估算",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-month",
+          "text": "待估算",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 24.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-all",
+          "text": "待估算",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 24.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥964.83",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥-7.00",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥971.83",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥1008.81",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥-7.00",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥1015.81",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥43.98",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "period-realized-net",
+          "text": "￥992.40",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-week",
+          "text": "待估算",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 28.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-month",
+          "text": "待估算",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 24.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        },
+        {
+          "tag": "home-realized-all",
+          "text": "待估算",
+          "beforeFontSp": 18.0,
+          "afterFontSp": 24.0,
+          "beforeLines": 1,
+          "afterLines": 1,
+          "beforeVisible": true,
+          "afterVisible": true
+        }
+      ],
+      "periodChecks": 9,
+      "financialFactsEqual": true,
+      "actualProcessReopen": true,
+      "toolbarSafety": [
+        {
+          "orientation": 2,
+          "safeLeft": 0,
+          "safeRight": 1040,
+          "safeTop": 48,
+          "buttons": [
+            {
+              "tag": "open-risk-strategy",
+              "left": 741.0,
+              "right": 928.0,
+              "top": 66.0
+            },
+            {
+              "tag": "open-backup",
+              "left": 936.0,
+              "right": 1016.0,
+              "top": 74.0
+            }
+          ],
+          "result": "PASS"
+        },
+        {
+          "orientation": 1,
+          "safeLeft": 0,
+          "safeRight": 640,
+          "safeTop": 48,
+          "buttons": [
+            {
+              "tag": "open-risk-strategy",
+              "left": 341.0,
+              "right": 528.0,
+              "top": 66.0
+            },
+            {
+              "tag": "open-backup",
+              "left": 536.0,
+              "right": 616.0,
+              "top": 74.0
+            }
+          ],
+          "result": "PASS"
+        }
+      ]
+    }
+  },
+  "nativeChartPairs": {
+    "48-v200-monthly-bars.png": {
+      "pixels": [
+        768,
+        1280
+      ],
+      "source": "same unchanged native regression fixture and screenshot steps; API 35 light",
+      "financialAssertions": "see retained original JUnit and unchanged V200MainUiTest / TradeEntryExperienceTest"
+    },
+    "78-entry-statistics-bars.png": {
+      "pixels": [
+        768,
+        1280
+      ],
+      "source": "same unchanged native regression fixture and screenshot steps; API 35 light",
+      "financialAssertions": "see retained original JUnit and unchanged V200MainUiTest / TradeEntryExperienceTest"
+    }
+  },
+  "screenshotSha256": {
+    "before/v210-full-regular-light-pending-home.png": "33119e335c0c6f3d77f28d1e80f203053e172c5c5b0ac03c55b2dc045b6acb46",
+    "after/v210-full-regular-light-pending-home.png": "6666f0804a4a7ef27ce3cb1520f881f59c5899ac0e41a3d40c75c30cab2acdf6",
+    "before/v210-full-regular-light-month-statistics.png": "0c9cd50df0662cac2e4532b995527bfedea6d79b38c057eef135d1b9c02173a4",
+    "after/v210-full-regular-light-month-statistics.png": "8bae49053fc327909ca9c77f249358d8bf98848da427d785fa0c7d70bd7b31fa",
+    "before/v210-full-regular-light-known-home.png": "7f7bec0a7bff4de15f73d3bb910511f2619e559b49aad535ec2af77286e60d2a",
+    "after/v210-full-regular-light-known-home.png": "7698b5cbae93420017b84e40365aa057185c06b26f9c165cf1c3f3fa47266c8b",
+    "before/v210-full-regular-light-month-statistics-chart.png": "aa6da5d1a3a67f0b4c26373614babde92c718da21684ba1e137d9fe744877ba4",
+    "after/v210-full-regular-light-month-statistics-chart.png": "3b1e830523953584e381b4894a49c9a8224632c8cdbcd4da6b1e46e54da7dce2",
+    "before/v210-full-regular-light-month-statistics-distribution.png": "4c3b9f5f7050e34bf9857fd9b9ecf23b2d3c7ce5d3b99050b5de24a7505c4052",
+    "after/v210-full-regular-light-month-statistics-distribution.png": "2a0e14f1d168532cfb13be5193eee0bb73afc8b39a241de68045068e1ec61900",
+    "before/v210-full-regular-light-pending-home-calendar.png": "79881214d2ec0db3d0bc293d182d4a6c1bb702cade5a17a67e7b35a0b75dfdc1",
+    "after/v210-full-regular-light-pending-home-calendar.png": "10cff727df55bfb2fb9d6af24a543583cb0f696e77db2d660a4c1035a6ec3200",
+    "before/v210-full-regular-light-landscape-home.png": "93961d95af7227b5fa753d92e8c1d9c6ceadd0eea529dbb29f057e9432f49277",
+    "after/v210-full-regular-light-landscape-home.png": "a4368df3e0665577b9298df5f12a62cf4bb952a0a4e87076acf35b7301522f98",
+    "before/v210-full-regular-light-empty-home.png": "7f311b675ac29e1e9fe3d708ccaa7ff38558caad7aa26b0cedffeb4ad3f664ee",
+    "after/v210-full-regular-light-empty-home.png": "cfd95a76b1a46a40ba04825219a270db4f9a4e1526aa3eb60c86cffb560c39f7",
+    "before/v210-full-regular-dark-pending-home.png": "0a95a8624a3445fcbf696d18b296957a1d75d9718bd96eda8ca3fc5457846067",
+    "after/v210-full-regular-dark-pending-home.png": "114b59d8e1541e2c6d03a3051a38e5c867c80bf4368012cfb7cd73ecda1e5d56",
+    "before/v210-full-regular-dark-month-statistics.png": "51fbbd53a2ba41dc59f23d2b14825dbc3451bd8c49d22a13d56ce1e16e8b1807",
+    "after/v210-full-regular-dark-month-statistics.png": "9ded8029820390e433a734a8ba076d26267e12c9bb9565c0d786ea726212397c",
+    "before/v210-full-regular-dark-known-home.png": "8cadc799da36af2de1b92f1561eecd0c776ae7e9a487249105c9548412597d35",
+    "after/v210-full-regular-dark-known-home.png": "b1315626b7b4faae6fb4c833097cbbc4a39ee76fe1c9d6de59db157316726613",
+    "before/v210-full-narrow-light-pending-home.png": "34328152f8cabe0dd6658ab8d023037cd8b304b7815866be799f34e385234d89",
+    "after/v210-full-narrow-light-pending-home.png": "de1dde335d7dd9dc3458b400618b52dbf9b84badbc47d6f3e4213eb0f52d24bb",
+    "before/v210-full-narrow-light-month-statistics.png": "31774d05a589d22c7586460583a2d01380f3a07e269861202a36b5620fb4cab8",
+    "after/v210-full-narrow-light-month-statistics.png": "7006a9c583dc81913baa449b2dd48e301ee1242f8626716b3518e34aa0e0ddad",
+    "before/v210-full-narrow-dark-pending-home.png": "d1f7c2e8ea5fe8e064164d492a5f3a291c6a26c880e8c9c53e46f231e2cba75a",
+    "after/v210-full-narrow-dark-pending-home.png": "7958d7e4fe73faf12feba4878b20b3c9c809e451d23f353bf121409dd14b29c7",
+    "before/v210-full-narrow-dark-month-statistics.png": "e1912957f7d8b832f68ceb7c2cd900790957805a2744e17e39b065b00aecfa91",
+    "after/v210-full-narrow-dark-month-statistics.png": "d3980b11f92baab18b4ce1e513cdcc0b157751f1badb1a4c57c134e708b86545",
+    "before/48-v200-monthly-bars.png": "0689c711c85957f5b8f021727119bd5355af56e0fe3251252c2ea0b75af24fca",
+    "after/48-v200-monthly-bars.png": "81914af269cd8d2f4ef6b6d5bba0d6ce362be3cc7f8be38f5092c6fb9a471162",
+    "before/78-entry-statistics-bars.png": "f71d8e2e2281bf51b9aba6d63336e36beb416fa5ec39a8e07eebaebf2ed9ee58",
+    "after/78-entry-statistics-bars.png": "e08b5f81961361da09c918ac8b5efedb4cad7c0f66cb316faaf8fe07e8881533"
+  },
+  "originalEvidenceSha256": {
+    "evidence/before/api29/v210-full-regular-light-api29.json": "64a6f467fe3b2e96b7b1247b7c9419eec6ab45e4ed5b8e6aa68614acac5d0cb2",
+    "evidence/before/api29/v210-full-reopen-regular-light-api29.json": "88ca7d4546f899f64c0f84afef8404c8bf4c2bcb299de03e854f2b1ee0a7be0e",
+    "evidence/before/api29/full-regular-light-journey-instrumentation.txt": "aff0272442b492bbb288185a29c59bc38961bfcdb8de405cf24e035e64361fc2",
+    "evidence/before/api29/full-regular-light-reopen-instrumentation.txt": "31d87766451320cbeb4ec76fd2758b6a90eef5e0d9d6a2e9427fb8281c61aee4",
+    "evidence/before/api29/0-TEST-emulator-5554 - 10-_app-.xml": "d61ad5f6a68b1eac3a5c60cdf85e0b35eaed3a65154d401e2feee7e90e89bd5b",
+    "evidence/after/api29/v210-full-regular-light-api29.json": "e5c864c1b2b4c2904e9b9e9784466d2e7dffbc0d2e828ec119750a58979dcf2b",
+    "evidence/after/api29/v210-full-reopen-regular-light-api29.json": "aac5c5e4dfe9a2d1242974d3d42dc7a032350b025882662db69fdf33dc1ad661",
+    "evidence/after/api29/full-regular-light-journey-instrumentation.txt": "141702c3fc2ffd0ef05106b898d20663f4ac6b5244e137defdf5eec1ac2cdd4a",
+    "evidence/after/api29/full-regular-light-reopen-instrumentation.txt": "2c30413f9867e1289504b97959b1edca4454e1c5159027c7806cc5daa7a499b4",
+    "evidence/after/api29/0-TEST-emulator-5554 - 10-_app-.xml": "a7dc96f578fe52ffacaea419ee917447031de17a2eac0b05c950387797d56dbe",
+    "evidence/before/api29/v210-full-regular-dark-api29.json": "a72856467dc382400db272bceb100bc721a39afb594ab384152d8d835adefacb",
+    "evidence/before/api29/v210-full-reopen-regular-dark-api29.json": "c998d50b818174cfcd28ac3b84a13cd781ae6108647d9c4b8c19e2c0947167a6",
+    "evidence/before/api29/full-regular-dark-journey-instrumentation.txt": "067d59343b1064feea9752b752476c65e3a8c8b21de4e1414a4cd0b9e8fe220d",
+    "evidence/before/api29/full-regular-dark-reopen-instrumentation.txt": "dbab3070067ebafc74084420a61de6d9b08a9540fe5a93de757e1965724e0e09",
+    "evidence/after/api29/v210-full-regular-dark-api29.json": "8c0f42180942111a0bae66ba8dc4e2a8f45d0f71ed218b38adca630b05c7a0da",
+    "evidence/after/api29/v210-full-reopen-regular-dark-api29.json": "64100cead4bc0d455e99b5f603a15be5af2c6d4c6c53e889c66cb23d755c4bda",
+    "evidence/after/api29/full-regular-dark-journey-instrumentation.txt": "cc187dbc8930a5036856773d74876a5844a900706ac23f77540ba6a19c44d760",
+    "evidence/after/api29/full-regular-dark-reopen-instrumentation.txt": "658f4e95232d851700cf96c123453cc638d838adaecd59d17fc5b7d05508e6ad",
+    "evidence/before/api29/v210-full-narrow-light-api29.json": "7b6d9131637ef00a9b10d77b55f7374551e9f5ffd55355e045e9aa91fb7f1921",
+    "evidence/before/api29/v210-full-reopen-narrow-light-api29.json": "2cc1c3122fcccbf2126415cbd55043bef90d8d2eff59f1bf8dce934c20b8afe3",
+    "evidence/before/api29/full-narrow-light-journey-instrumentation.txt": "b82dbbe0163adcb1ab9ec0c036877aed4290925de86226324de76dca7763af6d",
+    "evidence/before/api29/full-narrow-light-reopen-instrumentation.txt": "182e74a69bc3e9d216c4c58207a2581a60b2e4d356cc943d31aebce973769a22",
+    "evidence/after/api29/v210-full-narrow-light-api29.json": "63d2e3226c9bf77068b334abe1a034d86e1f161ecbdafddadb0de69cd365d90a",
+    "evidence/after/api29/v210-full-reopen-narrow-light-api29.json": "46764e7effaeb9b72462557dc7c3e01cf66944686b3d33dd74e87e62615666df",
+    "evidence/after/api29/full-narrow-light-journey-instrumentation.txt": "0906bf0da787359dc954e2cb8ccb8bccdc513aa3377e711b5aee310d3e08a820",
+    "evidence/after/api29/full-narrow-light-reopen-instrumentation.txt": "ee2f8f5a61034141a74767e39defa18a32deecd985b769af0517d8c31c829f22",
+    "evidence/before/api29/v210-full-narrow-dark-api29.json": "5fd045ff4cc5fe2bd0a417a8595fce604a6b4a7a004ae31a561379422d8a497b",
+    "evidence/before/api29/v210-full-reopen-narrow-dark-api29.json": "08453dc1f716e846b7fad198db1afc9c90a019343619c9ad271db64b5437a6a2",
+    "evidence/before/api29/full-narrow-dark-journey-instrumentation.txt": "345b90c542d4892c955d043003298e2eddc5fd18242134614f86817f0d347f64",
+    "evidence/before/api29/full-narrow-dark-reopen-instrumentation.txt": "08040097ff427ceba116d8db94e45f6ab1e2dd90e8e5a03e57d32843587f123b",
+    "evidence/after/api29/v210-full-narrow-dark-api29.json": "0ff6a48db1664f2a156c71e3a283e8d481591f720c5934477d7cea45999b52f5",
+    "evidence/after/api29/v210-full-reopen-narrow-dark-api29.json": "80f287e256cdd885ab00c94cd47c2b71ba41d55388ae2063c0789362e599ce99",
+    "evidence/after/api29/full-narrow-dark-journey-instrumentation.txt": "fc30ff4d4bb78f59e06f66639685ff257d2ddfb6a8d5ca49463e93aec6782174",
+    "evidence/after/api29/full-narrow-dark-reopen-instrumentation.txt": "ffdd65fd34a351fd152dc31dfad5d8f1bb41522f4cf5c7e23d55622ebb7f644f",
+    "evidence/before/api35/v210-full-regular-light-api35.json": "5b6a8b3109783d80474f958ece5373d34cc1693d86983354594a39393399c6d9",
+    "evidence/before/api35/v210-full-reopen-regular-light-api35.json": "3ba64888158f71464f16c4aca7c5e15e43287b41198a542af59e3d39cbca6eb7",
+    "evidence/before/api35/full-regular-light-journey-instrumentation.txt": "1164da38d812503e0919e590fd45e8c9923b64f72c2b0611b838cad6164a9d89",
+    "evidence/before/api35/full-regular-light-reopen-instrumentation.txt": "59f65b4b5271db0725788b2947b103845da9a055c728afc2245a1686e3183630",
+    "evidence/before/api35/0-TEST-emulator-5554 - 15-_app-.xml": "7d8a7be694685f50202eb43506c99f67dbeb879662aeb9d5858bea27b90a59c2",
+    "evidence/after/api35/v210-full-regular-light-api35.json": "b75d6506ea3c4bd6a0d336f247a5506b0c3db8353febbf7750f9c0a6578a1e87",
+    "evidence/after/api35/v210-full-reopen-regular-light-api35.json": "5a0c81c418000e082242c1e994562fe808c5dad5a96f637a8171faa85cf8a915",
+    "evidence/after/api35/full-regular-light-journey-instrumentation.txt": "b9ad1103bef6d030b5f17b2c5525b14e8dd7958705c69d2aa331acb11d1286d5",
+    "evidence/after/api35/full-regular-light-reopen-instrumentation.txt": "b9ce67088fb15105b34e9a111774c02788257d1bb432d1b98617c4fa171b986d",
+    "evidence/after/api35/0-TEST-emulator-5554 - 15-_app-.xml": "a783bbbe7aafe1e9aacd20a9678d44f5f3daa949ffa67244e40025d2c0cf56ca",
+    "evidence/before/api35/v210-full-regular-dark-api35.json": "fee4e1a1b24c4a7f83255b5af68078ba8497375e3afc4620ed1fd8bf48ec8210",
+    "evidence/before/api35/v210-full-reopen-regular-dark-api35.json": "38fa81116b0c70efde0c5d08ccb5768620af3fd944f91957652ddefa97cac103",
+    "evidence/before/api35/full-regular-dark-journey-instrumentation.txt": "4269f881694f7d0b486d87067f67eedaafb494e4041dd9616800cb699dee6930",
+    "evidence/before/api35/full-regular-dark-reopen-instrumentation.txt": "dacab2ad8893d6f7ff8a903b744e73a0f978d829158315b78f6d33aee1db6e43",
+    "evidence/after/api35/v210-full-regular-dark-api35.json": "59017133fe3f6978f329bacc9207a81bd8e697b926d1ba17ebfb4b1652869000",
+    "evidence/after/api35/v210-full-reopen-regular-dark-api35.json": "bd0b08fe4d14a1dfba39c776853147443acddaaff25de26372d235410ef266c9",
+    "evidence/after/api35/full-regular-dark-journey-instrumentation.txt": "2c247a6e6eee88c18dd074324175824a189bee0de0b803651facd0f54c29d4af",
+    "evidence/after/api35/full-regular-dark-reopen-instrumentation.txt": "6740345b378a73178c73a3624c01dd7637539a28c8c003c50899ad39f5f36090",
+    "evidence/before/api35/v210-full-narrow-light-api35.json": "e85014638818a40f208255333fc497fd64feef9ae25eed2d20a46ac740afb81d",
+    "evidence/before/api35/v210-full-reopen-narrow-light-api35.json": "a2ab809ef07afdd0b63a7617bdc5de6eeafb85256c0561f1aeb6ba78143463a8",
+    "evidence/before/api35/full-narrow-light-journey-instrumentation.txt": "8969942f388da5104411b7f0f3d2e0b656bafe638fe391c1dd6d25ea156b9de7",
+    "evidence/before/api35/full-narrow-light-reopen-instrumentation.txt": "a9d48fff0743e3522b4e5c9edc2ae11e88dd6707a023da77a66c4fec90712811",
+    "evidence/after/api35/v210-full-narrow-light-api35.json": "67036bd5fa78ef443cbf0cbe32e3a8e81ccc4eecd8577b4852b1649d2947b21e",
+    "evidence/after/api35/v210-full-reopen-narrow-light-api35.json": "73e64018ad476a27c2c833ee482d37f7513f16b5a76733e4589d03af9d4579b5",
+    "evidence/after/api35/full-narrow-light-journey-instrumentation.txt": "964efd748fd07a254004911df6b4003c5e5f2eab37fb8248761010a59e18ec89",
+    "evidence/after/api35/full-narrow-light-reopen-instrumentation.txt": "fecc7bea53fe09c5cf4dc6f2e329dc29ef740cb19b52094b984b53ce8b51d9d6",
+    "evidence/before/api35/v210-full-narrow-dark-api35.json": "aefb404aa26ddbbb9adeeae7a1bad0c073bc8e79c4b7a531ef0fe0a948ae0489",
+    "evidence/before/api35/v210-full-reopen-narrow-dark-api35.json": "58b4d2e75242ac4a220bc382d7731682bb8d0a8a17201236829198740a4bf3f5",
+    "evidence/before/api35/full-narrow-dark-journey-instrumentation.txt": "dbc218bdada164530b46c3b3f70f1835503e3082cc9f41dcbd60186034c91f19",
+    "evidence/before/api35/full-narrow-dark-reopen-instrumentation.txt": "903458790f2b2ff68147bf6ec339c8994b2845ed495ab709cc3e1a508eb2e438",
+    "evidence/after/api35/v210-full-narrow-dark-api35.json": "68dc4e3679f7004d11923636bc36f2be76ebe7dcdeb217129860c46947a00391",
+    "evidence/after/api35/v210-full-reopen-narrow-dark-api35.json": "ad386ba0532f01b4f8722ea5ef1e71d6d284beb1dba8032c10bc6ddc4ed944ee",
+    "evidence/after/api35/full-narrow-dark-journey-instrumentation.txt": "40724548004c25967c3acb0f7a771e198c4c7af2aad5bc50c6ad06f783ab2aca",
+    "evidence/after/api35/full-narrow-dark-reopen-instrumentation.txt": "075bc490be811ff023ec5bc5604bc623b520e6810f8d55dfc919ce62399d04c3",
+    "evidence/before/jvm-lint/test-results/TEST-com.tradereview.app.domain.OcrTradeParserTest.xml": "c41d8d133e11c5efd3c9f9ab1fb3215eea4fcf05502fc3df8e589caab8b20851",
+    "evidence/before/jvm-lint/test-results/TEST-com.tradereview.app.domain.RiskEngineTest.xml": "46460596b41759bf2ba31008490c2b43a20bc17799954547937332b937a6cccd",
+    "evidence/before/jvm-lint/test-results/TEST-com.tradereview.app.domain.AnalyticsTest.xml": "b6e4868e413939c668b9638a69689664bd7fd06746fe1d3d30b7b348d580ef33",
+    "evidence/before/jvm-lint/test-results/TEST-com.tradereview.app.backup.V05BackupTest.xml": "19c4bc0c0567e289248a2bc6539f15c14ff0713d30044edf8a1640a8f040d3d5",
+    "evidence/before/jvm-lint/test-results/TEST-com.tradereview.app.domain.AdvancedParityTest.xml": "0e549abd06ab82efae7c1328d18796c47e1611929d739323b006588add080d7b",
+    "evidence/before/jvm-lint/test-results/TEST-com.tradereview.app.domain.SmartInsightsTest.xml": "07c8c2c5f6ce53f72d8e2b578e21103515be639a25da4c82a0794c53cf1d055c",
+    "evidence/before/jvm-lint/test-results/TEST-com.tradereview.app.v200.LedgerBackupTest.xml": "857dc06d713aa37f20a7fbaf2f741d899fcc4615c51a6e8e042faa37e1698813",
+    "evidence/before/jvm-lint/test-results/TEST-com.tradereview.app.backup.FileHashTest.xml": "12a3e7af79b2e0ac1e171dca98f1d53b3b6f62e61de1a8d544c59c129c36e71a",
+    "evidence/before/jvm-lint/test-results/TEST-com.tradereview.app.domain.FastEntryTest.xml": "bc614d9d551a2274154c55cb0fe18286c21f3b9e730ea41f7c5b7f0e993a0a31",
+    "evidence/before/jvm-lint/test-results/TEST-com.tradereview.app.v200.LedgerCsvTest.xml": "07bdc8d5c1dfc495edeab9a6fa6901a140c3380e725c2b2ac5dffb2855273aeb",
+    "evidence/before/jvm-lint/test-results/TEST-com.tradereview.app.backup.V06BackupTest.xml": "3ec063a2136b944c0395c490298e3b99e5ef74aed8950eff458911c67d36e120",
+    "evidence/before/jvm-lint/test-results/TEST-com.tradereview.app.device.ExperiencePolicyTest.xml": "23b7bdfcc1d1a20fbc5f1bcf7449d85f7ef338f34b9d2b94fbbfedb8749ce9cb",
+    "evidence/before/jvm-lint/test-results/TEST-com.tradereview.app.domain.SmartInsightsParityTest.xml": "87e7a5ab073aed0d2e6708bdb346316857e42c3a80a900b087f4f217ce2ea770",
+    "evidence/before/jvm-lint/test-results/TEST-com.tradereview.app.backup.BackupCodecTest.xml": "d8c7623433826ef161b0957b2be5a3c815c8db3713e31f8aebbdb007ca94341a",
+    "evidence/before/jvm-lint/test-results/TEST-com.tradereview.app.backup.V07BackupTest.xml": "c43b36c282c13b2cab5e26b44bc6a5c12565c36b9864827eefae996ccde4ad32",
+    "evidence/before/jvm-lint/test-results/TEST-com.tradereview.app.domain.RiskAnalyticsTest.xml": "e713933598f2cef440e2c2a5c13dc932c15c0d0d6118570b802bf6b5bf281a2f",
+    "evidence/before/jvm-lint/test-results/TEST-com.tradereview.app.v200.PendingAmountsTest.xml": "3f4b4aff16ff71f3e40e1e62743cc1384082f4c1e26ef5f5072c4e7f14c2e13e",
+    "evidence/before/jvm-lint/test-results/TEST-com.tradereview.app.backup.FullZipArchiveTest.xml": "80e33df8a739121ed08f4d68c3813fd26361dc187078b628309b17b01ae92084",
+    "evidence/before/jvm-lint/test-results/TEST-com.tradereview.app.domain.PreflightRulesTest.xml": "ab8ac60d6546346bbbd485f8fc6078867fd52a45428ec754249014d4241f9af1",
+    "evidence/before/jvm-lint/test-results/TEST-com.tradereview.app.domain.ReviewGoalsTest.xml": "5076263ad47aeb0e6b4613dcc8f8bddcd6be510e0c34e9ff848e8fbd7af92845",
+    "evidence/before/jvm-lint/test-results/TEST-com.tradereview.app.backup.V03BackupTest.xml": "10ee59d291b2610800f288bdec22bd6e7dbb6239ea1fa24583051c07aee379bd",
+    "evidence/before/jvm-lint/test-results/TEST-com.tradereview.app.v200.AutomaticEntryTest.xml": "68f89c4ec6a18b6d539ebc80fa76d234e0f5715d0ab75c63bd23a4f062b7c143",
+    "evidence/before/jvm-lint/test-results/TEST-com.tradereview.app.v200.MatchingEngineTest.xml": "8e12ba9764d08602847f331aea08194b747223bacb276d3fca915d62474fde52",
+    "evidence/before/jvm-lint/test-results/TEST-com.tradereview.app.v200.ChartScaleTest.xml": "9f6d3f7218614ade7287b7858af2ec6ca05634f3ea1c70df48dde585568fed05",
+    "evidence/before/jvm-lint/test-results/TEST-com.tradereview.app.domain.ReviewReportsTest.xml": "0b426d85af29f0db2909eab60474e94390d217a09a79b9aaf975cebbd84be870",
+    "evidence/before/jvm-lint/test-results/TEST-com.tradereview.app.domain.CalendarAnalyticsTest.xml": "223eb3c6288acaf51fe83124832cd4c60b63b87d2f1bddbc2d47343d70f9b849",
+    "evidence/before/jvm-lint/test-results/TEST-com.tradereview.app.domain.AnalyticsScopeTest.xml": "25cf04f7c70ded20927c1846e73d7b447bd2a02148251ff6dad6e1b1c07fcbb2",
+    "evidence/before/jvm-lint/test-results/TEST-com.tradereview.app.domain.TradeFilterTest.xml": "2640c16847289b1d4116f027439b1bd6d141d1a28bb2fabd88b922860b502726",
+    "evidence/before/jvm-lint/test-results/TEST-com.tradereview.app.domain.ProfessionalMathTest.xml": "79d2cfabbeb8a0a635f63674ff429b70f667f8c058c1c473b033db724a70485f",
+    "evidence/before/jvm-lint/test-results/TEST-com.tradereview.app.backup.TradeCsvTest.xml": "c51746775f1d013afcd4a949a518a229a3202df41e547f9ec93f2a135c101dc2",
+    "evidence/before/jvm-lint/test-results/TEST-com.tradereview.app.backup.ExportReadbackTest.xml": "7ddefeaeca3743d03424faaa5169e31e288e2eea35a5cd637d7917b395170716",
+    "evidence/before/jvm-lint/test-results/TEST-com.tradereview.app.backup.V04BackupTest.xml": "b92e697de7d57e5c64717b1fddeb78f4a896c3a3d8de3a8245556e396efd3866",
+    "evidence/before/jvm-lint/lint-results-release.xml": "07affad901652cbc2fadffe926d94c324c5e4508d2ae928adc82dc31539a9d8d",
+    "evidence/before/jvm-lint/lint-results-debug.xml": "e20665ef496ac1faf65710b2a27b4365d1ceb9a02da66675f9276eb931df06d2",
+    "evidence/before/jvm-lint/lint-results-rc.xml": "07affad901652cbc2fadffe926d94c324c5e4508d2ae928adc82dc31539a9d8d",
+    "evidence/after/jvm-lint/test-results/TEST-com.tradereview.app.domain.OcrTradeParserTest.xml": "83065c253ca0678a0ad3ef3f498e833c15b072a42e6fdadf2b77a2beadbabae6",
+    "evidence/after/jvm-lint/test-results/TEST-com.tradereview.app.domain.RiskEngineTest.xml": "cb33c5a2d1da0f00a2d0ae6df127930a50149322bd0a126d941558ba97864233",
+    "evidence/after/jvm-lint/test-results/TEST-com.tradereview.app.domain.AnalyticsTest.xml": "4cd7089f54bb4ba18098476b90cf5502b2a5ddcd397188a0275b05adadd9c9d3",
+    "evidence/after/jvm-lint/test-results/TEST-com.tradereview.app.backup.V05BackupTest.xml": "fd4e5d6b5ca689bb63733063a92f6b34efe616c590235ab11f819f0fd7994f5f",
+    "evidence/after/jvm-lint/test-results/TEST-com.tradereview.app.domain.AdvancedParityTest.xml": "111608aea65a2e1983b41b9194abded385a8a0f4af9dac9d69c14f9a37ce8967",
+    "evidence/after/jvm-lint/test-results/TEST-com.tradereview.app.domain.SmartInsightsTest.xml": "aad8036bb883ebfe415033248a8aa447c930dab731a0902d6c1cf8e170bc502d",
+    "evidence/after/jvm-lint/test-results/TEST-com.tradereview.app.v200.LedgerBackupTest.xml": "61b047ae5bc5bb6687bc0cd6d3bdc42556862d533bb3320be6512ad43d0db7c0",
+    "evidence/after/jvm-lint/test-results/TEST-com.tradereview.app.backup.FileHashTest.xml": "8f01475f62d59759da4fdf3da0b8a232ef4e13416b10ec6be457ed406c074475",
+    "evidence/after/jvm-lint/test-results/TEST-com.tradereview.app.domain.FastEntryTest.xml": "5825019771fc9ed281b820550733bb6cfc8bf466c84187d92f3c6d373495a683",
+    "evidence/after/jvm-lint/test-results/TEST-com.tradereview.app.v200.LedgerCsvTest.xml": "6cac5aed324176da1423b36dc77163f644286524e6157eee8f140dc3d8dadea9",
+    "evidence/after/jvm-lint/test-results/TEST-com.tradereview.app.backup.V06BackupTest.xml": "6762ed80612f002a809644698312b088615cfde7307e650e1ecdd9928679d6da",
+    "evidence/after/jvm-lint/test-results/TEST-com.tradereview.app.device.ExperiencePolicyTest.xml": "afeeb08b0b013c41f21c1ff05fc969b96cb038626e2b2c783efaa60eecbafc83",
+    "evidence/after/jvm-lint/test-results/TEST-com.tradereview.app.domain.SmartInsightsParityTest.xml": "16c25b9eaad7c49eee71a64a767c782639151d3ffba66c0d3ba3f926e12cd6be",
+    "evidence/after/jvm-lint/test-results/TEST-com.tradereview.app.backup.BackupCodecTest.xml": "d33eb3119a613792d29fb033de1fde3cc1a68c10409c52a7ee6543289021255b",
+    "evidence/after/jvm-lint/test-results/TEST-com.tradereview.app.backup.V07BackupTest.xml": "24401f0af22428c53a6edceb1329ea015c032838828e91f761ec57e35251ffea",
+    "evidence/after/jvm-lint/test-results/TEST-com.tradereview.app.domain.RiskAnalyticsTest.xml": "349a7a835b721b3249870d08cf241019ee36e99392097790098d8562681f9749",
+    "evidence/after/jvm-lint/test-results/TEST-com.tradereview.app.v200.PendingAmountsTest.xml": "016dc65e6dda44bae71348356d12059f53445a5d48a2fa1cd7257231b064483d",
+    "evidence/after/jvm-lint/test-results/TEST-com.tradereview.app.backup.FullZipArchiveTest.xml": "d77b81c5d1f36dcf7bf4772427a01339bbadd1ff62c2ae9b0243f1a1c683af73",
+    "evidence/after/jvm-lint/test-results/TEST-com.tradereview.app.domain.PreflightRulesTest.xml": "a42e64e8a0348dca3a7bd4dc1acc51053a87696498e0d9ad141f5a63a1f63dd5",
+    "evidence/after/jvm-lint/test-results/TEST-com.tradereview.app.domain.ReviewGoalsTest.xml": "017e7c7b6563d0eddd7f8a344cdfd259843271ecc96f92b65cc56ef652ab6cc4",
+    "evidence/after/jvm-lint/test-results/TEST-com.tradereview.app.backup.V03BackupTest.xml": "63ff87a26e71f2c334144599df0f11f3236c6cdb88d9cdd214f849b66174198b",
+    "evidence/after/jvm-lint/test-results/TEST-com.tradereview.app.v200.AutomaticEntryTest.xml": "c1de8e4924d820ab4e07394af3521dfbc434ee4422b8857e7788ee7925170b59",
+    "evidence/after/jvm-lint/test-results/TEST-com.tradereview.app.v200.MatchingEngineTest.xml": "59cb71d5222e3545c162bcab862872500dbf03b08f3144418d843a0ee303c2a9",
+    "evidence/after/jvm-lint/test-results/TEST-com.tradereview.app.v200.ChartScaleTest.xml": "92427b1d07a637bc687aa3866650c7ba404e64138f8a6439783c1d1c1838bf06",
+    "evidence/after/jvm-lint/test-results/TEST-com.tradereview.app.domain.ReviewReportsTest.xml": "832b99e4fe6cb5d7d87aeab84c17d31ff0850593db7511705e9d1232ddb7c5df",
+    "evidence/after/jvm-lint/test-results/TEST-com.tradereview.app.domain.CalendarAnalyticsTest.xml": "94a5c3c50fccb5feba17cd24ce8e69c0d7c48147d23e829a9fd46f7ac60dd918",
+    "evidence/after/jvm-lint/test-results/TEST-com.tradereview.app.domain.AnalyticsScopeTest.xml": "a1b634e486630ffc676f37f20015101861b4c30ce4bb961369e21d0264f3c21d",
+    "evidence/after/jvm-lint/test-results/TEST-com.tradereview.app.domain.TradeFilterTest.xml": "f6dbaf7279485c6838ad4d390cc50997fda7385aa7622afb6084d95f248b775e",
+    "evidence/after/jvm-lint/test-results/TEST-com.tradereview.app.domain.ProfessionalMathTest.xml": "c57243e41b15a253ca786d05a33651637bc0769aa50e9bef409ebff580a390be",
+    "evidence/after/jvm-lint/test-results/TEST-com.tradereview.app.backup.TradeCsvTest.xml": "af15ba421aaa53c198fcf8cd90b161e42aac32ba875b0a7f3840b38da8ec0ac3",
+    "evidence/after/jvm-lint/test-results/TEST-com.tradereview.app.backup.ExportReadbackTest.xml": "7ddb7167c6fce28a313c2e6fdb7c18d479d9e7f4625b1d52271c484e25df8975",
+    "evidence/after/jvm-lint/test-results/TEST-com.tradereview.app.backup.V04BackupTest.xml": "bd9f15e68b248fed2019fd5f36d44491df5647152372a60d2ebf82cf130bd8f3",
+    "evidence/after/jvm-lint/lint-results-release.xml": "07affad901652cbc2fadffe926d94c324c5e4508d2ae928adc82dc31539a9d8d",
+    "evidence/after/jvm-lint/lint-results-debug.xml": "e20665ef496ac1faf65710b2a27b4365d1ceb9a02da66675f9276eb931df06d2",
+    "evidence/after/jvm-lint/lint-results-rc.xml": "07affad901652cbc2fadffe926d94c324c5e4508d2ae928adc82dc31539a9d8d"
+  },
+  "images": "byte-for-byte actual UiAutomation PNG; no pixel edits, crops, AI or synthetic UI",
+  "phoneAcceptance": "not-executed"
+}

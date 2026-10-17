@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.tradereview.app.backup.V05BackupTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-10-17T07:07:06" hostname="runnervm8k3b6" time="0.191">
+  <properties/>
+  <testcase name="invalidAutoNetReferencesPrecisionUnknownFieldsAndTamperingAreRejected" classname="com.tradereview.app.backup.V05BackupTest" time="0.068"/>
+  <testcase name="allLegacyFormatsUpgradeWithUnknownProfessionalFieldsAndUnchangedAmountsAndKeys" classname="com.tradereview.app.backup.V05BackupTest" time="0.058"/>
+  <testcase name="independentV05GoldenMatchesCanonicalNullsAndAllNewObjects" classname="com.tradereview.app.backup.V05BackupTest" time="0.03"/>
+  <testcase name="partialProfessionalDraftRoundTripsWithoutTurningUnknownIntoZero" classname="com.tradereview.app.backup.V05BackupTest" time="0.01"/>
+  <testcase name="professionalCsvKeepsExactFieldsEmptyUnknownAndEscapesUserNotes" classname="com.tradereview.app.backup.V05BackupTest" time="0.019"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
