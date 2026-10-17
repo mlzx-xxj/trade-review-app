@@ -56,6 +56,18 @@ def ui_publication_evidence(reports, api):
     assert sum(e['flow']=='preview' and e['value']=='present' for e in reports['backup']['emissions'])>=4
 
 
+def quote_evidence(value,api):
+    from decimal import Decimal, ROUND_HALF_UP
+    assert value['api']==api and value['syntheticOnly'] is True and value['result']=='PASS'
+    assert value['reopenCycles']==10 and value['t1RejectedWithoutMutation'] is True
+    assert value['confirmedExecutions']==2 and value['finalNet']=='-7' and value['finalRemaining']=='0'
+    expected=['initial-buy']+[phase+str(i) for i in range(10) for phase in ['rejected-','reopened-']]+['final-sell']
+    assert [q['phase'] for q in value['quotes']]==expected
+    for q in value['quotes']:
+        fee=(Decimal(q['price'])*Decimal(q['quantity'])*Decimal('0.0001' if q['side']=='buy'else'0.0006')).quantize(Decimal('.01'),rounding=ROUND_HALF_UP)
+        assert Decimal(q['fee'])==fee and q['displayed']=='预计手续费：¥'+str(fee)
+
+
 def main():
     p=argparse.ArgumentParser();p.add_argument('--reports',required=True);p.add_argument('--screenshots',required=True);p.add_argument('--dist',required=True);p.add_argument('--run-url',required=True);a=p.parse_args()
     root=Path(a.reports);dist=Path(a.dist)
@@ -67,7 +79,10 @@ def main():
     metrics={}
     for api in [29,35]:
         directory=root/'devices'/f'android-test-reports-api{api}'
-        counts[f'api{api}']=junit(directory,'/androidTest-results/',140,{'ExperienceDataTest':5,'ReleaseExperienceUiTest':4,'LedgerMigrationTest':2,'PendingMigrationTest':3,'LedgerRepositoryTest':19,'TradeEntryExperienceTest':1,'V200MainUiTest':6,'V210VisualJourneyTest':1,'V210LayoutTest':1,'UiPublicationThreadTest':3,'V210HomeStatisticsJourneyTest':1})
+        counts[f'api{api}']=junit(directory,'/androidTest-results/',141,{'ExperienceDataTest':5,'ReleaseExperienceUiTest':4,'LedgerMigrationTest':2,'PendingMigrationTest':3,'LedgerRepositoryTest':19,'TradeEntryExperienceTest':1,'V200MainUiTest':6,'V210VisualJourneyTest':1,'V210LayoutTest':1,'UiPublicationThreadTest':3,'V210HomeStatisticsJourneyTest':1,'EntryQuoteLifecycleTest':1})
+        quote_paths=list(directory.rglob(f'entry-quote-lifecycle-api{api}.json'));assert len(quote_paths)==1
+        quote=json.loads(quote_paths[0].read_text());quote_evidence(quote,api)
+        metrics[f'entry-quote-lifecycle-api{api}.json']=quote
         names={f.name for f in (Path(a.screenshots)/f'v200-emulator-screenshots-api{api}').rglob('*.png')}
         for prefix in [f'{i:02}-' for i in list(range(1,33))+list(range(40,56))+list(range(70,84))]:assert any(n.startswith(prefix) for n in names),f'Missing API {api} screenshot {prefix}'
         files=[f'{kind}-api{api}.json' for kind in ['performance','images','activity','ocr-evaluation','process-probes','attachment-queries','package-probes','trade-entry-experience','entry-reopen','entry-runner']]
