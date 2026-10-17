@@ -194,13 +194,18 @@ class V210HomeStatisticsJourneyTest {
             moneyLayout("home-realized-$key",net)
         }
         capture(scene)
-        ui.onNodeWithTag("v2-home").performScrollToNode(hasTestTag("calendar-expand"));ui.onNodeWithTag("calendar-expand").performClick()
-        val title=ui.onNodeWithText("${today.year}年${today.monthValue}月")
-        title.performScrollTo()
+        ui.onNodeWithTag("v2-home").performScrollToNode(hasTestTag("calendar-expand"))
+        // The containing summary card is taller than the landscape viewport.
+        // Finding its composed item is not enough: scroll the actual child into view.
+        ui.onNodeWithTag("calendar-expand").performScrollTo().assertIsDisplayed().performClick()
+        val monthTitle="${today.year}年${today.monthValue}月"
+        waitFor{ui.onAllNodesWithText(monthTitle).fetchSemanticsNodes().size==1}
+        val title=ui.onNodeWithText(monthTitle)
+        title.performScrollTo().assertIsDisplayed()
         val dy=(title.fetchSemanticsNode().boundsInRoot.top-ui.onNodeWithTag("v2-home").fetchSemanticsNode().boundsInRoot.top).coerceAtLeast(0f)
         ui.onNodeWithTag("v2-home").performSemanticsAction(SemanticsActions.ScrollBy){it(0f,dy)}
         capture("$scene-calendar")
-        ui.onNodeWithTag("calendar-expand").performScrollTo().performClick();top("v2-home")
+        ui.onNodeWithTag("calendar-expand").performScrollTo().assertIsDisplayed().performClick();top("v2-home")
     }
     private fun review(){
         val before=facts();val cycle=before.cycles.single{it.code=="rb2701"}
