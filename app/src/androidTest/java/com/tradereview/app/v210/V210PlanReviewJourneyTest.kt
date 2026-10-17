@@ -90,7 +90,9 @@ class V210PlanReviewJourneyTest {
             val lazy=generateSequence(node.parent){it.parent}.firstOrNull{it.config.contains(SemanticsActions.ScrollToIndex)}
             if(lazy==null)n.performScrollTo()else{
                 val tag=lazy.config.getOrNull(SemanticsProperties.TestTag)?.takeIf{it.isNotBlank()}
-                val list=ui.onNode(tag?.let(::hasTestTag)?:SemanticsMatcher("Actual lazy parent"){it.id==lazy.id},useUnmergedTree=true)
+                // Resolve parent/child relationships in the same merged tree as
+                // n. Mixing trees loses a legacy card's code/button relationship.
+                val list=ui.onNode(tag?.let(::hasTestTag)?:SemanticsMatcher("Actual lazy parent"){it.id==lazy.id})
                 val targetTag=node.config.getOrNull(SemanticsProperties.TestTag)?.takeIf{it.isNotBlank()}
                 val label=node.config.getOrElse(SemanticsProperties.Text){emptyList()}.firstOrNull()?.text
                 val target=locator?:targetTag?.let(::hasTestTag)?:label?.let{hasText(it)}?:SemanticsMatcher("Actual target"){it.id==node.id}
