@@ -49,7 +49,10 @@ class V210HomeStatisticsJourneyTest {
         }
         override fun failed(error:Throwable,description:org.junit.runner.Description){
             runCatching{File(output(),"v210-full-$profile-failure.txt").writeText(error.stackTraceToString())}
-            runCatching{com.tradereview.app.stability.V08Metrics.write("v210-full-failure-api${Build.VERSION.SDK_INT}.json",GsonBuilder().setPrettyPrinting().create().toJson(mapOf("syntheticOnly" to true,"profile" to profile,"lastStep" to lastStep,"error" to error.stackTraceToString(),"semantics" to runCatching{ui.onRoot(useUnmergedTree=true).printToString()}.getOrElse{it.javaClass.simpleName})))}
+            runCatching{
+                val diagnostics=mapOf("syntheticOnly" to true,"profile" to profile,"lastStep" to lastStep,"error" to error.stackTraceToString(),"draft" to model.restoredDraft(),"clock" to model.entryNow().toString(),"semantics" to runCatching{ui.onAllNodes(isRoot(),useUnmergedTree=true).printToString()}.getOrElse{it.javaClass.simpleName})
+                com.tradereview.app.stability.V08Metrics.write("v210-full-failure-api${Build.VERSION.SDK_INT}.json",GsonBuilder().serializeNulls().setPrettyPrinting().create().toJson(diagnostics))
+            }
             runCatching{capture("failure")}
         }
         override fun finished(description:org.junit.runner.Description){
@@ -239,6 +242,13 @@ class V210HomeStatisticsJourneyTest {
         enter(pw,"futures","al2701","buy-open","20000","1","3.01","1")
         enter(pw,"futures","al2701","sell-close","20010","1","3.01","0");expected+=Expected(pw.toEpochDay(),"futures","al2701","43.98")
         enter(today.minusDays(1),"stock","600000","buy","10","1000","1.00","1000")
+        // Reproduce the existing main journey's cancel/date-boundary case, not a
+        // fresh form that would miss a stale asynchronous quote or reused draft.
+        val beforeRejected=facts()
+        begin("stock","600000","sell","10","1000","¥6.00");tap("save-execution")
+        waitFor{!model.busy.value&&model.problem.value?.contains("T+1")==true}
+        assertEquals(beforeRejected,facts());tap("entry-cancel")
+        waitFor{!model.editor.value&&ui.onAllNodesWithTag("save-execution").fetchSemanticsNodes().isEmpty()}
         enter(today,"stock","600000","sell","10","1000","6.00","0");expected+=Expected(today.toEpochDay(),"stock","600000","-7")
         enter(today,"futures","rb2701","buy-open","3500","2","7.01","2")
         enter(today,"futures","rb2701","buy-open","3510","3","10.54","5")
