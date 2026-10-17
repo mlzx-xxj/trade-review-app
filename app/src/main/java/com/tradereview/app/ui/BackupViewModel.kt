@@ -96,7 +96,15 @@ class BackupViewModel(database: TradeDatabase, private val resolver: ContentReso
                 stream.mark(4);val first=stream.read();val second=stream.read();stream.reset()
                 if(first==80 && second==75) {
                     val parsed=requireNotNull(zip) { "请在完整应用中恢复 ZIP" }.read(stream)
-                    publishUi { pendingZip=parsed;_preview.value=parsed.preview }
+                    var transferred=false
+                    try {
+                        publishUi { pendingZip=parsed;transferred=true;_preview.value=parsed.preview }
+                    } catch(e:Exception) {
+                        // Main dispatch is cancellable. Until ownership transfers,
+                        // onCleared cannot see or clean this newly staged archive.
+                        if(!transferred)withContext(kotlinx.coroutines.NonCancellable+Dispatchers.IO){parsed.archive.close()}
+                        throw e
+                    }
                 } else {
                     val data=BackupCodec.read(stream)
                     if(data.backupScope!="structured-data-only")throw BackupException("这份 JSON 来自完整 ZIP，必须选择原 ZIP 一起恢复图片")
