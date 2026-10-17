@@ -144,7 +144,8 @@ class V210HomeStatisticsJourneyTest {
         // Exact values remain available via the chart's real accessibility actions.
         ui.onNodeWithTag("v2-statistics").performScrollToNode(hasTestTag("v2-daily-chart"))
         val target=chosen.firstOrNull()?.day?:anchor.toEpochDay()
-        ui.onNodeWithTag("v2-daily-chart").performSemanticsAction(SemanticsActions.CustomActions){actions->assertTrue(actions.single{it.label=="查看${LocalDate.ofEpochDay(target)}准确数值"}.action())}
+        val actions=ui.onNodeWithTag("v2-daily-chart").fetchSemanticsNode().config[SemanticsActions.CustomActions]
+        ui.runOnIdle{assertTrue(actions.single{it.label=="查看${LocalDate.ofEpochDay(target)}准确数值"}.action())}
         val daily=chosen.filter{it.day==target}.mapNotNull{it.net?.let(::BigDecimal)}
         if(daily.isNotEmpty())ui.onNode(hasText(moneyText(daily.fold(BigDecimal.ZERO,BigDecimal::add))) and hasAnyAncestor(isDialog())).assertExists()
         else ui.onNodeWithText(if(chosen.any{it.day==target&&it.net==null})"费用待估算，净盈亏待计算"else"没有平仓成交").assertExists()
