@@ -14,7 +14,7 @@ try:
  # Create the private data directory using the real application.
  entry.adb('shell','am','start','-W','-n',entry.APP+'/'+entry.APP+'.MainActivity')
  directory=entry.adb('shell','run-as',entry.APP,'pwd').strip()
- for profile in ('regular-light','regular-dark','narrow-light','narrow-dark'):
+ for profile in ('narrow-light','narrow-dark','regular-light','regular-dark'):
   entry.adb('shell','am','force-stop',entry.APP)
   entry.adb('shell','wm','size','640x1136' if profile.startswith('narrow') else '720x1280')
   entry.adb('shell','wm','density','320')
