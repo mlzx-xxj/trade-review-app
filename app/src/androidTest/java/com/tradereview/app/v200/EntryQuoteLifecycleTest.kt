@@ -1,6 +1,7 @@
 package com.tradereview.app.v200
 
 import android.accessibilityservice.AccessibilityServiceInfo
+import android.view.accessibility.AccessibilityWindowInfo
 import android.os.Build
 import android.os.ParcelFileDescriptor
 import androidx.compose.ui.semantics.SemanticsProperties
@@ -43,7 +44,7 @@ class EntryQuoteLifecycleTest {
             shell("settings put secure show_ime_with_hard_keyboard 1")
         }
         override fun failed(error:Throwable,description:org.junit.runner.Description){
-            runCatching{val data=mapOf("syntheticOnly" to true,"error" to error.stackTraceToString(),"draft" to model.restoredDraft(),"clock" to model.entryNow().toString(),"observations" to observations,"semantics" to runCatching{ui.onAllNodes(isRoot(),useUnmergedTree=true).printToString()}.getOrElse{it.javaClass.simpleName});V08Metrics.write("entry-quote-failure-api${Build.VERSION.SDK_INT}.json",GsonBuilder().serializeNulls().setPrettyPrinting().create().toJson(data))}
+            runCatching{val data=mapOf("syntheticOnly" to true,"error" to error.stackTraceToString(),"draft" to model.restoredDraft(),"clock" to model.entryNow().toString(),"observations" to observations,"semantics" to runCatching{ui.onAllNodes(isRoot(),useUnmergedTree=true).printToString(maxDepth=40)}.getOrElse{it.javaClass.simpleName});V08Metrics.write("entry-quote-failure-api${Build.VERSION.SDK_INT}.json",GsonBuilder().serializeNulls().setPrettyPrinting().create().toJson(data))}
             runCatching{val image=requireNotNull(instrumentation.uiAutomation.takeScreenshot());val directory=File(requireNotNull(InstrumentationRegistry.getArguments().getString("additionalTestOutputDir")),"entry-quote").apply{mkdirs()};File(directory,"entry-quote-failure.png").outputStream().use{image.compress(android.graphics.Bitmap.CompressFormat.PNG,100,it)};image.recycle()}
         }
         override fun finished(description:org.junit.runner.Description){
@@ -55,17 +56,27 @@ class EntryQuoteLifecycleTest {
     private fun waitFor(block:()->Boolean)=ui.waitUntil(45000){block()}
     private fun facts()=runBlocking{model.repository.read()}
     private fun clock(day:LocalDate){ui.runOnIdle{model.entryClock=Clock.fixed(day.atTime(10,0).atZone(AutomaticEntry.beijing).toInstant(),ZoneOffset.UTC)}}
-    private fun selected(tag:String){val node=ui.onNodeWithTag(tag);if(!node.fetchSemanticsNode().config.getOrElse(SemanticsProperties.Selected){false})node.performClick()}
+    private fun selected(tag:String){
+        settled();val node=ui.onNodeWithTag(tag)
+        if(runCatching{node.assertIsDisplayed()}.isFailure)node.performScrollTo()
+        settled();node.assertIsDisplayed()
+        if(!node.fetchSemanticsNode().config.getOrElse(SemanticsProperties.Selected){false})node.performClick()
+        node.assertIsSelected()
+    }
     private fun settled(){
         var previous:androidx.compose.ui.geometry.Rect?=null;var since=android.os.SystemClock.elapsedRealtime()
         ui.waitUntil(10000){val nodes=ui.onAllNodesWithTag("entry-scroll").fetchSemanticsNodes();if(nodes.isEmpty())true else{val bounds=nodes.single().boundsInRoot;val now=android.os.SystemClock.elapsedRealtime();if(bounds!=previous){previous=bounds;since=now};now-since>=150}}
     }
     private fun field(tag:String,value:String){
-        settled();val node=ui.onNodeWithTag(tag);node.performScrollTo();settled();node.performClick().performTextReplacement(value)
-        assertEquals(value,node.fetchSemanticsNode().config[SemanticsProperties.EditableText].text);settled()
+        settled();val node=ui.onNodeWithTag(tag)
+        if(runCatching{node.assertIsDisplayed()}.isFailure)node.performScrollTo()
+        settled();node.assertIsDisplayed().performClick().performTextReplacement(value)
+        assertEquals(value,node.fetchSemanticsNode().config[SemanticsProperties.EditableText].text)
+        waitFor{instrumentation.uiAutomation.windows.any{it.type==AccessibilityWindowInfo.TYPE_INPUT_METHOD}};settled()
     }
     private fun quote(side:String,price:String,fee:String,label:String){
-        ui.onNodeWithTag("new-execution").performClick();selected("entry-market-stock")
+        waitFor{!model.editor.value&&ui.onAllNodesWithTag("save-execution").fetchSemanticsNodes().isEmpty()}
+        ui.onNodeWithTag("new-execution").assertIsDisplayed().performClick();selected("entry-market-stock")
         field("execution-code","600000");selected("execution-side-$side");field("execution-price",price);field("execution-quantity","1000")
         waitFor{ui.onNodeWithTag("entry-estimated-fee").fetchSemanticsNode().config[SemanticsProperties.Text].joinToString(""){it.text}=="预计手续费：¥$fee"}
         ui.onNodeWithTag("save-execution").assertIsDisplayed().assertIsEnabled()
@@ -79,7 +90,7 @@ class EntryQuoteLifecycleTest {
         waitFor{model.state.value.ledger==facts()}
         val today=AutomaticEntry.today();clock(today.minusDays(1))
         quote("buy","10","1.00","initial-buy");ui.onNodeWithTag("save-execution").performClick()
-        waitFor{!model.editor.value&&!model.busy.value&&model.state.value.ledger?.executions?.size==1}
+        waitFor{!model.editor.value&&!model.busy.value&&model.state.value.ledger?.executions?.size==1&&ui.onAllNodesWithTag("save-execution").fetchSemanticsNodes().isEmpty()}
         val before=facts();assertEquals("1.00",before.executions.single().fees)
         repeat(10){index->
             clock(today.minusDays(1));quote("sell","10","6.00","rejected-$index")

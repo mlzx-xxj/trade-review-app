@@ -49,7 +49,7 @@ class TradeEntryExperienceTest {
             runCatching{File(output(),"entry-failure.txt").writeText(error.stackTraceToString())}
             runCatching{UiDevice.getInstance(instrumentation).dumpWindowHierarchy(File(output(),"entry-failure.xml"))}
             runCatching{screenshot("entry-failure")}
-            runCatching{com.tradereview.app.stability.V08Metrics.write("entry-failure-api${Build.VERSION.SDK_INT}.json",gson.toJson(mapOf("syntheticOnly" to true,"clock" to model.entryNow().toString(),"draft" to model.restoredDraft(),"ledger" to LedgerJson.element(facts()),"steps" to steps,"observations" to observations,"semantics" to ui.onRoot(useUnmergedTree=true).printToString())))}
+            runCatching{com.tradereview.app.stability.V08Metrics.write("entry-failure-api${Build.VERSION.SDK_INT}.json",gson.toJson(mapOf("syntheticOnly" to true,"clock" to model.entryNow().toString(),"draft" to model.restoredDraft(),"ledger" to LedgerJson.element(facts()),"steps" to steps,"observations" to observations,"semantics" to runCatching{ui.onAllNodes(isRoot(),useUnmergedTree=true).printToString(maxDepth=40)}.getOrElse{it.javaClass.simpleName})))}
         }
         override fun finished(description:org.junit.runner.Description){
             // UiAutomator 2.3 installs a process-wide event listener and enables
@@ -77,7 +77,7 @@ class TradeEntryExperienceTest {
     private fun visible(node:SemanticsNodeInteraction):SemanticsNodeInteraction {settledViewport();if(runCatching{node.assertIsDisplayed()}.isFailure){node.performScrollTo();scrolls++;settledViewport()};return node.assertIsDisplayed()}
     private fun tap(tag:String){visible(ui.onNodeWithTag(tag)).assertIsEnabled().performClick();taps++;steps+=tag}
     private fun text(tag:String,value:String){tap(tag);val node=ui.onNodeWithTag(tag);node.performTextReplacement(value);node.assertTextContains(value);fields+=tag;waitFor("真实输入法已显示"){instrumentation.uiAutomation.windows.any{it.type==AccessibilityWindowInfo.TYPE_INPUT_METHOD}};settledViewport()}
-    private fun selected(tag:String){val n=ui.onNodeWithTag(tag);if(n.fetchSemanticsNode().config.getOrElse(SemanticsProperties.Selected){false}!=true)tap(tag)}
+    private fun selected(tag:String){val n=ui.onNodeWithTag(tag);if(n.fetchSemanticsNode().config.getOrElse(SemanticsProperties.Selected){false}!=true)tap(tag);n.assertIsSelected()}
     private fun displayed(tag:String)=ui.onNodeWithTag(tag).fetchSemanticsNode().config[SemanticsProperties.Text].joinToString(""){it.text}
     private fun numberOnScreen(tag:String):String?=Regex("¥([0-9,]+\\.[0-9]{2})").find(displayed(tag))?.groupValues?.get(1)?.replace(",","")
     private fun equal(expected:String,actual:String?)=assertEquals(expected,0,BigDecimal(expected).compareTo(BigDecimal(requireNotNull(actual))))
@@ -95,7 +95,11 @@ class TradeEntryExperienceTest {
         }
     }
     private fun begin(market:String,code:String,action:String,price:String,quantity:String,symbolSource:String="typed"){
-        page(1);taps=0;scrolls=0;fields.clear();steps.clear();tap("new-execution");selected("entry-market-$market")
+        page(1)
+        // StateFlow can change before Compose disposes the previous Dialog. A
+        // real user cannot tap the main toolbar through that old window.
+        waitFor("上一笔表单已经退出"){!model.editor.value&&ui.onAllNodesWithTag("save-execution").fetchSemanticsNodes().isEmpty()}
+        taps=0;scrolls=0;fields.clear();steps.clear();tap("new-execution");selected("entry-market-$market")
         if(symbolSource=="typed")text("execution-code",code)else{tap("entry-instrument-picker");if(symbolSource=="search")text("instrument-search",code);tap("instrument-$code");ui.onNodeWithTag("execution-code").assertTextContains(code)}
         selected(if(market=="stock")"execution-side-$action"else"execution-action-$action")
         text("execution-price",price);text("execution-quantity",quantity)

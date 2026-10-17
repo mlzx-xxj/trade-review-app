@@ -4,7 +4,9 @@
 
 main `6776d4d4c437c71fb3117ecf35f4cc22abfe8932` 的 [CI 39003413037，第二次执行](https://github.com/mlzx-xxj/trade-review-app/actions/runs/39003413037/attempts/2) 中，API 29 完整回归通过；API 35 的原有 `TradeEntryExperienceTest.actualFormJourneyAndReopenEvidence` 失败。股票同日卖出被 T+1 检查拒绝，取消后以测试时钟切到下一天，重新输入 10 元、1000 股，费用预览在 45 秒内仍为“暂无法估算”，没有显示预期的 6.00 元。失败 PNG、原生 JUnit 和 logcat 已实际读取。该次失败不是模拟器未启动，也不是 Maven 下载失败。
 
-日志不足以证明失败瞬间的 Compose 协程交错顺序。不能将推测当作已证明的根因。本修复针对异步预览的结果归属：计算结果携带本次输入和账本来源，仅用于匹配的表单；后台计算后在 Main 发布，不再让旧请求重置当前预览。费用公式、成交保存、T+1、FIFO、数据库、版本、签名和发布流程均不改动。
+原 main 日志不足以证明失败瞬间的 Compose 协程交错顺序。新增压力测试的第一轮执行保留了更完整的截图与草稿：脚本等待“卖出 6.00”，实际仍选中“买入”，显示正确的 1.00。不能将这类失败误报为费用公式错误。
+
+本修复只加强仪器测试的真实操作同步：等待前一张表单实际离开语义树，再点击主页面入口；等待真实输入法和视口稳定；方向操作必须断言已选中。保留原有全部金额、FIFO、T+1 和落库断言，补充多窗口完整语义诊断。最初缺乏证据的生产预览状态改动已经撤回；生产 App 源码与 main 完全一致。
 
 ## 独立验证
 
@@ -12,4 +14,4 @@ main `6776d4d4c437c71fb3117ecf35f4cc22abfe8932` 的 [CI 39003413037，第二次�
 
 `entry-quote-lifecycle-api29.json` / `entry-quote-lifecycle-api35.json` 保存每次实际读取的界面金额；发布报告用独立 Decimal 计算交叉核对，缺少证据、陈旧金额或改变事实均拒绝。失败时额外保存多窗口语义树和真实截图。
 
-本地已实际执行 Python 回归 124 项通过。Android 编译、完整 API 29/35 及原有跨进程 UI 测试的最终状态以本 PR 的 [Actions](https://github.com/mlzx-xxj/trade-review-app/actions) 为准；提交时尚未执行完成，不预先标为通过。本修复与首页/统计视觉改造分开审核，不自动合并。
+本地已实际执行 Python 回归 124 项通过。首轮 API 35 新压力测试失败的证据保留在 CI 39006572036，不能标为通过。Android 编译、完整 API 29/35 及原有跨进程 UI 测试的最终状态以本 PR 的 [Actions](https://github.com/mlzx-xxj/trade-review-app/actions) 为准；提交时尚未执行完成，不预先标为通过。本修复与首页/统计视觉改造分开审核，不自动合并。
