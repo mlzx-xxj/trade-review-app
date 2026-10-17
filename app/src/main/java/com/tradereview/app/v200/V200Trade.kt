@@ -40,6 +40,8 @@ import java.math.BigDecimal
 }
 @Composable fun ExecutionDetails(state:LedgerSnapshot,e:LedgerExecution,onEdit:()->Unit,onDelete:()->Unit){EditorBody{LedgerPanel("${e.name} ${e.code} · ${actionLabel(e)}"){Text("${state.accounts.first{it.id==e.accountId}.name} · ${LocalDate.ofEpochDay(e.date)} %02d:%02d".format(e.minute/60,e.minute%60));Text("价格 ${amount(e.price)} · 数量 ${e.quantity} · 费用 ${amount(e.fees)}");Text("费用${if(e.fees==null)"待估算；净盈亏不计入已知统计"else if(e.feeSource=="actual")"为实际录入"else"按当笔保存规则计算"}");if(e.accountId=="futures"){Text("交易日 ${LocalDate.ofEpochDay(e.tradingDay)} · 乘数 ${e.multiplier}");Text("保证金率 ${e.marginRate?:"未知"}")};Text("策略 ${strategyLabel(state,e.strategyId)}");Text("止盈 ${e.takeProfit?.let(::amount)?:"未设置"} · 止损 ${e.stopLoss?.let(::amount)?:"未设置"}");Text("计划风险 ${e.riskAmount?.let(::amount)?:"风险无法计算"} · 当时风险金 ${amount(e.riskFundSnapshot)}");if(e.effect!="open")NetText(completeTotal(state.matches.filter{it.closeExecutionId==e.id}.map{it.net}));if(e.riskExceeded)Text("曾超过单笔风险上限；${if(e.riskConfirmed)"用户已确认记录"else"当时关闭提示"}")};OutlinedButton(onEdit,Modifier.fillMaxWidth().heightIn(min=48.dp).testTag("edit-execution")){Text("修改成交（先预览影响）")};OutlinedButton(onDelete,Modifier.fillMaxWidth().heightIn(min=48.dp).testTag("delete-execution"),colors=ButtonDefaults.outlinedButtonColors(contentColor=MaterialTheme.colorScheme.error),border=androidx.compose.foundation.BorderStroke(1.dp,MaterialTheme.colorScheme.error)){Text("删除成交（先预览影响）")}}}
 
+private data class EntryEstimateResult(val request:LedgerExecution,val executions:List<LedgerExecution>,val rules:List<LedgerContractRule>,val estimate:AutomaticEntry.Estimate)
+
 @OptIn(ExperimentalLayoutApi::class)
 @Composable fun ExecutionEditor(model:V200ViewModel,state:LedgerSnapshot,value:LedgerExecution?,onRisk:()->Unit){
     val key=value?.id?:"new"
@@ -68,10 +70,14 @@ import java.math.BigDecimal
     LaunchedEffect(fields){model.draft(fields)}
     val initial=value?:LedgerExecution(id,account,code,displayName,stamp.toLocalDate().toEpochDay(),stamp.hour*60+stamp.minute,stamp.toLocalDate().toEpochDay(),0,side,effect,price,quantity,"0",feeSource=AutomaticEntry.SOURCE,second=stamp.second)
     val candidate=initial.copy(accountId=account,code=code.trim().lowercase(),name=displayName.trim(),side=side,effect=if(account=="stock")if(side=="buy")"open"else"close"else effect,price=price.trim(),quantity=quantity.trim(),strategyId=strategy,planId=plan,takeProfit=tp.trim().ifBlank{null},stopLoss=stop.trim().ifBlank{null})
-    val estimate by produceState(AutomaticEntry.Estimate(null,null,"预计保证金占用"),candidate,state.executions,state.rules){
-        this.value=AutomaticEntry.Estimate(null,null,"预计保证金占用")
-        this.value=kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Default){AutomaticEntry.estimate(candidate,state)}
+    // Keep each background result with its input. An obsolete request must not
+    // clear or display a quote for a later edit or a reopened form.
+    val calculated by produceState<EntryEstimateResult?>(null,candidate,state.executions,state.rules){
+        val next=kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Default){AutomaticEntry.estimate(candidate,state)}
+        kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Main.immediate){this@produceState.value=EntryEstimateResult(candidate,state.executions,state.rules,next)}
     }
+    val estimate=calculated?.takeIf{it.request==candidate&&it.executions==state.executions&&it.rules==state.rules}?.estimate
+        ?:AutomaticEntry.Estimate(null,null,"预计保证金占用")
     val busy by model.busy.collectAsState();val problem by model.problem.collectAsState()
     BackHandler{model.closeEditor()}
     Dialog(onDismissRequest={model.closeEditor()},properties=DialogProperties(usePlatformDefaultWidth=false,decorFitsSystemWindows=false)){
