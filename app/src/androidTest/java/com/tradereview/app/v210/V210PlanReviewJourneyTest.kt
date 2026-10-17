@@ -84,11 +84,16 @@ class V210PlanReviewJourneyTest {
     private fun page(index:Int){ui.onNodeWithTag("v2-main-page-$index").performClick();ui.waitForIdle()}
     private fun reset(){taps=0;scrolls=0;dateTaps=0;backKeys=0;typed.clear()}
     private fun visible(n:SemanticsNodeInteraction):SemanticsNodeInteraction{
-        if(runCatching{n.assertIsDisplayed()}.isFailure){n.performScrollTo();scrolls++}
+        if(runCatching{n.assertIsDisplayed()}.isFailure){
+            val node=n.fetchSemanticsNode()
+            val lazy=generateSequence(node.parent){it.parent}.firstOrNull{it.config.contains(SemanticsActions.ScrollToIndex)}
+            if(lazy==null)n.performScrollTo()else ui.onNode(SemanticsMatcher("Actual lazy parent"){it.id==lazy.id},useUnmergedTree=true).performScrollToNode(SemanticsMatcher("Actual target"){it.id==node.id})
+            scrolls++
+        }
         return n.assertIsDisplayed()
     }
     private fun tap(tag:String){
-        if(tag.startsWith("review-section-")&&ui.onAllNodesWithTag(tag).fetchSemanticsNodes().isEmpty()){top("v2-reviews");scrolls++}
+        if(tag.startsWith("review-section-")&&runCatching{ui.onNodeWithTag(tag).assertIsDisplayed()}.isFailure){top("v2-reviews");scrolls++}
         if(tag in listOf("new-cashflow","configure-account","new-plan") && runCatching{ui.onNodeWithTag(tag).assertIsDisplayed()}.isFailure){
             ui.onNodeWithTag(if(tag=="new-plan")"v2-reviews"else"v2-accounts").performScrollToNode(hasTestTag(tag));scrolls++
         }
@@ -103,7 +108,7 @@ class V210PlanReviewJourneyTest {
         val nodes=ui.onAllNodes(hasSetTextAction() and hasText(label) and hasAnyAncestor(isDialog()))
         visible(nodes[index]).performClick();taps++;nodes[index].performTextReplacement(value);typed+=label;ui.waitForIdle()
     }
-    private fun select(tag:String){if(tag.startsWith("account-")&&ui.onAllNodesWithTag(tag).fetchSemanticsNodes().isEmpty()){top("v2-accounts");scrolls++};if(!ui.onNodeWithTag(tag).fetchSemanticsNode().config.getOrElse(SemanticsProperties.Selected){false})tap(tag)}
+    private fun select(tag:String){if(tag.startsWith("account-")&&runCatching{ui.onNodeWithTag(tag).assertIsDisplayed()}.isFailure){top("v2-accounts");scrolls++};if(!ui.onNodeWithTag(tag).fetchSemanticsNode().config.getOrElse(SemanticsProperties.Selected){false})tap(tag)}
     private fun date(label:String,day:LocalDate){
         val n=ui.onNode(hasText(label,substring=true) and hasClickAction() and hasAnyAncestor(isDialog()))
         visible(n).performClick();taps++;dateTaps++
@@ -159,6 +164,11 @@ class V210PlanReviewJourneyTest {
         ui.onNodeWithTag("plan-code").assertTextContains(p.code)
     }
     private fun observeMoney(label:String,value:String,tag:String,legacyCombined:Boolean=true){
+        val legacy=if(legacyCombined)hasText("$label $value",substring=true)else hasText(value)
+        val target=hasTestTag(tag) or legacy
+        if(ui.onAllNodes(target).fetchSemanticsNodes().isEmpty()){
+            ui.onNodeWithTag("v2-accounts").performScrollToNode(target);scrolls++
+        }
         val tagged=ui.onAllNodesWithTag(tag).fetchSemanticsNodes()
         val n=if(tagged.isNotEmpty())ui.onNodeWithTag(tag)else if(legacyCombined)ui.onNode(hasText("$label $value",substring=true))else ui.onNodeWithText(value)
         visible(n)
@@ -186,7 +196,7 @@ class V210PlanReviewJourneyTest {
     private fun openReview(cycle:LedgerCycle){page(2);tap("review-section-post");ui.onNodeWithTag("v2-reviews").performScrollToNode(hasTestTag("review-cycle-${cycle.id}"));tap("review-cycle-${cycle.id}")}
     private fun orientation(requested:Int,expected:Int){
         instrumentation.runOnMainSync{androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(androidx.test.runner.lifecycle.Stage.RESUMED).filterIsInstance<MainActivity>().single().requestedOrientation=requested}
-        waitFor{app.resources.configuration.orientation==expected};ui.waitForIdle()
+        waitFor{var ready=false;instrumentation.runOnMainSync{ready=androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(androidx.test.runner.lifecycle.Stage.RESUMED).filterIsInstance<MainActivity>().any{it.resources.configuration.orientation==expected}};ready};ui.waitForIdle()
     }
     private val longPlan="合成盘前计划：先核对标的与计划价位，再记录实际成交。计划价格不代表真实成交。\n".repeat(10)
     private val longReview="合成复盘：核对分批成交与费用归属，不修改历史价格、数量或净盈亏。\n保留下一次观察的关键价位。\n".repeat(10)
@@ -255,7 +265,7 @@ class V210PlanReviewJourneyTest {
         page(4);top("v2-accounts");reset()
         val incoming=facts().cashFlows.single{it.accountId=="stock"&&it.kind=="in"}
         ui.onNodeWithTag("v2-accounts").performScrollToNode(hasText("合成入金"));val edits=ui.onAllNodesWithText("编辑流水");val title=ui.onNodeWithText("合成入金").fetchSemanticsNode().boundsInRoot
-        val index=edits.fetchSemanticsNodes().indices.filter{edits.fetchSemanticsNodes()[it].boundsInRoot.top>=title.top}.minBy{edits.fetchSemanticsNodes()[it].boundsInRoot.top};visible(edits[index]).performClick()
+        val index=edits.fetchSemanticsNodes().indices.filter{edits.fetchSemanticsNodes()[it].boundsInRoot.top>=title.top}.minBy{edits.fetchSemanticsNodes()[it].boundsInRoot.top};visible(edits[index]).performClick();taps++
         field("cashflow-amount","1200");field("cashflow-note","合成入金已更正")
         orientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE,Configuration.ORIENTATION_LANDSCAPE);capture("cash-edit-landscape")
         cashEditTargetRetained=ui.onAllNodesWithText("原流水：",substring=true).fetchSemanticsNodes().isNotEmpty()
