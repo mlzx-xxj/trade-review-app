@@ -30,16 +30,52 @@ import java.math.BigDecimal
 }
 
 private data class CalculatedStatistics(val period:LedgerPeriod,val market:String,val source:List<ClosedEvent>,val numbers:PeriodNumbers)
-@Composable fun V200Statistics(state:LedgerScreenState){var type by rememberSaveable{mutableStateOf("week")};var market by rememberSaveable{mutableStateOf("all")};var offset by rememberSaveable(type){mutableIntStateOf(0)};val period=if(type=="week")LedgerPeriod.week(AutomaticEntry.today(),offset)else LedgerPeriod.month(AutomaticEntry.today(),offset)
+@Composable fun V200Statistics(state:LedgerScreenState){
+    var type by rememberSaveable{mutableStateOf("week")};var market by rememberSaveable{mutableStateOf("all")};var offset by rememberSaveable(type){mutableIntStateOf(0)}
+    val period=if(type=="week")LedgerPeriod.week(AutomaticEntry.today(),offset)else LedgerPeriod.month(AutomaticEntry.today(),offset)
     val calculated by produceState<CalculatedStatistics?>(null,state.closed,period,market){value=withContext(Dispatchers.Default){CalculatedStatistics(period,market,state.closed,periodNumbers(state.closed,period,market))}}
-    val numbers=calculated?.takeIf{it.period==period && it.market==market && it.source==state.closed}?.numbers
-    LazyColumn(Modifier.fillMaxSize().testTag("v2-statistics"),contentPadding=PaddingValues(12.dp),verticalArrangement=Arrangement.spacedBy(10.dp)){
-        item{ChoiceRow(type,listOf("week" to "每周","month" to "每月"),{type=it},"statistics-period-");ChoiceRow(market,listOf("all" to "合计","stock" to "A股","futures" to "国内期货"),{market=it},"statistics-market-");Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceBetween){TextButton({offset--},modifier=Modifier.heightIn(min=48.dp).testTag("statistics-previous")){Text("上一${if(type=="week")"周"else"月"}")};Text("${LocalDate.ofEpochDay(period.start)}\n至 ${LocalDate.ofEpochDay(period.end)}",style=MaterialTheme.typography.labelMedium);TextButton({offset++},modifier=Modifier.heightIn(min=48.dp).testTag("statistics-next")){Text("下一${if(type=="week")"周"else"月"}")}}}
-        if(numbers==null)item{LinearProgressIndicator(Modifier.fillMaxWidth());Text("正在计算已实现结果")}
-        numbers?.let{n->item{LedgerPanel("已实现交易摘要",Modifier.testTag("statistics-results-$type-$market")){
-            Text("平仓成交 ${n.records.size} · 盈利 ${n.wins} · 亏损 ${n.losses} · 持平 ${n.flats}");if(n.pending>0)Text("${n.pending} 笔费用待估算，未计入净盈亏、胜率和图表；有效样本 ${n.records.size-n.pending}",Modifier.testTag("statistics-pending"))
-            Text("胜率 ${n.winRate?.let{exact(it.setScale(2,java.math.RoundingMode.HALF_UP))+"%"}?:"不可计算（无样本）"}")
-            if(n.records.isEmpty())EmptyLedger("本周期暂无平仓成交")else{Text(if(n.pending>0)"已知已实现净盈亏"else"已实现净盈亏");NetText(n.net,Modifier.testTag("period-realized-net"));Text("单笔平均净盈亏 ${moneyText(n.average)}");Text("一次平仓成交计一笔；胜率含持平样本。",style=MaterialTheme.typography.bodySmall)}
-        }};item{DailyClosedBars(period.days,n.daily,n.records.filter{it.net==null}.map{it.execution.tradingDay}.toSet())};if(type=="month")item{ContractDistribution(n.distribution)}}
+    val numbers=calculated?.takeIf{it.period==period&&it.market==market&&it.source==state.closed}?.numbers
+    LazyColumn(Modifier.fillMaxSize().testTag("v2-statistics"),contentPadding=PaddingValues(LedgerUi.inset),verticalArrangement=Arrangement.spacedBy(LedgerUi.inset)){
+        item{Column(verticalArrangement=Arrangement.spacedBy(8.dp)){
+            SegmentedChoices(type,listOf("week" to "每周","month" to "每月"),{type=it},"statistics-period-")
+            SegmentedChoices(market,listOf("all" to "合计","stock" to "A股","futures" to "国内期货"),{market=it},"statistics-market-")
+            Row(Modifier.fillMaxWidth(),verticalAlignment=androidx.compose.ui.Alignment.CenterVertically){
+                TextButton({offset--},Modifier.heightIn(min=48.dp).testTag("statistics-previous"),contentPadding=PaddingValues(4.dp)){Text("上一${if(type=="week")"周"else"月"}")}
+                Text("${LocalDate.ofEpochDay(period.start)} — ${LocalDate.ofEpochDay(period.end)}",Modifier.weight(1f).padding(horizontal=8.dp),style=MaterialTheme.typography.labelMedium,textAlign=androidx.compose.ui.text.style.TextAlign.Center,color=MaterialTheme.colorScheme.onSurfaceVariant)
+                TextButton({offset++},Modifier.heightIn(min=48.dp).testTag("statistics-next"),contentPadding=PaddingValues(4.dp)){Text("下一${if(type=="week")"周"else"月"}")}
+            }
+        }}
+        if(numbers==null)item{LinearProgressIndicator(Modifier.fillMaxWidth());Text("正在计算已实现结果",style=MaterialTheme.typography.bodySmall)}
+        numbers?.let{n->
+            item{LedgerPanel("已实现交易摘要",Modifier.testTag("statistics-results-$type-$market")){
+                if(n.records.isEmpty())EmptyLedger("本周期暂无平仓成交")else{
+                    OverviewMoney(if(n.pending>0)"已知已实现净盈亏"else"已实现净盈亏",n.net,"period-realized-net",large=true)
+                    Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.spacedBy(16.dp)){
+                        PositionMetric("有效样本 / 平仓成交","${n.records.size-n.pending} / ${n.records.size}","statistics-samples",Modifier.weight(1f))
+                        PositionMetric("胜率（含持平）",n.winRate?.let{AutomaticEntry.cents(it)+"%"}?:"不可计算","statistics-win-rate",Modifier.weight(1f))
+                    }
+                    HorizontalDivider(color=MaterialTheme.colorScheme.outlineVariant)
+                    Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.spacedBy(8.dp)){
+                        StatisticsCount("盈利",n.wins,profitColor(),Modifier.weight(1f))
+                        StatisticsCount("亏损",n.losses,lossColor(),Modifier.weight(1f))
+                        StatisticsCount("持平",n.flats,MaterialTheme.colorScheme.onSurfaceVariant,Modifier.weight(1f))
+                    }
+                    Row(Modifier.fillMaxWidth(),verticalAlignment=androidx.compose.ui.Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(8.dp)){
+                        Text("单笔平均净盈亏",style=MaterialTheme.typography.labelMedium,color=MaterialTheme.colorScheme.onSurfaceVariant)
+                        Box(Modifier.weight(1f)){NumericText(moneyText(n.average),Modifier.testTag("statistics-average"),style=MaterialTheme.typography.bodyLarge,color=n.average?.let{pnlColor(it)}?:MaterialTheme.colorScheme.onSurfaceVariant)}
+                    }
+                    if(n.pending>0)Text("${n.pending} 笔费用待估算，未计入净盈亏、胜率和图表；有效样本 ${n.records.size-n.pending}",Modifier.testTag("statistics-pending"),style=MaterialTheme.typography.bodySmall,color=MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text("一次平仓成交计一笔；仅统计已实现结果。",style=MaterialTheme.typography.labelSmall,color=MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+            }}
+            item{DailyClosedBars(period.days,n.daily,n.records.filter{it.net==null}.map{it.execution.tradingDay}.toSet())}
+            if(type=="month")item{ContractDistribution(n.distribution)}
+        }
+    }
+}
+@Composable private fun StatisticsCount(label:String,count:Int,color:androidx.compose.ui.graphics.Color,modifier:Modifier){
+    Column(modifier,verticalArrangement=Arrangement.spacedBy(2.dp)){
+        Text(label,style=MaterialTheme.typography.labelMedium,color=color)
+        NumericText(count.toString(),style=MaterialTheme.typography.titleMedium,color=color)
     }
 }

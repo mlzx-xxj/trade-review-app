@@ -163,6 +163,9 @@ class V210HomeStatisticsJourneyTest {
             ui.onNodeWithTag("period-realized-net").assertTextEquals(moneyText(net))
             moneyLayout("period-realized-net",net)
             val pending=chosen.count{it.net==null}
+            ui.onNodeWithTag("statistics-samples").assertTextEquals("${known.size} / ${chosen.size}")
+            val expectedWinRate=if(known.isEmpty())"不可计算"else AutomaticEntry.cents(BigDecimal(known.count{it.signum()>0}).multiply(BigDecimal(100)).divide(BigDecimal(known.size),12,java.math.RoundingMode.HALF_UP))+"%"
+            ui.onNodeWithTag("statistics-win-rate").assertTextEquals(expectedWinRate)
             if(pending>0)ui.onNodeWithTag("statistics-pending").assertTextEquals("$pending 笔费用待估算，未计入净盈亏、胜率和图表；有效样本 ${known.size}")
             checks+=mapOf("type" to type,"market" to market,"offset" to offset,"start" to anchor.toString(),"end" to end.toString(),"closed" to chosen.size,"valid" to known.size,"pending" to pending,"net" to net?.toPlainString(),"displayed" to shown("period-realized-net"),"sourceExecutionCount" to facts().executions.size,"result" to "PASS")
         }else ui.onNodeWithText("本周期暂无平仓成交").assertExists()
@@ -206,6 +209,20 @@ class V210HomeStatisticsJourneyTest {
         ui.onNodeWithTag("v2-home").performSemanticsAction(SemanticsActions.ScrollBy){it(0f,dy)}
         capture("$scene-calendar")
         ui.onNodeWithTag("calendar-expand").performScrollTo().assertIsDisplayed().performClick();top("v2-home")
+    }
+    private fun homeRoutes(){
+        val before=facts()
+        page(0);ui.onNodeWithTag("v2-home").performScrollToNode(hasText("查看交易"));ui.onNodeWithText("查看交易").performClick()
+        ui.onNodeWithTag("v2-main-page-1").assertIsSelected()
+        page(0);ui.onNodeWithTag("v2-home").performScrollToNode(hasText("去复盘"));ui.onNodeWithText("去复盘").performClick()
+        ui.onNodeWithTag("v2-main-page-2").assertIsSelected()
+        page(0);val last=before.executions.single{it.code=="i2701"&&it.effect!="open"}
+        val tag="home-recent-${last.id}"
+        waitFor{ui.onAllNodesWithTag("v2-home").fetchSemanticsNodes().isNotEmpty()}
+        ui.onNodeWithTag("v2-home").performScrollToNode(hasTestTag(tag));ui.onNodeWithTag(tag).performClick()
+        ui.onNodeWithText("成交详情").assertIsDisplayed();ui.onNodeWithTag("edit-execution").assertExists()
+        ui.onNodeWithContentDescription("返回主页面").performClick()
+        assertEquals(before,facts());ui.onNodeWithTag("v2-main-page-0").assertIsSelected()
     }
     private fun review(){
         val before=facts();val cycle=before.cycles.single{it.code=="rb2701"}
@@ -266,7 +283,7 @@ class V210HomeStatisticsJourneyTest {
         enter(today,"futures","i2701","sell-close","810","1",null,"1");expected+=Expected(today.toEpochDay(),"futures","i2701",null)
         assertEquals(13,facts().executions.size)
         expected.forEach{v->val e=facts().executions.single{it.code==v.code&&it.effect!="open"};val matches=facts().matches.filter{it.closeExecutionId==e.id};val net=if(matches.any{it.net==null})null else matches.fold(BigDecimal.ZERO){a,m->a+BigDecimal(requireNotNull(m.net))}.stripTrailingZeros().toPlainString();assertEquals(v.net?.let{BigDecimal(it).stripTrailingZeros().toPlainString()},net)}
-        review();home("pending-home")
+        review();home("pending-home");homeRoutes()
         for(type in listOf("week","month"))for(market in listOf("all","stock","futures"))statistic(type,market,captureScene=if(market=="all")"$type-statistics"else null)
         statistic("week","all",-1);statistic("month","all",-1)
         page(3);ui.onNodeWithTag("statistics-period-month").performClick();top("v2-statistics")

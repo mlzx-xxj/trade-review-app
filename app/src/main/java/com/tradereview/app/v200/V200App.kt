@@ -51,7 +51,7 @@ import java.time.LocalDate
                 "execution"->ledger.executions.firstOrNull{it.id==selected}?.let{e->ExecutionDetails(ledger,e,{editing=e.id;model.openEditor()},{model.deleteExecution(e)})}?:EmptyLedger("成交已不存在")
                 "archive"->LegacyArchive(model,store)
                 "strategy"->StrategyHistory(model,ledger,selected,{selected=it;route="execution"},{route="archive"})
-                else->when(page){0->V200Home(screen,{selected=it;route="position"},{day=it});1->V200Trades(ledger,{selected=it;route="position"},{selected=it;route="execution"},{route="archive"},model.savedExecution.collectAsState().value);2->V200Reviews(model,ledger);3->V200Statistics(screen);else->V200Accounts(model,ledger)}
+                else->when(page){0->V200Home(screen,{selected=it;route="position"},{day=it},onTrades={model.page(1)},onReviews={model.page(2)},onExecution={selected=it;route="execution"});1->V200Trades(ledger,{selected=it;route="position"},{selected=it;route="execution"},{route="archive"},model.savedExecution.collectAsState().value);2->V200Reviews(model,ledger);3->V200Statistics(screen);else->V200Accounts(model,ledger)}
             }
         }
     }}
