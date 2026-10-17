@@ -71,9 +71,9 @@ class ReviewEvidenceUiTest {
         compose.onNodeWithText("+400.00").performClick();compose.onNodeWithTag("open-trade-evidence").performScrollTo().performClick()
         compose.onNodeWithTag("pick-evidence").assertIsDisplayed()
     }
-    private fun hideKeyboard() {
+    private fun hideKeyboard(field:String="image-caption") {
         // Use the actual editor IME action; a delayed system BACK can navigate away after dismissal.
-        compose.onNodeWithTag("image-caption").performImeAction()
+        compose.onNodeWithTag(field).performImeAction()
         val automation=InstrumentationRegistry.getInstrumentation().uiAutomation
         val oldFlags=automation.serviceInfo.flags
         automation.serviceInfo=automation.serviceInfo.apply { flags=flags or android.accessibilityservice.AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS }
@@ -124,11 +124,15 @@ class ReviewEvidenceUiTest {
     @Test fun predefinedAndTextGoalsCreateTrackArchiveAndKeepFactsUnchanged() {
         val before=runBlocking{db.trades().allTrades()};nav("统计分析");compose.onNodeWithText("纪律改善目标").performClick()
         compose.onNodeWithTag("new-review-goal").performClick();compose.onNodeWithText("提高交易复盘比例").performScrollTo().performClick();compose.onNodeWithText("80").performScrollTo().performClick()
-        compose.onNodeWithTag("save-review-goal").performClick();compose.waitUntil(15000){model.state.value.goals.size==1 && !model.busy.value}
+        compose.onNodeWithTag("save-review-goal").performClick();compose.waitUntil(15000){model.state.value.goals.size==1 && !model.busy.value && compose.onAllNodesWithTag("save-review-goal").fetchSemanticsNodes().isEmpty()}
         val ratio=model.state.value.goals.single();compose.onNodeWithTag("goals-list").performScrollToNode(hasTestTag("goal-progress-${ratio.id}"));compose.onNodeWithTag("goal-progress-${ratio.id}").assertTextEquals("实际 33.33% · 阈值 80%")
         compose.onNodeWithTag("goals-list").performScrollToNode(hasTestTag("new-review-goal"));compose.onNodeWithTag("new-review-goal").performClick()
         compose.onNodeWithText("文字改善目标").performScrollTo().performClick();compose.onNodeWithTag("goal-title").performScrollTo().performTextInput("人工核对交易理由")
-        compose.onNodeWithTag("save-review-goal").assertIsDisplayed().performClick();compose.waitUntil(15000){model.state.value.goals.size==2 && !model.busy.value}
+        compose.onNodeWithTag("goal-title").assertTextContains("人工核对交易理由")
+        // The IME is still opening after SetText; finish the real field action
+        // before targeting a bottom button whose position changes with insets.
+        hideKeyboard("goal-title")
+        compose.onNodeWithTag("save-review-goal").assertIsDisplayed().performClick();compose.waitUntil(15000){model.state.value.goals.size==2 && !model.busy.value && compose.onAllNodesWithTag("save-review-goal").fetchSemanticsNodes().isEmpty()}
         compose.waitUntil(15000){model.message.value==null && !model.busy.value}
         val text=model.state.value.goals.first { it.kind=="text" };compose.onNodeWithTag("goals-list").performScrollToNode(hasTestTag("goal-progress-${text.id}"));compose.onNodeWithTag("goal-progress-${text.id}").assertTextEquals("实际 不可自动计算 · 文字目标")
         compose.onNodeWithTag("goals-list").performScrollToNode(hasTestTag("goal-history-${ratio.id}"));compose.onNodeWithTag("goal-history-${ratio.id}").performScrollTo().assertIsDisplayed();capture("17-review-goals")
