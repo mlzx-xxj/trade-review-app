@@ -122,10 +122,11 @@ class V210PlanReviewJourneyTest {
     }
     private fun hideKeyboard(){if(instrumentation.uiAutomation.windows.any{it.type==AccessibilityWindowInfo.TYPE_INPUT_METHOD}){shell("input keyevent KEYCODE_BACK");backKeys++;ui.waitForIdle()}}
     private fun capture(scene:String){
+        if(scene!="failure"&&::model.isInitialized)waitFor{model.message.value==null}
         ui.waitForIdle();android.os.SystemClock.sleep(150)
         val b=requireNotNull(instrumentation.uiAutomation.takeScreenshot());val name="v210-review-$profile-$scene.png"
         File(output(),name).outputStream().use{assertTrue(b.compress(android.graphics.Bitmap.CompressFormat.PNG,100,it))}
-        screens+=mapOf("scene" to scene,"file" to name,"pixels" to listOf(b.width,b.height));b.recycle()
+        screens+=mapOf("scene" to scene,"file" to name,"pixels" to listOf(b.width,b.height),"transientNoticeSettled" to (model.message.value==null));b.recycle()
     }
     private fun controls(saveTag:String,label:String):Map<String,Any?>{
         ui.waitForIdle()
@@ -194,6 +195,11 @@ class V210PlanReviewJourneyTest {
         return facts().executions.single{e->previous.executions.none{it.id==e.id}}.also{assertEquals(fee,it.fees)}
     }
     private fun openReview(cycle:LedgerCycle){page(2);tap("review-section-post");ui.onNodeWithTag("v2-reviews").performScrollToNode(hasTestTag("review-cycle-${cycle.id}"));tap("review-cycle-${cycle.id}")}
+    private fun editReview(review:LedgerReview){
+        page(2);tap("review-section-post");ui.onNodeWithTag("v2-reviews").performScrollToNode(hasTestTag("review-cycle-${review.cycleId}"))
+        val history=if(ui.onAllNodesWithTag("edit-review-${review.id}").fetchSemanticsNodes().isNotEmpty())ui.onNodeWithTag("edit-review-${review.id}")else ui.onNodeWithText("$anchor ${review.note.take(24).ifBlank{"已有复盘"}}")
+        visible(history).performClick();taps++
+    }
     private fun orientation(requested:Int,expected:Int){
         instrumentation.runOnMainSync{androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(androidx.test.runner.lifecycle.Stage.RESUMED).filterIsInstance<MainActivity>().single().requestedOrientation=requested}
         waitFor{var ready=false;instrumentation.runOnMainSync{ready=androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(androidx.test.runner.lifecycle.Stage.RESUMED).filterIsInstance<MainActivity>().any{it.resources.configuration.orientation==expected}};ready};ui.waitForIdle()
@@ -208,8 +214,14 @@ class V210PlanReviewJourneyTest {
             val before=JsonParser.parseString(saved.readText()).asJsonObject
             assertNotEquals(before["pid"].asInt,android.os.Process.myPid());waitFor{model.state.value.ledger==facts()};assertEquals(before["ledger"],LedgerJson.element(facts()))
             page(2);tap("review-section-plan");openPlan(facts().plans.single{it.code=="603999"}.id);ui.onNodeWithTag("plan-note").assertTextContains(longPlan+"已修改计划");tapText("取消",true)
+            val review=facts().reviews.single{r->facts().cycles.single{it.id==r.cycleId}.code=="rb2701"}
+            editReview(review);ui.onNodeWithTag("position-review-note").assertTextContains(longReview+"已修改复盘")
+            ui.onNode(hasSetTextAction() and hasText("复盘记录的止盈价（可选）") and hasAnyAncestor(isDialog())).assertTextContains("3600")
+            ui.onNode(hasSetTextAction() and hasText("复盘记录的止损价（可选）") and hasAnyAncestor(isDialog())).assertTextContains("3400")
+            ui.onNode(hasSetTextAction() and hasText("价位") and hasAnyAncestor(isDialog())).assertTextContains("3480")
+            visible(ui.onNodeWithTag("position-review-note"));capture("reopened-review");tapText("取消",true)
             page(4);capture("reopened-accounts")
-            File(output(),"v210-review-reopen-$profile-api${Build.VERSION.SDK_INT}.json").writeText(GsonBuilder().serializeNulls().setPrettyPrinting().create().toJson(mapOf("api" to Build.VERSION.SDK_INT,"profile" to profile,"pid" to android.os.Process.myPid(),"previousPid" to before["pid"].asInt,"allFactsIdentical" to true,"planTextPreserved" to true,"ledger" to LedgerJson.element(facts()),"result" to "PASS","screenshots" to screens)))
+            File(output(),"v210-review-reopen-$profile-api${Build.VERSION.SDK_INT}.json").writeText(GsonBuilder().serializeNulls().setPrettyPrinting().create().toJson(mapOf("api" to Build.VERSION.SDK_INT,"profile" to profile,"pid" to android.os.Process.myPid(),"previousPid" to before["pid"].asInt,"allFactsIdentical" to true,"planTextPreserved" to true,"reviewTextAndPricesPreserved" to true,"ledger" to LedgerJson.element(facts()),"result" to "PASS","screenshots" to screens)))
             return
         }
         runBlocking{app.database.withTransaction{model.repository.write(LedgerSnapshot(accounts=listOf(LedgerAccount("stock","stock","A股账户"),LedgerAccount("futures","futures","国内期货账户")),risks=listOf(MarketRisk("stock"),MarketRisk("futures")),strategies=listOf(LedgerStrategy("review_fixture_strategy","合成趋势策略","仅用于离线UI验证"))),true)}}
@@ -249,14 +261,17 @@ class V210PlanReviewJourneyTest {
         val rb=immutable.cycles.single{it.code=="rb2701"};assertEquals("1",rb.remaining);assertEquals("-628.006666666667",rb.realized)
         val closed=immutable.cycles.single{it.code=="603999"};assertNotNull(closed.closedDay);assertEquals("992.4",closed.realized)
         val pending=immutable.cycles.single{it.code=="i2701"};assertNull(pending.realized);assertNull(pending.fees)
-        openReview(rb);reset();date("复盘日期",anchor);field("position-review-note",longReview);waitFor{instrumentation.uiAutomation.windows.any{it.type==AccessibilityWindowInfo.TYPE_INPUT_METHOD}};capture("review-keyboard")
+        openReview(rb);capture("open-review-summary");layout("open-review-summary");reset();date("复盘日期",anchor);field("position-review-note",longReview);waitFor{instrumentation.uiAutomation.windows.any{it.type==AccessibilityWindowInfo.TYPE_INPUT_METHOD}};capture("review-keyboard")
         save("save-position-review","保存复盘","new-open-review")
         val first=facts().reviews.single();unchanged(immutable)
         page(2);top("v2-reviews");capture("review-cycles");ui.onNodeWithTag("v2-reviews").performScrollToNode(hasTestTag("review-cycle-${rb.id}"))
-        val history=if(ui.onAllNodesWithTag("edit-review-${first.id}").fetchSemanticsNodes().isNotEmpty())ui.onNodeWithTag("edit-review-${first.id}")else ui.onNodeWithText("$anchor ${longReview.take(24)}")
-        visible(history).performClick();visible(ui.onNodeWithTag("position-review-note"));capture("review-editor-long");layout("review-editor");reset();field("position-review-note",longReview+"已修改复盘")
+        editReview(first);visible(ui.onNodeWithTag("position-review-note"));capture("review-editor-long");layout("review-editor");reset()
+        labeled("复盘记录的止盈价（可选）","3600");labeled("复盘记录的止损价（可选）","3400")
+        tapText("增加关键价位",true);labeled("名称","支撑");labeled("价位","3480");hideKeyboard();capture("review-optional-prices")
+        field("position-review-note",longReview+"已修改复盘")
         orientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE,Configuration.ORIENTATION_LANDSCAPE);capture("review-landscape");orientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT,Configuration.ORIENTATION_PORTRAIT)
-        ui.onNodeWithTag("position-review-note").assertTextContains(longReview+"已修改复盘");save("save-position-review","保存复盘","edit-open-review");assertEquals(first.id,facts().reviews.single().id)
+        ui.onNodeWithTag("position-review-note").assertTextContains(longReview+"已修改复盘");save("save-position-review","保存复盘","edit-open-review")
+        val corrected=facts().reviews.single();assertEquals(first.id,corrected.id);assertEquals("3600",corrected.takeProfit);assertEquals("3400",corrected.stopLoss);assertEquals(listOf(KeyPrice("支撑","3480")),LedgerJson.levels(corrected.levels))
         openReview(closed);reset();date("复盘日期",anchor);field("position-review-note","合成已平仓复盘，成交事实只读。");save("save-position-review","保存复盘","closed-review")
         openReview(pending);reset();date("复盘日期",anchor);field("position-review-note","费用尚未提供，净盈亏保持待估算。");capture("pending-review");save("save-position-review","保存复盘","pending-review")
         unchanged(immutable);assertEquals(3,facts().reviews.size)

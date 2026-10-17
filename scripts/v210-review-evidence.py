@@ -14,7 +14,7 @@ def verify(first, second, api, profile):
     assert first['allExecutionsCreatedViaRealForm'] is True and first['allPlansReviewsCashSavedViaUi'] is True
     assert first['immutableTradingFactsPreserved'] is True
     assert first['pid']==second['previousPid'] and first['pid']!=second['pid']
-    assert second['allFactsIdentical'] is True and second['planTextPreserved'] is True
+    assert second['allFactsIdentical'] is True and second['planTextPreserved'] is True and second['reviewTextAndPricesPreserved'] is True
     ledger=first['ledger'];assert second['ledger']==ledger
     for key in ('executions','lots','matches','cycles','audits','risks','rules','strategies'):
         assert first['immutableBeforeReview'][key]==ledger[key],f'Review/account UI changed {key}'
@@ -47,7 +47,9 @@ def verify(first, second, api, profile):
     assert len(p['note'])>300 and p['note'].endswith('已修改计划')
     reviews=ledger['reviews'];assert len(reviews)==3 and len({r['id'] for r in reviews})==3
     assert {r['cycleId'] for r in reviews}=={c['id'] for c in cycles.values()}
-    assert next(r for r in reviews if r['cycleId']==cycles['rb2701']['id'])['note'].endswith('已修改复盘')
+    r=next(r for r in reviews if r['cycleId']==cycles['rb2701']['id'])
+    assert r['note'].endswith('已修改复盘') and r['takeProfit']=='3600' and r['stopLoss']=='3400'
+    assert json.loads(r['levels'])==[dict(label='支撑',price='3480')]
     flows=ledger['cashFlows'];assert len(flows)==4 and len({f['id'] for f in flows})==4
     expected={('stock','in'):D(1200),('stock','out'):D(200),('futures','in'):D(3000),('futures','out'):D(500)}
     assert {(f['accountId'],f['kind']):D(f['amount']) for f in flows}==expected
