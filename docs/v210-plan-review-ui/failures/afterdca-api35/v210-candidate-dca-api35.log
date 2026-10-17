@@ -1,0 +1,1069 @@
+﻿2026-10-17T21:02:02.8703609Z Current runner version: '2.337.0'
+2026-10-17T21:02:02.8739772Z ##[group]Runner Image Provisioner
+2026-10-17T21:02:02.8741165Z Hosted Compute Agent
+2026-10-17T21:02:02.8742179Z Version: 20261012.601
+2026-10-17T21:02:02.8743425Z Commit: f3dc54e1fb89da6852db922499a0233137369e1d
+2026-10-17T21:02:02.8745272Z Build Date: 2026-10-12T17:48:21Z
+2026-10-17T21:02:02.8746540Z Worker ID: {f2a6f15b-7292-41b5-9d15-a6676ece45e7}
+2026-10-17T21:02:02.8747992Z Region: southcentralus
+2026-10-17T21:02:02.8749173Z Cloud: Azure
+2026-10-17T21:02:02.8750307Z ##[endgroup]
+2026-10-17T21:02:02.8752873Z ##[group]Operating System
+2026-10-17T21:02:02.8754037Z Ubuntu
+2026-10-17T21:02:02.8755454Z 24.04.5
+2026-10-17T21:02:02.8756395Z LTS
+2026-10-17T21:02:02.8757376Z ##[endgroup]
+2026-10-17T21:02:02.8758541Z ##[group]Runner Image
+2026-10-17T21:02:02.8759590Z Image: ubuntu-24.04
+2026-10-17T21:02:02.8760840Z Version: 20261012.334.1
+2026-10-17T21:02:02.8762977Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261012.334/images/ubuntu/Ubuntu2404-Readme.md
+2026-10-17T21:02:02.8766243Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261012.334
+2026-10-17T21:02:02.8768028Z ##[endgroup]
+2026-10-17T21:02:02.8770379Z ##[group]GITHUB_TOKEN Permissions
+2026-10-17T21:02:02.8773246Z Actions: read
+2026-10-17T21:02:02.8774370Z Contents: read
+2026-10-17T21:02:02.8775541Z Metadata: read
+2026-10-17T21:02:02.8776495Z ##[endgroup]
+2026-10-17T21:02:02.8779327Z Secret source: Actions
+2026-10-17T21:02:02.8780856Z Cache mode: write
+2026-10-17T21:02:02.8782486Z Prepare workflow directory
+2026-10-17T21:02:02.9440639Z Prepare all required actions
+2026-10-17T21:02:02.9511543Z Getting action download info
+2026-10-17T21:02:03.2471147Z Download action repository 'actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09' (SHA:fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09)
+2026-10-17T21:02:03.3809336Z Download action repository 'actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961' (SHA:b6effb05e454b25005698d916606bdc6ffcbf961)
+2026-10-17T21:02:04.0565067Z Download action repository 'android-actions/setup-android@9fc6c4e9069bf8d3d10b2204b1fb8f6ef7065407' (SHA:9fc6c4e9069bf8d3d10b2204b1fb8f6ef7065407)
+2026-10-17T21:02:04.4372661Z Download action repository 'gradle/actions@ed408507eac070d1f99cc633dbcf757c94c7933a' (SHA:ed408507eac070d1f99cc633dbcf757c94c7933a)
+2026-10-17T21:02:05.6327213Z Download action repository 'reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d' (SHA:a421e43855164a8197daf9d8d40fe71c6996bb0d)
+2026-10-17T21:02:06.0852036Z Download action repository 'actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+2026-10-17T21:02:06.3079315Z Complete job name: API 35 full read-only regressions
+2026-10-17T21:02:06.3706900Z ##[group]Run sudo rm -rf /usr/share/dotnet
+2026-10-17T21:02:06.3707326Z [36;1msudo rm -rf /usr/share/dotnet[0m
+2026-10-17T21:02:06.3997117Z shell: /usr/bin/bash -e {0}
+2026-10-17T21:02:06.3997829Z env:
+2026-10-17T21:02:06.3998228Z   SOURCE_COMMIT: dca977b34d7c209a1338c23e6bb33bd734d65042
+2026-10-17T21:02:06.3998719Z   V08_STABILITY_PROBES: true
+2026-10-17T21:02:06.3999064Z   V200_MAIN_PROBES: true
+2026-10-17T21:02:06.3999392Z   V200_PACKAGE_PROBES: true
+2026-10-17T21:02:06.3999729Z   V100_CHECK_BOOT: true
+2026-10-17T21:02:06.4000051Z ##[endgroup]
+2026-10-17T21:02:17.0671037Z ##[group]Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+2026-10-17T21:02:17.0671473Z with:
+2026-10-17T21:02:17.0671719Z   ref: dca977b34d7c209a1338c23e6bb33bd734d65042
+2026-10-17T21:02:17.0672050Z   persist-credentials: false
+2026-10-17T21:02:17.0672323Z   repository: mlzx-xxj/trade-review-app
+2026-10-17T21:02:17.0675231Z   token: ***
+2026-10-17T21:02:17.0675462Z   ssh-strict: true
+2026-10-17T21:02:17.0675674Z   ssh-user: git
+2026-10-17T21:02:17.0675869Z   clean: true
+2026-10-17T21:02:17.0676089Z   sparse-checkout-cone-mode: true
+2026-10-17T21:02:17.0676352Z   fetch-depth: 1
+2026-10-17T21:02:17.0676550Z   fetch-tags: false
+2026-10-17T21:02:17.0676999Z   show-progress: true
+2026-10-17T21:02:17.0677212Z   lfs: false
+2026-10-17T21:02:17.0677418Z   submodules: false
+2026-10-17T21:02:17.0677668Z   set-safe-directory: true
+2026-10-17T21:02:17.0677919Z   allow-unsafe-pr-checkout: false
+2026-10-17T21:02:17.0678167Z env:
+2026-10-17T21:02:17.0678441Z   SOURCE_COMMIT: dca977b34d7c209a1338c23e6bb33bd734d65042
+2026-10-17T21:02:17.0678780Z   V08_STABILITY_PROBES: true
+2026-10-17T21:02:17.0679020Z   V200_MAIN_PROBES: true
+2026-10-17T21:02:17.0679244Z   V200_PACKAGE_PROBES: true
+2026-10-17T21:02:17.0679475Z   V100_CHECK_BOOT: true
+2026-10-17T21:02:17.0679683Z ##[endgroup]
+2026-10-17T21:02:17.1679748Z Syncing repository: mlzx-xxj/trade-review-app
+2026-10-17T21:02:17.1681975Z ##[group]Getting Git version info
+2026-10-17T21:02:17.1682484Z Working directory is '/home/runner/work/trade-review-app/trade-review-app'
+2026-10-17T21:02:17.1683199Z [command]/usr/bin/git version
+2026-10-17T21:02:17.1773582Z git version 2.55.0
+2026-10-17T21:02:17.1798888Z ##[endgroup]
+2026-10-17T21:02:17.1814596Z Temporarily overriding HOME='/home/runner/work/_temp/28c356d4-ea9a-4f67-839e-bf0f2a85e098' before making global git config changes
+2026-10-17T21:02:17.1816299Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-17T21:02:17.1821962Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/trade-review-app/trade-review-app
+2026-10-17T21:02:17.1885530Z Deleting the contents of '/home/runner/work/trade-review-app/trade-review-app'
+2026-10-17T21:02:17.1890778Z ##[group]Initializing the repository
+2026-10-17T21:02:17.1896388Z [command]/usr/bin/git init /home/runner/work/trade-review-app/trade-review-app
+2026-10-17T21:02:17.2043085Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-17T21:02:17.2044341Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-17T21:02:17.2045780Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-17T21:02:17.2046703Z hint: call:
+2026-10-17T21:02:17.2047934Z hint:
+2026-10-17T21:02:17.2048499Z hint: 	git config --global init.defaultBranch <name>
+2026-10-17T21:02:17.2049058Z hint:
+2026-10-17T21:02:17.2049510Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-17T21:02:17.2050211Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-17T21:02:17.2051118Z hint:
+2026-10-17T21:02:17.2051354Z hint: 	git branch -m <name>
+2026-10-17T21:02:17.2051606Z hint:
+2026-10-17T21:02:17.2052470Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-17T21:02:17.2054320Z Initialized empty Git repository in /home/runner/work/trade-review-app/trade-review-app/.git/
+2026-10-17T21:02:17.2060926Z [command]/usr/bin/git remote add origin https://github.com/mlzx-xxj/trade-review-app
+2026-10-17T21:02:17.2118442Z ##[endgroup]
+2026-10-17T21:02:17.2119115Z ##[group]Disabling automatic garbage collection
+2026-10-17T21:02:17.2123225Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-17T21:02:17.2162588Z ##[endgroup]
+2026-10-17T21:02:17.2163300Z ##[group]Setting up auth
+2026-10-17T21:02:17.2171377Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-17T21:02:17.2217072Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-17T21:02:17.2628219Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-17T21:02:17.2664854Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-17T21:02:17.2889334Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-17T21:02:17.2925636Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-17T21:02:17.3154311Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-17T21:02:17.3195036Z ##[endgroup]
+2026-10-17T21:02:17.3195575Z ##[group]Fetching the repository
+2026-10-17T21:02:17.3206746Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin dca977b34d7c209a1338c23e6bb33bd734d65042
+2026-10-17T21:02:18.6953724Z From https://github.com/mlzx-xxj/trade-review-app
+2026-10-17T21:02:18.6954612Z  * branch            dca977b34d7c209a1338c23e6bb33bd734d65042 -> FETCH_HEAD
+2026-10-17T21:02:18.6968564Z ##[endgroup]
+2026-10-17T21:02:18.6968965Z ##[group]Determining the checkout info
+2026-10-17T21:02:18.6969384Z ##[endgroup]
+2026-10-17T21:02:18.6980631Z [command]/usr/bin/git sparse-checkout disable
+2026-10-17T21:02:18.7030424Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-17T21:02:18.7070940Z ##[group]Checking out the ref
+2026-10-17T21:02:18.7075186Z [command]/usr/bin/git checkout --progress --force dca977b34d7c209a1338c23e6bb33bd734d65042
+2026-10-17T21:02:18.7824584Z Note: switching to 'dca977b34d7c209a1338c23e6bb33bd734d65042'.
+2026-10-17T21:02:18.7825370Z 
+2026-10-17T21:02:18.7825640Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-10-17T21:02:18.7826159Z changes and commit them, and you can discard any commits you make in this
+2026-10-17T21:02:18.7826638Z state without impacting any branches by switching back to a branch.
+2026-10-17T21:02:18.7826923Z 
+2026-10-17T21:02:18.7827117Z If you want to create a new branch to retain commits you create, you may
+2026-10-17T21:02:18.7827582Z do so (now or later) by using -c with the switch command. Example:
+2026-10-17T21:02:18.7827839Z 
+2026-10-17T21:02:18.7827959Z   git switch -c <new-branch-name>
+2026-10-17T21:02:18.7828136Z 
+2026-10-17T21:02:18.7828243Z Or undo this operation with:
+2026-10-17T21:02:18.7828413Z 
+2026-10-17T21:02:18.7828507Z   git switch -
+2026-10-17T21:02:18.7828664Z 
+2026-10-17T21:02:18.7828877Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-10-17T21:02:18.7829193Z 
+2026-10-17T21:02:18.7829439Z HEAD is now at dca977b Import the Compose semantics extension used by stable UI locators
+2026-10-17T21:02:18.7842911Z ##[endgroup]
+2026-10-17T21:02:18.7897065Z [command]/usr/bin/git log -1 --format=%H
+2026-10-17T21:02:18.7924362Z dca977b34d7c209a1338c23e6bb33bd734d65042
+2026-10-17T21:02:18.7956148Z ##[group]Removing auth
+2026-10-17T21:02:18.7956585Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-17T21:02:18.7980640Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-17T21:02:18.8207682Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-17T21:02:18.8236879Z http.https://github.com/.extraheader
+2026-10-17T21:02:18.8244594Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-10-17T21:02:18.8282439Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-17T21:02:18.8525957Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-17T21:02:18.8543472Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-17T21:02:18.8781605Z ##[endgroup]
+2026-10-17T21:02:18.9015744Z ##[group]Run actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961
+2026-10-17T21:02:18.9016157Z with:
+2026-10-17T21:02:18.9016358Z   distribution: temurin
+2026-10-17T21:02:18.9016586Z   java-version: 17
+2026-10-17T21:02:18.9016797Z   java-package: jdk
+2026-10-17T21:02:18.9017187Z   check-latest: false
+2026-10-17T21:02:18.9017399Z   set-default: true
+2026-10-17T21:02:18.9017604Z   verify-signature: false
+2026-10-17T21:02:18.9017830Z   server-id: github
+2026-10-17T21:02:18.9018042Z   server-username: GITHUB_ACTOR
+2026-10-17T21:02:18.9018294Z   server-password: GITHUB_TOKEN
+2026-10-17T21:02:18.9018540Z   overwrite-settings: true
+2026-10-17T21:02:18.9018766Z   job-status: success
+2026-10-17T21:02:18.9021253Z   token: ***
+2026-10-17T21:02:18.9021475Z   show-download-progress: false
+2026-10-17T21:02:18.9021719Z env:
+2026-10-17T21:02:18.9021960Z   SOURCE_COMMIT: dca977b34d7c209a1338c23e6bb33bd734d65042
+2026-10-17T21:02:18.9022288Z   V08_STABILITY_PROBES: true
+2026-10-17T21:02:18.9022563Z   V200_MAIN_PROBES: true
+2026-10-17T21:02:18.9022790Z   V200_PACKAGE_PROBES: true
+2026-10-17T21:02:18.9023010Z   V100_CHECK_BOOT: true
+2026-10-17T21:02:18.9023219Z ##[endgroup]
+2026-10-17T21:02:19.0546951Z ##[group]Installed distributions
+2026-10-17T21:02:19.0734381Z Resolved Java 17.0.20+1 from tool-cache
+2026-10-17T21:02:19.0735156Z Setting Java 17.0.20+1 as the default
+2026-10-17T21:02:19.0746407Z Creating toolchains.xml for JDK version 17 from temurin
+2026-10-17T21:02:19.0823351Z Writing to /home/runner/.m2/toolchains.xml
+2026-10-17T21:02:19.0823948Z 
+2026-10-17T21:02:19.0824262Z Java configuration:
+2026-10-17T21:02:19.0824973Z   Distribution: temurin
+2026-10-17T21:02:19.0825404Z   Version: 17.0.20+1
+2026-10-17T21:02:19.0825982Z   Path: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.20-1/x64
+2026-10-17T21:02:19.0826503Z 
+2026-10-17T21:02:19.0827022Z ##[endgroup]
+2026-10-17T21:02:19.0862819Z Creating settings.xml with server-id: github
+2026-10-17T21:02:19.0863466Z Writing to /home/runner/.m2/settings.xml
+2026-10-17T21:02:19.0865001Z Configured MAVEN_ARGS to include -ntp to suppress Maven transfer progress logs. Set 'show-download-progress: true' to keep the download progress output.
+2026-10-17T21:02:19.1000570Z ##[group]Run android-actions/setup-android@9fc6c4e9069bf8d3d10b2204b1fb8f6ef7065407
+2026-10-17T21:02:19.1001049Z with:
+2026-10-17T21:02:19.1001259Z   packages: platform-tools
+2026-10-17T21:02:19.1001540Z   log-accepted-android-sdk-licenses: false
+2026-10-17T21:02:19.1001844Z   cmdline-tools-version: 12266719
+2026-10-17T21:02:19.1002128Z   accept-android-sdk-licenses: true
+2026-10-17T21:02:19.1002387Z env:
+2026-10-17T21:02:19.1002631Z   SOURCE_COMMIT: dca977b34d7c209a1338c23e6bb33bd734d65042
+2026-10-17T21:02:19.1002958Z   V08_STABILITY_PROBES: true
+2026-10-17T21:02:19.1003196Z   V200_MAIN_PROBES: true
+2026-10-17T21:02:19.1003420Z   V200_PACKAGE_PROBES: true
+2026-10-17T21:02:19.1003641Z   V100_CHECK_BOOT: true
+2026-10-17T21:02:19.1003964Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.20-1/x64
+2026-10-17T21:02:19.1004478Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.20-1/x64
+2026-10-17T21:02:19.1005263Z   MAVEN_ARGS: -ntp
+2026-10-17T21:02:19.1005508Z ##[endgroup]
+2026-10-17T21:02:19.1834396Z Found preinstalled sdkmanager in /usr/local/lib/android/sdk/cmdline-tools/latest with following source.properties:
+2026-10-17T21:02:19.1836313Z Pkg.Revision=12.0
+2026-10-17T21:02:19.1836812Z Pkg.Path=cmdline-tools;12.0
+2026-10-17T21:02:19.1837384Z Pkg.Desc=Android SDK Command-line Tools
+2026-10-17T21:02:19.1837760Z 
+2026-10-17T21:02:19.1837924Z Wrong version in preinstalled sdkmanager
+2026-10-17T21:02:19.1839068Z Downloading commandline tools from https://dl.google.com/android/repository/commandlinetools-linux-12266719_latest.zip
+2026-10-17T21:02:20.2450456Z [command]/usr/bin/unzip -o -q /home/runner/work/_temp/aa926dca-fd9c-4016-a43b-1fb1c7f92c61
+2026-10-17T21:02:21.0201666Z Accepting Android SDK licenses
+2026-10-17T21:02:26.5225759Z [command]/usr/local/lib/android/sdk/cmdline-tools/16.0/bin/sdkmanager platform-tools
+2026-10-17T21:02:27.3096465Z Loading package information...                                                  
+2026-10-17T21:02:27.4206224Z Loading local repository...                                                     
+2026-10-17T21:02:27.4207952Z [                                       ] 3% Loading local repository...        
+2026-10-17T21:02:27.4314041Z [                                       ] 3% Fetch remote repository...         
+2026-10-17T21:02:27.7955906Z [=                                      ] 3% Fetch remote repository...         
+2026-10-17T21:02:27.8677713Z [=                                      ] 4% Fetch remote repository...         
+2026-10-17T21:02:27.9030613Z [=                                      ] 5% Fetch remote repository...         
+2026-10-17T21:02:27.9678527Z [==                                     ] 5% Fetch remote repository...         
+2026-10-17T21:02:28.0466600Z [==                                     ] 6% Fetch remote repository...         
+2026-10-17T21:02:28.1347618Z [==                                     ] 7% Fetch remote repository...         
+2026-10-17T21:02:28.1375849Z [==                                     ] 7% Computing updates...               
+2026-10-17T21:02:28.1484548Z [===                                    ] 8% Computing updates...               
+2026-10-17T21:02:28.1537707Z [===                                    ] 10% Computing updates...              
+2026-10-17T21:02:28.1538660Z [=======================================] 100% Computing updates...             
+2026-10-17T21:02:28.1539475Z 
+2026-10-17T21:02:28.2023666Z ##[group]Run sdkmanager 'platforms;android-35' 'build-tools;35.0.0'
+2026-10-17T21:02:28.2024203Z [36;1msdkmanager 'platforms;android-35' 'build-tools;35.0.0'[0m
+2026-10-17T21:02:28.2087905Z shell: /usr/bin/bash -e {0}
+2026-10-17T21:02:28.2088169Z env:
+2026-10-17T21:02:28.2088430Z   SOURCE_COMMIT: dca977b34d7c209a1338c23e6bb33bd734d65042
+2026-10-17T21:02:28.2088778Z   V08_STABILITY_PROBES: true
+2026-10-17T21:02:28.2089020Z   V200_MAIN_PROBES: true
+2026-10-17T21:02:28.2089258Z   V200_PACKAGE_PROBES: true
+2026-10-17T21:02:28.2089492Z   V100_CHECK_BOOT: true
+2026-10-17T21:02:28.2089825Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.20-1/x64
+2026-10-17T21:02:28.2090356Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.20-1/x64
+2026-10-17T21:02:28.2090748Z   MAVEN_ARGS: -ntp
+2026-10-17T21:02:28.2090982Z   ANDROID_HOME: /usr/local/lib/android/sdk
+2026-10-17T21:02:28.2091282Z   ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
+2026-10-17T21:02:28.2091602Z ##[endgroup]
+2026-10-17T21:02:29.0364267Z Loading package information...                                                  
+2026-10-17T21:02:29.1280736Z Loading local repository...                                                     
+2026-10-17T21:02:29.1291730Z [                                       ] 3% Loading local repository...        
+2026-10-17T21:02:29.1382054Z [                                       ] 3% Fetch remote repository...         
+2026-10-17T21:02:29.4780125Z [=                                      ] 3% Fetch remote repository...         
+2026-10-17T21:02:29.5443472Z [=                                      ] 4% Fetch remote repository...         
+2026-10-17T21:02:29.5685813Z [=                                      ] 5% Fetch remote repository...         
+2026-10-17T21:02:29.6322072Z [==                                     ] 5% Fetch remote repository...         
+2026-10-17T21:02:29.6941663Z [==                                     ] 6% Fetch remote repository...         
+2026-10-17T21:02:29.7467911Z [==                                     ] 7% Fetch remote repository...         
+2026-10-17T21:02:29.7488542Z [==                                     ] 7% Computing updates...               
+2026-10-17T21:02:29.7613699Z [===                                    ] 8% Computing updates...               
+2026-10-17T21:02:29.7664094Z [===                                    ] 10% Computing updates...              
+2026-10-17T21:02:29.7665526Z [=======================================] 100% Computing updates...             
+2026-10-17T21:02:29.7669072Z 
+2026-10-17T21:02:29.8018077Z ##[group]Run gradle/actions/setup-gradle@ed408507eac070d1f99cc633dbcf757c94c7933a
+2026-10-17T21:02:29.8018701Z with:
+2026-10-17T21:02:29.8018901Z   gradle-version: 8.11.1
+2026-10-17T21:02:29.8019138Z   cache-read-only: true
+2026-10-17T21:02:29.8019360Z   cache-disabled: false
+2026-10-17T21:02:29.8019580Z   cache-write-only: false
+2026-10-17T21:02:29.8019829Z   cache-overwrite-existing: false
+2026-10-17T21:02:29.8020095Z   cache-cleanup: on-success
+2026-10-17T21:02:29.8020390Z   gradle-home-cache-includes: caches
+notifications
+
+2026-10-17T21:02:29.8020710Z   add-job-summary: always
+2026-10-17T21:02:29.8020961Z   add-job-summary-as-pr-comment: never
+2026-10-17T21:02:29.8021250Z   dependency-graph: disabled
+2026-10-17T21:02:29.8021552Z   dependency-graph-report-dir: dependency-graph-reports
+2026-10-17T21:02:29.8021916Z   dependency-graph-continue-on-failure: true
+2026-10-17T21:02:29.8022215Z   build-scan-publish: false
+2026-10-17T21:02:29.8022459Z   validate-wrappers: true
+2026-10-17T21:02:29.8022740Z   allow-snapshot-wrappers: false
+2026-10-17T21:02:29.8023017Z   gradle-home-cache-strict-match: false
+2026-10-17T21:02:29.8023371Z   workflow-job-context: {
+  "api": 35,
+  "target": "default"
+}
+2026-10-17T21:02:29.8026345Z   github-token: ***
+2026-10-17T21:02:29.8026566Z env:
+2026-10-17T21:02:29.8026810Z   SOURCE_COMMIT: dca977b34d7c209a1338c23e6bb33bd734d65042
+2026-10-17T21:02:29.8027137Z   V08_STABILITY_PROBES: true
+2026-10-17T21:02:29.8027375Z   V200_MAIN_PROBES: true
+2026-10-17T21:02:29.8027600Z   V200_PACKAGE_PROBES: true
+2026-10-17T21:02:29.8027827Z   V100_CHECK_BOOT: true
+2026-10-17T21:02:29.8028150Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.20-1/x64
+2026-10-17T21:02:29.8028632Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.20-1/x64
+2026-10-17T21:02:29.8029015Z   MAVEN_ARGS: -ntp
+2026-10-17T21:02:29.8029246Z   ANDROID_HOME: /usr/local/lib/android/sdk
+2026-10-17T21:02:29.8029538Z   ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
+2026-10-17T21:02:29.8029816Z ##[endgroup]
+2026-10-17T21:02:30.1460143Z Merged default JDK locations into /home/runner/.m2/toolchains.xml
+2026-10-17T21:02:30.1462897Z ##[group]Restore Gradle state from cache
+2026-10-17T21:02:30.3010013Z Cache hit for restore-key: gradle-home-v1|Linux-X64|build[5df42585ae8f8da228c604b8b4e8707c]-2249e7a5330eb11684499394270034dc7cf2b4c7
+2026-10-17T21:02:31.4544482Z Received 74938238 of 74938238 (100.0%), 70.2 MBs/sec
+2026-10-17T21:02:31.4546751Z Cache Size: ~71 MB (74938238 B)
+2026-10-17T21:02:31.4620282Z [command]/usr/bin/tar -xf /home/runner/work/_temp/d8efa989-84fd-4723-9e0d-892d9c4f752b/cache.tzst -P -C /home/runner/work/trade-review-app/trade-review-app --use-compress-program unzstd
+2026-10-17T21:02:31.8014359Z Cache restored successfully
+2026-10-17T21:02:31.8049892Z Restored cache entry with key gradle-home-v1|Linux-X64|device-tests[a5d46903de3cade01730000d319d4a67]-23bd9df588010e64143dc72a3e82a729d7702089 to /home/runner/.gradle/caches,/home/runner/.gradle/notifications,/home/runner/.gradle/.setup-gradle in 1657ms
+2026-10-17T21:02:31.9691928Z Cache hit for: gradle-transforms-v1-15d117600be36cfec42dbd8da2cab98c
+2026-10-17T21:02:31.9695937Z Cache hit for: gradle-generated-gradle-jars-v1-162ec066fc0a1bae82804bbc69cfff33
+2026-10-17T21:02:31.9726489Z Cache hit for: gradle-groovy-dsl-v1-2802d435ab595dc3fa0b066895dc5a2f
+2026-10-17T21:02:31.9744286Z Cache hit for: gradle-instrumented-jars-v1-83c70d310a51aee1a6862280cb7056fb
+2026-10-17T21:02:31.9771187Z Cache hit for: gradle-kotlin-dsl-v1-d2201b118930fef955f572bca6fe755a
+2026-10-17T21:02:31.9777027Z Cache hit for: gradle-dependencies-v1-7aeffbb053ae6e9eb737e97ac4becd7a
+2026-10-17T21:02:31.9815649Z Cache hit for: gradle-wrapper-zips-v1-c3a078940a5ca7b83357239a46024f48
+2026-10-17T21:02:32.4236706Z Received 80357 of 80357 (100.0%), 0.3 MBs/sec
+2026-10-17T21:02:32.4237587Z Cache Size: ~0 MB (80357 B)
+2026-10-17T21:02:32.4263265Z [command]/usr/bin/tar -xf /home/runner/work/_temp/7850eed6-c4cf-4894-a112-b8dfe6287096/cache.tzst -P -C /home/runner/work/trade-review-app/trade-review-app --use-compress-program unzstd
+2026-10-17T21:02:32.4340612Z Received 124026 of 124026 (100.0%), 0.4 MBs/sec
+2026-10-17T21:02:32.4341794Z Cache Size: ~0 MB (124026 B)
+2026-10-17T21:02:32.4372599Z [command]/usr/bin/tar -xf /home/runner/work/_temp/a1fec5be-b01d-4899-9473-b524b38089a7/cache.tzst -P -C /home/runner/work/trade-review-app/trade-review-app --use-compress-program unzstd
+2026-10-17T21:02:32.4437474Z Received 144292 of 144292 (100.0%), 0.5 MBs/sec
+2026-10-17T21:02:32.4438612Z Cache Size: ~0 MB (144292 B)
+2026-10-17T21:02:32.4440021Z Cache restored successfully
+2026-10-17T21:02:32.4448961Z Restored cache entry with key gradle-instrumented-jars-v1-83c70d310a51aee1a6862280cb7056fb to /home/runner/.gradle/caches/jars-*/*/ in 638ms
+2026-10-17T21:02:32.4540403Z [command]/usr/bin/tar -xf /home/runner/work/_temp/520d6fbc-dbea-4069-a759-49dc03997a2d/cache.tzst -P -C /home/runner/work/trade-review-app/trade-review-app --use-compress-program unzstd
+2026-10-17T21:02:32.4652884Z Cache restored successfully
+2026-10-17T21:02:32.4657599Z Restored cache entry with key gradle-groovy-dsl-v1-2802d435ab595dc3fa0b066895dc5a2f to /home/runner/.gradle/caches/*/groovy-dsl/*/ in 658ms
+2026-10-17T21:02:32.5215266Z Cache restored successfully
+2026-10-17T21:02:32.5217352Z Restored cache entry with key gradle-kotlin-dsl-v1-d2201b118930fef955f572bca6fe755a to /home/runner/.gradle/caches/*/kotlin-dsl/accessors/*/,/home/runner/.gradle/caches/*/kotlin-dsl/scripts/*/ in 715ms
+2026-10-17T21:02:32.6191718Z Received 40897892 of 40897892 (100.0%), 63.4 MBs/sec
+2026-10-17T21:02:32.6192528Z Cache Size: ~39 MB (40897892 B)
+2026-10-17T21:02:32.6628162Z [command]/usr/bin/tar -xf /home/runner/work/_temp/66074b7d-085a-405e-8dbb-accd3317084c/cache.tzst -P -C /home/runner/work/trade-review-app/trade-review-app --use-compress-program unzstd
+2026-10-17T21:02:33.0988988Z Cache restored successfully
+2026-10-17T21:02:33.1057519Z Restored cache entry with key gradle-generated-gradle-jars-v1-162ec066fc0a1bae82804bbc69cfff33 to /home/runner/.gradle/caches/8.11.1/generated-gradle-jars/gradle-api-8.11.1.jar in 1299ms
+2026-10-17T21:02:33.1113794Z Received 54525952 of 186023508 (29.3%), 51.9 MBs/sec
+2026-10-17T21:02:33.1301751Z Received 54525952 of 136238512 (40.0%), 52.1 MBs/sec
+2026-10-17T21:02:33.1710687Z Received 41943040 of 372373308 (11.3%), 39.8 MBs/sec
+2026-10-17T21:02:33.8367887Z Received 136238512 of 136238512 (100.0%), 76.2 MBs/sec
+2026-10-17T21:02:33.8370119Z Cache Size: ~130 MB (136238512 B)
+2026-10-17T21:02:33.8998911Z [command]/usr/bin/tar -xf /home/runner/work/_temp/dcd13a43-c6bb-4e8a-8b5f-8b105e6bc717/cache.tzst -P -C /home/runner/work/trade-review-app/trade-review-app --use-compress-program unzstd
+2026-10-17T21:02:34.0958728Z Received 186023508 of 186023508 (100.0%), 89.1 MBs/sec
+2026-10-17T21:02:34.0965597Z Cache Size: ~177 MB (186023508 B)
+2026-10-17T21:02:34.1040432Z [command]/usr/bin/tar -xf /home/runner/work/_temp/94b4a10c-f436-4380-bbb1-13657abe5360/cache.tzst -P -C /home/runner/work/trade-review-app/trade-review-app --use-compress-program unzstd
+2026-10-17T21:02:34.1726692Z Received 167772160 of 372373308 (45.1%), 79.8 MBs/sec
+2026-10-17T21:02:34.2097446Z Cache restored successfully
+2026-10-17T21:02:34.2387030Z Restored cache entry with key gradle-wrapper-zips-v1-c3a078940a5ca7b83357239a46024f48 to /home/runner/.gradle/wrapper/dists/gradle-8.11.1-bin/bpt9gzteqjrbo1mjrsomdt32c in 2431ms
+2026-10-17T21:02:35.1729003Z Received 339738624 of 372373308 (91.2%), 107.8 MBs/sec
+2026-10-17T21:02:35.3333970Z Received 372373308 of 372373308 (100.0%), 112.1 MBs/sec
+2026-10-17T21:02:35.3337770Z Cache Size: ~355 MB (372373308 B)
+2026-10-17T21:02:35.3390925Z [command]/usr/bin/tar -xf /home/runner/work/_temp/1cc2721f-ca57-4619-8baa-2f76ceebfce6/cache.tzst -P -C /home/runner/work/trade-review-app/trade-review-app --use-compress-program unzstd
+2026-10-17T21:02:36.5367341Z Cache restored successfully
+2026-10-17T21:02:36.5477817Z Cache restored successfully
+2026-10-17T21:02:36.5556462Z Restored cache entry with key gradle-dependencies-v1-7aeffbb053ae6e9eb737e97ac4becd7a to /home/runner/.gradle/caches/modules-*/files-*/*/*/*/* in 4749ms
+2026-10-17T21:02:36.5558522Z Restored cache entry with key gradle-transforms-v1-15d117600be36cfec42dbd8da2cab98c to /home/runner/.gradle/caches/transforms-4/*/,/home/runner/.gradle/caches/*/transforms/*/ in 4748ms
+2026-10-17T21:02:36.5682188Z ##[endgroup]
+2026-10-17T21:02:36.5839419Z ##[group]All Gradle Wrapper jars are valid
+2026-10-17T21:02:36.5840893Z ✓ Found known Gradle Wrapper JAR files:
+2026-10-17T21:02:36.5842139Z   2db75c40782f5e8ba1fc278a5574bab070adccb2d21ca5a6e5ed840888448046 gradle/wrapper/gradle-wrapper.jar
+2026-10-17T21:02:36.5843546Z ##[endgroup]
+2026-10-17T21:02:36.7459192Z ##[group]Provision Gradle 8.11.1
+2026-10-17T21:02:40.2199508Z Cache hit for: gradle-8.11.1
+2026-10-17T21:02:41.0242139Z Received 136562194 of 136562194 (100.0%), 170.7 MBs/sec
+2026-10-17T21:02:41.0244367Z Cache Size: ~130 MB (136562194 B)
+2026-10-17T21:02:41.0277764Z [command]/usr/bin/tar -xf /home/runner/work/_temp/623a4fd8-766c-4998-99df-9efcfe3488ed/cache.tzst -P -C /home/runner/work/trade-review-app/trade-review-app --use-compress-program unzstd
+2026-10-17T21:02:41.2226952Z Cache restored successfully
+2026-10-17T21:02:41.2286195Z Restored Gradle distribution gradle-8.11.1 from cache to /home/runner/work/_temp/.gradle-actions/gradle-installations/downloads/gradle-8.11.1-bin.zip
+2026-10-17T21:02:41.2305559Z [command]/usr/bin/unzip -o -q /home/runner/work/_temp/.gradle-actions/gradle-installations/downloads/gradle-8.11.1-bin.zip
+2026-10-17T21:02:42.1955472Z Extracted Gradle 8.11.1 to /home/runner/work/_temp/.gradle-actions/gradle-installations/installs/gradle-8.11.1
+2026-10-17T21:02:42.1958301Z Provisioned Gradle executable /home/runner/work/_temp/.gradle-actions/gradle-installations/installs/gradle-8.11.1/bin/gradle
+2026-10-17T21:02:42.1959922Z ##[endgroup]
+2026-10-17T21:02:42.2128274Z ##[group]Run python3 scripts/ci-artifacts.py download --name "rc-apk-attempt$BUILD_ATTEMPT" --destination delivered-packages --kind rc --expected "$RC_DIGEST"
+2026-10-17T21:02:42.2129555Z [36;1mpython3 scripts/ci-artifacts.py download --name "rc-apk-attempt$BUILD_ATTEMPT" --destination delivered-packages --kind rc --expected "$RC_DIGEST"[0m
+2026-10-17T21:02:42.2130788Z [36;1mpython3 scripts/ci-artifacts.py download --name "build-evidence-attempt$BUILD_ATTEMPT" --destination ci-reports --kind build-reports --expected "$REPORTS_DIGEST"[0m
+2026-10-17T21:02:42.2131638Z [36;1mcp -R ci-reports/schemas/. app/schemas/[0m
+2026-10-17T21:02:42.2194974Z shell: /usr/bin/bash -e {0}
+2026-10-17T21:02:42.2195313Z env:
+2026-10-17T21:02:42.2195648Z   SOURCE_COMMIT: dca977b34d7c209a1338c23e6bb33bd734d65042
+2026-10-17T21:02:42.2196077Z   V08_STABILITY_PROBES: true
+2026-10-17T21:02:42.2196384Z   V200_MAIN_PROBES: true
+2026-10-17T21:02:42.2196668Z   V200_PACKAGE_PROBES: true
+2026-10-17T21:02:42.2196984Z   V100_CHECK_BOOT: true
+2026-10-17T21:02:42.2197380Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.20-1/x64
+2026-10-17T21:02:42.2197952Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.20-1/x64
+2026-10-17T21:02:42.2198409Z   MAVEN_ARGS: -ntp
+2026-10-17T21:02:42.2198704Z   ANDROID_HOME: /usr/local/lib/android/sdk
+2026-10-17T21:02:42.2199069Z   ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
+2026-10-17T21:02:42.2199438Z   GRADLE_ACTION_ID: gradle/actions/setup-gradle
+2026-10-17T21:02:42.2199795Z   GRADLE_USER_HOME: /home/runner/.gradle
+2026-10-17T21:02:42.2200139Z   GRADLE_BUILD_ACTION_SETUP_COMPLETED: true
+2026-10-17T21:02:42.2200488Z   GRADLE_BUILD_ACTION_CACHE_RESTORED: true
+2026-10-17T21:02:42.2200984Z   DEVELOCITY_INJECTION_INIT_SCRIPT_NAME: gradle-actions.inject-develocity.init.gradle
+2026-10-17T21:02:42.2201521Z   DEVELOCITY_INJECTION_CUSTOM_VALUE: gradle-actions
+2026-10-17T21:02:42.2201891Z   GITHUB_DEPENDENCY_GRAPH_ENABLED: false
+2026-10-17T21:02:42.2204578Z   GH_TOKEN: ***
+2026-10-17T21:02:42.2205144Z   BUILD_ATTEMPT: 1
+2026-10-17T21:02:42.2205564Z   RC_DIGEST: da5a0685187d264b8c10a64e657bdc80aab7f4b6e5af5dac35c5fa8f58ce804c
+2026-10-17T21:02:42.2206184Z   REPORTS_DIGEST: 74c13df9e25fb493e2f9a51daf1e520b51ff9790b70d38dc3a0d9b56b9b82492
+2026-10-17T21:02:42.2206848Z ##[endgroup]
+2026-10-17T21:02:46.2786445Z ##[group]Run echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+2026-10-17T21:02:46.2787478Z [36;1mecho 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules[0m
+2026-10-17T21:02:46.2788154Z [36;1msudo udevadm control --reload-rules[0m
+2026-10-17T21:02:46.2788548Z [36;1msudo udevadm trigger --name-match=kvm[0m
+2026-10-17T21:02:46.2788903Z [36;1mchmod +x gradlew[0m
+2026-10-17T21:02:46.2855482Z shell: /usr/bin/bash -e {0}
+2026-10-17T21:02:46.2855800Z env:
+2026-10-17T21:02:46.2856119Z   SOURCE_COMMIT: dca977b34d7c209a1338c23e6bb33bd734d65042
+2026-10-17T21:02:46.2856515Z   V08_STABILITY_PROBES: true
+2026-10-17T21:02:46.2856816Z   V200_MAIN_PROBES: true
+2026-10-17T21:02:46.2857099Z   V200_PACKAGE_PROBES: true
+2026-10-17T21:02:46.2857391Z   V100_CHECK_BOOT: true
+2026-10-17T21:02:46.2857841Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.20-1/x64
+2026-10-17T21:02:46.2858427Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.20-1/x64
+2026-10-17T21:02:46.2858887Z   MAVEN_ARGS: -ntp
+2026-10-17T21:02:46.2859170Z   ANDROID_HOME: /usr/local/lib/android/sdk
+2026-10-17T21:02:46.2859532Z   ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
+2026-10-17T21:02:46.2859920Z   GRADLE_ACTION_ID: gradle/actions/setup-gradle
+2026-10-17T21:02:46.2860285Z   GRADLE_USER_HOME: /home/runner/.gradle
+2026-10-17T21:02:46.2860625Z   GRADLE_BUILD_ACTION_SETUP_COMPLETED: true
+2026-10-17T21:02:46.2860981Z   GRADLE_BUILD_ACTION_CACHE_RESTORED: true
+2026-10-17T21:02:46.2861483Z   DEVELOCITY_INJECTION_INIT_SCRIPT_NAME: gradle-actions.inject-develocity.init.gradle
+2026-10-17T21:02:46.2862038Z   DEVELOCITY_INJECTION_CUSTOM_VALUE: gradle-actions
+2026-10-17T21:02:46.2862416Z   GITHUB_DEPENDENCY_GRAPH_ENABLED: false
+2026-10-17T21:02:46.2862738Z ##[endgroup]
+2026-10-17T21:02:46.3018941Z KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"
+2026-10-17T21:02:46.3425715Z ##[group]Run reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d
+2026-10-17T21:02:46.3426280Z with:
+2026-10-17T21:02:46.3426529Z   api-level: 35
+2026-10-17T21:02:46.3426783Z   target: default
+2026-10-17T21:02:46.3427032Z   arch: x86_64
+2026-10-17T21:02:46.3427280Z   profile: Nexus 4
+2026-10-17T21:02:46.3427530Z   heap-size: 512M
+2026-10-17T21:02:46.3427802Z   emulator-boot-timeout: 300
+2026-10-17T21:02:46.3428561Z   emulator-options: -no-window -gpu swiftshader_indirect -feature -Vulkan -memory 3072 -cores 2 -no-snapshot -noaudio -no-boot-anim -no-metrics -partition-size 2048
+2026-10-17T21:02:46.3429333Z   disable-animations: true
+2026-10-17T21:02:46.3429656Z   script: bash scripts/run-device-tests.sh
+2026-10-17T21:02:46.3429984Z   cores: 2
+2026-10-17T21:02:46.3430216Z   avd-name: test
+2026-10-17T21:02:46.3430488Z   force-avd-creation: true
+2026-10-17T21:02:46.3430779Z   emulator-port: 5554
+2026-10-17T21:02:46.3454451Z   disable-spellchecker: false
+2026-10-17T21:02:46.3455171Z   disable-linux-hw-accel: auto
+2026-10-17T21:02:46.3455536Z   enable-hw-keyboard: false
+2026-10-17T21:02:46.3455847Z   channel: stable
+2026-10-17T21:02:46.3456108Z env:
+2026-10-17T21:02:46.3456429Z   SOURCE_COMMIT: dca977b34d7c209a1338c23e6bb33bd734d65042
+2026-10-17T21:02:46.3456849Z   V08_STABILITY_PROBES: true
+2026-10-17T21:02:46.3457149Z   V200_MAIN_PROBES: true
+2026-10-17T21:02:46.3457428Z   V200_PACKAGE_PROBES: true
+2026-10-17T21:02:46.3457713Z   V100_CHECK_BOOT: true
+2026-10-17T21:02:46.3458109Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.20-1/x64
+2026-10-17T21:02:46.3458663Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.20-1/x64
+2026-10-17T21:02:46.3459111Z   MAVEN_ARGS: -ntp
+2026-10-17T21:02:46.3459393Z   ANDROID_HOME: /usr/local/lib/android/sdk
+2026-10-17T21:02:46.3459758Z   ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
+2026-10-17T21:02:46.3460133Z   GRADLE_ACTION_ID: gradle/actions/setup-gradle
+2026-10-17T21:02:46.3460727Z   GRADLE_USER_HOME: /home/runner/.gradle
+2026-10-17T21:02:46.3461097Z   GRADLE_BUILD_ACTION_SETUP_COMPLETED: true
+2026-10-17T21:02:46.3461441Z   GRADLE_BUILD_ACTION_CACHE_RESTORED: true
+2026-10-17T21:02:46.3461934Z   DEVELOCITY_INJECTION_INIT_SCRIPT_NAME: gradle-actions.inject-develocity.init.gradle
+2026-10-17T21:02:46.3462493Z   DEVELOCITY_INJECTION_CUSTOM_VALUE: gradle-actions
+2026-10-17T21:02:46.3462878Z   GITHUB_DEPENDENCY_GRAPH_ENABLED: false
+2026-10-17T21:02:46.3463203Z ##[endgroup]
+2026-10-17T21:02:46.4041384Z ##[group]Configure emulator
+2026-10-17T21:02:46.4043975Z API level: 35
+2026-10-17T21:02:46.4045085Z System image API level: 35
+2026-10-17T21:02:46.4045641Z target: default
+2026-10-17T21:02:46.4046180Z CPU architecture: x86_64
+2026-10-17T21:02:46.4046752Z Hardware profile: Nexus 4
+2026-10-17T21:02:46.4047779Z Cores: 2
+2026-10-17T21:02:46.4048189Z RAM size: 
+2026-10-17T21:02:46.4048627Z Heap size: 512M
+2026-10-17T21:02:46.4049796Z SD card path or size: 
+2026-10-17T21:02:46.4050416Z Disk size: 
+2026-10-17T21:02:46.4050879Z AVD name: test
+2026-10-17T21:02:46.4051658Z force avd creation: true
+2026-10-17T21:02:46.4052278Z Emulator boot timeout: 300
+2026-10-17T21:02:46.4052951Z emulator port: 5554
+2026-10-17T21:02:46.4054594Z emulator options: -no-window -gpu swiftshader_indirect -feature -Vulkan -memory 3072 -cores 2 -no-snapshot -noaudio -no-boot-anim -no-metrics -partition-size 2048
+2026-10-17T21:02:46.4056270Z disable animations: true
+2026-10-17T21:02:46.4056845Z disable spellchecker: false
+2026-10-17T21:02:46.4057501Z disable Linux hardware acceleration: false
+2026-10-17T21:02:46.4058188Z enable hardware keyboard: false
+2026-10-17T21:02:46.4058758Z Channel: 0 (stable)
+2026-10-17T21:02:46.4059188Z Script:
+2026-10-17T21:02:46.4059697Z bash scripts/run-device-tests.sh
+2026-10-17T21:02:46.4060314Z Pre emulator launch script:
+2026-10-17T21:02:46.4061111Z ##[endgroup]
+2026-10-17T21:02:46.4061818Z ##[group]Install Android SDK
+2026-10-17T21:02:46.4112600Z [command]/usr/bin/sh -c \yes | sdkmanager --licenses > /dev/null
+2026-10-17T21:02:49.3983725Z Installing latest build tools, platform tools, and platform.
+2026-10-17T21:02:49.4002233Z [command]/usr/bin/sh -c \sdkmanager --install 'build-tools;37.0.0' platform-tools 'platforms;android-35'> /dev/null
+2026-10-17T21:02:50.8399090Z Installing latest emulator.
+2026-10-17T21:02:50.8415751Z [command]/usr/bin/sh -c \sdkmanager --install emulator --channel=0 > /dev/null
+2026-10-17T21:03:00.0121736Z Installing system images.
+2026-10-17T21:03:00.0138408Z [command]/usr/bin/sh -c \sdkmanager --install 'system-images;android-35;default;x86_64' --channel=0 > /dev/null
+2026-10-17T21:03:15.6682701Z ##[endgroup]
+2026-10-17T21:03:15.6683597Z ##[group]Create AVD
+2026-10-17T21:03:15.6684225Z Creating AVD.
+2026-10-17T21:03:15.6703290Z [command]/usr/bin/sh -c \echo no | avdmanager create avd --force -n test --package 'system-images;android-35;default;x86_64' --device 'Nexus 4'
+2026-10-17T21:03:16.4484343Z Loading local repository...                                                     
+2026-10-17T21:03:16.4485901Z [=========                              ] 25% Loading local repository...       
+2026-10-17T21:03:16.4487769Z [=========                              ] 25% Fetch remote repository...        
+2026-10-17T21:03:16.4488888Z [=======================================] 100% Fetch remote repository...       
+2026-10-17T21:03:16.6306596Z Auto-selecting single ABI x86_64
+2026-10-17T21:03:17.0624916Z [command]/usr/bin/sh -c \printf 'hw.cpu.ncore=2\nhw.heapSize=512M\n' >> /home/runner/.android/avd/test.avd/config.ini
+2026-10-17T21:03:17.0647807Z ##[endgroup]
+2026-10-17T21:03:17.0649721Z ##[group]Launch Emulator
+2026-10-17T21:03:17.0650582Z Starting emulator.
+2026-10-17T21:03:17.0670677Z [command]/usr/bin/sh -c \/usr/local/lib/android/sdk/emulator/emulator -port 5554 -avd test -no-window -gpu swiftshader_indirect -feature -Vulkan -memory 3072 -cores 2 -no-snapshot -noaudio -no-boot-anim -no-metrics -partition-size 2048 &
+2026-10-17T21:03:17.0791933Z INFO         | Android emulator version 37.2.12.0 (build_id 16428233) (CL:N/A)
+2026-10-17T21:03:17.0793183Z INFO         | Graphics backend: gfxstream
+2026-10-17T21:03:17.0793915Z INFO         | Found systemPath /usr/local/lib/android/sdk/system-images/android-35/default/x86_64/
+2026-10-17T21:03:17.1282849Z INFO         | Saving last run QEMU version for the AVD to 2
+2026-10-17T21:03:17.1283950Z INFO         | Feature 'Vulkan' (21) is overridden to 'disabled'
+2026-10-17T21:03:17.1285045Z INFO         | Guest GLES Driver: Auto (ext controls)
+2026-10-17T21:03:17.1285760Z INFO         | emuglConfig_init: vulkan_mode_selected:swiftshader gles_mode_selected:swiftshader
+2026-10-17T21:03:17.1286405Z INFO         | Checking system compatibility:
+2026-10-17T21:03:17.1286867Z INFO         |   Checking: hasSufficientDiskSpace
+2026-10-17T21:03:17.1287413Z INFO         |      Ok: Disk space requirements to run avd: `test` are met
+2026-10-17T21:03:17.1287925Z INFO         |   Checking: hasSufficientHwGpu
+2026-10-17T21:03:17.1288470Z INFO         |      Ok: Hardware GPU compatibility checks are not required
+2026-10-17T21:03:17.1288986Z INFO         |   Checking: hasSufficientSystem
+2026-10-17T21:03:17.1289500Z INFO         |      Ok: System requirements to run avd: `test` are met
+2026-10-17T21:03:17.1290599Z WARNING      | Feature QuickbootFileBacked is disabled due to stability issues, if you really want that, the environment variable ANDROID_EMU_FORCE_QUICKBOOT_FILE_BACKED need to set to 1
+2026-10-17T21:03:17.5773120Z ERROR        | Unable to connect to adb daemon on port: 5037
+2026-10-17T21:03:17.5782573Z INFO         | Storing crashdata in: /tmp/android-runner/emu-crash-37.2.12.db, detection is enabled for process: 3148
+2026-10-17T21:03:17.5784051Z INFO         | Initializing gfxstream backend
+2026-10-17T21:03:17.5793938Z INFO         | startOpenglesRendererImpl: gpu info
+2026-10-17T21:03:17.5794883Z INFO         | 
+2026-10-17T21:03:17.5827365Z INFO         | SharedLibrary::open for [libX11]
+2026-10-17T21:03:17.5828344Z WARNING      | Could not open libX11.so, try libX11.so.6
+2026-10-17T21:03:17.5829772Z INFO         | SharedLibrary::open for [libX11.so.6]
+2026-10-17T21:03:17.5830771Z INFO         | SharedLibrary::open for [libX11-xcb]
+2026-10-17T21:03:17.5831430Z WARNING      | Could not open libX11-xcb.so, try libX11-xcb.so.1
+2026-10-17T21:03:17.5832037Z INFO         | SharedLibrary::open for [libX11-xcb.so.1]
+2026-10-17T21:03:17.5957511Z INFO         | Graphics Adapter Vendor Google (Google Inc.)
+2026-10-17T21:03:17.5959510Z INFO         | Graphics Adapter Android Emulator OpenGL ES Translator (Google SwiftShader)
+2026-10-17T21:03:17.5961337Z INFO         | Graphics API Version OpenGL ES 3.0 (OpenGL ES 3.0 SwiftShader 4.0.0.1)
+2026-10-17T21:03:17.5966502Z INFO         | Graphics API Extensions GL_OES_EGL_sync GL_OES_EGL_image GL_OES_EGL_image_external GL_OES_depth24 GL_OES_depth32 GL_OES_element_index_uint GL_OES_texture_float GL_OES_texture_float_linear GL_OES_compressed_paletted_texture GL_OES_compressed_ETC1_RGB8_texture GL_OES_depth_texture GL_OES_texture_half_float GL_OES_texture_half_float_linear GL_OES_packed_depth_stencil GL_OES_vertex_half_float GL_OES_standard_derivatives GL_OES_texture_npot GL_OES_rgb8_rgba8 GL_EXT_color_buffer_float GL_EXT_color_buffer_half_float GL_EXT_texture_format_BGRA8888 GL_APPLE_texture_format_BGRA8888 
+2026-10-17T21:03:17.5969467Z INFO         | Graphics Device Extensions N/A
+2026-10-17T21:03:17.5995563Z INFO         | Sending adb public key [QAAAAFf8P+mZUPHUsjPtnIEmcw8sr9dN/XycB31p/oV0sVkQYtpxcru4lg856xcZwGNTs5zlA1m98/yS7YxpXDH6xbzUT8+XQIAlRvd/s+ElOQFK3MUb3QWdNsW8VluOJkPK4ZcUF28YYi3qdzjBqc1d4LoRdcXN31ZpoCEc5IaPUJ+WHGUU2FBOoty2znYnyYbRosJsjgwEJMqg8wOUIHg0pvNBNoMQPqGf21NHAUdFDvjQ4eYpjbxQh7Iykc2SrnzrvFzYM8K4r0tAgebl1lRde2pqviH38scATTB9Ilf/ojl3dsrBkEcvVunM9sD3itE9GNktdqQacB2WiquPglL7CXilunLrJCH4qE/4Mt1enUa4hyJ/gjav/lGPx6q3YL5+hTsdQR6n6xCRutwr1iIQ/FfcePIjKMN+O+mAGC+KFgjY9qOoz/u0GrEPJs0zwBYybI0Zp2mX7b0JDCA1PRl54F896rrW1EfUYgHAyBtGxWx4rPUSxS1TBRmgNi7efwzOhHbk73f2czEA7PaUHi7oyg79ZnfWKgJBR9JA57C9qdoxr0X/ir6btpN9haWjKLbK8fKXHmnAddWECKjVfW21JLQ01/9rgpfEuFRJTKRbqqK6CrT8HeC3Py4UAxwadGy5OROpFNPe2mFogzI9iglRLX3E01UbsYYOgNV7qYeU+Om+1AUgXAEAAQA= runner@unknown]
+2026-10-17T21:03:17.6002938Z INFO         | Userspace boot properties:
+2026-10-17T21:03:17.6004287Z INFO         |   androidboot.boot_devices=pci0000:00/0000:00:03.0 pci0000:00/0000:00:06.0
+2026-10-17T21:03:17.6005798Z INFO         |   androidboot.dalvik.vm.heapsize=576m
+2026-10-17T21:03:17.6006651Z INFO         |   androidboot.debug.hwui.renderer=skiagl
+2026-10-17T21:03:17.6007162Z INFO         |   androidboot.debug.sf.nobootanimation=1
+2026-10-17T21:03:17.6007619Z INFO         |   androidboot.hardware=ranchu
+2026-10-17T21:03:17.6008116Z INFO         |   androidboot.hardware.gltransport=pipe
+2026-10-17T21:03:17.6008565Z INFO         |   androidboot.logcat=*:V
+2026-10-17T21:03:17.6009001Z INFO         |   androidboot.opengles.version=196608
+2026-10-17T21:03:17.6009430Z INFO         |   androidboot.qemu=1
+2026-10-17T21:03:17.6013711Z INFO         |   androidboot.qemu.adb.pubkey=QAAAAFf8P+mZUPHUsjPtnIEmcw8sr9dN/XycB31p/oV0sVkQYtpxcru4lg856xcZwGNTs5zlA1m98/yS7YxpXDH6xbzUT8+XQIAlRvd/s+ElOQFK3MUb3QWdNsW8VluOJkPK4ZcUF28YYi3qdzjBqc1d4LoRdcXN31ZpoCEc5IaPUJ+WHGUU2FBOoty2znYnyYbRosJsjgwEJMqg8wOUIHg0pvNBNoMQPqGf21NHAUdFDvjQ4eYpjbxQh7Iykc2SrnzrvFzYM8K4r0tAgebl1lRde2pqviH38scATTB9Ilf/ojl3dsrBkEcvVunM9sD3itE9GNktdqQacB2WiquPglL7CXilunLrJCH4qE/4Mt1enUa4hyJ/gjav/lGPx6q3YL5+hTsdQR6n6xCRutwr1iIQ/FfcePIjKMN+O+mAGC+KFgjY9qOoz/u0GrEPJs0zwBYybI0Zp2mX7b0JDCA1PRl54F896rrW1EfUYgHAyBtGxWx4rPUSxS1TBRmgNi7efwzOhHbk73f2czEA7PaUHi7oyg79ZnfWKgJBR9JA57C9qdoxr0X/ir6btpN9haWjKLbK8fKXHmnAddWECKjVfW21JLQ01/9rgpfEuFRJTKRbqqK6CrT8HeC3Py4UAxwadGy5OROpFNPe2mFogzI9iglRLX3E01UbsYYOgNV7qYeU+Om+1AUgXAEAAQA= runner@unknown
+2026-10-17T21:03:17.6017793Z INFO         |   androidboot.qemu.avd_name=test
+2026-10-17T21:03:17.6018323Z INFO         |   androidboot.qemu.camera_hq_edge_processing=0
+2026-10-17T21:03:17.6018832Z INFO         |   androidboot.qemu.camera_protocol_ver=1
+2026-10-17T21:03:17.6019532Z INFO         |   androidboot.qemu.cpuvulkan.version=4206592
+2026-10-17T21:03:17.6020108Z INFO         |   androidboot.qemu.gltransport.drawFlushInterval=800
+2026-10-17T21:03:17.6020644Z INFO         |   androidboot.qemu.gltransport.name=pipe
+2026-10-17T21:03:17.6021116Z INFO         |   androidboot.qemu.hwcodec.avcdec=2
+2026-10-17T21:03:17.6021572Z INFO         |   androidboot.qemu.hwcodec.hevcdec=2
+2026-10-17T21:03:17.6022019Z INFO         |   androidboot.qemu.hwcodec.vpxdec=2
+2026-10-17T21:03:17.6022586Z INFO         |   androidboot.qemu.settings.system.screen_off_timeout=2147483647
+2026-10-17T21:03:17.6023457Z INFO         |   androidboot.qemu.skin=768x1280
+2026-10-17T21:03:17.6023921Z INFO         |   androidboot.qemu.virtiowifi=1
+2026-10-17T21:03:17.6024371Z INFO         |   androidboot.qemu.vsync=60
+2026-10-17T21:03:17.6024969Z INFO         |   androidboot.serialno=EMULATOR37X2X12X0
+2026-10-17T21:03:17.6025682Z INFO         |   androidboot.vbmeta.digest=602b0c809848f3be570a96601071931225108ec3b3739d99a1dc41db38efe83c
+2026-10-17T21:03:17.6026449Z INFO         |   androidboot.vbmeta.hash_alg=sha256
+2026-10-17T21:03:17.6027017Z INFO         |   androidboot.vbmeta.size=6720
+2026-10-17T21:03:17.6027512Z INFO         |   androidboot.veritymode=enforcing
+2026-10-17T21:03:17.6186593Z WARNING: cannnot unmap ptr 0x7f20c3001000 as it is in the protected range from 0x7f2003000000 to 0x7f20c3200000
+2026-10-17T21:03:17.6275369Z INFO         | Monitoring duration of emulator setup.
+2026-10-17T21:03:18.6445584Z INFO         | Successfully initialized netsim WiFi
+2026-10-17T21:03:18.6446647Z INFO         | Activated packet streamer for bluetooth emulation
+2026-10-17T21:03:18.6491960Z INFO         | Setting display: 0 configuration to: 768x1280, dpi: 320x320 
+2026-10-17T21:03:18.6492980Z INFO         | setDisplayActiveConfig: id:0, 768x1280
+2026-10-17T21:03:18.6494019Z INFO         | emulatorSetupEnvironment: Environment scene is not required
+2026-10-17T21:03:18.6566275Z USER_INFO    | Emulator is performing a full startup. This may take upto two minutes, or more.
+2026-10-17T21:03:18.6567778Z WARNING      | Failed to process .ini file /home/runner/.android/emu-update-last-check.ini for reading.
+2026-10-17T21:03:18.8158503Z WARNING      | Failed to process .ini file /home/runner/.android/emu-update-last-check.ini for reading.
+2026-10-17T21:03:27.0720815Z [command]/usr/local/lib/android/sdk/platform-tools/adb -s emulator-5554 shell getprop sys.boot_completed
+2026-10-17T21:03:27.0750845Z * daemon not running; starting now at tcp:5037
+2026-10-17T21:03:27.1390131Z * daemon started successfully
+2026-10-17T21:03:27.1396710Z adb: device offline
+2026-10-17T21:03:27.1405505Z The process '/usr/local/lib/android/sdk/platform-tools/adb' failed with exit code 1
+2026-10-17T21:03:29.1468695Z [command]/usr/local/lib/android/sdk/platform-tools/adb -s emulator-5554 shell getprop sys.boot_completed
+2026-10-17T21:03:29.1512740Z adb: device offline
+2026-10-17T21:03:29.1517600Z The process '/usr/local/lib/android/sdk/platform-tools/adb' failed with exit code 1
+2026-10-17T21:03:31.1596615Z [command]/usr/local/lib/android/sdk/platform-tools/adb -s emulator-5554 shell getprop sys.boot_completed
+2026-10-17T21:03:31.1871830Z 
+2026-10-17T21:03:33.1967895Z [command]/usr/local/lib/android/sdk/platform-tools/adb -s emulator-5554 shell getprop sys.boot_completed
+2026-10-17T21:03:33.2202275Z 
+2026-10-17T21:03:35.2306982Z [command]/usr/local/lib/android/sdk/platform-tools/adb -s emulator-5554 shell getprop sys.boot_completed
+2026-10-17T21:03:35.2644147Z 
+2026-10-17T21:03:37.2777256Z [command]/usr/local/lib/android/sdk/platform-tools/adb -s emulator-5554 shell getprop sys.boot_completed
+2026-10-17T21:03:37.3208855Z 
+2026-10-17T21:03:39.3277191Z [command]/usr/local/lib/android/sdk/platform-tools/adb -s emulator-5554 shell getprop sys.boot_completed
+2026-10-17T21:03:39.3439994Z 
+2026-10-17T21:03:41.3506788Z [command]/usr/local/lib/android/sdk/platform-tools/adb -s emulator-5554 shell getprop sys.boot_completed
+2026-10-17T21:03:41.4703804Z 
+2026-10-17T21:03:43.4767597Z [command]/usr/local/lib/android/sdk/platform-tools/adb -s emulator-5554 shell getprop sys.boot_completed
+2026-10-17T21:03:43.5065457Z 
+2026-10-17T21:03:45.5113312Z [command]/usr/local/lib/android/sdk/platform-tools/adb -s emulator-5554 shell getprop sys.boot_completed
+2026-10-17T21:03:45.5402039Z 
+2026-10-17T21:03:47.5464366Z [command]/usr/local/lib/android/sdk/platform-tools/adb -s emulator-5554 shell getprop sys.boot_completed
+2026-10-17T21:03:47.5737779Z 1
+2026-10-17T21:03:47.5745683Z Emulator booted.
+2026-10-17T21:03:47.5818921Z [command]/usr/local/lib/android/sdk/platform-tools/adb -s emulator-5554 shell input keyevent 82
+2026-10-17T21:03:47.8668158Z INFO         | Boot completed in 30757 ms
+2026-10-17T21:03:47.8669461Z INFO         | Increasing screen off timeout, logcat buffer size to 2M.
+2026-10-17T21:03:47.9088376Z Disabling animations.
+2026-10-17T21:03:47.9108529Z [command]/usr/local/lib/android/sdk/platform-tools/adb -s emulator-5554 shell settings put global window_animation_scale 0.0
+2026-10-17T21:03:47.9585968Z [command]/usr/local/lib/android/sdk/platform-tools/adb -s emulator-5554 shell settings put global transition_animation_scale 0.0
+2026-10-17T21:03:48.0176897Z [command]/usr/local/lib/android/sdk/platform-tools/adb -s emulator-5554 shell settings put global animator_duration_scale 0.0
+2026-10-17T21:03:48.0744377Z ##[endgroup]
+2026-10-17T21:03:48.0772021Z [command]/usr/bin/sh -c bash scripts/run-device-tests.sh
+2026-10-17T21:04:49.6484024Z To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.11.1/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+2026-10-17T21:04:50.9419870Z Daemon will be stopped at the end of the build 
+2026-10-17T21:04:57.8450786Z 
+2026-10-17T21:04:57.8476171Z > Configure project :app
+2026-10-17T21:04:57.8506300Z Passing custom test runner argument android.testInstrumentationRunnerArguments.ciExpectedHeapMiB from gradle.properties or command line is not compatible with configuration caching. Please specify this argument using android gradle dsl.
+2026-10-17T21:05:06.5462114Z 
+2026-10-17T21:05:06.5510944Z > Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
+2026-10-17T21:05:06.6465928Z > Task :app:preBuild UP-TO-DATE
+2026-10-17T21:05:06.6475759Z > Task :app:preDebugBuild UP-TO-DATE
+2026-10-17T21:05:06.6479202Z > Task :app:generateDebugBuildConfig FROM-CACHE
+2026-10-17T21:05:07.2421986Z > Task :app:generateDebugResValues FROM-CACHE
+2026-10-17T21:05:07.2450058Z > Task :app:checkDebugAarMetadata
+2026-10-17T21:05:07.3476090Z > Task :app:mapDebugSourceSetPaths
+2026-10-17T21:05:07.3505905Z > Task :app:generateDebugResources FROM-CACHE
+2026-10-17T21:05:07.5419473Z > Task :app:mergeDebugResources FROM-CACHE
+2026-10-17T21:05:07.5420012Z > Task :app:packageDebugResources FROM-CACHE
+2026-10-17T21:05:08.0446189Z > Task :app:parseDebugLocalResources FROM-CACHE
+2026-10-17T21:05:08.0466067Z > Task :app:createDebugCompatibleScreenManifests
+2026-10-17T21:05:08.0495904Z > Task :app:extractDeepLinksDebug FROM-CACHE
+2026-10-17T21:05:08.1426434Z > Task :app:processDebugMainManifest FROM-CACHE
+2026-10-17T21:05:08.1427329Z > Task :app:processDebugManifest FROM-CACHE
+2026-10-17T21:05:08.4436323Z > Task :app:processDebugManifestForPackage FROM-CACHE
+2026-10-17T21:05:08.4437315Z > Task :app:processDebugResources FROM-CACHE
+2026-10-17T21:05:09.4487047Z > Task :app:javaPreCompileDebug FROM-CACHE
+2026-10-17T21:05:09.4501908Z > Task :app:preDebugAndroidTestBuild SKIPPED
+2026-10-17T21:05:10.9483909Z > Task :app:processDebugAndroidTestManifest
+2026-10-17T21:05:10.9485242Z > Task :app:generateDebugAndroidTestBuildConfig FROM-CACHE
+2026-10-17T21:05:10.9529251Z > Task :app:checkDebugAndroidTestAarMetadata
+2026-10-17T21:05:10.9584578Z > Task :app:generateDebugAndroidTestResValues FROM-CACHE
+2026-10-17T21:05:11.0432610Z > Task :app:mapDebugAndroidTestSourceSetPaths
+2026-10-17T21:05:11.0455766Z > Task :app:generateDebugAndroidTestResources FROM-CACHE
+2026-10-17T21:05:11.1432929Z > Task :app:mergeDebugAndroidTestResources FROM-CACHE
+2026-10-17T21:05:11.3485163Z > Task :app:javaPreCompileDebugAndroidTest FROM-CACHE
+2026-10-17T21:05:11.4440368Z > Task :app:mergeDebugShaders
+2026-10-17T21:05:11.4511444Z > Task :app:compileDebugShaders NO-SOURCE
+2026-10-17T21:05:11.4512319Z > Task :app:generateDebugAssets UP-TO-DATE
+2026-10-17T21:05:11.6449639Z > Task :app:mergeDebugAssets
+2026-10-17T21:05:11.7462841Z > Task :app:compressDebugAssets FROM-CACHE
+2026-10-17T21:05:11.8437729Z > Task :app:desugarDebugFileDependencies FROM-CACHE
+2026-10-17T21:05:12.0505954Z > Task :app:mergeDebugJniLibFolders
+2026-10-17T21:05:12.1466161Z > Task :app:checkDebugDuplicateClasses
+2026-10-17T21:05:12.6449232Z > Task :app:mergeDebugNativeLibs
+2026-10-17T21:05:13.0422764Z > Task :app:mergeExtDexDebug FROM-CACHE
+2026-10-17T21:05:13.0445755Z > Task :app:processDebugAndroidTestResources
+2026-10-17T21:05:13.0475538Z > Task :app:mergeLibDexDebug FROM-CACHE
+2026-10-17T21:05:13.3442810Z 
+2026-10-17T21:05:13.3474141Z > Task :app:stripDebugDebugSymbols
+2026-10-17T21:05:13.3490000Z Unable to strip the following libraries, packaging them as they are: libandroidx.graphics.path.so, libmlkit_google_ocr_pipeline.so.
+2026-10-17T21:05:14.5485502Z 
+2026-10-17T21:05:14.5516187Z > Task :app:validateSigningDebug
+2026-10-17T21:05:14.5563424Z > Task :app:writeDebugAppMetadata
+2026-10-17T21:05:14.5605531Z > Task :app:writeDebugSigningConfigVersions
+2026-10-17T21:05:14.6466132Z > Task :app:mergeDebugAndroidTestShaders
+2026-10-17T21:05:14.6495631Z > Task :app:compileDebugAndroidTestShaders NO-SOURCE
+2026-10-17T21:05:14.6525496Z > Task :app:generateDebugAndroidTestAssets UP-TO-DATE
+2026-10-17T21:05:14.6526667Z > Task :app:mergeDebugAndroidTestAssets
+2026-10-17T21:05:14.6555683Z > Task :app:compressDebugAndroidTestAssets FROM-CACHE
+2026-10-17T21:05:14.7456120Z > Task :app:desugarDebugAndroidTestFileDependencies FROM-CACHE
+2026-10-17T21:05:14.9424606Z > Task :app:checkDebugAndroidTestDuplicateClasses
+2026-10-17T21:05:14.9445716Z > Task :app:mergeDebugAndroidTestJniLibFolders
+2026-10-17T21:05:20.8436944Z > Task :app:mergeLibDexDebugAndroidTest FROM-CACHE
+2026-10-17T21:05:20.8472603Z > Task :app:mergeDebugAndroidTestNativeLibs NO-SOURCE
+2026-10-17T21:05:20.8485692Z > Task :app:stripDebugAndroidTestDebugSymbols NO-SOURCE
+2026-10-17T21:05:20.9437580Z > Task :app:validateSigningDebugAndroidTest
+2026-10-17T21:05:20.9466278Z > Task :app:writeDebugAndroidTestSigningConfigVersions
+2026-10-17T21:05:22.8424579Z > Task :app:mergeExtDexDebugAndroidTest
+2026-10-17T21:05:25.6433142Z > Task :app:kspDebugKotlin
+2026-10-17T21:05:55.6426055Z > Task :app:compileDebugKotlin
+2026-10-17T21:06:15.8423245Z w: file:///home/runner/work/trade-review-app/trade-review-app/app/src/main/java/com/tradereview/app/TradeReviewApplication.kt:32:55 'static field TRIM_MEMORY_RUNNING_LOW: Int' is deprecated. Deprecated in Java.
+2026-10-17T21:06:15.8433430Z w: file:///home/runner/work/trade-review-app/trade-review-app/app/src/main/java/com/tradereview/app/ui/EvidencePage.kt:47:70 'static field SOFT_INPUT_ADJUST_RESIZE: Int' is deprecated. Deprecated in Java.
+2026-10-17T21:06:15.8457311Z w: file:///home/runner/work/trade-review-app/trade-review-app/app/src/main/java/com/tradereview/app/ui/TradeEditor.kt:127:61 'static field SOFT_INPUT_ADJUST_RESIZE: Int' is deprecated. Deprecated in Java.
+2026-10-17T21:06:15.8460952Z w: file:///home/runner/work/trade-review-app/trade-review-app/app/src/main/java/com/tradereview/app/v200/V200Trade.kt:85:134 'static field SOFT_INPUT_ADJUST_RESIZE: Int' is deprecated. Deprecated in Java.
+2026-10-17T21:06:15.8464401Z w: file:///home/runner/work/trade-review-app/trade-review-app/app/src/main/java/com/tradereview/app/v200/V200Trade.kt:85:181 'var statusBarColor: Int' is deprecated. Deprecated in Java.
+2026-10-17T21:06:15.8467964Z w: file:///home/runner/work/trade-review-app/trade-review-app/app/src/main/java/com/tradereview/app/v200/V200Trade.kt:85:233 'var navigationBarColor: Int' is deprecated. Deprecated in Java.
+2026-10-17T21:06:15.8471858Z w: file:///home/runner/work/trade-review-app/trade-review-app/app/src/main/java/com/tradereview/app/v200/V210ReviewComponents.kt:28:77 'static field SOFT_INPUT_ADJUST_RESIZE: Int' is deprecated. Deprecated in Java.
+2026-10-17T21:06:15.8475789Z w: file:///home/runner/work/trade-review-app/trade-review-app/app/src/main/java/com/tradereview/app/v200/V210ReviewComponents.kt:29:44 'var statusBarColor: Int' is deprecated. Deprecated in Java.
+2026-10-17T21:06:15.8479380Z w: file:///home/runner/work/trade-review-app/trade-review-app/app/src/main/java/com/tradereview/app/v200/V210ReviewComponents.kt:29:101 'var navigationBarColor: Int' is deprecated. Deprecated in Java.
+2026-10-17T21:06:18.5435437Z 
+2026-10-17T21:06:18.5436411Z > Task :app:compileDebugJavaWithJavac
+2026-10-17T21:06:18.9425213Z > Task :app:bundleDebugClassesToCompileJar
+2026-10-17T21:06:29.4418231Z > Task :app:dexBuilderDebug
+2026-10-17T21:06:30.6424235Z > Task :app:mergeDebugGlobalSynthetics FROM-CACHE
+2026-10-17T21:06:30.6474121Z > Task :app:processDebugJavaRes
+2026-10-17T21:06:32.0441963Z > Task :app:kspDebugAndroidTestKotlin
+2026-10-17T21:06:32.4426131Z > Task :app:mergeProjectDexDebug
+2026-10-17T21:06:32.5426287Z > Task :app:mergeDebugJavaResource
+2026-10-17T21:06:33.7437703Z > Task :app:packageDebug
+2026-10-17T21:06:33.8466124Z > Task :app:createDebugApkListingFileRedirect
+2026-10-17T21:06:42.5419879Z 
+2026-10-17T21:06:42.5430393Z > Task :app:compileDebugAndroidTestKotlin
+2026-10-17T21:06:42.5434431Z w: file:///home/runner/work/trade-review-app/trade-review-app/app/src/androidTest/java/com/tradereview/app/v210/V210VisualJourneyTest.kt:195:229 'static field SHOW_FORCED: Int' is deprecated. Deprecated in Java.
+2026-10-17T21:06:43.7449179Z 
+2026-10-17T21:06:43.7469160Z > Task :app:compileDebugAndroidTestJavaWithJavac
+2026-10-17T21:06:46.6417810Z > Task :app:dexBuilderDebugAndroidTest
+2026-10-17T21:06:46.6422863Z > Task :app:mergeDebugAndroidTestGlobalSynthetics FROM-CACHE
+2026-10-17T21:06:46.7441001Z > Task :app:processDebugAndroidTestJavaRes
+2026-10-17T21:06:46.8420827Z > Task :app:mergeDebugAndroidTestJavaResource
+2026-10-17T21:06:46.9418606Z > Task :app:mergeProjectDexDebugAndroidTest
+2026-10-17T21:06:47.0446031Z > Task :app:packageDebugAndroidTest
+2026-10-17T21:06:47.0447363Z > Task :app:createDebugAndroidTestApkListingFileRedirect
+2026-10-17T21:06:51.4418278Z [EmulatorConsole]: Failed to start Emulator console for 5554
+2026-10-17T21:06:59.6420123Z 
+2026-10-17T21:06:59.6421144Z > Task :app:connectedDebugAndroidTest
+2026-10-17T21:06:59.6422017Z Starting 142 tests on emulator-5554 - 15
+2026-10-17T21:07:09.6418228Z 
+2026-10-17T21:07:09.6419612Z emulator-5554 - 15 Tests 56/142 completed. (0 skipped) (0 failed)
+2026-10-17T21:07:13.5122934Z ERROR        | Failed to find ColorBuffer: 188
+2026-10-17T21:07:13.5124132Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:07:17.2306297Z ERROR        | Failed to find ColorBuffer: 197
+2026-10-17T21:07:17.2316035Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:07:19.6419258Z emulator-5554 - 15 Tests 57/142 completed. (0 skipped) (0 failed)
+2026-10-17T21:07:29.6432592Z emulator-5554 - 15 Tests 60/142 completed. (0 skipped) (0 failed)
+2026-10-17T21:07:39.6418997Z emulator-5554 - 15 Tests 62/142 completed. (0 skipped) (0 failed)
+2026-10-17T21:07:59.6418917Z emulator-5554 - 15 Tests 65/142 completed. (0 skipped) (0 failed)
+2026-10-17T21:08:29.6418401Z emulator-5554 - 15 Tests 66/142 completed. (0 skipped) (0 failed)
+2026-10-17T21:08:39.6418818Z emulator-5554 - 15 Tests 67/142 completed. (0 skipped) (0 failed)
+2026-10-17T21:09:39.6428444Z emulator-5554 - 15 Tests 77/142 completed. (0 skipped) (0 failed)
+2026-10-17T21:09:49.6423731Z emulator-5554 - 15 Tests 81/142 completed. (0 skipped) (0 failed)
+2026-10-17T21:09:59.6420231Z emulator-5554 - 15 Tests 83/142 completed. (0 skipped) (0 failed)
+2026-10-17T21:10:00.9520261Z ERROR        | Failed to find ColorBuffer: 778
+2026-10-17T21:10:00.9522685Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:10:09.6424373Z emulator-5554 - 15 Tests 86/142 completed. (0 skipped) (0 failed)
+2026-10-17T21:10:15.8516697Z ERROR        | Failed to find ColorBuffer: 978
+2026-10-17T21:10:15.8520645Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:10:16.4756312Z ERROR        | Failed to find ColorBuffer: 986
+2026-10-17T21:10:16.4785716Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:10:18.1867404Z ERROR        | Failed to find ColorBuffer: 1020
+2026-10-17T21:10:18.1868773Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:10:19.6418184Z emulator-5554 - 15 Tests 91/142 completed. (0 skipped) (0 failed)
+2026-10-17T21:10:29.6419775Z emulator-5554 - 15 Tests 92/142 completed. (0 skipped) (0 failed)
+2026-10-17T21:10:33.2501174Z ERROR        | Failed to find ColorBuffer: 1096
+2026-10-17T21:10:33.2515945Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:10:39.6446543Z emulator-5554 - 15 Tests 94/142 completed. (0 skipped) (0 failed)
+2026-10-17T21:10:49.4518704Z ERROR        | Failed to find ColorBuffer: 1206
+2026-10-17T21:10:49.4522039Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:10:49.6459589Z emulator-5554 - 15 Tests 95/142 completed. (0 skipped) (0 failed)
+2026-10-17T21:10:52.1883805Z ERROR        | Failed to find ColorBuffer: 1214
+2026-10-17T21:10:52.1885158Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:10:54.2140641Z ERROR        | Failed to find ColorBuffer: 1248
+2026-10-17T21:10:54.2141838Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:10:57.4073745Z ERROR        | Failed to find ColorBuffer: 1265
+2026-10-17T21:10:57.4091653Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:10:57.8990966Z ERROR        | Failed to find ColorBuffer: 1270
+2026-10-17T21:10:57.8992048Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:10:59.6424074Z emulator-5554 - 15 Tests 97/142 completed. (0 skipped) (0 failed)
+2026-10-17T21:11:09.6417858Z emulator-5554 - 15 Tests 99/142 completed. (0 skipped) (0 failed)
+2026-10-17T21:11:19.6418353Z emulator-5554 - 15 Tests 102/142 completed. (0 skipped) (0 failed)
+2026-10-17T21:11:29.6418885Z emulator-5554 - 15 Tests 103/142 completed. (0 skipped) (0 failed)
+2026-10-17T21:11:44.3058908Z ERROR        | Failed to find ColorBuffer: 1537
+2026-10-17T21:11:44.3130635Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:11:48.2916081Z ERROR        | Failed to find ColorBuffer: 1557
+2026-10-17T21:11:48.2917139Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:11:56.6366843Z ERROR        | Failed to find ColorBuffer: 1601
+2026-10-17T21:11:56.6448515Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:12:04.8028261Z ERROR        | Failed to find ColorBuffer: 1645
+2026-10-17T21:12:04.8031427Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:12:09.0413885Z ERROR        | Failed to find ColorBuffer: 1669
+2026-10-17T21:12:09.0445765Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:12:13.0436969Z ERROR        | Failed to find ColorBuffer: 1689
+2026-10-17T21:12:13.0465923Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:12:17.3876071Z ERROR        | Failed to find ColorBuffer: 1713
+2026-10-17T21:12:17.3905767Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:12:25.7035684Z ERROR        | Failed to find ColorBuffer: 1756
+2026-10-17T21:12:25.7036651Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:12:29.7961708Z ERROR        | Failed to find ColorBuffer: 1777
+2026-10-17T21:12:29.7985807Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:12:34.0871896Z ERROR        | Failed to find ColorBuffer: 1800
+2026-10-17T21:12:34.0879169Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:12:38.1054114Z ERROR        | Failed to find ColorBuffer: 1821
+2026-10-17T21:12:38.1057885Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:12:42.5016068Z ERROR        | Failed to find ColorBuffer: 1845
+2026-10-17T21:12:42.5025718Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:12:50.9090875Z ERROR        | Failed to find ColorBuffer: 1888
+2026-10-17T21:12:50.9126925Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:12:54.9027620Z ERROR        | Failed to find ColorBuffer: 1909
+2026-10-17T21:12:54.9038962Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:12:58.8978952Z ERROR        | Failed to find ColorBuffer: 1929
+2026-10-17T21:12:58.8981229Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:12:59.6422997Z emulator-5554 - 15 Tests 109/142 completed. (0 skipped) (0 failed)
+2026-10-17T21:13:09.6465990Z emulator-5554 - 15 Tests 128/142 completed. (0 skipped) (0 failed)
+2026-10-17T21:13:14.4978984Z ERROR        | Failed to find ColorBuffer: 1993
+2026-10-17T21:13:14.5002569Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:13:21.1141924Z ERROR        | Failed to find ColorBuffer: 2010
+2026-10-17T21:13:21.1165843Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:13:24.2159834Z ERROR        | Failed to find ColorBuffer: 2014
+2026-10-17T21:13:24.2160961Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:13:36.3010477Z ERROR        | Failed to find ColorBuffer: 2037
+2026-10-17T21:13:36.3013841Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:13:41.0830648Z ERROR        | Failed to find ColorBuffer: 2045
+2026-10-17T21:13:41.0833045Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:13:50.8658732Z ERROR        | Failed to find ColorBuffer: 2086
+2026-10-17T21:13:50.8663301Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:13:52.3306145Z ERROR        | Failed to find ColorBuffer: 2090
+2026-10-17T21:13:52.3317202Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:13:53.4849736Z ERROR        | Failed to find ColorBuffer: 2094
+2026-10-17T21:13:53.4858778Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:14:16.9153325Z ERROR        | Failed to find ColorBuffer: 2167
+2026-10-17T21:14:16.9166058Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:14:21.1248613Z ERROR        | Failed to find ColorBuffer: 2191
+2026-10-17T21:14:21.1249491Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:14:29.6418586Z emulator-5554 - 15 Tests 132/142 completed. (0 skipped) (0 failed)
+2026-10-17T21:14:37.2559056Z ERROR        | Failed to find ColorBuffer: 2446
+2026-10-17T21:14:37.2559865Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:14:39.6476492Z emulator-5554 - 15 Tests 134/142 completed. (0 skipped) (0 failed)
+2026-10-17T21:14:42.7099805Z ERROR        | Failed to find ColorBuffer: 2495
+2026-10-17T21:14:42.7101027Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:14:49.6418753Z emulator-5554 - 15 Tests 136/142 completed. (0 skipped) (0 failed)
+2026-10-17T21:14:50.9295977Z ERROR        | Failed to find ColorBuffer: 2563
+2026-10-17T21:14:50.9309837Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:14:59.6466125Z emulator-5554 - 15 Tests 137/142 completed. (0 skipped) (0 failed)
+2026-10-17T21:15:07.0148141Z ERROR        | Failed to find ColorBuffer: 2662
+2026-10-17T21:15:07.0166750Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:15:09.6456434Z emulator-5554 - 15 Tests 138/142 completed. (0 skipped) (0 failed)
+2026-10-17T21:15:14.6759763Z ERROR        | Failed to find ColorBuffer: 2678
+2026-10-17T21:15:14.6761117Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:15:29.9311749Z ERROR        | Failed to find ColorBuffer: 2723
+2026-10-17T21:15:29.9313755Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:15:37.1183543Z ERROR        | Failed to find ColorBuffer: 2738
+2026-10-17T21:15:37.1186826Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:16:19.6417854Z emulator-5554 - 15 Tests 139/142 completed. (0 skipped) (0 failed)
+2026-10-17T21:16:20.8395591Z ERROR        | Failed to find ColorBuffer: 2957
+2026-10-17T21:16:20.8396277Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:16:27.1482250Z ERROR        | Failed to find ColorBuffer: 3076
+2026-10-17T21:16:27.1505583Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:16:29.6418014Z emulator-5554 - 15 Tests 140/142 completed. (0 skipped) (0 failed)
+2026-10-17T21:16:33.1093060Z ERROR        | Failed to find ColorBuffer: 3089
+2026-10-17T21:16:33.1120755Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:16:46.9629066Z ERROR        | Failed to find ColorBuffer: 3168
+2026-10-17T21:16:46.9636380Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:16:50.6015986Z ERROR        | Failed to find ColorBuffer: 3180
+2026-10-17T21:16:50.6016974Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:16:52.4956058Z ERROR        | Failed to find ColorBuffer: 3184
+2026-10-17T21:16:52.4957036Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:16:54.1676797Z ERROR        | Failed to find ColorBuffer: 3188
+2026-10-17T21:16:54.1695711Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:16:58.8686011Z ERROR        | Failed to find ColorBuffer: 3196
+2026-10-17T21:16:58.8686992Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:17:03.9897865Z ERROR        | Failed to find ColorBuffer: 3209
+2026-10-17T21:17:03.9898674Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:17:16.5205517Z ERROR        | Failed to find ColorBuffer: 3284
+2026-10-17T21:17:16.5206856Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:17:17.6892935Z ERROR        | Failed to find ColorBuffer: 3293
+2026-10-17T21:17:17.6925934Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:17:24.6338448Z ERROR        | Failed to find ColorBuffer: 3316
+2026-10-17T21:17:24.6345614Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:17:29.0820668Z ERROR        | Failed to find ColorBuffer: 3329
+2026-10-17T21:17:29.0861182Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:17:48.9165474Z ERROR        | Failed to find ColorBuffer: 3458
+2026-10-17T21:17:48.9173317Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:17:59.6419133Z emulator-5554 - 15 Tests 141/142 completed. (0 skipped) (0 failed)
+2026-10-17T21:18:06.2899917Z ERROR        | Failed to find ColorBuffer: 3527
+2026-10-17T21:18:06.2901095Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:18:27.3462517Z ERROR        | Failed to find ColorBuffer: 3577
+2026-10-17T21:18:27.3463700Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:18:36.8419749Z Finished 142 tests on emulator-5554 - 15
+2026-10-17T21:18:37.8431612Z gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__reactivecircus_android-emulator-runner-1792271093211.json
+2026-10-17T21:18:37.9419658Z 
+2026-10-17T21:18:37.9420603Z BUILD SUCCESSFUL in 13m 48s
+2026-10-17T21:18:37.9421676Z 69 actionable tasks: 43 executed, 26 from cache
+2026-10-17T21:18:54.6649722Z {"api": 35, "processRestarts": 3, "allSixteenTablesUnchanged": true, "allLedgerTablesUnchanged": true, "tablesVerified": 28, "schemaVersion": 9, "attachmentShaVerified": true, "coldProcessLaunch": [{"TotalTime": 1317, "WaitTime": 1318}, {"TotalTime": 1189, "WaitTime": 1193}, {"TotalTime": 1137, "WaitTime": 1139}], "warmProcessLaunch": [{"TotalTime": 0, "WaitTime": 4}, {"TotalTime": 0, "WaitTime": 2}, {"TotalTime": 0, "WaitTime": 5}], "definition": "am start -W system launch times; OS/page caches warmed by prior tests; warm start omits force-stop and may reuse/create Activity; not phone/end-to-end data-ready latency. After Gradle UTP cleanup, the same locally compiled test APKs are manually installed and one existing Activity test seeds synthetic facts; this setup is not a fixed-signer old-to-new upgrade."}
+2026-10-17T21:19:02.5020346Z {"api": 35, "rcActualApkSha": "7ac01fb2bf2e1a9fb028e2b4c51852af6af362ae9838a806242cdd1a6812c53b", "rcPackage": "com.tradereview.app.rc.v200", "rcNonDebuggable": true, "rcInstalled": true, "rcFirstHomeVisible": true, "rcRestartKeptHome": true, "fixedReleaseInstall": "not-executed-no-permanent-key", "legacyV03UpgradeCompatible": false, "legacyV03IncompatibleInstall": "not-executed-no-permanent-key", "samePermanentSignerUpgrade": "not-executed-no-earlier-permanent-apk", "realPhone": "not-executed"}
+2026-10-17T21:19:20.4723180Z ERROR        | Failed to find ColorBuffer: 3843
+2026-10-17T21:19:20.4725102Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:19:27.1503874Z ERROR        | Failed to find ColorBuffer: 3859
+2026-10-17T21:19:27.1536563Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:19:30.3593743Z ERROR        | Failed to find ColorBuffer: 3863
+2026-10-17T21:19:30.3603025Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:19:35.7310220Z ERROR        | Failed to find ColorBuffer: 3871
+2026-10-17T21:19:35.7312304Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:19:42.6999430Z ERROR        | Failed to find ColorBuffer: 3886
+2026-10-17T21:19:42.7000632Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:19:47.4868402Z ERROR        | Failed to find ColorBuffer: 3894
+2026-10-17T21:19:47.4870732Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:19:57.5982461Z ERROR        | Failed to find ColorBuffer: 3935
+2026-10-17T21:19:57.5993582Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:19:59.0713057Z ERROR        | Failed to find ColorBuffer: 3939
+2026-10-17T21:19:59.0721251Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:20:27.3717653Z ERROR        | Failed to find ColorBuffer: 4036
+2026-10-17T21:20:27.3719659Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:20:37.5593541Z {"api": 35, "complete": true, "actualInstrumentations": 2, "source": "same locally compiled test and production MainActivity", "forceStopBetweenPhases": true, "runnerLogSha256": {"journey": "2bf52c358bc00ba04d332bb834b4378d6fe0619b7070d44e579c0a5a78864afb", "reopen": "4febb5f20dbe90425c2e1190a966922b23d9422ab87ed4e32537c4b645f8a233"}, "journeyPid": 6807, "reopenPid": 7048, "result": "PASS", "realPhone": "not-executed"}
+2026-10-17T21:20:54.7739203Z ERROR        | Failed to find ColorBuffer: 4185
+2026-10-17T21:20:54.7739900Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:21:16.3918966Z ERROR        | Failed to find ColorBuffer: 4236
+2026-10-17T21:21:16.3919945Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:21:51.9712057Z ERROR        | Failed to find ColorBuffer: 4345
+2026-10-17T21:21:51.9713478Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:22:03.0266000Z ERROR        | Failed to find ColorBuffer: 4369
+2026-10-17T21:22:03.0267297Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:22:11.1241214Z ERROR        | Failed to find ColorBuffer: 4385
+2026-10-17T21:22:11.1242324Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:22:50.3385212Z ERROR        | Failed to find ColorBuffer: 4571
+2026-10-17T21:22:50.3426261Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:22:56.7650543Z ERROR        | Failed to find ColorBuffer: 4589
+2026-10-17T21:22:56.7651519Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:23:10.8039276Z ERROR        | Failed to find ColorBuffer: 4668
+2026-10-17T21:23:10.8049218Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:23:22.9510258Z ERROR        | Failed to find ColorBuffer: 4700
+2026-10-17T21:23:22.9519491Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:23:24.4874591Z ERROR        | Failed to find ColorBuffer: 4709
+2026-10-17T21:23:24.4876842Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:23:48.7505200Z ERROR        | Failed to find ColorBuffer: 4820
+2026-10-17T21:23:48.7508345Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:24:08.4686507Z ERROR        | Failed to find ColorBuffer: 4949
+2026-10-17T21:24:08.4687905Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:24:12.8425994Z ERROR        | Failed to find ColorBuffer: 4962
+2026-10-17T21:24:12.8435798Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:24:28.5387102Z ERROR        | Failed to find ColorBuffer: 5043
+2026-10-17T21:24:28.5395619Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:24:44.5585184Z ERROR        | Failed to find ColorBuffer: 5090
+2026-10-17T21:24:44.5586239Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:25:18.7721424Z ERROR        | Failed to find ColorBuffer: 5190
+2026-10-17T21:25:18.7722936Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:25:41.9405352Z ERROR        | Failed to find ColorBuffer: 5251
+2026-10-17T21:25:41.9406757Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:25:52.9975705Z ERROR        | Failed to find ColorBuffer: 5274
+2026-10-17T21:25:52.9993862Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:25:56.9156616Z ERROR        | Failed to find ColorBuffer: 5282
+2026-10-17T21:25:56.9158693Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:26:40.1019909Z ERROR        | Failed to find ColorBuffer: 5476
+2026-10-17T21:26:40.1037629Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:26:46.6319658Z ERROR        | Failed to find ColorBuffer: 5494
+2026-10-17T21:26:46.6320948Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:27:04.3625273Z ERROR        | Failed to find ColorBuffer: 5585
+2026-10-17T21:27:04.3652152Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:27:06.4066116Z ERROR        | Failed to find ColorBuffer: 5589
+2026-10-17T21:27:06.4079852Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:27:12.9012786Z ERROR        | Failed to find ColorBuffer: 5601
+2026-10-17T21:27:12.9024549Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:27:14.3329859Z ERROR        | Failed to find ColorBuffer: 5610
+2026-10-17T21:27:14.3331262Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:27:17.8254990Z ERROR        | Failed to find ColorBuffer: 5614
+2026-10-17T21:27:17.8255993Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:27:26.6139204Z ERROR        | Failed to find ColorBuffer: 5685
+2026-10-17T21:27:26.6166119Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:27:31.3001177Z ERROR        | Failed to find ColorBuffer: 5698
+2026-10-17T21:27:31.3002199Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:27:38.4724163Z ERROR        | Failed to find ColorBuffer: 5721
+2026-10-17T21:27:38.4735483Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:27:42.7853690Z ERROR        | Failed to find ColorBuffer: 5734
+2026-10-17T21:27:42.7857402Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:28:02.4566950Z ERROR        | Failed to find ColorBuffer: 5863
+2026-10-17T21:28:02.4575764Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:28:14.6906823Z ERROR        | Failed to find ColorBuffer: 5910
+2026-10-17T21:28:14.6908237Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:28:55.4126108Z ERROR        | Failed to find ColorBuffer: 6073
+2026-10-17T21:28:55.4126875Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:29:12.1505811Z ERROR        | Failed to find ColorBuffer: 6130
+2026-10-17T21:29:12.1506697Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:29:31.5056092Z ERROR        | Failed to find ColorBuffer: 6187
+2026-10-17T21:29:31.5060161Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:30:01.3260107Z ERROR        | Failed to find ColorBuffer: 6250
+2026-10-17T21:30:01.3260936Z ERROR        | Failed to bind to texture: invalid color buffer.
+2026-10-17T21:30:04.9433055Z Traceback (most recent call last):
+2026-10-17T21:30:04.9434455Z   File "/home/runner/work/trade-review-app/trade-review-app/scripts/run-v210-visual.py", line 145, in <module>
+2026-10-17T21:30:04.9435598Z     main()
+2026-10-17T21:30:04.9436308Z   File "/home/runner/work/trade-review-app/trade-review-app/scripts/run-v210-visual.py", line 122, in main
+2026-10-17T21:30:04.9437030Z     full_journey(api, profile, directory)
+2026-10-17T21:30:04.9437858Z   File "/home/runner/work/trade-review-app/trade-review-app/scripts/run-v210-visual.py", line 46, in full_journey
+2026-10-17T21:30:04.9438896Z     assert entry.successful_runner(result), f"Actual full UI {profile}/{phase} failed; logs retained"
+2026-10-17T21:30:04.9439557Z            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-10-17T21:30:04.9440161Z AssertionError: Actual full UI narrow-light/journey failed; logs retained
+2026-10-17T21:30:05.7877686Z ##[error]The process '/usr/bin/sh' failed with exit code 1
+2026-10-17T21:30:05.7886648Z ##[group]Terminate Emulator
+2026-10-17T21:30:05.7887309Z [command]/usr/local/lib/android/sdk/platform-tools/adb -s emulator-5554 emu kill
+2026-10-17T21:30:05.7907244Z OK: killing emulator, bye bye
+2026-10-17T21:30:05.7908135Z OK
+2026-10-17T21:30:05.7910338Z ##[endgroup]
+2026-10-17T21:30:05.7912074Z INFO         | Wait for emulator (pid 3148) 20 seconds to shutdown gracefully before kill;you can set environment variable ANDROID_EMULATOR_WAIT_TIME_BEFORE_KILL(in seconds) to change the default value (20 seconds)
+2026-10-17T21:30:05.7912892Z 
+2026-10-17T21:30:05.8093041Z USER_INFO    | Snapshots have been disabled by the user, save request is ignored.
+2026-10-17T21:30:05.8095273Z INFO         | Saving snapshot 'default_boot' took 0 ms
+2026-10-17T21:30:06.3534300Z ERROR        | stop: Not implemented
+2026-10-17T21:30:06.3536242Z WARNING      | Emulator client has not yet been configured.. Call configure me first!
+2026-10-17T21:30:06.3698710Z INFO         | removeAll
+2026-10-17T21:30:06.4675697Z WARNING      | Netsim Wifi dns:///localhost:35121 is gone due to Stream removed (CANCELLED)
+2026-10-17T21:30:06.9356159Z ##[group]Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+2026-10-17T21:30:06.9356659Z with:
+2026-10-17T21:30:06.9356923Z   name: device-failure-api35-attempt1
+2026-10-17T21:30:06.9357772Z   path: app/build/reports/androidTests/
+app/build/outputs/androidTest-results/
+app/build/outputs/androidTest-additional-output/
+ci-screenshots/
+ci-metrics/
+ci-stability/
+ci-v200/
+
+2026-10-17T21:30:06.9358670Z   retention-days: 3
+2026-10-17T21:30:06.9358962Z   if-no-files-found: warn
+2026-10-17T21:30:06.9359244Z   compression-level: 6
+2026-10-17T21:30:06.9359525Z   overwrite: false
+2026-10-17T21:30:06.9359787Z   include-hidden-files: false
+2026-10-17T21:30:06.9360076Z env:
+2026-10-17T21:30:06.9360363Z   SOURCE_COMMIT: dca977b34d7c209a1338c23e6bb33bd734d65042
+2026-10-17T21:30:06.9360746Z   V08_STABILITY_PROBES: true
+2026-10-17T21:30:06.9361046Z   V200_MAIN_PROBES: true
+2026-10-17T21:30:06.9361324Z   V200_PACKAGE_PROBES: true
+2026-10-17T21:30:06.9361599Z   V100_CHECK_BOOT: true
+2026-10-17T21:30:06.9362015Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.20-1/x64
+2026-10-17T21:30:06.9362585Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.20-1/x64
+2026-10-17T21:30:06.9363035Z   MAVEN_ARGS: -ntp
+2026-10-17T21:30:06.9363324Z   ANDROID_HOME: /usr/local/lib/android/sdk
+2026-10-17T21:30:06.9363678Z   ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
+2026-10-17T21:30:06.9364050Z   GRADLE_ACTION_ID: gradle/actions/setup-gradle
+2026-10-17T21:30:06.9364406Z   GRADLE_USER_HOME: /home/runner/.gradle
+2026-10-17T21:30:06.9364982Z   GRADLE_BUILD_ACTION_SETUP_COMPLETED: true
+2026-10-17T21:30:06.9365347Z   GRADLE_BUILD_ACTION_CACHE_RESTORED: true
+2026-10-17T21:30:06.9365840Z   DEVELOCITY_INJECTION_INIT_SCRIPT_NAME: gradle-actions.inject-develocity.init.gradle
+2026-10-17T21:30:06.9366370Z   DEVELOCITY_INJECTION_CUSTOM_VALUE: gradle-actions
+2026-10-17T21:30:06.9366743Z   GITHUB_DEPENDENCY_GRAPH_ENABLED: false
+2026-10-17T21:30:06.9367118Z   ANDROID_AVD_HOME: /home/runner/.android/avd
+2026-10-17T21:30:06.9367449Z ##[endgroup]
+2026-10-17T21:30:07.1155764Z (node:6215) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-17T21:30:07.1156800Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-17T21:30:07.2644681Z Multiple search paths detected. Calculating the least common ancestor of all paths
+2026-10-17T21:30:07.2651442Z The least common ancestor is /home/runner/work/trade-review-app/trade-review-app. This will be the root directory of the artifact
+2026-10-17T21:30:07.2653084Z With the provided path, there will be 729 files uploaded
+2026-10-17T21:30:07.2657008Z Artifact name is valid!
+2026-10-17T21:30:07.2659084Z Root directory input is valid!
+2026-10-17T21:30:07.5776163Z Beginning upload of artifact content to blob storage
+2026-10-17T21:30:08.1190694Z (node:6215) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-10-17T21:30:08.6142514Z Uploaded bytes 8388608
+2026-10-17T21:30:08.9247650Z Uploaded bytes 16777216
+2026-10-17T21:30:08.9728289Z Uploaded bytes 25165824
+2026-10-17T21:30:09.3142990Z Uploaded bytes 33554432
+2026-10-17T21:30:09.5918454Z Uploaded bytes 41114328
+2026-10-17T21:30:09.6484330Z Finished uploading artifact content to blob storage!
+2026-10-17T21:30:09.6488893Z SHA256 digest of uploaded artifact zip is eab13fd1df02ea438d1cf878fd88144dd8d0b70d5e1cab3b79750883d5ec4759
+2026-10-17T21:30:09.6491074Z Finalizing artifact upload
+2026-10-17T21:30:09.8947480Z Artifact device-failure-api35-attempt1.zip successfully finalized. Artifact ID 12115077995
+2026-10-17T21:30:09.8949370Z Artifact device-failure-api35-attempt1 has been successfully uploaded! Final size is 41114328 bytes. Artifact ID is 12115077995
+2026-10-17T21:30:09.8958495Z Artifact download URL: https://github.com/mlzx-xxj/trade-review-app/actions/runs/39068680301/artifacts/12115077995
+2026-10-17T21:30:09.9255472Z Post job cleanup.
+2026-10-17T21:30:10.1838010Z In post-action step
+2026-10-17T21:30:10.1848183Z Cache is read-only: will not save state for use in subsequent builds.
+2026-10-17T21:30:10.1855142Z Generating Job Summary
+2026-10-17T21:30:10.1874252Z Completed post-action step
+2026-10-17T21:30:10.2089566Z Post job cleanup.
+2026-10-17T21:30:10.3619189Z Post job cleanup.
+2026-10-17T21:30:10.4624395Z [command]/usr/bin/git version
+2026-10-17T21:30:10.4671598Z git version 2.55.0
+2026-10-17T21:30:10.4711491Z Temporarily overriding HOME='/home/runner/work/_temp/0905d46d-4ec1-49b3-b988-954d2e84f1ee' before making global git config changes
+2026-10-17T21:30:10.4725123Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-17T21:30:10.4727261Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/trade-review-app/trade-review-app
+2026-10-17T21:30:10.4762175Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-17T21:30:10.4800114Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-17T21:30:10.5078735Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-17T21:30:10.5117140Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-17T21:30:10.5382265Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-17T21:30:10.5424906Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-17T21:30:10.5821777Z Cleaning up orphan processes
+2026-10-17T21:30:10.6170642Z Terminate orphan process: pid (3243) (adb)
+2026-10-17T21:30:10.6237281Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02, android-actions/setup-android@9fc6c4e9069bf8d3d10b2204b1fb8f6ef7065407, gradle/actions/setup-gradle@ed408507eac070d1f99cc633dbcf757c94c7933a. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+

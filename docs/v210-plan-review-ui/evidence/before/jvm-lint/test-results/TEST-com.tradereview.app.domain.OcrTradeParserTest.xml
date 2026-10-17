@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.tradereview.app.domain.OcrTradeParserTest" tests="10" skipped="0" failures="0" errors="0" timestamp="2026-10-17T21:41:59" hostname="runnervm8k3b6" time="0.204">
+  <properties/>
+  <testcase name="multipleExplicitTradesStaySeparateAndCanHaveDifferentCurrencies" classname="com.tradereview.app.domain.OcrTradeParserTest" time="0.081"/>
+  <testcase name="ordersPositionsFloatingUnrealizedAndCandlesNeverAutoCreate" classname="com.tradereview.app.domain.OcrTradeParserTest" time="0.045"/>
+  <testcase name="everyRecognizedFieldAndExplicitClosureMustBeConfirmed" classname="com.tradereview.app.domain.OcrTradeParserTest" time="0.005"/>
+  <testcase name="chineseEnglishDigitsSignedDecimalsAndContractsParseExactly" classname="com.tradereview.app.domain.OcrTradeParserTest" time="0.008"/>
+  <testcase name="conflictsAndInvalidFinancialFormatsRemainPending" classname="com.tradereview.app.domain.OcrTradeParserTest" time="0.018"/>
+  <testcase name="fullWidthCharactersAndOversizedInputsAreHandledSafely" classname="com.tradereview.app.domain.OcrTradeParserTest" time="0.011"/>
+  <testcase name="buySellPricesNeverGuessShortEntryAndExit" classname="com.tradereview.app.domain.OcrTradeParserTest" time="0.001"/>
+  <testcase name="incompleteOrUnlabelledPnlIsNotGuessed" classname="com.tradereview.app.domain.OcrTradeParserTest" time="0.009"/>
+  <testcase name="suspectedDuplicatesCompareExactFactsAndNeverMerge" classname="com.tradereview.app.domain.OcrTradeParserTest" time="0.007"/>
+  <testcase name="zeroPnlRequiresExplicitFlatAndCostsDoNotOverwriteManualNet" classname="com.tradereview.app.domain.OcrTradeParserTest" time="0.008"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

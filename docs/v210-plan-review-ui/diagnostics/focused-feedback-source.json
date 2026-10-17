@@ -1,0 +1,12 @@
+{
+  "runUrl": "https://github.com/mlzx-xxj/trade-review-app/actions/runs/39071757484",
+  "artifactId": 12116176191,
+  "artifactSha256": "e72777329b1d6bbe634caa0e19836232dba2e7720972af835dfbf38c11da0d2e",
+  "sourceCommit": "5aee2df0240c4ad2d557e6992252bc54e56c17d4",
+  "scope": "Focused API35 only; 1 feedback lifecycle + 8 plan/review/account + 8 retained home/statistics calls; not full native CI",
+  "result": "PASS",
+  "files": {
+    "feedback-instrumentation.txt": "fceace34d4419cf63f5a06d01344c2914cf0193cc690a36bca722d303cbeaa92",
+    "FOCUSED-SOURCE.json": "2105f3da07b9b072e51325ef7b0ef1956e9dd570e7f0a2c2cda4b82797a0cc78"
+  }
+}

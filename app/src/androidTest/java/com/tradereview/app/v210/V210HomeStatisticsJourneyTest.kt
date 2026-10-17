@@ -244,8 +244,22 @@ class V210HomeStatisticsJourneyTest {
     }
     private fun review(){
         val before=facts();val cycle=before.cycles.single{it.code=="rb2701"}
+        waitFor{model.message.value==null}
         page(2);ui.onNodeWithTag("review-section-post").performClick()
-        ui.onNodeWithTag("v2-reviews").performScrollToNode(hasTestTag("review-cycle-${cycle.id}"));ui.onNodeWithTag("review-cycle-${cycle.id}").performClick()
+        val list=ui.onNodeWithTag("v2-reviews");val button=ui.onNodeWithTag("review-cycle-${cycle.id}")
+        list.performScrollToNode(hasTestTag("review-cycle-${cycle.id}"))
+        // A single large card can exceed the narrow viewport. Scroll the actual
+        // list until its action is visible, rather than clicking a clipped node.
+        var attempts=0
+        while(runCatching{button.assertIsDisplayed()}.isFailure&&attempts++<8){
+            val node=button.fetchSemanticsNode();val viewport=list.fetchSemanticsNode().boundsInRoot
+            val y=node.positionInRoot.y
+            val delta=if(y<viewport.top)y-viewport.top-12f else y+node.size.height-viewport.bottom+12f
+            list.performSemanticsAction(androidx.compose.ui.semantics.SemanticsActions.ScrollBy){check(it(0f,delta))}
+            ui.waitForIdle()
+        }
+        button.assertIsDisplayed().assertIsEnabled().performClick()
+        ui.onNodeWithTag("position-review-note").assertExists()
         ui.onNodeWithTag("position-review-note").performScrollTo().performTextReplacement("合成复盘：分批开仓后部分平仓，核对费用与剩余一手。".repeat(3))
         ui.onNodeWithTag("save-position-review").assertIsDisplayed().performClick()
         waitFor{!model.busy.value&&model.state.value.ledger?.reviews?.size==1}

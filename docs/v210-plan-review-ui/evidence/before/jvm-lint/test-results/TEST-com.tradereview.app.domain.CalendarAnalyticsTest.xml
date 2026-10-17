@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.tradereview.app.domain.CalendarAnalyticsTest" tests="10" skipped="0" failures="0" errors="0" timestamp="2026-10-17T21:41:59" hostname="runnervm8k3b6" time="0.028">
+  <properties/>
+  <testcase name="mondayFirstCalendarHandlesMonthEdgesNewYearAndBothLeapYearRules" classname="com.tradereview.app.domain.CalendarAnalyticsTest" time="0.002"/>
+  <testcase name="drawdownIncludesInitialZeroPeakAndIntradayLosses" classname="com.tradereview.app.domain.CalendarAnalyticsTest" time="0.005"/>
+  <testcase name="streaksAreChronologicalAndFlatsBreakBothStreaks" classname="com.tradereview.app.domain.CalendarAnalyticsTest" time="0.0"/>
+  <testcase name="executionRatingTrendRespectsDatesAndMatchedTradeDays" classname="com.tradereview.app.domain.CalendarAnalyticsTest" time="0.001"/>
+  <testcase name="mistakesCountOncePerTradeAndGroupsHaveRealSampleSizes" classname="com.tradereview.app.domain.CalendarAnalyticsTest" time="0.0"/>
+  <testcase name="epochDatesDoNotChangeAcrossTimeZones" classname="com.tradereview.app.domain.CalendarAnalyticsTest" time="0.01"/>
+  <testcase name="averagesRatiosAndWeeklyCurveUseOneCurrencyAndOneFilteredSample" classname="com.tradereview.app.domain.CalendarAnalyticsTest" time="0.001"/>
+  <testcase name="dailyTotalsAreExactAndNeverMixCnyUsdOrUsdt" classname="com.tradereview.app.domain.CalendarAnalyticsTest" time="0.0"/>
+  <testcase name="emptyAndFlatSamplesDoNotInventRatesOrChartPoints" classname="com.tradereview.app.domain.CalendarAnalyticsTest" time="0.0"/>
+  <testcase name="heatmapIntensityUsesMagnitudeAndBounds" classname="com.tradereview.app.domain.CalendarAnalyticsTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
