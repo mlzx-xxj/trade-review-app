@@ -211,7 +211,8 @@ class V210HomeStatisticsJourneyTest {
         enter(today,"futures","rb2701","buy-open","3510","3","10.54","5")
         enter(today,"futures","rb2701","sell-close","3530","4","14.13","1");expected+=Expected(today.toEpochDay(),"futures","rb2701","971.833333333333")
         enter(today,"futures","rb2705","sell-open","4000","1","4.01","1")
-        enter(today,"futures","rb2705","buy-close","3999.199","1","4.00","0");expected+=Expected(today.toEpochDay(),"futures","rb2705","0")
+        // Synthetic flat-result fixture: gross 8.02; opening/closing fees 4.01 each.
+        enter(today,"futures","rb2705","buy-close","3999.198","1","4.01","0");expected+=Expected(today.toEpochDay(),"futures","rb2705","0")
         home("known-home");statistic("week","all",captureScene="known-statistics")
         enter(today,"futures","i2701","buy-open","800","2",null,"2")
         enter(today,"futures","i2701","sell-close","810","1",null,"1");expected+=Expected(today.toEpochDay(),"futures","i2701",null)
