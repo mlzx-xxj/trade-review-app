@@ -84,13 +84,28 @@ class V210PlanReviewJourneyTest {
     private fun page(index:Int){ui.onNodeWithTag("v2-main-page-$index").performClick();ui.waitForIdle()}
     private fun reset(){taps=0;scrolls=0;dateTaps=0;backKeys=0;typed.clear()}
     private fun visible(n:SemanticsNodeInteraction):SemanticsNodeInteraction{
+        var target=n
         if(runCatching{n.assertIsDisplayed()}.isFailure){
             val node=n.fetchSemanticsNode()
             val lazy=generateSequence(node.parent){it.parent}.firstOrNull{it.config.contains(SemanticsActions.ScrollToIndex)}
-            if(lazy==null)n.performScrollTo()else ui.onNode(SemanticsMatcher("Actual lazy parent"){it.id==lazy.id},useUnmergedTree=true).performScrollToNode(SemanticsMatcher("Actual target"){it.id==node.id})
+            if(lazy==null)n.performScrollTo()else{
+                val list=ui.onNode(SemanticsMatcher("Actual lazy parent"){it.id==lazy.id},useUnmergedTree=true)
+                val identity=SemanticsMatcher("Actual target"){it.id==node.id}
+                list.performScrollToNode(identity)
+                target=ui.onNode(identity,useUnmergedTree=true)
+                // An oversized lazy item can be composed while its bottom action
+                // stays clipped. Use real bounded swipes, as a phone user would.
+                var swipes=0
+                while(runCatching{target.assertIsDisplayed()}.isFailure&&swipes++<8){
+                    val y=target.fetchSemanticsNode().positionInRoot.y
+                    val viewport=list.fetchSemanticsNode().boundsInRoot
+                    list.performTouchInput{if(y<viewport.top)swipeDown()else swipeUp()}
+                    scrolls++;ui.waitForIdle()
+                }
+            }
             scrolls++
         }
-        return n.assertIsDisplayed()
+        return target.assertIsDisplayed()
     }
     private fun tap(tag:String){
         if(tag.startsWith("review-section-")&&runCatching{ui.onNodeWithTag(tag).assertIsDisplayed()}.isFailure){top("v2-reviews");scrolls++}
