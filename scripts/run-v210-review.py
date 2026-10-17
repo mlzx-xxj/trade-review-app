@@ -38,4 +38,5 @@ def run(api, profile, directory, root):
     spec=importlib.util.spec_from_file_location('review_evidence',Path(__file__).with_name('v210-review-evidence.py'))
     check=importlib.util.module_from_spec(spec);spec.loader.exec_module(check)
     check.verify(first,second,api,profile)
+    check.verify_candidate(first)
     return dict(profile=profile,actualInstrumentations=2,runnerLogSha256=logs,result='PASS')

@@ -11,6 +11,9 @@ def verify(first, second, api, profile):
     for value in (first,second):
         assert value['api']==api and value['profile']==profile and value['result']=='PASS'
     assert first['dateAnchor']==ANCHOR and first['syntheticOnly'] is True
+    assert first['screenWidthDp'] in (range(318,323) if profile.startswith('narrow') else range(358,363))
+    assert abs(first['fontScale']-(1.3 if profile.startswith('narrow') else 1.0))<.01
+    assert first['night']==profile.endswith('dark')
     assert first['allExecutionsCreatedViaRealForm'] is True and first['allPlansReviewsCashSavedViaUi'] is True
     assert first['immutableTradingFactsPreserved'] is True
     assert first['pid']==second['previousPid'] and first['pid']!=second['pid']
@@ -61,3 +64,24 @@ def verify(first, second, api, profile):
     assert all(o['result']=='PASS' and o['normalTaps']==o['taps']-o['fixtureDateTaps'] for o in first['operations'])
     assert {o['operation'] for o in first['operations']}=={'new-stock-plan','edit-stock-plan','new-futures-plan','new-open-review','edit-open-review','closed-review','pending-review','configure-stock','stock-in-cash','stock-out-cash','edit-cashflow','configure-futures','futures-in-cash','futures-out-cash'}
     assert first['screenshots'] and second['screenshots']
+
+
+def verify_candidate(first):
+    """Layout gates apply to the new UI; the old UI remains measured, not relabeled perfect."""
+    import re
+    assert first['cashEditTargetRetained'] is True, 'Cash edit identity lost during recreation'
+    operations={o['operation']:o for o in first['operations']}
+    for o in operations.values():
+        c=o['saveControl']
+        assert c['composeVisible'] is True and c['fullyAboveKeyboard'] is True, (o['operation'],c)
+        assert c['buttonBoundsPx'] and c['touchHeightDp']>=48, (o['operation'],c)
+    for name,limit in [('new-stock-plan',5),('new-futures-plan',6)]:
+        o=operations[name]
+        assert o['normalTaps']<=limit and o['keyboardBackKeys']==0
+        assert o['typedFields']==['plan-code','plan-name','plan-note']
+        assert o['saveControl']['keyboardVisible'] is True
+    assert operations['new-open-review']['saveControl']['keyboardVisible'] is True
+    visible=[r for r in first['layouts'] if r['visible'] and re.fullmatch(r'￥-?[0-9]+\.[0-9]{2}',r['text'])]
+    assert visible, 'No actual visible money layout evidence'
+    for r in visible:
+        assert r['fontSp']>=14 and not r['overflowWidth'] and not r['overflowHeight'],r
