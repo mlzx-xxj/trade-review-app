@@ -108,7 +108,7 @@ def main():
         proofs=list((root/'test-results').glob('*.xml'))+list(root.glob('lint-results-*.xml'))
         assert len(list(root.glob('lint-results-*.xml')))==3
         for proof in proofs:
-            relative=Path('evidence')/side/'build'/proof.relative_to(root)
+            relative=Path('evidence')/side/'jvm-lint'/proof.relative_to(root)
             target=out/relative;target.parent.mkdir(parents=True,exist_ok=True)
             shutil.copyfile(proof,target)
             evidence_hashes[relative.as_posix()]=hashlib.sha256(target.read_bytes()).hexdigest()

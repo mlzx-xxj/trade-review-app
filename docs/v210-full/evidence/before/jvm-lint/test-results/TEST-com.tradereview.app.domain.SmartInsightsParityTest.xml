@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.tradereview.app.domain.SmartInsightsParityTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-10-17T05:43:38" hostname="runnervm8k3b6" time="0.262">
+  <properties/>
+  <testcase name="randomMultiCurrencyHiddenTagsValidRiskAndPeriodBoundariesMatchLegacy" classname="com.tradereview.app.domain.SmartInsightsParityTest" time="0.124"/>
+  <testcase name="tenThousandLossesMatchAllOldEvidenceAndTradeKeysWithoutQuadraticCopies" classname="com.tradereview.app.domain.SmartInsightsParityTest" time="0.134"/>
+  <testcase name="flatResetsFirstTiesAndSameDayInputOrderingArePreserved" classname="com.tradereview.app.domain.SmartInsightsParityTest" time="0.001"/>
+  <testcase name="emptyLowSampleAndDisabledCategoriesMatchLegacyExactly" classname="com.tradereview.app.domain.SmartInsightsParityTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

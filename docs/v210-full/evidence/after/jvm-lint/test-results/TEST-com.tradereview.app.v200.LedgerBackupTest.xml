@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.tradereview.app.v200.LedgerBackupTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2026-10-17T07:07:08" hostname="runnervm8k3b6" time="0.156">
+  <properties/>
+  <testcase name="percentRiskLimitKeepsSubCentPrecision" classname="com.tradereview.app.v200.LedgerBackupTest" time="0.011"/>
+  <testcase name="duplicateIdsAndUnknownAccountCannotEnterNewLedger" classname="com.tradereview.app.v200.LedgerBackupTest" time="0.001"/>
+  <testcase name="missingForeignReferencesAndFabricatedMatchingResultsAreRejected" classname="com.tradereview.app.v200.LedgerBackupTest" time="0.006"/>
+  <testcase name="repeatedMergePreservesLocalNamesAndDoesNotDuplicateFactsOrFees" classname="com.tradereview.app.v200.LedgerBackupTest" time="0.008"/>
+  <testcase name="newLedgerStrictTypesUnknownFieldsAndCountsCannotBeCoerced" classname="com.tradereview.app.v200.LedgerBackupTest" time="0.03"/>
+  <testcase name="everySupportedOldGoldenBackupRemainsArchiveOnlyWithoutInventedPositions" classname="com.tradereview.app.v200.LedgerBackupTest" time="0.075"/>
+  <testcase name="newFullStructuredLedgerRoundTripPreservesAllStableReferencesAndNumbers" classname="com.tradereview.app.v200.LedgerBackupTest" time="0.025"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

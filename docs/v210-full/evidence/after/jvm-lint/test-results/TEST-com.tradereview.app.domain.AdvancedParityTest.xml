@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.tradereview.app.domain.AdvancedParityTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-10-17T07:07:07" hostname="runnervm8k3b6" time="0.669">
+  <properties/>
+  <testcase name="emptyFlatNegativePrecisionAndSameDateKeyTieOrderingMatchOriginal" classname="com.tradereview.app.domain.AdvancedParityTest" time="0.088"/>
+  <testcase name="exactFinancialReportsIncludingDrawdownCurvesGroupOrderingAndFiltersMatchOriginal" classname="com.tradereview.app.domain.AdvancedParityTest" time="0.578"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

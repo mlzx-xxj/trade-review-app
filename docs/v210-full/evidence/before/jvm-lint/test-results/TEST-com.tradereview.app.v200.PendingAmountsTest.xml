@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.tradereview.app.v200.PendingAmountsTest" tests="13" skipped="0" failures="0" errors="0" timestamp="2026-10-17T05:43:39" hostname="runnervm8k3b6" time="0.083">
+  <properties/>
+  <testcase name="strictValidationRejectsZeroForgeryAndMissingActualFees" classname="com.tradereview.app.v200.PendingAmountsTest" time="0.009"/>
+  <testcase name="confirmedMultiplierAllowsOpeningWithoutInventingFeeMarginOrCost" classname="com.tradereview.app.v200.PendingAmountsTest" time="0.001"/>
+  <testcase name="partialClosePreservesGrossAndQuantityButUnknownNetNeverBecomesAWin" classname="com.tradereview.app.v200.PendingAmountsTest" time="0.006"/>
+  <testcase name="pendingAmountsSurviveJsonZipMergeAndCsvWithoutTurningIntoZero" classname="com.tradereview.app.v200.PendingAmountsTest" time="0.027"/>
+  <testcase name="unknownFeeTypeCannotBeCombinedWithAGuessedRate" classname="com.tradereview.app.v200.PendingAmountsTest" time="0.001"/>
+  <testcase name="unknownOnePartMakesTheWholeCloseUnknownIncludingKnownOtherLots" classname="com.tradereview.app.v200.PendingAmountsTest" time="0.004"/>
+  <testcase name="previousV2Json7IsStillAcceptedButCannotPretendItSupportedNullFees" classname="com.tradereview.app.v200.PendingAmountsTest" time="0.017"/>
+  <testcase name="allNineteenPreviouslyBlockedProductsCanEnterTheLedgerWithoutGuessedAmounts" classname="com.tradereview.app.v200.PendingAmountsTest" time="0.014"/>
+  <testcase name="futureCatalogUpdateNeverBackfillsUnknownHistoricalFeesSilently" classname="com.tradereview.app.v200.PendingAmountsTest" time="0.0"/>
+  <testcase name="cnyDisplayAlwaysRoundsHalfUpAtTwoPlacesWithoutChangingRawPrecision" classname="com.tradereview.app.v200.PendingAmountsTest" time="0.0"/>
+  <testcase name="missingOpeningFeeDoesNotHideKnownClosingFeeButNetStaysUnknown" classname="com.tradereview.app.v200.PendingAmountsTest" time="0.002"/>
+  <testcase name="knownAndUnknownEventsHaveSeparateEffectiveStatisticsDenominators" classname="com.tradereview.app.v200.PendingAmountsTest" time="0.001"/>
+  <testcase name="zeroOfficialBaseFeeIsKnownAndReceivesExactlyOnePenny" classname="com.tradereview.app.v200.PendingAmountsTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

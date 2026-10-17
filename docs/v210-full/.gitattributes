@@ -1,0 +1,2 @@
+# Keep original CI evidence byte-for-byte, including XML CRLF.
+evidence/** -text

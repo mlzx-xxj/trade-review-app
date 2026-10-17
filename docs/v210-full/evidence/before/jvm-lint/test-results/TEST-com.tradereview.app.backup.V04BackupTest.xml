@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.tradereview.app.backup.V04BackupTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-10-17T05:43:37" hostname="runnervm8k3b6" time="0.057">
+  <properties/>
+  <testcase name="authenticV03FieldSetAndChecksumImportWithoutLosingHiddenHistory" classname="com.tradereview.app.backup.V04BackupTest" time="0.007"/>
+  <testcase name="v04RoundTripPreservesPaletteFiltersAllTagModesAndCurrency" classname="com.tradereview.app.backup.V04BackupTest" time="0.015"/>
+  <testcase name="invalidFilterReferencesCountsSettingsAndTamperingAreRejected" classname="com.tradereview.app.backup.V04BackupTest" time="0.012"/>
+  <testcase name="oldAndroidReflectionOrderIsAcceptedWithoutWeakeningIntegrity" classname="com.tradereview.app.backup.V04BackupTest" time="0.014"/>
+  <testcase name="canonicalV04GoldenChecksumMatchesAcrossRuntimeFieldOrders" classname="com.tradereview.app.backup.V04BackupTest" time="0.008"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
