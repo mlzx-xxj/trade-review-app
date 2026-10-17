@@ -212,14 +212,14 @@ class V210HomeStatisticsJourneyTest {
     }
     private fun homeRoutes(){
         val before=facts()
-        page(0);ui.onNodeWithTag("v2-home").performScrollToNode(hasText("查看交易"));ui.onNodeWithText("查看交易").performClick()
+        page(0);ui.onNodeWithTag("v2-home").performScrollToNode(hasText("查看交易"));ui.onNodeWithText("查看交易").performScrollTo().assertIsDisplayed().performClick()
         ui.onNodeWithTag("v2-main-page-1").assertIsSelected()
-        page(0);ui.onNodeWithTag("v2-home").performScrollToNode(hasText("去复盘"));ui.onNodeWithText("去复盘").performClick()
+        page(0);ui.onNodeWithTag("v2-home").performScrollToNode(hasText("去复盘"));ui.onNodeWithText("去复盘").performScrollTo().assertIsDisplayed().performClick()
         ui.onNodeWithTag("v2-main-page-2").assertIsSelected()
         page(0);val last=before.executions.single{it.code=="i2701"&&it.effect!="open"}
         val tag="home-recent-${last.id}"
         waitFor{ui.onAllNodesWithTag("v2-home").fetchSemanticsNodes().isNotEmpty()}
-        ui.onNodeWithTag("v2-home").performScrollToNode(hasTestTag(tag));ui.onNodeWithTag(tag).performClick()
+        ui.onNodeWithTag("v2-home").performScrollToNode(hasTestTag(tag));ui.onNodeWithTag(tag).performScrollTo().assertIsDisplayed().performClick()
         ui.onNodeWithText("成交详情").assertIsDisplayed();ui.onNodeWithTag("edit-execution").assertExists()
         ui.onNodeWithContentDescription("返回主页面").performClick()
         assertEquals(before,facts());ui.onNodeWithTag("v2-main-page-0").assertIsSelected()
