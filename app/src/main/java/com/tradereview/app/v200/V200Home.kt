@@ -43,7 +43,7 @@ private data class RecentHomeExecutions(val source:List<LedgerExecution>,val row
                 OverviewHeading("累计表现",action=if(expanded)"收起月历"else"展开月历",onAction={expanded=!expanded},actionTag="calendar-expand")
                 BoxWithConstraints(Modifier.fillMaxWidth()){
                     if(maxWidth>=460.dp)Row(horizontalArrangement=Arrangement.spacedBy(16.dp)){
-                        OverviewMoney("本周已实现",completeTotal(weekly.map{exactOrNull(it.net)}),"home-realized-week",Modifier.weight(1f),large=true,empty=weekly.isEmpty())
+                        OverviewMoney("本周已实现",completeTotal(weekly.map{exactOrNull(it.net)}),"home-realized-week",Modifier.weight(1f),large=true,empty=weekly.isEmpty(),showState=false)
                         OverviewMoney("本月",completeTotal(monthly.map{exactOrNull(it.net)}),"home-realized-month",Modifier.weight(1f),empty=monthly.isEmpty(),showState=false)
                         OverviewMoney("历史累计",completeTotal(state.closed.map{exactOrNull(it.net)}),"home-realized-all",Modifier.weight(1f),empty=state.closed.isEmpty(),showState=false)
                     }else Column(verticalArrangement=Arrangement.spacedBy(8.dp)){
@@ -109,7 +109,7 @@ private data class RecentHomeExecutions(val source:List<LedgerExecution>,val row
 @Composable private fun DayCell(day:Long,value:BigDecimal?,onDay:(Long)->Unit,compact:Boolean=false,pending:Boolean=false,today:Boolean=false){
     val description="${LocalDate.ofEpochDay(day)}，${value?.let{"${if(pending)"已知部分"else"已实现"}净盈亏${AutomaticEntry.cents(it)}元，${when(it.signum()){1->"盈利";-1->"亏损";else->"持平"}}${if(pending)"，另有费用待估算的平仓"else""}"}?:if(pending)"费用待估算，净盈亏待计算"else"无平仓记录"}"
     val color=value?.let{pnlColor(it)}?:MaterialTheme.colorScheme.onSurfaceVariant
-    val width=if(compact)48.dp else if(androidx.compose.ui.platform.LocalDensity.current.fontScale>1.15f)84.dp else 72.dp
+    val width=if(compact)48.dp else if(androidx.compose.ui.platform.LocalDensity.current.fontScale>1.15f)92.dp else 72.dp
     Surface(shape=MaterialTheme.shapes.small,color=if(today)MaterialTheme.colorScheme.surfaceContainerHigh else androidx.compose.ui.graphics.Color.Transparent,modifier=Modifier.width(width).heightIn(min=72.dp).clickable{onDay(day)}.semantics{contentDescription=description}.testTag("v2-day-$day")){
         Column(Modifier.padding(horizontal=4.dp,vertical=8.dp),horizontalAlignment=Alignment.CenterHorizontally,verticalArrangement=Arrangement.spacedBy(4.dp)){
             Text(if(compact)LocalDate.ofEpochDay(day).dayOfMonth.toString()else"${LocalDate.ofEpochDay(day).monthValue}/${LocalDate.ofEpochDay(day).dayOfMonth}",style=MaterialTheme.typography.labelMedium,color=if(today)MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,fontWeight=if(today)FontWeight.SemiBold else FontWeight.Normal)
