@@ -83,29 +83,31 @@ class V210PlanReviewJourneyTest {
     private fun waitFor(p:()->Boolean)=ui.waitUntil(45000){p()}
     private fun page(index:Int){ui.onNodeWithTag("v2-main-page-$index").performClick();ui.waitForIdle()}
     private fun reset(){taps=0;scrolls=0;dateTaps=0;backKeys=0;typed.clear()}
-    private fun visible(n:SemanticsNodeInteraction):SemanticsNodeInteraction{
-        var target=n
+    private fun visible(n:SemanticsNodeInteraction,locator:SemanticsMatcher?=null):SemanticsNodeInteraction{
         if(runCatching{n.assertIsDisplayed()}.isFailure){
             val node=n.fetchSemanticsNode()
             val lazy=generateSequence(node.parent){it.parent}.firstOrNull{it.config.contains(SemanticsActions.ScrollToIndex)}
             if(lazy==null)n.performScrollTo()else{
-                val list=ui.onNode(SemanticsMatcher("Actual lazy parent"){it.id==lazy.id},useUnmergedTree=true)
-                val identity=SemanticsMatcher("Actual target"){it.id==node.id}
-                list.performScrollToNode(identity)
-                target=ui.onNode(identity,useUnmergedTree=true)
-                // An oversized lazy item can be composed while its bottom action
-                // stays clipped. Use real bounded swipes, as a phone user would.
-                var swipes=0
-                while(runCatching{target.assertIsDisplayed()}.isFailure&&swipes++<8){
-                    val y=target.fetchSemanticsNode().positionInRoot.y
-                    val viewport=list.fetchSemanticsNode().boundsInRoot
-                    list.performTouchInput{if(y<viewport.top)swipeDown()else swipeUp()}
+                val tag=lazy.config.getOrNull(SemanticsProperties.TestTag)?.takeIf{it.isNotBlank()}
+                val list=ui.onNode(tag?.let(::hasTestTag)?:SemanticsMatcher("Actual lazy parent"){it.id==lazy.id},useUnmergedTree=true)
+                val targetTag=node.config.getOrNull(SemanticsProperties.TestTag)?.takeIf{it.isNotBlank()}
+                val label=node.config.getOrElse(SemanticsProperties.Text){emptyList()}.firstOrNull()?.text
+                val target=locator?:targetTag?.let(::hasTestTag)?:label?.let{hasText(it)}?:SemanticsMatcher("Actual target"){it.id==node.id}
+                list.performScrollToNode(target)
+                // Lazy items can recompose when scrolling/resizing. Re-query
+                // the stable tag or card relationship, never a transient node ID.
+                var attempts=0
+                while(runCatching{n.assertIsDisplayed()}.isFailure&&attempts++<8){
+                    val current=n.fetchSemanticsNode();val viewport=list.fetchSemanticsNode().boundsInRoot
+                    val y=current.positionInRoot.y
+                    val delta=if(y<viewport.top)y-viewport.top-12f else y+current.size.height-viewport.bottom+12f
+                    list.performSemanticsAction(SemanticsActions.ScrollBy){action->check(action(0f,delta)){"Actual list refused scroll"}}
                     scrolls++;ui.waitForIdle()
                 }
             }
             scrolls++
         }
-        return target.assertIsDisplayed()
+        return n.assertIsDisplayed()
     }
     private fun tap(tag:String){
         if(tag.startsWith("review-section-")&&runCatching{ui.onNodeWithTag(tag).assertIsDisplayed()}.isFailure){top("v2-reviews");scrolls++}
@@ -186,11 +188,9 @@ class V210PlanReviewJourneyTest {
     private fun top(tag:String){ui.onNodeWithTag(tag).performScrollToIndex(0)}
     private fun openPlan(id:String){
         val p=facts().plans.single{it.id==id};top("v2-reviews")
-        ui.onNodeWithTag("v2-reviews").performScrollToNode(hasText(p.code,substring=true))
-        val title=ui.onAllNodes(hasText(p.code,substring=true)).fetchSemanticsNodes().filter{it.size.height>0}.minBy{it.positionInRoot.y}
-        val buttons=ui.onAllNodesWithText("查看与编辑计划").fetchSemanticsNodes()
-        val index=buttons.indices.filter{buttons[it].positionInRoot.y>=title.positionInRoot.y}.minBy{buttons[it].positionInRoot.y}
-        visible(ui.onAllNodesWithText("查看与编辑计划")[index]).performClick();taps++
+        val action=hasText("查看与编辑计划") and hasClickAction() and hasParent(hasAnyDescendant(hasText(p.code,substring=true)))
+        ui.onNodeWithTag("v2-reviews").performScrollToNode(action)
+        visible(ui.onNode(action),action).performClick();taps++
         ui.onNodeWithTag("plan-code").assertTextContains(p.code)
     }
     private fun observeMoney(label:String,value:String,tag:String,legacyCombined:Boolean=true){
@@ -221,9 +221,10 @@ class V210PlanReviewJourneyTest {
         waitFor{ui.onNodeWithTag("entry-estimated-fee").fetchSemanticsNode().config[SemanticsProperties.Text].joinToString(""){it.text}=="预计手续费：${fee?.let{"¥$it"}?:"待估算"}"}
         val previous=facts();tap("save-execution");waitFor{!model.busy.value&&!model.editor.value&&model.state.value.ledger?.executions?.size==previous.executions.size+1}
         assertNull(model.pending.value);assertNull(model.problem.value)
+        waitFor{model.state.value.ledger==facts()};ui.waitForIdle()
         return facts().executions.single{e->previous.executions.none{it.id==e.id}}.also{assertEquals(fee,it.fees)}
     }
-    private fun openReview(cycle:LedgerCycle){page(2);tap("review-section-post");ui.onNodeWithTag("v2-reviews").performScrollToNode(hasTestTag("review-cycle-${cycle.id}"));tap("review-cycle-${cycle.id}")}
+    private fun openReview(cycle:LedgerCycle){waitFor{model.message.value==null};page(2);tap("review-section-post");ui.onNodeWithTag("v2-reviews").performScrollToNode(hasTestTag("review-cycle-${cycle.id}"));tap("review-cycle-${cycle.id}")}
     private fun editReview(review:LedgerReview){
         page(2);tap("review-section-post");ui.onNodeWithTag("v2-reviews").performScrollToNode(hasTestTag("review-cycle-${review.cycleId}"))
         val history=if(ui.onAllNodesWithTag("edit-review-${review.id}").fetchSemanticsNodes().isNotEmpty())ui.onNodeWithTag("edit-review-${review.id}")else ui.onNodeWithText("$anchor ${review.note.take(24).ifBlank{"已有复盘"}}")
@@ -308,8 +309,9 @@ class V210PlanReviewJourneyTest {
         configure("stock","10000",true);flow("stock","in","1000","合成入金");flow("stock","out","200","合成出金")
         page(4);top("v2-accounts");reset()
         val incoming=facts().cashFlows.single{it.accountId=="stock"&&it.kind=="in"}
-        ui.onNodeWithTag("v2-accounts").performScrollToNode(hasText("合成入金"));val edits=ui.onAllNodesWithText("编辑流水");val title=ui.onNodeWithText("合成入金").fetchSemanticsNode().positionInRoot
-        val index=edits.fetchSemanticsNodes().indices.filter{edits.fetchSemanticsNodes()[it].positionInRoot.y>=title.y}.minBy{edits.fetchSemanticsNodes()[it].positionInRoot.y};visible(edits[index]).performClick();taps++
+        val editIncoming=hasText("编辑流水") and hasClickAction() and hasParent(hasAnyDescendant(hasText("合成入金")))
+        ui.onNodeWithTag("v2-accounts").performScrollToNode(editIncoming);scrolls++
+        visible(ui.onNode(editIncoming),editIncoming).performClick();taps++
         field("cashflow-amount","1200");field("cashflow-note","合成入金已更正")
         orientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE,Configuration.ORIENTATION_LANDSCAPE);capture("cash-edit-landscape")
         cashEditTargetRetained=ui.onAllNodesWithText("原流水：",substring=true).fetchSemanticsNodes().isNotEmpty()
@@ -318,10 +320,8 @@ class V210PlanReviewJourneyTest {
             // Observed legacy UI loses its edit target after recreation. Cancel
             // that unsaved form and reopen the real existing flow, never save a
             // duplicate or silently repair the baseline database.
-            tapText("取消",true);ui.onNodeWithTag("v2-accounts").performScrollToNode(hasText("合成入金"))
-            val old=ui.onNodeWithText("合成入金").fetchSemanticsNode().positionInRoot
-            val buttons=ui.onAllNodesWithText("编辑流水");val found=buttons.fetchSemanticsNodes()
-            visible(buttons[found.indices.filter{found[it].positionInRoot.y>=old.y}.minBy{found[it].positionInRoot.y}]).performClick();taps++
+            tapText("取消",true);ui.onNodeWithTag("v2-accounts").performScrollToNode(editIncoming);scrolls++
+            visible(ui.onNode(editIncoming),editIncoming).performClick();taps++
             field("cashflow-amount","1200");field("cashflow-note","合成入金已更正")
         }
         save("save-cashflow","保存流水","edit-cashflow");assertEquals(incoming.id,facts().cashFlows.single{it.accountId=="stock"&&it.kind=="in"}.id)
