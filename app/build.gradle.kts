@@ -76,6 +76,8 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.test:runner:1.6.2")
     androidTestImplementation("androidx.test.uiautomator:uiautomator:2.3.0")
+    // Real system DatePicker interaction in plan/review/account UI regression tests.
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
     androidTestImplementation("androidx.room:room-testing:2.7.2")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     // Optional IDE inspector, not needed in the delivered Debug APK. Models/ABIs remain complete.
