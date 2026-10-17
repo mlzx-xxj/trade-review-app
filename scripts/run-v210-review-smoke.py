@@ -14,6 +14,12 @@ try:
  # Create the private data directory using the real application.
  entry.adb('shell','am','start','-W','-n',entry.APP+'/'+entry.APP+'.MainActivity')
  directory=entry.adb('shell','run-as',entry.APP,'pwd').strip()
+ feedback=entry.adb('shell','am','instrument','-w','-r','-e','class',entry.APP+'.v210.V210FeedbackLifecycleTest',entry.APP+'.test/androidx.test.runner.AndroidJUnitRunner',timeout=150)
+ (root/'feedback-instrumentation.txt').write_text(feedback)
+ print(feedback,flush=True)
+ assert entry.successful_runner(feedback),'Repeated real UI feedback failed'
+ visual_spec=importlib.util.spec_from_file_location('old_full',Path(__file__).with_name('run-v210-visual.py'))
+ old_full=importlib.util.module_from_spec(visual_spec);visual_spec.loader.exec_module(old_full)
  for profile in ('narrow-light','narrow-dark','regular-light','regular-dark'):
   entry.adb('shell','am','force-stop',entry.APP)
   entry.adb('shell','wm','size','640x1136' if profile.startswith('narrow') else '720x1280')
@@ -24,6 +30,7 @@ try:
   entry.adb('shell','input','keyevent','KEYCODE_WAKEUP');entry.adb('shell','wm','dismiss-keyguard');time.sleep(2)
   value=runner.run(35,profile,directory,root)
   print(json.dumps(value),flush=True)
+  old_full.full_journey(35,profile,directory)
  result['complete']=True
 except Exception:
  for log in root.glob('*instrumentation.txt'):print(log.name+'\n'+log.read_text()[-10000:],flush=True)
