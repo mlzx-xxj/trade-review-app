@@ -89,7 +89,7 @@ class V210PlanReviewJourneyTest {
     }
     private fun tap(tag:String){
         if(tag.startsWith("review-section-")&&ui.onAllNodesWithTag(tag).fetchSemanticsNodes().isEmpty()){top("v2-reviews");scrolls++}
-        if(ui.onAllNodesWithTag(tag).fetchSemanticsNodes().isEmpty() && tag in listOf("new-cashflow","configure-account","new-plan")){
+        if(tag in listOf("new-cashflow","configure-account","new-plan") && runCatching{ui.onNodeWithTag(tag).assertIsDisplayed()}.isFailure){
             ui.onNodeWithTag(if(tag=="new-plan")"v2-reviews"else"v2-accounts").performScrollToNode(hasTestTag(tag));scrolls++
         }
         visible(ui.onNodeWithTag(tag)).assertIsEnabled().performClick();taps++
