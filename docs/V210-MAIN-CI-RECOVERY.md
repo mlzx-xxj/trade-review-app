@@ -51,8 +51,13 @@ PR #16 已合并，最新 main 为 `3550a03d8291e564361c9f02d3fae163c5e52e2a`。
 缺少确认／恢复事件、UI 状态来自 worker、探针不能识别 worker 均会被拒绝。
 
 本地已实际执行：121 项 Python 回归通过；工作流静态安全检查、私钥文件扫描、`git diff --check` 通过。
-本地没有 Android SDK，Android 编译及模拟器结果须以本 PR 后续完整 Actions 为准，当前未宣称通过。
+本地没有 Android SDK。Android 编译、JVM、Lint、完整模拟器及追加旅程的真实执行结果与原始产物，
+请查看 [PR #17 Checks](https://github.com/mlzx-xxj/trade-review-app/pull/17/checks) 和 PR 中更新的验证摘要；本文件不预先宣称它们通过。
 这里的独立 ViewModel 线程测试不冒充真实页面操作；真实操作证据来自保留的 MainActivity 回归和追加旅程。
+
+主线程切换本身是可取消的：ZIP 刚解析完、尚未移交 ViewModel 就被取消时，
+会在不可取消的 IO 清理区关闭暂存包；已移交的包继续由原有 `onCleared` 清理流程负责。
+不新增图片引用，不改变恢复事务。
 
 ## 当前阻塞与下一步
 
