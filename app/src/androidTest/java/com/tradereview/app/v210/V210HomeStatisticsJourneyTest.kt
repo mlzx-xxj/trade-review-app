@@ -117,6 +117,21 @@ class V210HomeStatisticsJourneyTest {
     private data class Expected(val day:Long,val market:String,val code:String,val net:String?)
     private val expected=mutableListOf<Expected>()
     private val checks=mutableListOf<Map<String,Any?>>()
+    private val moneyLayouts=mutableListOf<Map<String,Any?>>()
+    private fun moneyLayout(tag:String,value:BigDecimal?){
+        val node=ui.onNodeWithTag(tag,useUnmergedTree=true);val layouts=mutableListOf<TextLayoutResult>()
+        node.performSemanticsAction(SemanticsActions.GetTextLayoutResult){assertTrue(it(layouts))}
+        val layout=layouts.single();val color=layout.layoutInput.style.color.toArgb()
+        val night=app.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK==Configuration.UI_MODE_NIGHT_YES
+        val profit=(if(night)Color(0xFFFFB4B0)else Color(0xFFAF273C)).toArgb()
+        val loss=(if(night)Color(0xFF80D5AF)else Color(0xFF087044)).toArgb()
+        when(value?.signum()){1->assertEquals(profit,color);-1->assertEquals(loss,color);else->assertTrue(color!=profit&&color!=loss)}
+        moneyLayouts+=mapOf("tag" to tag,"text" to shown(tag),"fontSp" to layout.layoutInput.style.fontSize.value,"lines" to layout.lineCount,"overflowWidth" to layout.didOverflowWidth,"overflowHeight" to layout.didOverflowHeight,"visible" to runCatching{node.assertIsDisplayed()}.isSuccess,"argb" to String.format("#%08X",color))
+    }
+    private fun orientation(value:Int,expected:Int){
+        ui.runOnIdle{ui.activity.requestedOrientation=value}
+        waitFor{var ready=false;instrumentation.runOnMainSync{ready=androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(androidx.test.runner.lifecycle.Stage.RESUMED).filterIsInstance<MainActivity>().any{it.resources.configuration.orientation==expected}};ready}
+    }
     private fun enter(day:LocalDate,market:String,code:String,action:String,price:String,quantity:String,fee:String?,remaining:String):LedgerExecution{
         ui.runOnIdle{model.entryClock=Clock.fixed(day.atTime(10,0).atZone(AutomaticEntry.beijing).toInstant(),ZoneOffset.UTC)}
         begin(market,code,action,price,quantity,fee?.let{"¥$it"}?:"待估算")
@@ -136,6 +151,7 @@ class V210HomeStatisticsJourneyTest {
             val net=if(known.isEmpty())null else known.fold(BigDecimal.ZERO,BigDecimal::add)
             ui.onNodeWithTag("v2-statistics").performScrollToNode(hasTestTag("period-realized-net"))
             ui.onNodeWithTag("period-realized-net").assertTextEquals(moneyText(net))
+            moneyLayout("period-realized-net",net)
             val pending=chosen.count{it.net==null}
             if(pending>0)ui.onNodeWithTag("statistics-pending").assertTextEquals("$pending 笔费用待估算，未计入净盈亏、胜率和图表；有效样本 ${known.size}")
             checks+=mapOf("type" to type,"market" to market,"offset" to offset,"start" to anchor.toString(),"end" to end.toString(),"closed" to chosen.size,"valid" to known.size,"pending" to pending,"net" to net?.toPlainString(),"displayed" to shown("period-realized-net"),"sourceExecutionCount" to facts().executions.size,"result" to "PASS")
@@ -165,9 +181,15 @@ class V210HomeStatisticsJourneyTest {
             val items=expected.filter{it.day>=start&&(key=="all"||it.day<=if(key=="week")start+6 else today.withDayOfMonth(today.lengthOfMonth()).toEpochDay())}
             val net=if(items.any{it.net==null})null else items.fold(BigDecimal.ZERO){a,v->a+BigDecimal(requireNotNull(v.net))}
             ui.onNodeWithTag("home-realized-$key").assertTextEquals(moneyText(net))
+            moneyLayout("home-realized-$key",net)
         }
         capture(scene)
-        ui.onNodeWithTag("v2-home").performScrollToNode(hasTestTag("calendar-expand"));ui.onNodeWithTag("calendar-expand").performClick();capture("$scene-calendar")
+        ui.onNodeWithTag("v2-home").performScrollToNode(hasTestTag("calendar-expand"));ui.onNodeWithTag("calendar-expand").performClick()
+        val title=ui.onNodeWithText("${today.year}年${today.monthValue}月")
+        title.performScrollTo()
+        val dy=(title.fetchSemanticsNode().boundsInRoot.top-ui.onNodeWithTag("v2-home").fetchSemanticsNode().boundsInRoot.top).coerceAtLeast(0f)
+        ui.onNodeWithTag("v2-home").performSemanticsAction(SemanticsActions.ScrollBy){it(0f,dy)}
+        capture("$scene-calendar")
         ui.onNodeWithTag("calendar-expand").performScrollTo().performClick();top("v2-home")
     }
     private fun review(){
@@ -224,8 +246,12 @@ class V210HomeStatisticsJourneyTest {
         page(3);ui.onNodeWithTag("statistics-period-month").performClick();top("v2-statistics")
         ui.activityRule.scenario.recreate();waitFor{model.state.value.ledger==facts()}
         ui.onNodeWithTag("statistics-period-month").assertIsSelected();capture("recreated-statistics")
+        orientation(android.content.pm.ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE,Configuration.ORIENTATION_LANDSCAPE)
+        top("v2-statistics");capture("landscape-statistics");home("landscape-home")
+        orientation(android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT,Configuration.ORIENTATION_PORTRAIT)
+        page(3);ui.onNodeWithTag("statistics-period-month").assertIsSelected()
         val conf=app.resources.configuration
-        val proof=mapOf("api" to Build.VERSION.SDK_INT,"profile" to profile,"pid" to android.os.Process.myPid(),"dateAnchor" to today.toString(),"screenWidthDp" to conf.screenWidthDp,"fontScale" to conf.fontScale,"night" to (conf.uiMode and Configuration.UI_MODE_NIGHT_MASK==Configuration.UI_MODE_NIGHT_YES),"syntheticOnly" to true,"allExecutionsCreatedViaRealForm" to true,"expectedClosed" to expected,"observations" to results,"checks" to checks,"ledger" to LedgerJson.element(facts()),"screenshots" to screens,"reviewSavedViaUi" to true,"result" to "PASS")
+        val proof=mapOf("api" to Build.VERSION.SDK_INT,"profile" to profile,"pid" to android.os.Process.myPid(),"dateAnchor" to today.toString(),"screenWidthDp" to conf.screenWidthDp,"fontScale" to conf.fontScale,"night" to (conf.uiMode and Configuration.UI_MODE_NIGHT_MASK==Configuration.UI_MODE_NIGHT_YES),"syntheticOnly" to true,"allExecutionsCreatedViaRealForm" to true,"expectedClosed" to expected,"observations" to results,"checks" to checks,"moneyLayouts" to moneyLayouts,"orientationRestored" to true,"ledger" to LedgerJson.element(facts()),"screenshots" to screens,"reviewSavedViaUi" to true,"result" to "PASS")
         saved.writeText(GsonBuilder().serializeNulls().setPrettyPrinting().create().toJson(proof))
     }
 }
