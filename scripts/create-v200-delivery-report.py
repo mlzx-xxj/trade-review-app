@@ -2,6 +2,7 @@
 import argparse
 from collections import Counter
 import json
+import importlib.util
 from pathlib import Path
 from xml.etree import ElementTree as ET
 
@@ -66,7 +67,7 @@ def main():
     metrics={}
     for api in [29,35]:
         directory=root/'devices'/f'android-test-reports-api{api}'
-        counts[f'api{api}']=junit(directory,'/androidTest-results/',139,{'ExperienceDataTest':5,'ReleaseExperienceUiTest':4,'LedgerMigrationTest':2,'PendingMigrationTest':3,'LedgerRepositoryTest':19,'TradeEntryExperienceTest':1,'V200MainUiTest':6,'V210VisualJourneyTest':1,'V210LayoutTest':1,'UiPublicationThreadTest':3})
+        counts[f'api{api}']=junit(directory,'/androidTest-results/',140,{'ExperienceDataTest':5,'ReleaseExperienceUiTest':4,'LedgerMigrationTest':2,'PendingMigrationTest':3,'LedgerRepositoryTest':19,'TradeEntryExperienceTest':1,'V200MainUiTest':6,'V210VisualJourneyTest':1,'V210LayoutTest':1,'UiPublicationThreadTest':3,'V210HomeStatisticsJourneyTest':1})
         names={f.name for f in (Path(a.screenshots)/f'v200-emulator-screenshots-api{api}').rglob('*.png')}
         for prefix in [f'{i:02}-' for i in list(range(1,33))+list(range(40,56))+list(range(70,84))]:assert any(n.startswith(prefix) for n in names),f'Missing API {api} screenshot {prefix}'
         files=[f'{kind}-api{api}.json' for kind in ['performance','images','activity','ocr-evaluation','process-probes','attachment-queries','package-probes','trade-entry-experience','entry-reopen','entry-runner']]
@@ -81,6 +82,15 @@ def main():
             publication[kind]=json.loads(paths[0].read_text());metrics[filename]=publication[kind]
         ui_publication_evidence(publication,api)
         for profile in ['regular-light','regular-dark','narrow-light','narrow-dark']:
+            full={}
+            for phase in ['', 'reopen-']:
+                filename=f'v210-full-{phase}{profile}-api{api}.json'
+                paths=list(directory.rglob(filename));assert len(paths)==1,filename
+                full[phase]=json.loads(paths[0].read_text());metrics[filename]=full[phase]
+                assert all(s['file'] in names for s in full[phase]['screenshots'])
+            spec=importlib.util.spec_from_file_location('full_evidence',Path(__file__).with_name('v210-full-evidence.py'))
+            checker=importlib.util.module_from_spec(spec);spec.loader.exec_module(checker)
+            checker.verify(full[''],full['reopen-'],api,profile)
             filename=f'v210-visual-{profile}-api{api}.json'
             paths=list(directory.rglob(filename));assert len(paths)==1,filename
             data=json.loads(paths[0].read_text());metrics[filename]=data
@@ -101,6 +111,7 @@ def main():
             assert {p['displayedNet'] for p in rb}=={'￥971.83','￥-108.03'}
         visual_runner=list(directory.rglob(f'v210-runner-api{api}.json'));assert len(visual_runner)==1
         visual=json.loads(visual_runner[0].read_text());assert visual['complete'] is True and visual['actualInstrumentations']==4 and visual['result']=='PASS'
+        assert visual['fullUiInstrumentations']==8
         layout_reports=list(directory.rglob(f'v210-layout-api{api}.json'));assert len(layout_reports)==1
         layout=json.loads(layout_reports[0].read_text());metrics[f'v210-layout-api{api}.json']=layout
         assert layout['result']=='PASS' and layout['widthDp']==320 and layout['syntheticOnly'] is True
