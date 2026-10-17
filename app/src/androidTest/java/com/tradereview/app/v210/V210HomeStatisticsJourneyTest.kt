@@ -49,7 +49,7 @@ class V210HomeStatisticsJourneyTest {
         }
         override fun failed(error:Throwable,description:org.junit.runner.Description){
             runCatching{File(output(),"v210-full-$profile-failure.txt").writeText(error.stackTraceToString())}
-            runCatching{com.tradereview.app.stability.V08Metrics.write("v210-full-failure-api${Build.VERSION.SDK_INT}.json",GsonBuilder().setPrettyPrinting().create().toJson(mapOf("syntheticOnly" to true,"profile" to profile,"lastStep" to lastStep,"error" to error.stackTraceToString(),"semantics" to runCatching{ui.onRoot(useUnmergedTree=true).printToString()}.getOrElse{it.javaClass.simpleName}))))}
+            runCatching{com.tradereview.app.stability.V08Metrics.write("v210-full-failure-api${Build.VERSION.SDK_INT}.json",GsonBuilder().setPrettyPrinting().create().toJson(mapOf("syntheticOnly" to true,"profile" to profile,"lastStep" to lastStep,"error" to error.stackTraceToString(),"semantics" to runCatching{ui.onRoot(useUnmergedTree=true).printToString()}.getOrElse{it.javaClass.simpleName})))}
             runCatching{capture("failure")}
         }
         override fun finished(description:org.junit.runner.Description){
