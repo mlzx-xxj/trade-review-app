@@ -32,6 +32,10 @@ class BackupViewModel(database: TradeDatabase, private val resolver: ContentReso
     private val _message = MutableStateFlow<String?>(null)
     val message = _message.asStateFlow()
 
+    // File/database work remains on IO. Publish UI results on main, including
+    // preview removal: resumed collectors must not compose/draw on an IO worker.
+    private suspend fun publishUi(action: () -> Unit) = withContext(Dispatchers.Main.immediate) { action() }
+
     private fun operation(failure: String, action: suspend () -> Unit) {
         if (_busy.value) return
         _busy.value = true
@@ -48,12 +52,12 @@ class BackupViewModel(database: TradeDatabase, private val resolver: ContentReso
     fun exportJson(uri: Uri) = operation("导出失败，请检查存储空间与所选位置；不完整文件需重新导出") {
         val text = BackupCodec.encode(repository.export())
         val checked=exportChecked(uri,"json"){ output->output.write(text.toByteArray(Charsets.UTF_8)) }
-        _message.value = "结构化 JSON 已保存；不含截图文件。${verificationLabel(checked)}"
+        publishUi { _message.value = "结构化 JSON 已保存；不含截图文件。${verificationLabel(checked)}" }
     }
     fun exportZip(uri: Uri) = operation("完整 ZIP 导出失败，图片可能缺失、损坏或空间不足；请重新导出") {
         val service=requireNotNull(zip) { "私有图片存储未初始化" }
         val checked=exportChecked(uri,"zip"){output->service.export(output)}
-        _message.value="完整 ZIP 已保存，包含交易、业务设置及全部截图。${verificationLabel(checked)}"
+        publishUi { _message.value="完整 ZIP 已保存，包含交易、业务设置及全部截图。${verificationLabel(checked)}" }
     }
     private fun verificationLabel(result:Readback)=if(result==Readback.VERIFIED)"已重新读取并通过 SHA-256 完整性校验。" else "文件已写出；所选保存位置无法回读，尚未验证完整性，请手动打开确认。"
     private suspend fun exportChecked(uri:Uri,kind:String,write:suspend(java.io.OutputStream)->Unit):Readback {
@@ -68,14 +72,14 @@ class BackupViewModel(database: TradeDatabase, private val resolver: ContentReso
         }
         return result
     }
-    fun backupReminders(enabled:Boolean)=operation("提醒设置保存失败"){experience?.reminders(enabled);_message.value=if(enabled)"已开启本机备份建议"else"已关闭本机备份建议"}
-    fun snoozeBackup(days:Int)=operation("延后提醒保存失败"){experience?.snooze(days);_message.value="备份建议已延后 $days 天"}
+    fun backupReminders(enabled:Boolean)=operation("提醒设置保存失败"){experience?.reminders(enabled);publishUi { _message.value=if(enabled)"已开启本机备份建议"else"已关闭本机备份建议" }}
+    fun snoozeBackup(days:Int)=operation("延后提醒保存失败"){experience?.snooze(days);publishUi { _message.value="备份建议已延后 $days 天" }}
     fun exportCsv(uri: Uri) = operation("CSV 导出失败，请检查所选位置后重新导出") {
         write(uri, repository.export().let { TradeCsv.encode(it.trades, com.tradereview.app.data.Catalog(it.tags)) })
-        _message.value = "交易明细 CSV 已保存（UTF-8 中文）"
+        publishUi { _message.value = "交易明细 CSV 已保存（UTF-8 中文）" }
     }
     fun exportLedgerCsv(uri:Uri)=operation("V2成交CSV导出失败，未上传任何数据"){
-        val snapshot=repository.export();write(uri,com.tradereview.app.v200.LedgerCsv.encode(requireNotNull(snapshot.ledger)));_message.value="V2成交CSV已保存；开仓不伪造已实现盈亏"
+        val snapshot=repository.export();write(uri,com.tradereview.app.v200.LedgerCsv.encode(requireNotNull(snapshot.ledger)));publishUi { _message.value="V2成交CSV已保存；开仓不伪造已实现盈亏" }
     }
     private fun write(uri: Uri, text: String) {
         val output = resolver.openOutputStream(uri, "wt") ?: throw java.io.IOException("无法打开目标文件")
@@ -92,11 +96,20 @@ class BackupViewModel(database: TradeDatabase, private val resolver: ContentReso
                 stream.mark(4);val first=stream.read();val second=stream.read();stream.reset()
                 if(first==80 && second==75) {
                     val parsed=requireNotNull(zip) { "请在完整应用中恢复 ZIP" }.read(stream)
-                    pendingZip=parsed;_preview.value=parsed.preview
+                    var transferred=false
+                    try {
+                        publishUi { pendingZip=parsed;transferred=true;_preview.value=parsed.preview }
+                    } catch(e:Exception) {
+                        // Main dispatch is cancellable. Until ownership transfers,
+                        // onCleared cannot see or clean this newly staged archive.
+                        if(!transferred)withContext(kotlinx.coroutines.NonCancellable+Dispatchers.IO){parsed.archive.close()}
+                        throw e
+                    }
                 } else {
                     val data=BackupCodec.read(stream)
                     if(data.backupScope!="structured-data-only")throw BackupException("这份 JSON 来自完整 ZIP，必须选择原 ZIP 一起恢复图片")
-                    _preview.value=repository.preview(data)
+                    val parsed=repository.preview(data)
+                    publishUi { _preview.value=parsed }
                 }
             }
         }
@@ -105,8 +118,8 @@ class BackupViewModel(database: TradeDatabase, private val resolver: ContentReso
         val data = _preview.value?.backup ?: return
         operation("重新预览失败，未恢复任何数据") {
             val full=pendingZip
-            if(full!=null) { val refreshed=requireNotNull(zip).refresh(full);pendingZip=refreshed;_preview.value=refreshed.preview }
-            else _preview.value = repository.preview(data)
+            if(full!=null) { val refreshed=requireNotNull(zip).refresh(full);publishUi { pendingZip=refreshed;_preview.value=refreshed.preview } }
+            else { val refreshed=repository.preview(data);publishUi { _preview.value=refreshed } }
         }
     }
     fun cancelPreview() { if (!_busy.value) { val old=pendingZip;pendingZip=null;_preview.value = null; _message.value = null;old?.let { BackupCleanup.scope.launch { it.archive.close() } } } }
@@ -116,9 +129,12 @@ class BackupViewModel(database: TradeDatabase, private val resolver: ContentReso
         operation("恢复失败，事务已回滚；原有数据未改变") {
             val full=pendingZip
             if(full!=null)requireNotNull(zip).restore(full,mode)else repository.restore(pending, mode)
-            full?.archive?.let { runCatching { it.close() } };pendingZip=null
-            _preview.value = null
-            _message.value = if (mode == RestoreMode.REPLACE) "覆盖恢复完成" else "去重合并完成，冲突内容保留本地版本"
+            full?.archive?.let { runCatching { it.close() } }
+            publishUi {
+                pendingZip=null
+                _preview.value = null
+                _message.value = if (mode == RestoreMode.REPLACE) "覆盖恢复完成" else "去重合并完成，冲突内容保留本地版本"
+            }
         }
     }
     override fun onCleared() {

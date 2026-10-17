@@ -37,12 +37,17 @@ class V200ViewModel(val database:TradeDatabase,val handle:SavedStateHandle):View
         val stamped=if(isNew && value.feeSource==AutomaticEntry.SOURCE)value.copy(date=now.toLocalDate().toEpochDay(),tradingDay=now.toLocalDate().toEpochDay(),minute=now.hour*60+now.minute,second=now.second)else value
         val preview=repository.preview(stamped)
         val existing=preview.before.executions.any{it.id==value.id}
-        if(existing || preview.orderWarning || preview.affectsHistory || preview.risk?.exceeded==true && preview.after.executions.first{it.id==value.id}.riskWarningEnabled){pending.value=preview;message.value=null}
-        else{repository.confirm(preview);withContext(Dispatchers.Main){closeEditor();savedExecution.value=value.id;handle["v2-entry-fields"]=null;handle["v2-last-account"]=value.accountId;message.value="成交已保存，持仓与统计已重算"}}
+        // Replay stays on IO; publish dialog/feedback state only on main. A resumed
+        // UI collector must never inherit the worker that calculated the preview.
+        if(existing || preview.orderWarning || preview.affectsHistory || preview.risk?.exceeded==true && preview.after.executions.first{it.id==value.id}.riskWarningEnabled){withContext(Dispatchers.Main.immediate){pending.value=preview;message.value=null}}
+        else{repository.confirm(preview);withContext(Dispatchers.Main.immediate){closeEditor();savedExecution.value=value.id;handle["v2-entry-fields"]=null;handle["v2-last-account"]=value.accountId;message.value="成交已保存，持仓与统计已重算"}}
     }}
-    fun deleteExecution(value:LedgerExecution)=action("请核对成交删除影响"){pending.value=repository.preview(null,value.id)}
+    fun deleteExecution(value:LedgerExecution)=action("请核对成交删除影响"){
+        val preview=repository.preview(null,value.id)
+        withContext(Dispatchers.Main.immediate){pending.value=preview}
+    }
     fun confirmChange(){val value=pending.value?:return;action(if(value.deleting)"成交已删除，原事实修订已保留"else"成交已保存并事务重算"){
-        repository.confirm(value,riskAcknowledged=true);pending.value=null;withContext(Dispatchers.Main){closeEditor();handle["v2-entry-fields"]=null}
+        repository.confirm(value,riskAcknowledged=true);withContext(Dispatchers.Main.immediate){pending.value=null;closeEditor();handle["v2-entry-fields"]=null}
     }}
     fun cancelChange(){if(!busy.value)pending.value=null}
     fun account(value:LedgerAccount)=action("账户配置已保存，风险金未改变"){repository.account(value)}

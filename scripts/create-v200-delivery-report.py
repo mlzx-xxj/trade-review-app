@@ -34,6 +34,27 @@ def pending_entry_evidence(data):
     assert len(matches)==1 and matches[0]['gross']=='1000' and matches[0]['net'] is None
 
 
+def ui_publication_evidence(reports, api):
+    """A PASS label cannot hide worker-thread UI publication or a broken probe."""
+    required={
+        'calibration': {'workerEmissionDetected':True},
+        'ledger': {'confirmedEditAndDelete':True,'previewKeptFacts':True,'failedWriteKeptFacts':True,'auditCount':2},
+        'backup': {'jsonAndZipReadback':True,'previewRefreshCancel':True,'restoreKeptFacts':True,'writeFailureKeptFacts':True,'csvBothKinds':True},
+    }
+    for kind, checks in required.items():
+        value=reports[kind]
+        assert value['api']==api and value['result']=='PASS' and value['syntheticOnly'] is True
+        assert value['checks']==checks and value['emissions']
+        assert all(isinstance(e['main'],bool) and e['thread'] for e in value['emissions'])
+        if kind=='calibration':
+            assert [(e['flow'],e['value'],e['main']) for e in value['emissions']]==[
+                ('calibration','0',True),('calibration','1',False),('calibration','2',True)]
+        else:
+            assert all(e['main'] is True for e in value['emissions']), 'Worker published UI state'
+    assert [e['value'] for e in reports['ledger']['emissions'] if e['flow']=='pending']==['none','edit','none','delete','none']
+    assert sum(e['flow']=='preview' and e['value']=='present' for e in reports['backup']['emissions'])>=4
+
+
 def main():
     p=argparse.ArgumentParser();p.add_argument('--reports',required=True);p.add_argument('--screenshots',required=True);p.add_argument('--dist',required=True);p.add_argument('--run-url',required=True);a=p.parse_args()
     root=Path(a.reports);dist=Path(a.dist)
@@ -45,7 +66,7 @@ def main():
     metrics={}
     for api in [29,35]:
         directory=root/'devices'/f'android-test-reports-api{api}'
-        counts[f'api{api}']=junit(directory,'/androidTest-results/',136,{'ExperienceDataTest':5,'ReleaseExperienceUiTest':4,'LedgerMigrationTest':2,'PendingMigrationTest':3,'LedgerRepositoryTest':19,'TradeEntryExperienceTest':1,'V200MainUiTest':6,'V210VisualJourneyTest':1,'V210LayoutTest':1})
+        counts[f'api{api}']=junit(directory,'/androidTest-results/',139,{'ExperienceDataTest':5,'ReleaseExperienceUiTest':4,'LedgerMigrationTest':2,'PendingMigrationTest':3,'LedgerRepositoryTest':19,'TradeEntryExperienceTest':1,'V200MainUiTest':6,'V210VisualJourneyTest':1,'V210LayoutTest':1,'UiPublicationThreadTest':3})
         names={f.name for f in (Path(a.screenshots)/f'v200-emulator-screenshots-api{api}').rglob('*.png')}
         for prefix in [f'{i:02}-' for i in list(range(1,33))+list(range(40,56))+list(range(70,84))]:assert any(n.startswith(prefix) for n in names),f'Missing API {api} screenshot {prefix}'
         files=[f'{kind}-api{api}.json' for kind in ['performance','images','activity','ocr-evaluation','process-probes','attachment-queries','package-probes','trade-entry-experience','entry-reopen','entry-runner']]
@@ -53,6 +74,12 @@ def main():
             paths=list(directory.rglob(filename));assert paths,filename
             contents=[json.loads(f.read_text()) for f in paths];assert all(c==contents[0] for c in contents)
             metrics[filename]=contents[0]
+        publication={}
+        for kind in ['calibration','ledger','backup']:
+            filename=f'ui-publication-{kind}-api{api}.json'
+            paths=list(directory.rglob(filename));assert len(paths)==1,filename
+            publication[kind]=json.loads(paths[0].read_text());metrics[filename]=publication[kind]
+        ui_publication_evidence(publication,api)
         for profile in ['regular-light','regular-dark','narrow-light','narrow-dark']:
             filename=f'v210-visual-{profile}-api{api}.json'
             paths=list(directory.rglob(filename));assert len(paths)==1,filename
