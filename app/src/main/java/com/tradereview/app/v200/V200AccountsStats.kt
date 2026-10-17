@@ -37,8 +37,15 @@ private data class CalculatedStatistics(val period:LedgerPeriod,val market:Strin
     val numbers=calculated?.takeIf{it.period==period&&it.market==market&&it.source==state.closed}?.numbers
     LazyColumn(Modifier.fillMaxSize().testTag("v2-statistics"),contentPadding=PaddingValues(LedgerUi.inset),verticalArrangement=Arrangement.spacedBy(LedgerUi.inset)){
         item{Column(verticalArrangement=Arrangement.spacedBy(8.dp)){
-            SegmentedChoices(type,listOf("week" to "每周","month" to "每月"),{type=it},"statistics-period-")
-            SegmentedChoices(market,listOf("all" to "合计","stock" to "A股","futures" to "国内期货"),{market=it},"statistics-market-")
+            BoxWithConstraints(Modifier.fillMaxWidth()){
+                if(maxWidth>=460.dp)Row(horizontalArrangement=Arrangement.spacedBy(8.dp)){
+                    Box(Modifier.weight(.4f)){SegmentedChoices(type,listOf("week" to "每周","month" to "每月"),{type=it},"statistics-period-")}
+                    Box(Modifier.weight(.6f)){SegmentedChoices(market,listOf("all" to "合计","stock" to "A股","futures" to "国内期货"),{market=it},"statistics-market-")}
+                }else Column(verticalArrangement=Arrangement.spacedBy(8.dp)){
+                    SegmentedChoices(type,listOf("week" to "每周","month" to "每月"),{type=it},"statistics-period-")
+                    SegmentedChoices(market,listOf("all" to "合计","stock" to "A股","futures" to "国内期货"),{market=it},"statistics-market-")
+                }
+            }
             Row(Modifier.fillMaxWidth(),verticalAlignment=androidx.compose.ui.Alignment.CenterVertically){
                 TextButton({offset--},Modifier.heightIn(min=48.dp).testTag("statistics-previous"),contentPadding=PaddingValues(4.dp)){Text("上一${if(type=="week")"周"else"月"}")}
                 Text("${LocalDate.ofEpochDay(period.start)} — ${LocalDate.ofEpochDay(period.end)}",Modifier.weight(1f).padding(horizontal=8.dp),style=MaterialTheme.typography.labelMedium,textAlign=androidx.compose.ui.text.style.TextAlign.Center,color=MaterialTheme.colorScheme.onSurfaceVariant)
@@ -47,11 +54,13 @@ private data class CalculatedStatistics(val period:LedgerPeriod,val market:Strin
         }}
         if(numbers==null)item{LinearProgressIndicator(Modifier.fillMaxWidth());Text("正在计算已实现结果",style=MaterialTheme.typography.bodySmall)}
         numbers?.let{n->
-            item{LedgerPanel("已实现交易摘要",Modifier.testTag("statistics-results-$type-$market")){
+            item{Card(Modifier.fillMaxWidth().testTag("statistics-results-$type-$market"),colors=CardDefaults.cardColors(containerColor=MaterialTheme.colorScheme.surface),border=androidx.compose.foundation.BorderStroke(1.dp,MaterialTheme.colorScheme.outlineVariant)){
+                Column(Modifier.padding(LedgerUi.inset),verticalArrangement=Arrangement.spacedBy(8.dp)){
                 if(n.records.isEmpty())EmptyLedger("本周期暂无平仓成交")else{
                     OverviewMoney(if(n.pending>0)"已知已实现净盈亏"else"已实现净盈亏",n.net,"period-realized-net",large=true)
+                    if(n.pending>0)Text("${n.pending} 笔费用待估算，未计入净盈亏、胜率和图表；有效样本 ${n.records.size-n.pending}",Modifier.testTag("statistics-pending"),style=MaterialTheme.typography.bodySmall,color=MaterialTheme.colorScheme.onSurfaceVariant)
                     Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.spacedBy(16.dp)){
-                        PositionMetric("有效样本 / 平仓成交","${n.records.size-n.pending} / ${n.records.size}","statistics-samples",Modifier.weight(1f))
+                        PositionMetric("有效样本 / 全部","${n.records.size-n.pending} / ${n.records.size}","statistics-samples",Modifier.weight(1f))
                         PositionMetric("胜率（含持平）",n.winRate?.let{AutomaticEntry.cents(it)+"%"}?:"不可计算","statistics-win-rate",Modifier.weight(1f))
                     }
                     HorizontalDivider(color=MaterialTheme.colorScheme.outlineVariant)
@@ -64,18 +73,17 @@ private data class CalculatedStatistics(val period:LedgerPeriod,val market:Strin
                         Text("单笔平均净盈亏",style=MaterialTheme.typography.labelMedium,color=MaterialTheme.colorScheme.onSurfaceVariant)
                         Box(Modifier.weight(1f)){NumericText(moneyText(n.average),Modifier.testTag("statistics-average"),style=MaterialTheme.typography.bodyLarge,color=n.average?.let{pnlColor(it)}?:MaterialTheme.colorScheme.onSurfaceVariant)}
                     }
-                    if(n.pending>0)Text("${n.pending} 笔费用待估算，未计入净盈亏、胜率和图表；有效样本 ${n.records.size-n.pending}",Modifier.testTag("statistics-pending"),style=MaterialTheme.typography.bodySmall,color=MaterialTheme.colorScheme.onSurfaceVariant)
                     Text("一次平仓成交计一笔；仅统计已实现结果。",style=MaterialTheme.typography.labelSmall,color=MaterialTheme.colorScheme.onSurfaceVariant)
                 }
-            }}
+            }}}
             item{DailyClosedBars(period.days,n.daily,n.records.filter{it.net==null}.map{it.execution.tradingDay}.toSet())}
             if(type=="month")item{ContractDistribution(n.distribution)}
         }
     }
 }
 @Composable private fun StatisticsCount(label:String,count:Int,color:androidx.compose.ui.graphics.Color,modifier:Modifier){
-    Column(modifier,verticalArrangement=Arrangement.spacedBy(2.dp)){
+    Row(modifier,verticalAlignment=androidx.compose.ui.Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(4.dp)){
         Text(label,style=MaterialTheme.typography.labelMedium,color=color)
-        NumericText(count.toString(),style=MaterialTheme.typography.titleMedium,color=color)
+        Box(Modifier.weight(1f)){NumericText(count.toString(),style=MaterialTheme.typography.titleMedium,color=color)}
     }
 }

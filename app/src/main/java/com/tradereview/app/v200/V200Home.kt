@@ -40,12 +40,20 @@ private data class RecentHomeExecutions(val source:List<LedgerExecution>,val row
     LazyColumn(Modifier.fillMaxSize().testTag("v2-home"),contentPadding=PaddingValues(LedgerUi.inset),verticalArrangement=Arrangement.spacedBy(LedgerUi.inset)){
         item{
             Card(Modifier.fillMaxWidth(),colors=CardDefaults.cardColors(containerColor=MaterialTheme.colorScheme.surface),border=BorderStroke(1.dp,MaterialTheme.colorScheme.outlineVariant)){Column(Modifier.padding(12.dp),verticalArrangement=Arrangement.spacedBy(8.dp)){
-                OverviewHeading("已实现表现",action=if(expanded)"收起月历"else"展开月历",onAction={expanded=!expanded},actionTag="calendar-expand")
-                OverviewMoney("本周",completeTotal(weekly.map{exactOrNull(it.net)}),"home-realized-week",large=true,empty=weekly.isEmpty())
-                HorizontalDivider(color=MaterialTheme.colorScheme.outlineVariant)
-                Row(horizontalArrangement=Arrangement.spacedBy(16.dp)){
-                    OverviewMoney("本月",completeTotal(monthly.map{exactOrNull(it.net)}),"home-realized-month",Modifier.weight(1f),empty=monthly.isEmpty(),showState=false)
-                    OverviewMoney("历史累计",completeTotal(state.closed.map{exactOrNull(it.net)}),"home-realized-all",Modifier.weight(1f),empty=state.closed.isEmpty(),showState=false)
+                OverviewHeading("累计表现",action=if(expanded)"收起月历"else"展开月历",onAction={expanded=!expanded},actionTag="calendar-expand")
+                BoxWithConstraints(Modifier.fillMaxWidth()){
+                    if(maxWidth>=460.dp)Row(horizontalArrangement=Arrangement.spacedBy(16.dp)){
+                        OverviewMoney("本周已实现",completeTotal(weekly.map{exactOrNull(it.net)}),"home-realized-week",Modifier.weight(1f),large=true,empty=weekly.isEmpty())
+                        OverviewMoney("本月",completeTotal(monthly.map{exactOrNull(it.net)}),"home-realized-month",Modifier.weight(1f),empty=monthly.isEmpty(),showState=false)
+                        OverviewMoney("历史累计",completeTotal(state.closed.map{exactOrNull(it.net)}),"home-realized-all",Modifier.weight(1f),empty=state.closed.isEmpty(),showState=false)
+                    }else Column(verticalArrangement=Arrangement.spacedBy(8.dp)){
+                        OverviewMoney("本周已实现",completeTotal(weekly.map{exactOrNull(it.net)}),"home-realized-week",large=true,empty=weekly.isEmpty())
+                        HorizontalDivider(color=MaterialTheme.colorScheme.outlineVariant)
+                        Row(horizontalArrangement=Arrangement.spacedBy(16.dp)){
+                            OverviewMoney("本月",completeTotal(monthly.map{exactOrNull(it.net)}),"home-realized-month",Modifier.weight(1f),empty=monthly.isEmpty(),showState=false)
+                            OverviewMoney("历史累计",completeTotal(state.closed.map{exactOrNull(it.net)}),"home-realized-all",Modifier.weight(1f),empty=state.closed.isEmpty(),showState=false)
+                        }
+                    }
                 }
                 if(state.closed.any{it.net==null})Text("费用待估算的平仓使相关完整合计保持未知；统计页另列已知样本。",style=MaterialTheme.typography.bodySmall,color=MaterialTheme.colorScheme.onSurfaceVariant)
                 val strip=rememberScrollState()
@@ -65,7 +73,7 @@ private data class RecentHomeExecutions(val source:List<LedgerExecution>,val row
                         Row(Modifier.horizontalScroll(rememberScrollState())){Column(Modifier.width(width)){
                             Row{listOf("一","二","三","四","五","六","日").forEach{Text(it,Modifier.weight(1f),style=MaterialTheme.typography.labelMedium,textAlign=androidx.compose.ui.text.style.TextAlign.Center)}}
                             val start=selected.atDay(1).dayOfWeek.value-1;val count=selected.lengthOfMonth()
-                            repeat((start+count+6)/7){row->Row{repeat(7){col->val index=row*7+col-start;Box(Modifier.weight(1f)){if(index in 0 until count){val day=selected.atDay(index+1).toEpochDay();DayCell(day,state.daily[day],onDay,compact=true,pending=day in pendingDays,today=day==epoch)}}}}}
+                            repeat((start+count+6)/7){row->Row{repeat(7){col->val index=row*7+col-start;Box(Modifier.weight(1f),contentAlignment=Alignment.Center){if(index in 0 until count){val day=selected.atDay(index+1).toEpochDay();DayCell(day,state.daily[day],onDay,compact=true,pending=day in pendingDays,today=day==epoch)}}}}}
                         }}
                     }
                     Text("+ 盈利／− 亏损／持平／待算；— 无平仓。点日期看金额，窄屏可左右滑动。",style=MaterialTheme.typography.bodySmall,color=MaterialTheme.colorScheme.onSurfaceVariant)

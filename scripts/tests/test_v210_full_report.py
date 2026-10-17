@@ -28,6 +28,10 @@ class FullReportTest(unittest.TestCase):
             a,b=self.fixture();b['moneyLayouts'][0][key]=value
             with self.subTest(key=key),self.assertRaises(AssertionError):report.compare(a,b)
 
+    def test_previously_visible_amount_cannot_disappear(self):
+        a,b=self.fixture();b['moneyLayouts'][0]['visible']=False
+        with self.assertRaises(AssertionError):report.compare(a,b)
+
     def test_different_date_or_money_value_rejected(self):
         a,b=self.fixture();b['dateAnchor']='2026-10-18'
         with self.assertRaises(AssertionError):report.compare(a,b)
