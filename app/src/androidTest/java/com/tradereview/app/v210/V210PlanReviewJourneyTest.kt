@@ -19,7 +19,8 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.gson.GsonBuilder
@@ -269,7 +270,7 @@ class V210PlanReviewJourneyTest {
         observeMoney("累计已记录手续费","待估算","account-fees-futures");observeMoney("累计已实现净盈亏","待估算","account-net-futures",false)
         configure("futures","20000",false);flow("futures","in","3000","合成期货入金");flow("futures","out","500","合成期货出金")
         page(4);top("v2-accounts");tap("new-cashflow");field("cashflow-amount","0");tap("save-cashflow");ui.onNodeWithTag("save-cashflow").assertExists();assertEquals(4,facts().cashFlows.size);capture("cash-error");tapText("取消",true)
-        unchanged(immutable);assertEquals(4,facts().cashFlows.size);top("v2-accounts");capture("cashflow-list")
+        unchanged(immutable);assertEquals(4,facts().cashFlows.size);ui.onNodeWithTag("v2-accounts").performScrollToNode(hasText("合成期货入金"));capture("cashflow-list")
         val config=app.resources.configuration
         val result=mapOf("api" to Build.VERSION.SDK_INT,"profile" to profile,"pid" to android.os.Process.myPid(),"dateAnchor" to anchor.toString(),"screenWidthDp" to config.screenWidthDp,"fontScale" to config.fontScale,"night" to (config.uiMode and Configuration.UI_MODE_NIGHT_MASK==Configuration.UI_MODE_NIGHT_YES),"syntheticOnly" to true,"allExecutionsCreatedViaRealForm" to true,"allPlansReviewsCashSavedViaUi" to true,"immutableTradingFactsPreserved" to true,"immutableBeforeReview" to LedgerJson.element(immutable),"operations" to operations,"layouts" to layouts,"displayedMoney" to displayedMoney,"cashEditTargetRetained" to cashEditTargetRetained,"screenshots" to screens,"ledger" to LedgerJson.element(facts()),"result" to "PASS")
         saved.writeText(GsonBuilder().serializeNulls().setPrettyPrinting().create().toJson(result))
