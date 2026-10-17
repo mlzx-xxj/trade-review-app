@@ -26,11 +26,18 @@ import com.tradereview.app.ui.LocalFullScreenDialog
 import com.tradereview.app.ui.icons.*
 import com.tradereview.app.evidence.AttachmentStore
 import com.tradereview.app.data.Presets
+import kotlinx.coroutines.flow.first
 import java.time.LocalDate
 
 @OptIn(ExperimentalLayoutApi::class)
-@Composable fun V200App(model:V200ViewModel,backup:BackupViewModel,store:AttachmentStore){val screen by model.state.collectAsState();val ledger=screen.ledger;val page by model.page.collectAsState();val editor by model.editor.collectAsState();val pending by model.pending.collectAsState();val busy by model.busy.collectAsState();var route by rememberSaveable{mutableStateOf("")};var selected by rememberSaveable{mutableStateOf("")};var editing by rememberSaveable{mutableStateOf<String?>(null)};var resumeEntry by rememberSaveable{mutableStateOf(false)};var day by rememberSaveable{mutableStateOf<Long?>(null)};val snack=remember{SnackbarHostState()};var snackHeight by remember{mutableIntStateOf(0)};val density=LocalDensity.current;val holder=rememberSaveableStateHolder();val message by model.message.collectAsState();val labels=listOf("首页","交易","复盘","统计","账户")
-    LaunchedEffect(message){message?.let{snack.showSnackbar(it);model.message.value=null}}
+@Composable fun V200App(model:V200ViewModel,backup:BackupViewModel,store:AttachmentStore){val screen by model.state.collectAsState();val ledger=screen.ledger;val page by model.page.collectAsState();val editor by model.editor.collectAsState();val pending by model.pending.collectAsState();val busy by model.busy.collectAsState();var route by rememberSaveable{mutableStateOf("")};var selected by rememberSaveable{mutableStateOf("")};var editing by rememberSaveable{mutableStateOf<String?>(null)};var resumeEntry by rememberSaveable{mutableStateOf(false)};var day by rememberSaveable{mutableStateOf<Long?>(null)};val snack=remember{SnackbarHostState()};var snackHeight by remember{mutableIntStateOf(0)};val density=LocalDensity.current;val holder=rememberSaveableStateHolder();val labels=listOf("首页","交易","复盘","统计","账户")
+    // Subscribe afresh after each display: null -> the same text can be conflated
+    // before recomposition, leaving a completed LaunchedEffect(text) latched.
+    LaunchedEffect(model){while(true){
+        val next=model.message.first{it!=null}!!
+        snack.showSnackbar(next)
+        model.message.compareAndSet(next,null)
+    }}
     fun back(){if(route=="rules" || route=="strategy"){route="risk"}else if(resumeEntry){route="";resumeEntry=false;model.openEditor()}else route=""}
     BackHandler(enabled=route.isNotEmpty() && !editor){back()}
     Scaffold(topBar={Row(Modifier.fillMaxWidth().windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal)).padding(horizontal=8.dp).heightIn(min=56.dp),horizontalArrangement=Arrangement.spacedBy(4.dp),verticalAlignment=androidx.compose.ui.Alignment.CenterVertically){
