@@ -1,0 +1,94 @@
+{
+  "api": 29,
+  "nativeTests": 148,
+  "actualInstrumentations": 8,
+  "profiles": [
+    {
+      "api": 29,
+      "profile": "regular-light",
+      "financial": {
+        "knownRealized": "2487.65",
+        "stockRemaining": "500",
+        "stockOpenCost": "5500.55",
+        "unknownFeeExecutions": 2,
+        "unknownGross": "1000",
+        "unknownNet": null
+      },
+      "backupSha256": "5d4064d0e1303ae7ef18c8440bac7ebb392088f631ee5a79196de6da84c98ed8",
+      "backupBytes": 20449,
+      "zipEntries": 3,
+      "actualInstrumentations": 2,
+      "runnerLogSha256": {
+        "journey": "1cab255dbc978dfec763899c8dc1f498ad87a3bd78a3258d2155df271aadf601",
+        "reopen": "3bbfdca754637490dd223a315dfa1ac28bdf5a414fba8c687085ef0113219eb7"
+      },
+      "result": "PASS"
+    },
+    {
+      "api": 29,
+      "profile": "regular-dark",
+      "financial": {
+        "knownRealized": "2487.65",
+        "stockRemaining": "500",
+        "stockOpenCost": "5500.55",
+        "unknownFeeExecutions": 2,
+        "unknownGross": "1000",
+        "unknownNet": null
+      },
+      "backupSha256": "1611d10564d91368f845b434fcc5bc72d0f7fb20abf957ee34780ea1ff210919",
+      "backupBytes": 20445,
+      "zipEntries": 3,
+      "actualInstrumentations": 2,
+      "runnerLogSha256": {
+        "journey": "a52820df5d7942631d743b973f6d8d8da973b2a2d112ee9a2b8741354575c88f",
+        "reopen": "443ab2ef1c616e984cd7fb99358bc7305c6658335ea3150c65f18f9746a1b7b2"
+      },
+      "result": "PASS"
+    },
+    {
+      "api": 29,
+      "profile": "narrow-light",
+      "financial": {
+        "knownRealized": "2487.65",
+        "stockRemaining": "500",
+        "stockOpenCost": "5500.55",
+        "unknownFeeExecutions": 2,
+        "unknownGross": "1000",
+        "unknownNet": null
+      },
+      "backupSha256": "70fceba75d9cadffb296071258d539c9dd5a4a677c64335ccd21a453270d36cb",
+      "backupBytes": 20445,
+      "zipEntries": 3,
+      "actualInstrumentations": 2,
+      "runnerLogSha256": {
+        "journey": "89c8a805449d83308fce1179d28337c93e533a3d80680c5a02b6193e36d78d81",
+        "reopen": "789ff7742da97e58773f004622d5c400aef643a48903b7af154f48ca33a34f4e"
+      },
+      "result": "PASS"
+    },
+    {
+      "api": 29,
+      "profile": "narrow-dark",
+      "financial": {
+        "knownRealized": "2487.65",
+        "stockRemaining": "500",
+        "stockOpenCost": "5500.55",
+        "unknownFeeExecutions": 2,
+        "unknownGross": "1000",
+        "unknownNet": null
+      },
+      "backupSha256": "c9f1472a5c3202e5d51151ebe6eb55de9283cbec596b737abd2816c64a0c9ecc",
+      "backupBytes": 20451,
+      "zipEntries": 3,
+      "actualInstrumentations": 2,
+      "runnerLogSha256": {
+        "journey": "64cdaa56e7f654c95ae1ba8573802f4185c5d14ef83d87cdd69dc69c807028eb",
+        "reopen": "bdba1b09513920ca8f73f49d7ea47cb172fa579887e426530051f2837460e16b"
+      },
+      "result": "PASS"
+    }
+  ],
+  "complete": true,
+  "realPhone": "not-executed",
+  "result": "PASS"
+}

@@ -1,0 +1,80 @@
+{
+  "api": 35,
+  "profile": "narrow-dark",
+  "case": "strategyeditorkeepsidentityanddraftafterrecreation",
+  "syntheticOnly": true,
+  "activity": "com.tradereview.app.MainActivity",
+  "pid": 3702,
+  "screenWidthDp": 320,
+  "fontScale": 1.3,
+  "night": true,
+  "lastStep": "recreate with unsaved editor",
+  "observations": [],
+  "screenshots": [
+    "v210-consistency-strategyeditorkeepsidentityanddraftafterrecreation-narrow-dark-before-recreate.png",
+    "v210-consistency-strategyeditorkeepsidentityanddraftafterrecreation-narrow-dark-after-recreate.png",
+    "v210-consistency-strategyeditorkeepsidentityanddraftafterrecreation-narrow-dark-saved.png"
+  ],
+  "ledger": {
+    "accounts": [
+      {
+        "buyRate": "0.0001",
+        "historyComplete": false,
+        "id": "futures",
+        "initialCapital": null,
+        "market": "futures",
+        "name": "国内期货账户",
+        "sellRate": "0.0006"
+      },
+      {
+        "buyRate": "0.0001",
+        "historyComplete": false,
+        "id": "stock",
+        "initialCapital": null,
+        "market": "stock",
+        "name": "A股账户",
+        "sellRate": "0.0006"
+      }
+    ],
+    "audits": [],
+    "cashFlows": [],
+    "cycles": [],
+    "executions": [],
+    "lots": [],
+    "matches": [],
+    "plans": [],
+    "reviews": [],
+    "risks": [
+      {
+        "defaultLimit": null,
+        "id": "futures",
+        "limitMode": "amount",
+        "limitValue": null,
+        "riskFund": null,
+        "warnEnabled": true
+      },
+      {
+        "defaultLimit": null,
+        "id": "stock",
+        "limitMode": "amount",
+        "limitValue": null,
+        "riskFund": null,
+        "warnEnabled": true
+      }
+    ],
+    "rules": [],
+    "strategies": [
+      {
+        "active": true,
+        "description": "合成说明：只核对编辑身份与文字保存，不改动历史交易。合成说明：只核对编辑身份与文字保存，不改动历史交易。合成说明：只核对编辑身份与文字保存，不改动历史交易。合成说明：只核对编辑身份与文字保存，不改动历史交易。合成说明：只核对编辑身份与文字保存，不改动历史交易。",
+        "id": "8d6699c08bc0489c81114a6244c84936",
+        "name": "合成趋势策略已更正",
+        "sortOrder": 1
+      }
+    ]
+  },
+  "context": {},
+  "semantics": "Printing with useUnmergedTree \u003d \u0027true\u0027\nNode #46707 at (l\u003d0.0, t\u003d48.0, r\u003d640.0, b\u003d1040.0)px\nHas 1 child",
+  "error": null,
+  "result": "PASS"
+}

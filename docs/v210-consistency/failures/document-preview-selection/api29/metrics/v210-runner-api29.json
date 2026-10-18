@@ -1,0 +1,69 @@
+{
+  "api": 29,
+  "profiles": [
+    {
+      "profile": "regular-light",
+      "runnerLogSha256": "93d42f5165f2843369e15374d343fcac25c0c6e778e9b410cad02917e79c5d5f",
+      "result": "PASS"
+    },
+    {
+      "profile": "regular-dark",
+      "runnerLogSha256": "70563d64118a3164d2ec7db40412ad79335bf5770bd799300d8791b536646a74",
+      "result": "PASS"
+    },
+    {
+      "profile": "narrow-light",
+      "runnerLogSha256": "0741eafbfc76c5e2b15a1ee6c5a45aed5b0722e1d3f69ac6811eef53166c219e",
+      "result": "PASS"
+    },
+    {
+      "profile": "narrow-dark",
+      "runnerLogSha256": "94ecb18300f8f543cd6add2f193e68c270217d8f6114e51ae20a01fb478d065e",
+      "result": "PASS"
+    }
+  ],
+  "actualInstrumentations": 4,
+  "fullUiInstrumentations": 8,
+  "reviewUiInstrumentations": 8,
+  "reviewProfiles": [
+    {
+      "profile": "regular-light",
+      "actualInstrumentations": 2,
+      "runnerLogSha256": {
+        "journey": "032ef57f386e57df3806be0c0d99f71fdcf0546b259368b1b08d02c03f130ec2",
+        "reopen": "e1b346234fa9f199415289bcd7c0596b9db28b7e5fdb71e0c10d64af1d30ba80"
+      },
+      "result": "PASS"
+    },
+    {
+      "profile": "regular-dark",
+      "actualInstrumentations": 2,
+      "runnerLogSha256": {
+        "journey": "51d55d0e7987c716521c61563b5162528a1378d1d73868f3052f27ed9520ea3a",
+        "reopen": "852f8979e65b0695704d868547b6b05446992186717626f114764c612fbd21ed"
+      },
+      "result": "PASS"
+    },
+    {
+      "profile": "narrow-light",
+      "actualInstrumentations": 2,
+      "runnerLogSha256": {
+        "journey": "0d877685ddb7bf5b6acd7a1ca6e4688c474ffaf960d5ef617142937edbb3e894",
+        "reopen": "950006f468bd6b052762037c0bc248024b79e09fbf0b7391dc0cd8fea95fdc11"
+      },
+      "result": "PASS"
+    },
+    {
+      "profile": "narrow-dark",
+      "actualInstrumentations": 2,
+      "runnerLogSha256": {
+        "journey": "0be22e2068a3d06c1ef631457093fd36605ffc569452c0a6d707d3cd96a81cf7",
+        "reopen": "248acb3119bb4f839d636d3e2b6640ac8bb0f8e75aca5d8c8c9a9c7883512c96"
+      },
+      "result": "PASS"
+    }
+  ],
+  "complete": true,
+  "result": "PASS",
+  "realPhone": "not-executed"
+}

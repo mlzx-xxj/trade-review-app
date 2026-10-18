@@ -159,6 +159,12 @@ def verify(first, second, api, profile, backup):
     picker = [o for o in first["operations"] if o["step"] == "DocumentsUI"]
     assert [o["kind"] for o in picker] == ["CreateDocument", "OpenDocument", "OpenDocument"]
     assert all(re.fullmatch(r"com(?:\.google)?\.android\.documentsui", o["package"]) for o in picker)
+    selections = [o for o in first["operations"] if o["step"] == "DocumentsUI title selection"]
+    assert len(selections) == 2
+    for selection in selections:
+        assert selection["fileName"] == selection["selectedText"] == first["backupFileName"]
+        left, top, right, bottom = selection["boundsPx"]
+        assert right > left >= 0 and bottom > top >= 0
     assert len(first["controls"]) == 9
     assert [c["inputTag"] for c in first["controls"]] == ["strategy-description", "strategy-description", None, "rule-name", "rule-name", "plan-note", "position-review-note", "account-capital", "cashflow-note"]
     assert [c["orientation"] for c in first["controls"]] == [2, 1, 1, 2, 1, 2, 2, 2, 2]

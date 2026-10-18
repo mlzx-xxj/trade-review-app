@@ -291,24 +291,41 @@ class V210ConsistencyJourneyTest : ConsistencyUiProbe() {
         tap("v2-import-backup")
         documentsWindow("OpenDocument")
         downloadsRoot()
-        // DocumentsUI uses a lazy grid: folders can place the ZIP below the viewport.
-        var file = device.findObject(By.text(fileName)) ?: device.findObject(By.descContains(fileName))
-        if (file == null) {
-            val list = UiScrollable(UiSelector().resourceIdMatches(".*:id/dir_list").scrollable(true)).setAsVerticalList()
-            val found = runCatching {
-                list.scrollIntoView(UiSelector().text(fileName)) ||
-                    list.scrollIntoView(UiSelector().descriptionContains(fileName))
-            }.onFailure { extraEvidence["documentsScrollError"] = it.stackTraceToString() }.getOrDefault(false)
-            file = if (found) device.findObject(By.text(fileName)) ?: device.findObject(By.descContains(fileName)) else null
+        // A ZIP's preview button also mentions its filename in contentDescription.
+        // Select the exact visible title instead; preview does not return a document URI.
+        device.findObject(By.desc(Pattern.compile("(?i)(List view|列表视图)")))?.let {
+            it.click()
+            device.waitForIdle()
         }
+        var file = device.findObject(By.text(fileName))
         if (file == null) {
+            val list = UiScrollable(UiSelector().resourceIdMatches(".*:id/dir_list").scrollable(true))
+                .setAsVerticalList().setSwipeDeadZonePercentage(.2)
+            val found = runCatching { list.scrollIntoView(UiSelector().text(fileName)) }
+                .onFailure { extraEvidence["documentsScrollError"] = it.stackTraceToString() }.getOrDefault(false)
+            file = if (found) device.findObject(By.text(fileName)) else null
+        }
+        fun retainPickerFailure(reason: String) {
             val hierarchy = java.io.ByteArrayOutputStream()
             device.dumpWindowHierarchy(hierarchy)
             extraEvidence["documentsHierarchy"] = hierarchy.toString("UTF-8")
-            snap("system-open-not-found", true)
+            extraEvidence["documentsFailure"] = reason
+            snap("system-open-failure", true)
         }
-        requireNotNull(file) { "Exported ZIP not shown after actual DocumentsUI scrolling" }.click()
-        assertTrue(device.wait(Until.gone(By.pkg(documents)), 20000))
+        if (file == null) retainPickerFailure("Exact exported filename not found after actual directory scrolling")
+        val title = requireNotNull(file) { "Exported ZIP title not shown after actual DocumentsUI scrolling" }
+        assertEquals(fileName, title.text)
+        val bounds = title.visibleBounds
+        assertTrue("Document title must have a visible click target", bounds.width() > 0 && bounds.height() > 0)
+        operations += mapOf("step" to "DocumentsUI title selection", "fileName" to fileName,
+            "selectedText" to title.text, "resource" to title.resourceName,
+            "boundsPx" to listOf(bounds.left, bounds.top, bounds.right, bounds.bottom),
+            "elapsedRealtimeMs" to android.os.SystemClock.elapsedRealtime())
+        flushOperations()
+        title.click()
+        val dismissed = device.wait(Until.gone(By.pkg(documents)), 20000)
+        if (!dismissed) retainPickerFailure("Picker did not return after exact filename click")
+        assertTrue("Actual filename selection must return to MainActivity", dismissed)
         var backup: BackupViewModel? = null
         ui.runOnIdle { backup = ViewModelProvider(ui.activity)[BackupViewModel::class.java] }
         waitFor { backup!!.preview.value != null && !backup!!.busy.value }

@@ -1,0 +1,1467 @@
+{
+  "api": 29,
+  "profile": "regular-dark",
+  "previousPid": 18407,
+  "pid": 18638,
+  "allFactsIdentical": true,
+  "savedFieldsReadViaUi": true,
+  "wholeBackupFactsIdentical": true,
+  "wholeBackupFacts": {
+    "format": "trade-review-backup",
+    "schemaVersion": 8,
+    "backupScope": "with-attachment-files",
+    "counts": {
+      "trades": 1,
+      "dailyReviews": 0,
+      "plans": 0,
+      "reviews": 0,
+      "tags": 28,
+      "instruments": 26,
+      "drafts": 1,
+      "savedFilters": 0,
+      "riskRules": 0,
+      "contractTemplates": 0,
+      "attachments": 1,
+      "goals": 1,
+      "preflightItems": 1,
+      "preflightChecks": 1,
+      "ocrDrafts": 1,
+      "ledgerRecords": 19
+    },
+    "ledger": {
+      "accounts": [
+        {
+          "buyRate": "0.0001",
+          "historyComplete": false,
+          "id": "futures",
+          "initialCapital": null,
+          "market": "futures",
+          "name": "国内期货账户",
+          "sellRate": "0.0006"
+        },
+        {
+          "buyRate": "0.0001",
+          "historyComplete": false,
+          "id": "stock",
+          "initialCapital": null,
+          "market": "stock",
+          "name": "A股账户",
+          "sellRate": "0.0006"
+        }
+      ],
+      "audits": [],
+      "cashFlows": [],
+      "cycles": [
+        {
+          "accountId": "stock",
+          "averagePrice": "11",
+          "closedDay": null,
+          "code": "603999",
+          "direction": "long",
+          "fees": "12.9",
+          "firstDay": 20741,
+          "id": "cycle_6a93cb7991144ba7aaa837ecf30fd488",
+          "name": "603999",
+          "openCost": "5500.55",
+          "realized": "2487.65",
+          "referenceMargin": null,
+          "remaining": "500",
+          "stopLoss": null,
+          "takeProfit": null
+        },
+        {
+          "accountId": "futures",
+          "averagePrice": "800",
+          "closedDay": null,
+          "code": "i2701",
+          "direction": "long",
+          "fees": null,
+          "firstDay": 20743,
+          "id": "cycle_c72375c4143f4a579994e24e54eb9446",
+          "name": "铁矿石",
+          "openCost": null,
+          "realized": null,
+          "referenceMargin": null,
+          "remaining": "1",
+          "stopLoss": null,
+          "takeProfit": null
+        }
+      ],
+      "executions": [
+        {
+          "accountId": "stock",
+          "code": "603999",
+          "date": 20743,
+          "effect": "close",
+          "feeRateSnapshot": "0.0006",
+          "feeSource": "auto",
+          "fees": "10.80",
+          "id": "688d8aead25a4cdc8396623d2854844f",
+          "marginRate": null,
+          "minute": 600,
+          "multiplier": null,
+          "name": "603999",
+          "orderConfirmed": false,
+          "ordinal": 3,
+          "parametersConfirmed": false,
+          "planId": null,
+          "price": "12",
+          "quantity": "1500",
+          "riskAmount": null,
+          "riskConfirmed": false,
+          "riskExceeded": false,
+          "riskFundSnapshot": null,
+          "riskLimitSnapshot": null,
+          "riskWarningEnabled": true,
+          "ruleSnapshot": null,
+          "second": 2,
+          "side": "sell",
+          "stopLoss": null,
+          "strategyId": null,
+          "takeProfit": null,
+          "tradingDay": 20743
+        },
+        {
+          "accountId": "stock",
+          "code": "603999",
+          "date": 20741,
+          "effect": "open",
+          "feeRateSnapshot": "0.0001",
+          "feeSource": "auto",
+          "fees": "1.00",
+          "id": "6a93cb7991144ba7aaa837ecf30fd488",
+          "marginRate": null,
+          "minute": 600,
+          "multiplier": null,
+          "name": "603999",
+          "orderConfirmed": false,
+          "ordinal": 1,
+          "parametersConfirmed": false,
+          "planId": null,
+          "price": "10",
+          "quantity": "1000",
+          "riskAmount": null,
+          "riskConfirmed": false,
+          "riskExceeded": false,
+          "riskFundSnapshot": null,
+          "riskLimitSnapshot": null,
+          "riskWarningEnabled": true,
+          "ruleSnapshot": null,
+          "second": 0,
+          "side": "buy",
+          "stopLoss": null,
+          "strategyId": "37db3dc9f2244b099e28c66c625f17c3",
+          "takeProfit": null,
+          "tradingDay": 20741
+        },
+        {
+          "accountId": "stock",
+          "code": "603999",
+          "date": 20742,
+          "effect": "open",
+          "feeRateSnapshot": "0.0001",
+          "feeSource": "auto",
+          "fees": "1.10",
+          "id": "7dfc9f75b6e84f37aa37126f255d38dc",
+          "marginRate": null,
+          "minute": 600,
+          "multiplier": null,
+          "name": "603999",
+          "orderConfirmed": false,
+          "ordinal": 2,
+          "parametersConfirmed": false,
+          "planId": null,
+          "price": "11",
+          "quantity": "1000",
+          "riskAmount": null,
+          "riskConfirmed": false,
+          "riskExceeded": false,
+          "riskFundSnapshot": null,
+          "riskLimitSnapshot": null,
+          "riskWarningEnabled": true,
+          "ruleSnapshot": null,
+          "second": 1,
+          "side": "buy",
+          "stopLoss": null,
+          "strategyId": null,
+          "takeProfit": null,
+          "tradingDay": 20742
+        },
+        {
+          "accountId": "futures",
+          "code": "i2701",
+          "date": 20743,
+          "effect": "close",
+          "feeRateSnapshot": null,
+          "feeSource": "auto",
+          "fees": null,
+          "id": "a429a94fb47e45b3b5b5669aec8dd58c",
+          "marginRate": null,
+          "minute": 600,
+          "multiplier": "100",
+          "name": "铁矿石",
+          "orderConfirmed": false,
+          "ordinal": 5,
+          "parametersConfirmed": true,
+          "planId": null,
+          "price": "810",
+          "quantity": "1",
+          "riskAmount": null,
+          "riskConfirmed": false,
+          "riskExceeded": false,
+          "riskFundSnapshot": null,
+          "riskLimitSnapshot": null,
+          "riskWarningEnabled": true,
+          "ruleSnapshot": "{\"addMode\":\"per_execution\",\"addValue\":\"0.01\",\"closeFee\":null,\"code\":\"i2701\",\"effectiveDay\":20740,\"feeMode\":\"unknown\",\"id\":\"reference_i_20261015\",\"marginRate\":null,\"multiplier\":\"100\",\"name\":\"铁矿石\",\"openFee\":null,\"todayFee\":null,\"verified\":true}",
+          "second": 4,
+          "side": "sell",
+          "stopLoss": null,
+          "strategyId": null,
+          "takeProfit": null,
+          "tradingDay": 20743
+        },
+        {
+          "accountId": "futures",
+          "code": "i2701",
+          "date": 20743,
+          "effect": "open",
+          "feeRateSnapshot": null,
+          "feeSource": "auto",
+          "fees": null,
+          "id": "c72375c4143f4a579994e24e54eb9446",
+          "marginRate": null,
+          "minute": 600,
+          "multiplier": "100",
+          "name": "铁矿石",
+          "orderConfirmed": false,
+          "ordinal": 4,
+          "parametersConfirmed": true,
+          "planId": null,
+          "price": "800",
+          "quantity": "2",
+          "riskAmount": null,
+          "riskConfirmed": false,
+          "riskExceeded": false,
+          "riskFundSnapshot": null,
+          "riskLimitSnapshot": null,
+          "riskWarningEnabled": true,
+          "ruleSnapshot": "{\"addMode\":\"per_execution\",\"addValue\":\"0.01\",\"closeFee\":null,\"code\":\"i2701\",\"effectiveDay\":20740,\"feeMode\":\"unknown\",\"id\":\"reference_i_20261015\",\"marginRate\":null,\"multiplier\":\"100\",\"name\":\"铁矿石\",\"openFee\":null,\"todayFee\":null,\"verified\":true}",
+          "second": 3,
+          "side": "buy",
+          "stopLoss": null,
+          "strategyId": null,
+          "takeProfit": null,
+          "tradingDay": 20743
+        }
+      ],
+      "lots": [
+        {
+          "allocatedFees": "1",
+          "cycleId": "cycle_6a93cb7991144ba7aaa837ecf30fd488",
+          "executionId": "6a93cb7991144ba7aaa837ecf30fd488",
+          "id": "lot_6a93cb7991144ba7aaa837ecf30fd488",
+          "originalQuantity": "1000",
+          "remaining": "0"
+        },
+        {
+          "allocatedFees": "0.55",
+          "cycleId": "cycle_6a93cb7991144ba7aaa837ecf30fd488",
+          "executionId": "7dfc9f75b6e84f37aa37126f255d38dc",
+          "id": "lot_7dfc9f75b6e84f37aa37126f255d38dc",
+          "originalQuantity": "1000",
+          "remaining": "500"
+        },
+        {
+          "allocatedFees": null,
+          "cycleId": "cycle_c72375c4143f4a579994e24e54eb9446",
+          "executionId": "c72375c4143f4a579994e24e54eb9446",
+          "id": "lot_c72375c4143f4a579994e24e54eb9446",
+          "originalQuantity": "2",
+          "remaining": "1"
+        }
+      ],
+      "matches": [
+        {
+          "closeExecutionId": "688d8aead25a4cdc8396623d2854844f",
+          "closeFees": "7.2",
+          "cycleId": "cycle_6a93cb7991144ba7aaa837ecf30fd488",
+          "day": 20743,
+          "gross": "2000",
+          "id": "match_688d8aead25a4cdc8396623d2854844f_6a93cb7991144ba7aaa837ecf30fd488",
+          "net": "1991.8",
+          "openExecutionId": "6a93cb7991144ba7aaa837ecf30fd488",
+          "openFees": "1",
+          "quantity": "1000"
+        },
+        {
+          "closeExecutionId": "688d8aead25a4cdc8396623d2854844f",
+          "closeFees": "3.6",
+          "cycleId": "cycle_6a93cb7991144ba7aaa837ecf30fd488",
+          "day": 20743,
+          "gross": "500",
+          "id": "match_688d8aead25a4cdc8396623d2854844f_7dfc9f75b6e84f37aa37126f255d38dc",
+          "net": "495.85",
+          "openExecutionId": "7dfc9f75b6e84f37aa37126f255d38dc",
+          "openFees": "0.55",
+          "quantity": "500"
+        },
+        {
+          "closeExecutionId": "a429a94fb47e45b3b5b5669aec8dd58c",
+          "closeFees": null,
+          "cycleId": "cycle_c72375c4143f4a579994e24e54eb9446",
+          "day": 20743,
+          "gross": "1000",
+          "id": "match_a429a94fb47e45b3b5b5669aec8dd58c_c72375c4143f4a579994e24e54eb9446",
+          "net": null,
+          "openExecutionId": "c72375c4143f4a579994e24e54eb9446",
+          "openFees": null,
+          "quantity": "1"
+        }
+      ],
+      "plans": [],
+      "reviews": [],
+      "risks": [
+        {
+          "defaultLimit": null,
+          "id": "futures",
+          "limitMode": "amount",
+          "limitValue": null,
+          "riskFund": null,
+          "warnEnabled": true
+        },
+        {
+          "defaultLimit": null,
+          "id": "stock",
+          "limitMode": "amount",
+          "limitValue": "500",
+          "riskFund": "10000",
+          "warnEnabled": true
+        }
+      ],
+      "rules": [
+        {
+          "addMode": "none",
+          "addValue": null,
+          "closeFee": "2",
+          "code": "i2701",
+          "effectiveDay": 20741,
+          "feeMode": "per_lot",
+          "id": "8903b1c5c83c4190aacbf0cb840af73c",
+          "marginRate": "0.1",
+          "multiplier": "100",
+          "name": "合成合约参数已更正",
+          "openFee": "1",
+          "todayFee": "3",
+          "verified": true
+        }
+      ],
+      "strategies": [
+        {
+          "active": true,
+          "description": "合成更正：历史成交仍保留原始数量、费用和稳定策略关联。合成更正：历史成交仍保留原始数量、费用和稳定策略关联。合成更正：历史成交仍保留原始数量、费用和稳定策略关联。合成更正：历史成交仍保留原始数量、费用和稳定策略关联。合成更正：历史成交仍保留原始数量、费用和稳定策略关联。",
+          "id": "37db3dc9f2244b099e28c66c625f17c3",
+          "name": "合成复核策略已更正",
+          "sortOrder": 1
+        }
+      ]
+    },
+    "trades": [
+      {
+        "id": 1,
+        "recordKey": "00000000000000000000000000000808",
+        "date": 20744,
+        "market": "stock",
+        "symbol": "沪深300",
+        "direction": "long",
+        "currency": "CNY",
+        "netPnl": "123.45",
+        "positionPercent": 10,
+        "strategy": "trend",
+        "emotion": "calm",
+        "mistakes": [],
+        "discipline": [],
+        "reviewed": false,
+        "note": "",
+        "professional": {
+          "contractCode": null,
+          "costsConfirmed": false,
+          "entryPrice": null,
+          "executionNote": "",
+          "exitPrice": null,
+          "fees": null,
+          "initialStop": null,
+          "linearConfirmed": false,
+          "manualRisk": "200.00",
+          "minTick": null,
+          "multiplier": null,
+          "otherCosts": null,
+          "planStatus": "in",
+          "plannedPositionPercent": null,
+          "pnlMode": "manual",
+          "quantity": null,
+          "quantityUnit": "unknown",
+          "reason": "",
+          "riskMode": "amount",
+          "stopExecutionCost": null,
+          "takeProfit": null,
+          "templateName": null
+        },
+        "riskRecord": {
+          "events": [
+            {
+              "checkedAt": "2026-10-18T14:06:23.829Z",
+              "currency": "CNY",
+              "dailyNet": "123.45",
+              "date": 20744,
+              "direction": "long",
+              "initialRisk": "200",
+              "lossStreak": 0,
+              "netPnl": "123.45",
+              "notChecked": [],
+              "plannedPositionPercent": null,
+              "positionPercent": 10,
+              "recordKey": "00000000000000000000000000000808",
+              "rules": null,
+              "violations": []
+            }
+          ]
+        }
+      }
+    ],
+    "dailyReviews": [],
+    "tags": [
+      {
+        "kind": "discipline",
+        "id": "follow_plan",
+        "name": "遵守入场计划",
+        "sortOrder": 0,
+        "favorite": false,
+        "hidden": false,
+        "lastUsed": 0
+      },
+      {
+        "kind": "discipline",
+        "id": "respect_stop",
+        "name": "按计划止损",
+        "sortOrder": 1,
+        "favorite": false,
+        "hidden": false,
+        "lastUsed": 0
+      },
+      {
+        "kind": "discipline",
+        "id": "size_control",
+        "name": "控制仓位",
+        "sortOrder": 2,
+        "favorite": false,
+        "hidden": false,
+        "lastUsed": 0
+      },
+      {
+        "kind": "discipline",
+        "id": "no_impulse",
+        "name": "避免冲动交易",
+        "sortOrder": 3,
+        "favorite": false,
+        "hidden": false,
+        "lastUsed": 0
+      },
+      {
+        "kind": "emotion",
+        "id": "calm",
+        "name": "平静",
+        "sortOrder": 0,
+        "favorite": false,
+        "hidden": false,
+        "lastUsed": 0
+      },
+      {
+        "kind": "emotion",
+        "id": "confident",
+        "name": "自信",
+        "sortOrder": 1,
+        "favorite": false,
+        "hidden": false,
+        "lastUsed": 0
+      },
+      {
+        "kind": "emotion",
+        "id": "anxious",
+        "name": "焦虑",
+        "sortOrder": 2,
+        "favorite": false,
+        "hidden": false,
+        "lastUsed": 0
+      },
+      {
+        "kind": "emotion",
+        "id": "impatient",
+        "name": "急躁",
+        "sortOrder": 3,
+        "favorite": false,
+        "hidden": false,
+        "lastUsed": 0
+      },
+      {
+        "kind": "emotion",
+        "id": "excited",
+        "name": "兴奋",
+        "sortOrder": 4,
+        "favorite": false,
+        "hidden": false,
+        "lastUsed": 0
+      },
+      {
+        "kind": "lesson",
+        "id": "wait",
+        "name": "等待信号确认",
+        "sortOrder": 0,
+        "favorite": false,
+        "hidden": false,
+        "lastUsed": 0
+      },
+      {
+        "kind": "lesson",
+        "id": "smaller",
+        "name": "降低单笔仓位",
+        "sortOrder": 1,
+        "favorite": false,
+        "hidden": false,
+        "lastUsed": 0
+      },
+      {
+        "kind": "lesson",
+        "id": "stop",
+        "name": "严格执行止损",
+        "sortOrder": 2,
+        "favorite": false,
+        "hidden": false,
+        "lastUsed": 0
+      },
+      {
+        "kind": "lesson",
+        "id": "rest",
+        "name": "情绪不稳时休息",
+        "sortOrder": 3,
+        "favorite": false,
+        "hidden": false,
+        "lastUsed": 0
+      },
+      {
+        "kind": "lesson",
+        "id": "keep",
+        "name": "保持当前纪律",
+        "sortOrder": 4,
+        "favorite": false,
+        "hidden": false,
+        "lastUsed": 0
+      },
+      {
+        "kind": "mistake",
+        "id": "chase",
+        "name": "追涨杀跌",
+        "sortOrder": 0,
+        "favorite": false,
+        "hidden": false,
+        "lastUsed": 0
+      },
+      {
+        "kind": "mistake",
+        "id": "no_stop",
+        "name": "未设止损",
+        "sortOrder": 1,
+        "favorite": false,
+        "hidden": false,
+        "lastUsed": 0
+      },
+      {
+        "kind": "mistake",
+        "id": "early_exit",
+        "name": "提前止盈",
+        "sortOrder": 2,
+        "favorite": false,
+        "hidden": false,
+        "lastUsed": 0
+      },
+      {
+        "kind": "mistake",
+        "id": "oversize",
+        "name": "仓位过重",
+        "sortOrder": 3,
+        "favorite": false,
+        "hidden": false,
+        "lastUsed": 0
+      },
+      {
+        "kind": "mistake",
+        "id": "countertrend",
+        "name": "逆势交易",
+        "sortOrder": 4,
+        "favorite": false,
+        "hidden": false,
+        "lastUsed": 0
+      },
+      {
+        "kind": "mistake",
+        "id": "overtrade",
+        "name": "频繁交易",
+        "sortOrder": 5,
+        "favorite": false,
+        "hidden": false,
+        "lastUsed": 0
+      },
+      {
+        "kind": "preparation",
+        "id": "levels",
+        "name": "确认关键价位",
+        "sortOrder": 0,
+        "favorite": false,
+        "hidden": false,
+        "lastUsed": 0
+      },
+      {
+        "kind": "preparation",
+        "id": "risk",
+        "name": "设定止损与风险",
+        "sortOrder": 1,
+        "favorite": false,
+        "hidden": false,
+        "lastUsed": 0
+      },
+      {
+        "kind": "preparation",
+        "id": "news",
+        "name": "检查重要事件",
+        "sortOrder": 2,
+        "favorite": false,
+        "hidden": false,
+        "lastUsed": 0
+      },
+      {
+        "kind": "preparation",
+        "id": "size",
+        "name": "确定最大仓位",
+        "sortOrder": 3,
+        "favorite": false,
+        "hidden": false,
+        "lastUsed": 0
+      },
+      {
+        "kind": "strategy",
+        "id": "trend",
+        "name": "趋势跟随",
+        "sortOrder": 0,
+        "favorite": false,
+        "hidden": false,
+        "lastUsed": 1792332383836
+      },
+      {
+        "kind": "strategy",
+        "id": "breakout",
+        "name": "突破交易",
+        "sortOrder": 1,
+        "favorite": false,
+        "hidden": false,
+        "lastUsed": 0
+      },
+      {
+        "kind": "strategy",
+        "id": "pullback",
+        "name": "回调入场",
+        "sortOrder": 2,
+        "favorite": false,
+        "hidden": false,
+        "lastUsed": 0
+      },
+      {
+        "kind": "strategy",
+        "id": "range",
+        "name": "区间交易",
+        "sortOrder": 3,
+        "favorite": false,
+        "hidden": false,
+        "lastUsed": 0
+      }
+    ],
+    "instruments": [
+      {
+        "id": "preset_crypto_0",
+        "market": "crypto",
+        "name": "BTC/USDT",
+        "code": "BTC/USDT",
+        "sortOrder": 0,
+        "favorite": true,
+        "lastUsed": 0
+      },
+      {
+        "id": "preset_crypto_1",
+        "market": "crypto",
+        "name": "ETH/USDT",
+        "code": "ETH/USDT",
+        "sortOrder": 1,
+        "favorite": true,
+        "lastUsed": 0
+      },
+      {
+        "id": "preset_crypto_2",
+        "market": "crypto",
+        "name": "SOL/USDT",
+        "code": "SOL/USDT",
+        "sortOrder": 2,
+        "favorite": true,
+        "lastUsed": 0
+      },
+      {
+        "id": "preset_forex_0",
+        "market": "forex",
+        "name": "EUR/USD",
+        "code": "EUR/USD",
+        "sortOrder": 0,
+        "favorite": true,
+        "lastUsed": 0
+      },
+      {
+        "id": "preset_forex_1",
+        "market": "forex",
+        "name": "GBP/USD",
+        "code": "GBP/USD",
+        "sortOrder": 1,
+        "favorite": true,
+        "lastUsed": 0
+      },
+      {
+        "id": "preset_forex_2",
+        "market": "forex",
+        "name": "USD/JPY",
+        "code": "USD/JPY",
+        "sortOrder": 2,
+        "favorite": true,
+        "lastUsed": 0
+      },
+      {
+        "id": "preset_futures_0",
+        "market": "futures",
+        "name": "螺纹钢",
+        "code": "RB",
+        "sortOrder": 0,
+        "favorite": true,
+        "lastUsed": 0
+      },
+      {
+        "id": "preset_futures_1",
+        "market": "futures",
+        "name": "铁矿石",
+        "code": "I",
+        "sortOrder": 1,
+        "favorite": true,
+        "lastUsed": 0
+      },
+      {
+        "id": "preset_futures_2",
+        "market": "futures",
+        "name": "热卷",
+        "code": "HC",
+        "sortOrder": 2,
+        "favorite": true,
+        "lastUsed": 0
+      },
+      {
+        "id": "preset_futures_3",
+        "market": "futures",
+        "name": "沪铜",
+        "code": "CU",
+        "sortOrder": 3,
+        "favorite": false,
+        "lastUsed": 0
+      },
+      {
+        "id": "preset_futures_4",
+        "market": "futures",
+        "name": "沪铝",
+        "code": "AL",
+        "sortOrder": 4,
+        "favorite": false,
+        "lastUsed": 0
+      },
+      {
+        "id": "preset_futures_5",
+        "market": "futures",
+        "name": "黄金",
+        "code": "AU",
+        "sortOrder": 5,
+        "favorite": false,
+        "lastUsed": 0
+      },
+      {
+        "id": "preset_futures_6",
+        "market": "futures",
+        "name": "白银",
+        "code": "AG",
+        "sortOrder": 6,
+        "favorite": false,
+        "lastUsed": 0
+      },
+      {
+        "id": "preset_futures_7",
+        "market": "futures",
+        "name": "原油",
+        "code": "SC",
+        "sortOrder": 7,
+        "favorite": false,
+        "lastUsed": 0
+      },
+      {
+        "id": "preset_futures_8",
+        "market": "futures",
+        "name": "豆粕",
+        "code": "M",
+        "sortOrder": 8,
+        "favorite": false,
+        "lastUsed": 0
+      },
+      {
+        "id": "preset_futures_9",
+        "market": "futures",
+        "name": "豆油",
+        "code": "Y",
+        "sortOrder": 9,
+        "favorite": false,
+        "lastUsed": 0
+      },
+      {
+        "id": "preset_futures_10",
+        "market": "futures",
+        "name": "棕榈油",
+        "code": "P",
+        "sortOrder": 10,
+        "favorite": false,
+        "lastUsed": 0
+      },
+      {
+        "id": "preset_futures_11",
+        "market": "futures",
+        "name": "纯碱",
+        "code": "SA",
+        "sortOrder": 11,
+        "favorite": false,
+        "lastUsed": 0
+      },
+      {
+        "id": "preset_futures_12",
+        "market": "futures",
+        "name": "玻璃",
+        "code": "FG",
+        "sortOrder": 12,
+        "favorite": false,
+        "lastUsed": 0
+      },
+      {
+        "id": "preset_futures_13",
+        "market": "futures",
+        "name": "焦煤",
+        "code": "JM",
+        "sortOrder": 13,
+        "favorite": false,
+        "lastUsed": 0
+      },
+      {
+        "id": "preset_futures_14",
+        "market": "futures",
+        "name": "焦炭",
+        "code": "J",
+        "sortOrder": 14,
+        "favorite": false,
+        "lastUsed": 0
+      },
+      {
+        "id": "preset_stock_0",
+        "market": "stock",
+        "name": "沪深300",
+        "code": "沪深300",
+        "sortOrder": 0,
+        "favorite": true,
+        "lastUsed": 1792332383836
+      },
+      {
+        "id": "preset_stock_1",
+        "market": "stock",
+        "name": "中证500",
+        "code": "中证500",
+        "sortOrder": 1,
+        "favorite": true,
+        "lastUsed": 0
+      },
+      {
+        "id": "preset_stock_2",
+        "market": "stock",
+        "name": "上证50",
+        "code": "上证50",
+        "sortOrder": 2,
+        "favorite": true,
+        "lastUsed": 0
+      },
+      {
+        "id": "preset_stock_3",
+        "market": "stock",
+        "name": "AAPL",
+        "code": "AAPL",
+        "sortOrder": 3,
+        "favorite": false,
+        "lastUsed": 0
+      },
+      {
+        "id": "preset_stock_4",
+        "market": "stock",
+        "name": "NVDA",
+        "code": "NVDA",
+        "sortOrder": 4,
+        "favorite": false,
+        "lastUsed": 0
+      }
+    ],
+    "settings": {
+      "id": 1,
+      "lastMarket": "stock",
+      "theme": "system",
+      "pnlPalette": "green_profit"
+    },
+    "drafts": [
+      {
+        "key": "new",
+        "recordKey": "19f96588f32f4a68ac9dc0f8fe1562e2",
+        "tradeId": 0,
+        "date": 20744,
+        "market": "stock",
+        "symbol": "沪深300",
+        "direction": "long",
+        "currency": "CNY",
+        "amount": "77.77",
+        "outcome": "gain",
+        "positionPercent": 10,
+        "strategy": "trend",
+        "emotion": "calm",
+        "mistakes": [],
+        "discipline": [],
+        "reviewed": false,
+        "note": "",
+        "details": false,
+        "professional": null
+      }
+    ],
+    "savedFilters": [],
+    "riskRules": [],
+    "contractTemplates": [],
+    "attachments": [
+      {
+        "byteCount": 19746,
+        "caption": "V0.8 重启合成证据",
+        "createdAt": 1792332383969,
+        "height": 400,
+        "id": "6130fd4cea3e4f6e89d872558ad55713",
+        "kind": "before",
+        "recordKey": "00000000000000000000000000000808",
+        "sha256": "e56b2e15ea004129ba89eb3dfdcba530c481553aa658ffeef617dc6e2a472068",
+        "sortOrder": 0,
+        "width": 640
+      }
+    ],
+    "goals": [
+      {
+        "archivedDay": null,
+        "id": "00000000000000000000000000000809",
+        "kind": "text",
+        "mistakeId": null,
+        "period": "week",
+        "startDate": 20738,
+        "threshold": null,
+        "title": "重启验收目标"
+      }
+    ],
+    "evidenceSettings": {
+      "id": 1,
+      "maxInputMiB": 10
+    },
+    "smartSettings": {
+      "automaticReminders": true,
+      "enabledCategories": [
+        "discipline",
+        "risk",
+        "strategy",
+        "emotion",
+        "habits"
+      ],
+      "id": 1,
+      "lookbackDays": 14,
+      "minimumSamples": 10
+    },
+    "preflightItems": [
+      {
+        "archived": false,
+        "id": "00000000000000000000000000000810",
+        "text": "重启后核对数据"
+      }
+    ],
+    "preflightChecks": [
+      {
+        "checked": true,
+        "date": 20744,
+        "itemKey": "manual:00000000000000000000000000000810",
+        "label": "重启后核对数据",
+        "sourceRefs": [
+          "trade:00000000000000000000000000000808"
+        ],
+        "sourceType": "manual"
+      }
+    ],
+    "ocrDrafts": [
+      {
+        "blocked": true,
+        "closedEvidence": false,
+        "createdDay": 20744,
+        "fields": "{\"date\":\"\",\"market\":\"\",\"symbol\":\"\",\"contractCode\":\"\",\"direction\":\"\",\"currency\":\"\",\"entryPrice\":\"\",\"exitPrice\":\"\",\"buyPrice\":\"\",\"sellPrice\":\"\",\"quantity\":\"2.\",\"fees\":\"\",\"realizedPnl\":\"\"}",
+        "id": "00000000000000000000000000000811"
+      }
+    ]
+  },
+  "ledger": {
+    "accounts": [
+      {
+        "buyRate": "0.0001",
+        "historyComplete": false,
+        "id": "futures",
+        "initialCapital": null,
+        "market": "futures",
+        "name": "国内期货账户",
+        "sellRate": "0.0006"
+      },
+      {
+        "buyRate": "0.0001",
+        "historyComplete": false,
+        "id": "stock",
+        "initialCapital": null,
+        "market": "stock",
+        "name": "A股账户",
+        "sellRate": "0.0006"
+      }
+    ],
+    "audits": [],
+    "cashFlows": [],
+    "cycles": [
+      {
+        "accountId": "stock",
+        "averagePrice": "11",
+        "closedDay": null,
+        "code": "603999",
+        "direction": "long",
+        "fees": "12.9",
+        "firstDay": 20741,
+        "id": "cycle_6a93cb7991144ba7aaa837ecf30fd488",
+        "name": "603999",
+        "openCost": "5500.55",
+        "realized": "2487.65",
+        "referenceMargin": null,
+        "remaining": "500",
+        "stopLoss": null,
+        "takeProfit": null
+      },
+      {
+        "accountId": "futures",
+        "averagePrice": "800",
+        "closedDay": null,
+        "code": "i2701",
+        "direction": "long",
+        "fees": null,
+        "firstDay": 20743,
+        "id": "cycle_c72375c4143f4a579994e24e54eb9446",
+        "name": "铁矿石",
+        "openCost": null,
+        "realized": null,
+        "referenceMargin": null,
+        "remaining": "1",
+        "stopLoss": null,
+        "takeProfit": null
+      }
+    ],
+    "executions": [
+      {
+        "accountId": "stock",
+        "code": "603999",
+        "date": 20743,
+        "effect": "close",
+        "feeRateSnapshot": "0.0006",
+        "feeSource": "auto",
+        "fees": "10.80",
+        "id": "688d8aead25a4cdc8396623d2854844f",
+        "marginRate": null,
+        "minute": 600,
+        "multiplier": null,
+        "name": "603999",
+        "orderConfirmed": false,
+        "ordinal": 3,
+        "parametersConfirmed": false,
+        "planId": null,
+        "price": "12",
+        "quantity": "1500",
+        "riskAmount": null,
+        "riskConfirmed": false,
+        "riskExceeded": false,
+        "riskFundSnapshot": null,
+        "riskLimitSnapshot": null,
+        "riskWarningEnabled": true,
+        "ruleSnapshot": null,
+        "second": 2,
+        "side": "sell",
+        "stopLoss": null,
+        "strategyId": null,
+        "takeProfit": null,
+        "tradingDay": 20743
+      },
+      {
+        "accountId": "stock",
+        "code": "603999",
+        "date": 20741,
+        "effect": "open",
+        "feeRateSnapshot": "0.0001",
+        "feeSource": "auto",
+        "fees": "1.00",
+        "id": "6a93cb7991144ba7aaa837ecf30fd488",
+        "marginRate": null,
+        "minute": 600,
+        "multiplier": null,
+        "name": "603999",
+        "orderConfirmed": false,
+        "ordinal": 1,
+        "parametersConfirmed": false,
+        "planId": null,
+        "price": "10",
+        "quantity": "1000",
+        "riskAmount": null,
+        "riskConfirmed": false,
+        "riskExceeded": false,
+        "riskFundSnapshot": null,
+        "riskLimitSnapshot": null,
+        "riskWarningEnabled": true,
+        "ruleSnapshot": null,
+        "second": 0,
+        "side": "buy",
+        "stopLoss": null,
+        "strategyId": "37db3dc9f2244b099e28c66c625f17c3",
+        "takeProfit": null,
+        "tradingDay": 20741
+      },
+      {
+        "accountId": "stock",
+        "code": "603999",
+        "date": 20742,
+        "effect": "open",
+        "feeRateSnapshot": "0.0001",
+        "feeSource": "auto",
+        "fees": "1.10",
+        "id": "7dfc9f75b6e84f37aa37126f255d38dc",
+        "marginRate": null,
+        "minute": 600,
+        "multiplier": null,
+        "name": "603999",
+        "orderConfirmed": false,
+        "ordinal": 2,
+        "parametersConfirmed": false,
+        "planId": null,
+        "price": "11",
+        "quantity": "1000",
+        "riskAmount": null,
+        "riskConfirmed": false,
+        "riskExceeded": false,
+        "riskFundSnapshot": null,
+        "riskLimitSnapshot": null,
+        "riskWarningEnabled": true,
+        "ruleSnapshot": null,
+        "second": 1,
+        "side": "buy",
+        "stopLoss": null,
+        "strategyId": null,
+        "takeProfit": null,
+        "tradingDay": 20742
+      },
+      {
+        "accountId": "futures",
+        "code": "i2701",
+        "date": 20743,
+        "effect": "close",
+        "feeRateSnapshot": null,
+        "feeSource": "auto",
+        "fees": null,
+        "id": "a429a94fb47e45b3b5b5669aec8dd58c",
+        "marginRate": null,
+        "minute": 600,
+        "multiplier": "100",
+        "name": "铁矿石",
+        "orderConfirmed": false,
+        "ordinal": 5,
+        "parametersConfirmed": true,
+        "planId": null,
+        "price": "810",
+        "quantity": "1",
+        "riskAmount": null,
+        "riskConfirmed": false,
+        "riskExceeded": false,
+        "riskFundSnapshot": null,
+        "riskLimitSnapshot": null,
+        "riskWarningEnabled": true,
+        "ruleSnapshot": "{\"addMode\":\"per_execution\",\"addValue\":\"0.01\",\"closeFee\":null,\"code\":\"i2701\",\"effectiveDay\":20740,\"feeMode\":\"unknown\",\"id\":\"reference_i_20261015\",\"marginRate\":null,\"multiplier\":\"100\",\"name\":\"铁矿石\",\"openFee\":null,\"todayFee\":null,\"verified\":true}",
+        "second": 4,
+        "side": "sell",
+        "stopLoss": null,
+        "strategyId": null,
+        "takeProfit": null,
+        "tradingDay": 20743
+      },
+      {
+        "accountId": "futures",
+        "code": "i2701",
+        "date": 20743,
+        "effect": "open",
+        "feeRateSnapshot": null,
+        "feeSource": "auto",
+        "fees": null,
+        "id": "c72375c4143f4a579994e24e54eb9446",
+        "marginRate": null,
+        "minute": 600,
+        "multiplier": "100",
+        "name": "铁矿石",
+        "orderConfirmed": false,
+        "ordinal": 4,
+        "parametersConfirmed": true,
+        "planId": null,
+        "price": "800",
+        "quantity": "2",
+        "riskAmount": null,
+        "riskConfirmed": false,
+        "riskExceeded": false,
+        "riskFundSnapshot": null,
+        "riskLimitSnapshot": null,
+        "riskWarningEnabled": true,
+        "ruleSnapshot": "{\"addMode\":\"per_execution\",\"addValue\":\"0.01\",\"closeFee\":null,\"code\":\"i2701\",\"effectiveDay\":20740,\"feeMode\":\"unknown\",\"id\":\"reference_i_20261015\",\"marginRate\":null,\"multiplier\":\"100\",\"name\":\"铁矿石\",\"openFee\":null,\"todayFee\":null,\"verified\":true}",
+        "second": 3,
+        "side": "buy",
+        "stopLoss": null,
+        "strategyId": null,
+        "takeProfit": null,
+        "tradingDay": 20743
+      }
+    ],
+    "lots": [
+      {
+        "allocatedFees": "1",
+        "cycleId": "cycle_6a93cb7991144ba7aaa837ecf30fd488",
+        "executionId": "6a93cb7991144ba7aaa837ecf30fd488",
+        "id": "lot_6a93cb7991144ba7aaa837ecf30fd488",
+        "originalQuantity": "1000",
+        "remaining": "0"
+      },
+      {
+        "allocatedFees": "0.55",
+        "cycleId": "cycle_6a93cb7991144ba7aaa837ecf30fd488",
+        "executionId": "7dfc9f75b6e84f37aa37126f255d38dc",
+        "id": "lot_7dfc9f75b6e84f37aa37126f255d38dc",
+        "originalQuantity": "1000",
+        "remaining": "500"
+      },
+      {
+        "allocatedFees": null,
+        "cycleId": "cycle_c72375c4143f4a579994e24e54eb9446",
+        "executionId": "c72375c4143f4a579994e24e54eb9446",
+        "id": "lot_c72375c4143f4a579994e24e54eb9446",
+        "originalQuantity": "2",
+        "remaining": "1"
+      }
+    ],
+    "matches": [
+      {
+        "closeExecutionId": "688d8aead25a4cdc8396623d2854844f",
+        "closeFees": "7.2",
+        "cycleId": "cycle_6a93cb7991144ba7aaa837ecf30fd488",
+        "day": 20743,
+        "gross": "2000",
+        "id": "match_688d8aead25a4cdc8396623d2854844f_6a93cb7991144ba7aaa837ecf30fd488",
+        "net": "1991.8",
+        "openExecutionId": "6a93cb7991144ba7aaa837ecf30fd488",
+        "openFees": "1",
+        "quantity": "1000"
+      },
+      {
+        "closeExecutionId": "688d8aead25a4cdc8396623d2854844f",
+        "closeFees": "3.6",
+        "cycleId": "cycle_6a93cb7991144ba7aaa837ecf30fd488",
+        "day": 20743,
+        "gross": "500",
+        "id": "match_688d8aead25a4cdc8396623d2854844f_7dfc9f75b6e84f37aa37126f255d38dc",
+        "net": "495.85",
+        "openExecutionId": "7dfc9f75b6e84f37aa37126f255d38dc",
+        "openFees": "0.55",
+        "quantity": "500"
+      },
+      {
+        "closeExecutionId": "a429a94fb47e45b3b5b5669aec8dd58c",
+        "closeFees": null,
+        "cycleId": "cycle_c72375c4143f4a579994e24e54eb9446",
+        "day": 20743,
+        "gross": "1000",
+        "id": "match_a429a94fb47e45b3b5b5669aec8dd58c_c72375c4143f4a579994e24e54eb9446",
+        "net": null,
+        "openExecutionId": "c72375c4143f4a579994e24e54eb9446",
+        "openFees": null,
+        "quantity": "1"
+      }
+    ],
+    "plans": [],
+    "reviews": [],
+    "risks": [
+      {
+        "defaultLimit": null,
+        "id": "futures",
+        "limitMode": "amount",
+        "limitValue": null,
+        "riskFund": null,
+        "warnEnabled": true
+      },
+      {
+        "defaultLimit": null,
+        "id": "stock",
+        "limitMode": "amount",
+        "limitValue": "500",
+        "riskFund": "10000",
+        "warnEnabled": true
+      }
+    ],
+    "rules": [
+      {
+        "addMode": "none",
+        "addValue": null,
+        "closeFee": "2",
+        "code": "i2701",
+        "effectiveDay": 20741,
+        "feeMode": "per_lot",
+        "id": "8903b1c5c83c4190aacbf0cb840af73c",
+        "marginRate": "0.1",
+        "multiplier": "100",
+        "name": "合成合约参数已更正",
+        "openFee": "1",
+        "todayFee": "3",
+        "verified": true
+      }
+    ],
+    "strategies": [
+      {
+        "active": true,
+        "description": "合成更正：历史成交仍保留原始数量、费用和稳定策略关联。合成更正：历史成交仍保留原始数量、费用和稳定策略关联。合成更正：历史成交仍保留原始数量、费用和稳定策略关联。合成更正：历史成交仍保留原始数量、费用和稳定策略关联。合成更正：历史成交仍保留原始数量、费用和稳定策略关联。",
+        "id": "37db3dc9f2244b099e28c66c625f17c3",
+        "name": "合成复核策略已更正",
+        "sortOrder": 1
+      }
+    ]
+  },
+  "operations": [
+    {
+      "step": "read saved strategy and risk from real UI",
+      "event": "begin",
+      "elapsedRealtimeMs": 2290628
+    },
+    {
+      "step": "read saved strategy and risk from real UI",
+      "event": "complete",
+      "elapsedRealtimeMs": 2294096
+    },
+    {
+      "step": "read reopened financial UI",
+      "event": "begin",
+      "elapsedRealtimeMs": 2294097
+    },
+    {
+      "step": "read reopened financial UI",
+      "event": "complete",
+      "elapsedRealtimeMs": 2295803
+    }
+  ],
+  "displayedMoney": [
+    {
+      "tag": "account-net-stock",
+      "value": "￥2487.65",
+      "fontSp": 28.0,
+      "overflowWidth": false,
+      "overflowHeight": false,
+      "argb": "#FFFFB4B0",
+      "visible": true
+    },
+    {
+      "tag": "account-fees-stock",
+      "value": "￥12.90",
+      "fontSp": 14.0,
+      "overflowWidth": false,
+      "overflowHeight": false,
+      "argb": "#FFE5EBF5",
+      "visible": true
+    },
+    {
+      "tag": "account-cost-stock",
+      "value": "￥5500.55",
+      "fontSp": 16.0,
+      "overflowWidth": false,
+      "overflowHeight": false,
+      "argb": "#FFE5EBF5",
+      "visible": true
+    },
+    {
+      "tag": "account-cash-stock",
+      "value": "待估算",
+      "fontSp": 14.0,
+      "overflowWidth": false,
+      "overflowHeight": false,
+      "argb": "#FFE5EBF5",
+      "visible": true
+    },
+    {
+      "tag": "account-net-futures",
+      "value": "待估算",
+      "fontSp": 28.0,
+      "overflowWidth": false,
+      "overflowHeight": false,
+      "argb": "#FFADBAD0",
+      "visible": true
+    },
+    {
+      "tag": "account-fees-futures",
+      "value": "待估算",
+      "fontSp": 14.0,
+      "overflowWidth": false,
+      "overflowHeight": false,
+      "argb": "#FFE5EBF5",
+      "visible": true
+    },
+    {
+      "tag": "account-margin-futures",
+      "value": "待估算",
+      "fontSp": 14.0,
+      "overflowWidth": false,
+      "overflowHeight": false,
+      "argb": "#FFE5EBF5",
+      "visible": true
+    },
+    {
+      "tag": "period-realized-net",
+      "value": "￥2487.65",
+      "fontSp": 28.0,
+      "overflowWidth": false,
+      "overflowHeight": false,
+      "argb": "#FFFFB4B0",
+      "visible": true
+    }
+  ],
+  "screenshots": [
+    "v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-regular-dark-reopened-risk-regular-dark-reopen.png",
+    "v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-regular-dark-reopened-position-regular-dark-reopen.png",
+    "v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-regular-dark-stock-account-regular-dark-reopen.png",
+    "v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-regular-dark-unknown-futures-account-regular-dark-reopen.png",
+    "v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-regular-dark-known-statistics-regular-dark-reopen.png"
+  ],
+  "result": "PASS"
+}
