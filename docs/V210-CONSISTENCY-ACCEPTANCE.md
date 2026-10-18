@@ -94,3 +94,17 @@ API29 安装归档 ID12127845895，SHA-256 dac48ee110664d6b9a85d4c1d557fe636a80b
   [独立 apksigner 输出](v210-consistency/handoff/main-signature-verified.txt)
 - [全部基线源码文件哈希](v210-consistency/handoff/source-main-sha256.json)。
 - [本地软件模拟器失败原始证据](v210-consistency/handoff/local-software-failure)单独保留，未计入任何通过数量。
+
+## 初次基线失败与夹具修正
+
+[运行39105217584](https://github.com/mlzx-xxj/trade-review-app/actions/runs/39105217584)，
+来源257681278576c52317581b41f6aae35cd5129a1e，生产源码与main完全相同。
+API35执行147项，原有143项通过，新增4项均在夹具同步阶段超时；
+API29执行147项，同样4项夹具超时，另有原有NavigationTest在保存窗口关闭后等待列表出现预期标的超时。
+没有错误或跳过。这次不能作为配置交互缺陷已复现的证据。
+
+原因：夹具按stock/futures插入，而DAO按ID返回futures/stock；测试错误地等待两种列表顺序完全相等。
+改为先严格核对相同账户/风险内容及其他空表，再等待与实际数据库规范顺序一致的界面快照。
+没有放宽任何交互、保存、重建或无障碍断言。原有NavigationTest暂不改动，保留失败，随完整矩阵重跑继续核实。
+
+[原始失败XML、探针JSON、PNG、运行日志与来源哈希](v210-consistency/failures/fixture-order/FAILURE.json)。

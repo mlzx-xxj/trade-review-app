@@ -1,0 +1,191 @@
+{
+  "sourceCommit": "257681278576c52317581b41f6aae35cd5129a1e",
+  "runId": 39105217584,
+  "runUrl": "https://github.com/mlzx-xxj/trade-review-app/actions/runs/39105217584",
+  "classification": "new-probe-fixture-ordering-not-product-findings",
+  "reason": "Fixture inserted stock/futures; DAO reads by ID futures/stock. UI assertions not reached. API29 also has one existing NavigationTest expected-symbol list timeout after the editor closed, retained separately as unresolved.",
+  "results": [
+    {
+      "api": 29,
+      "nativeTests": 147,
+      "newProbeFixtureFailures": 4,
+      "originalTestsPassed": 142,
+      "otherFailures": [
+        {
+          "name": "userCanCreateEditAndDeleteATrade",
+          "classname": "com.tradereview.app.ui.NavigationTest",
+          "error": "androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 10000 ms\nat androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:504)\nat androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:339)\nat com.tradereview.app.ui.NavigationTest.userCanCreateEditAndDeleteATrade(NavigationTest.kt:56)\n"
+        }
+      ]
+    },
+    {
+      "api": 35,
+      "nativeTests": 147,
+      "newProbeFixtureFailures": 4,
+      "originalTestsPassed": 143,
+      "otherFailures": []
+    }
+  ],
+  "files": [
+    {
+      "file": "api29/TEST-native.xml",
+      "originalPath": "app/build/outputs/androidTest-results/connected/debug/TEST-emulator-5554 - 10-_app-.xml",
+      "sha256": "ff5b53eaa397db2ccf6991d3a1453260ea5e746957712d595c3afe7712169cb8",
+      "bytes": 25708,
+      "artifactId": 12128706498,
+      "archiveSha256": "ac8efaa8d92057ec6e89e23f76c9bbab4733ff31c3776dafbccf6c7e926f93f6"
+    },
+    {
+      "file": "api29/v210-consistency-riskruleandaccountcontrolsexposenamesandstate-api29.json",
+      "originalPath": "ci-metrics/TradeReview-v08-metrics/v210-consistency-riskruleandaccountcontrolsexposenamesandstate-api29.json",
+      "sha256": "5172adc8932d99820698534d8638e20cd0cf08f720b669748e4038e36459e18c",
+      "bytes": 7146,
+      "artifactId": 12128706498,
+      "archiveSha256": "ac8efaa8d92057ec6e89e23f76c9bbab4733ff31c3776dafbccf6c7e926f93f6"
+    },
+    {
+      "file": "api29/v210-consistency-riskinputkeepsheadervisiblewithrealkeyboard-api29.json",
+      "originalPath": "ci-metrics/TradeReview-v08-metrics/v210-consistency-riskinputkeepsheadervisiblewithrealkeyboard-api29.json",
+      "sha256": "46f89a7028e7f5bb82c05a434146fa6e6e0eb3ab86d0b19570e0895ffddb059b",
+      "bytes": 7142,
+      "artifactId": 12128706498,
+      "archiveSha256": "ac8efaa8d92057ec6e89e23f76c9bbab4733ff31c3776dafbccf6c7e926f93f6"
+    },
+    {
+      "file": "api29/v210-consistency-strategyeditorkeepsidentityanddraftafterrecreation-api29.json",
+      "originalPath": "ci-metrics/TradeReview-v08-metrics/v210-consistency-strategyeditorkeepsidentityanddraftafterrecreation-api29.json",
+      "sha256": "b309957f485ae25d8315c40e048d570be85588e2db29ef11d8efa0a63a167ced",
+      "bytes": 7156,
+      "artifactId": 12128706498,
+      "archiveSha256": "ac8efaa8d92057ec6e89e23f76c9bbab4733ff31c3776dafbccf6c7e926f93f6"
+    },
+    {
+      "file": "api29/v210-consistency-contractruleeditorkeepsidentityanddraftafterrecreation-api29.json",
+      "originalPath": "ci-metrics/TradeReview-v08-metrics/v210-consistency-contractruleeditorkeepsidentityanddraftafterrecreation-api29.json",
+      "sha256": "b4c23a43d7dbc7cd42f1239ea3ef2cab4bb4326e6b7cebfe391dd072b6e3fe25",
+      "bytes": 7164,
+      "artifactId": 12128706498,
+      "archiveSha256": "ac8efaa8d92057ec6e89e23f76c9bbab4733ff31c3776dafbccf6c7e926f93f6"
+    },
+    {
+      "file": "api29/v210-consistency-riskinputkeepsheadervisiblewithrealkeyboard-narrow-dark-failure.png",
+      "originalPath": "ci-screenshots/v210-consistency-riskinputkeepsheadervisiblewithrealkeyboard-narrow-dark-failure.png",
+      "sha256": "4c58e0232c991cb39cff0009dee524402aa4fe8626c84a1927ea6d9cc67ca6c3",
+      "bytes": 73486,
+      "artifactId": 12128706498,
+      "archiveSha256": "ac8efaa8d92057ec6e89e23f76c9bbab4733ff31c3776dafbccf6c7e926f93f6"
+    },
+    {
+      "file": "api29/v210-consistency-riskruleandaccountcontrolsexposenamesandstate-narrow-dark-failure.png",
+      "originalPath": "ci-screenshots/v210-consistency-riskruleandaccountcontrolsexposenamesandstate-narrow-dark-failure.png",
+      "sha256": "2b37bd68b38fe71b7d0c607c71a01841e6a370d109deab6a38a431b2bf1b854d",
+      "bytes": 73215,
+      "artifactId": 12128706498,
+      "archiveSha256": "ac8efaa8d92057ec6e89e23f76c9bbab4733ff31c3776dafbccf6c7e926f93f6"
+    },
+    {
+      "file": "api29/v210-consistency-contractruleeditorkeepsidentityanddraftafterrecreation-narrow-dark-failure.png",
+      "originalPath": "ci-screenshots/v210-consistency-contractruleeditorkeepsidentityanddraftafterrecreation-narrow-dark-failure.png",
+      "sha256": "332563853b5bd554a96821eaf44a5ba608173db2eae37fb6b34019ca1174088d",
+      "bytes": 73622,
+      "artifactId": 12128706498,
+      "archiveSha256": "ac8efaa8d92057ec6e89e23f76c9bbab4733ff31c3776dafbccf6c7e926f93f6"
+    },
+    {
+      "file": "api29/v210-consistency-strategyeditorkeepsidentityanddraftafterrecreation-narrow-dark-failure.png",
+      "originalPath": "ci-screenshots/v210-consistency-strategyeditorkeepsidentityanddraftafterrecreation-narrow-dark-failure.png",
+      "sha256": "58bd0ff43804c873496aac4282cc6b58efe65247024d6c81a847a16d1522bb57",
+      "bytes": 73801,
+      "artifactId": 12128706498,
+      "archiveSha256": "ac8efaa8d92057ec6e89e23f76c9bbab4733ff31c3776dafbccf6c7e926f93f6"
+    },
+    {
+      "file": "api29/native-live-logcat.txt",
+      "originalPath": "ci-stability/native-live-logcat.txt",
+      "sha256": "3fd8d2f299456c43fa628d73e920aaa15e35b096d66a9ccd12ecedb21174210a",
+      "bytes": 272244,
+      "artifactId": 12128706498,
+      "archiveSha256": "ac8efaa8d92057ec6e89e23f76c9bbab4733ff31c3776dafbccf6c7e926f93f6"
+    },
+    {
+      "file": "api35/TEST-native.xml",
+      "originalPath": "app/build/outputs/androidTest-results/connected/debug/TEST-emulator-5554 - 15-_app-.xml",
+      "sha256": "302cf9c09b43a69c66796f1e9951df892c975867544c3cec2f8c096c610fac74",
+      "bytes": 25251,
+      "artifactId": 12128383640,
+      "archiveSha256": "6db737e4d8e4a68e0084513492a7cf9750c2f6d11031ac34220eab396300015a"
+    },
+    {
+      "file": "api35/v210-consistency-riskruleandaccountcontrolsexposenamesandstate-api35.json",
+      "originalPath": "ci-metrics/TradeReview-v08-metrics/v210-consistency-riskruleandaccountcontrolsexposenamesandstate-api35.json",
+      "sha256": "e9be3c3aaf3ce90874735867e3e2dbfbda209a927f7263925d6a954b6a9b3491",
+      "bytes": 7146,
+      "artifactId": 12128383640,
+      "archiveSha256": "6db737e4d8e4a68e0084513492a7cf9750c2f6d11031ac34220eab396300015a"
+    },
+    {
+      "file": "api35/v210-consistency-riskinputkeepsheadervisiblewithrealkeyboard-api35.json",
+      "originalPath": "ci-metrics/TradeReview-v08-metrics/v210-consistency-riskinputkeepsheadervisiblewithrealkeyboard-api35.json",
+      "sha256": "e17ddfb41cbcad64070e5cecc669c26529ed634bcfe16584763ab70cb1ca70a6",
+      "bytes": 7142,
+      "artifactId": 12128383640,
+      "archiveSha256": "6db737e4d8e4a68e0084513492a7cf9750c2f6d11031ac34220eab396300015a"
+    },
+    {
+      "file": "api35/v210-consistency-strategyeditorkeepsidentityanddraftafterrecreation-api35.json",
+      "originalPath": "ci-metrics/TradeReview-v08-metrics/v210-consistency-strategyeditorkeepsidentityanddraftafterrecreation-api35.json",
+      "sha256": "d94911ea27236c354329fe0ff3ff6e778433a8a1f65b6a1f9a58a0fd76d8f844",
+      "bytes": 7156,
+      "artifactId": 12128383640,
+      "archiveSha256": "6db737e4d8e4a68e0084513492a7cf9750c2f6d11031ac34220eab396300015a"
+    },
+    {
+      "file": "api35/v210-consistency-contractruleeditorkeepsidentityanddraftafterrecreation-api35.json",
+      "originalPath": "ci-metrics/TradeReview-v08-metrics/v210-consistency-contractruleeditorkeepsidentityanddraftafterrecreation-api35.json",
+      "sha256": "2c6f5ec6f73681045bb9cfa633480f7d18a1deaac2e5655ff6859b3dacfff71d",
+      "bytes": 7164,
+      "artifactId": 12128383640,
+      "archiveSha256": "6db737e4d8e4a68e0084513492a7cf9750c2f6d11031ac34220eab396300015a"
+    },
+    {
+      "file": "api35/v210-consistency-riskinputkeepsheadervisiblewithrealkeyboard-narrow-dark-failure.png",
+      "originalPath": "ci-screenshots/v210-consistency-riskinputkeepsheadervisiblewithrealkeyboard-narrow-dark-failure.png",
+      "sha256": "903f73ec5e2a381a325ae122ed6c78ab20770719c45fad4c5711f399b41519c9",
+      "bytes": 74682,
+      "artifactId": 12128383640,
+      "archiveSha256": "6db737e4d8e4a68e0084513492a7cf9750c2f6d11031ac34220eab396300015a"
+    },
+    {
+      "file": "api35/v210-consistency-riskruleandaccountcontrolsexposenamesandstate-narrow-dark-failure.png",
+      "originalPath": "ci-screenshots/v210-consistency-riskruleandaccountcontrolsexposenamesandstate-narrow-dark-failure.png",
+      "sha256": "cf395c83544f2e091d38ecde2c27cd93e7b91743742c6bdb746db14899b2928d",
+      "bytes": 74092,
+      "artifactId": 12128383640,
+      "archiveSha256": "6db737e4d8e4a68e0084513492a7cf9750c2f6d11031ac34220eab396300015a"
+    },
+    {
+      "file": "api35/v210-consistency-contractruleeditorkeepsidentityanddraftafterrecreation-narrow-dark-failure.png",
+      "originalPath": "ci-screenshots/v210-consistency-contractruleeditorkeepsidentityanddraftafterrecreation-narrow-dark-failure.png",
+      "sha256": "f1f2d2779a19fb84773cc97e3b39eb7069ff3942762294d1e7209ca7dc550473",
+      "bytes": 74172,
+      "artifactId": 12128383640,
+      "archiveSha256": "6db737e4d8e4a68e0084513492a7cf9750c2f6d11031ac34220eab396300015a"
+    },
+    {
+      "file": "api35/v210-consistency-strategyeditorkeepsidentityanddraftafterrecreation-narrow-dark-failure.png",
+      "originalPath": "ci-screenshots/v210-consistency-strategyeditorkeepsidentityanddraftafterrecreation-narrow-dark-failure.png",
+      "sha256": "36d5afc5e1e00f41661626ce52c2075885e00fb126e38d4016804fe638293566",
+      "bytes": 74495,
+      "artifactId": 12128383640,
+      "archiveSha256": "6db737e4d8e4a68e0084513492a7cf9750c2f6d11031ac34220eab396300015a"
+    },
+    {
+      "file": "api35/native-live-logcat.txt",
+      "originalPath": "ci-stability/native-live-logcat.txt",
+      "sha256": "a02277754c59c02b4569509d2ed35375df8517cfeb7f6f3ce0c92f5ed9fa0bc7",
+      "bytes": 255696,
+      "artifactId": 12128383640,
+      "archiveSha256": "6db737e4d8e4a68e0084513492a7cf9750c2f6d11031ac34220eab396300015a"
+    }
+  ]
+}

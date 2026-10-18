@@ -119,7 +119,12 @@ abstract class ConsistencyUiProbe {
                 risks = listOf(MarketRisk("stock"), MarketRisk("futures"))
             )
             runBlocking { app.database.withTransaction { model.repository.write(empty, true) } }
-            waitFor { model.state.value.ledger == empty }
+            val expected = facts()
+            // DAO reads accounts/risks by ID, not by fixture insertion order.
+            assertEquals(empty.accounts.associateBy { it.id }, expected.accounts.associateBy { it.id })
+            assertEquals(empty.risks.associateBy { it.id }, expected.risks.associateBy { it.id })
+            assertEquals(empty.copy(accounts = expected.accounts, risks = expected.risks), expected)
+            waitFor { model.state.value.ledger == expected }
         }
         val conf = app.resources.configuration
         assertEquals(if (visualProfile.endsWith("dark")) Configuration.UI_MODE_NIGHT_YES else Configuration.UI_MODE_NIGHT_NO,
@@ -157,6 +162,7 @@ abstract class ConsistencyUiProbe {
     }
     protected fun tap(tag: String) {
         if (tag == "contract-rules-entry") ui.onNodeWithTag("v2-risk-strategy").performScrollToNode(hasTestTag(tag))
+        if (tag.startsWith("risk-") || tag.startsWith("save-risk-")) ui.onNodeWithTag("v2-risk-strategy").performScrollToNode(hasTestTag(tag))
         if (tag == "configure-account") ui.onNodeWithTag("v2-accounts").performScrollToNode(hasTestTag(tag))
         visible(ui.onNodeWithTag(tag)).assertIsEnabled().performClick()
     }
@@ -242,8 +248,10 @@ abstract class ConsistencyUiProbe {
             "lastStep" to lastStep, "observations" to observations, "screenshots" to pictures,
             "ledger" to LedgerJson.element(facts()), "semantics" to tree, "error" to error, "result" to result
         )
-        V08Metrics.write("v210-consistency-" + caseName + "-api" + Build.VERSION.SDK_INT + ".json",
-            GsonBuilder().serializeNulls().setPrettyPrinting().create().toJson(value))
+        val name = "v210-consistency-" + caseName + "-api" + Build.VERSION.SDK_INT + ".json"
+        val json = GsonBuilder().serializeNulls().setPrettyPrinting().create().toJson(value)
+        File(output(), name).writeText(json)
+        V08Metrics.write(name, json)
     }
 }
 
