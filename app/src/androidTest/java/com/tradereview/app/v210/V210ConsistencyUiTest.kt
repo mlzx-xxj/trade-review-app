@@ -39,6 +39,7 @@ abstract class ConsistencyUiProbe {
     protected var lastStep = "initialization"
     protected val observations = mutableListOf<Map<String, Any?>>()
     protected val pictures = mutableListOf<String>()
+    protected val extraEvidence = linkedMapOf<String, Any?>()
     private var caseName = "initial"
 
     protected fun shell(command: String): String =
@@ -246,7 +247,7 @@ abstract class ConsistencyUiProbe {
             "screenWidthDp" to conf.screenWidthDp, "fontScale" to conf.fontScale,
             "night" to (conf.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES),
             "lastStep" to lastStep, "observations" to observations, "screenshots" to pictures,
-            "ledger" to LedgerJson.element(facts()), "semantics" to tree, "error" to error, "result" to result
+            "ledger" to LedgerJson.element(facts()), "context" to extraEvidence, "semantics" to tree, "error" to error, "result" to result
         )
         val name = "v210-consistency-" + caseName + "-api" + Build.VERSION.SDK_INT + ".json"
         val json = GsonBuilder().serializeNulls().setPrettyPrinting().create().toJson(value)

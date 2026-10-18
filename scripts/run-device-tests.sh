@@ -66,6 +66,9 @@ fi
 if [[ "$device_test_status" == 0 && "${V200_MAIN_PROBES:-false}" == true ]]; then
   python3 scripts/run-v210-visual.py || device_test_status=$?
 fi
+if [[ "$device_test_status" == 0 && "${V200_MAIN_PROBES:-false}" == true ]]; then
+  python3 scripts/run-v210-consistency.py || device_test_status=$?
+fi
 mkdir -p ci-screenshots
 mkdir -p ci-metrics
 if command -v adb >/dev/null; then

@@ -3,6 +3,7 @@ package com.tradereview.app.v200
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.*
@@ -10,6 +11,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
@@ -88,8 +90,8 @@ import java.math.BigDecimal
             EntryField("期初资金（可选，元）",capital,{capital=it;error=null},"account-capital",true)
             if(account.id=="stock"){
                 Text("新成交综合费用：买入万一、卖出万六；旧成交保留原快照。",style=MaterialTheme.typography.bodySmall,color=MaterialTheme.colorScheme.onSurfaceVariant)
-                Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically){
-                    Checkbox(complete,{complete=it},Modifier.testTag("account-complete"))
+                Row(Modifier.fillMaxWidth().heightIn(min=48.dp).testTag("account-complete").toggleable(value=complete,role=Role.Checkbox,onValueChange={complete=it}),verticalAlignment=Alignment.CenterVertically){
+                    Checkbox(complete,null)
                     Text("期初、所有买卖及出入金历史已完整核对",Modifier.weight(1f),style=MaterialTheme.typography.bodyMedium)
                 }
                 Text("仅在资料完整时计算参考可用现金，持仓成本不代表实时市值。",style=MaterialTheme.typography.bodySmall,color=MaterialTheme.colorScheme.onSurfaceVariant)

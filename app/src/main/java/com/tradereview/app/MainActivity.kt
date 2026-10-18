@@ -1,6 +1,7 @@
 package com.tradereview.app
 
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -47,6 +48,8 @@ class MainActivity : ComponentActivity() {
         setTheme(R.style.Theme_TradeReview)
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        // Deliver IME insets instead of panning the app header outside the window.
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
         val app=application as TradeReviewApplication
         initializeStorage()
         setContent {

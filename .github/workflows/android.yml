@@ -120,7 +120,7 @@ jobs:
     name: API ${{ matrix.api }} full read-only regressions
     needs: build
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 60
     permissions:
       contents: read
       actions: read
