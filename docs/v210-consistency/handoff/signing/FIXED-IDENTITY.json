@@ -1,0 +1,26 @@
+{
+  "applicationId": "com.tradereview.app",
+  "versionCode": 22,
+  "versionName": "2.0.0",
+  "debuggable": false,
+  "certificateSha256": "29b2f82887a0591d5b1d1f9ab148b90c0b658088530e3bcc1bd7e5fee64f2af9",
+  "apkSha256": "006906d97ba5194aeed519e546590d6dc24d5a6688fd251e8247eee484a79a35",
+  "apkBytes": 53138299,
+  "abis": [
+    "arm64-v8a",
+    "armeabi-v7a",
+    "x86",
+    "x86_64"
+  ],
+  "sourceCommit": "67e97ccfaffbfaae10be7d796bb8d5b29454bb35",
+  "buildType": "release",
+  "classification": "permanent-v2-release-candidate",
+  "permanentIdentityVerified": true,
+  "legacyV03UpgradeCompatible": false,
+  "sameSignerUpgrade": "not-executed",
+  "stablePublished": false,
+  "phoneAcceptance": "not-confirmed",
+  "verifiedUnsignedSha256": "dc07240cd886ffd0601dcf0d9533b13e938e9b360f791188e1b9582ca1cf9eaf",
+  "verifiedInputsManifestSha256": "7ce01137146fd46f8742ebc2e019c8df0f0111abc87528a084a3151e8de4a4bd",
+  "applicationPayloadCompared": true
+}

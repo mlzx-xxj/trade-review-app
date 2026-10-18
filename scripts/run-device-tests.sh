@@ -69,6 +69,10 @@ fi
 mkdir -p ci-screenshots
 mkdir -p ci-metrics
 if command -v adb >/dev/null; then
+  # Original consistency PNGs use the same permission-free MediaStore transport
+  # as native metrics, surviving UTP's uninstall even when a regression fails.
+  mkdir -p ci-v200
+  adb pull /sdcard/Download/TradeReview-v210-consistency ci-v200/consistency-native >/dev/null 2>&1 || true
   adb pull /sdcard/Download/TradeReview-v04-ui ci-device-screenshots >/dev/null 2>&1 || true
   adb pull /sdcard/Download/TradeReview-v05-ui ci-v05-device-screenshots >/dev/null 2>&1 || true
   adb pull /sdcard/Download/TradeReview-v06-ui ci-v06-device-screenshots >/dev/null 2>&1 || true

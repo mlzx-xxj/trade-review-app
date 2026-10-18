@@ -1,0 +1,12 @@
+{
+  "repository": "mlzx-xxj/trade-review-app",
+  "event": "push",
+  "ref": "refs/heads/main",
+  "source": "67e97ccfaffbfaae10be7d796bb8d5b29454bb35",
+  "sha": "67e97ccfaffbfaae10be7d796bb8d5b29454bb35",
+  "workflow": "mlzx-xxj/trade-review-app/.github/workflows/android.yml@refs/heads/main",
+  "trustedMain": true,
+  "signingEnvironmentReady": true,
+  "reason": "Verified existing main-only signing Environment; credentials are checked only in that job",
+  "credentialsInspected": false
+}

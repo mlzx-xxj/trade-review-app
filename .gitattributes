@@ -1,3 +1,5 @@
 * text=auto eol=lf
 *.bat text eol=crlf
 *.jar binary
+# Raw CI XML/logs must retain their original bytes, including CRLF and spaces.
+docs/v210-consistency/** -text -whitespace

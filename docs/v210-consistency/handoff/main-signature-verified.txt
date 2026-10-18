@@ -1,0 +1,17 @@
+Verifies
+Verified using v1 scheme (JAR signing): false
+Verified using v2 scheme (APK Signature Scheme v2): true
+Verified using v3 scheme (APK Signature Scheme v3): true
+Verified using v3.1 scheme (APK Signature Scheme v3.1): false
+Verified using v4 scheme (APK Signature Scheme v4): false
+Verified for SourceStamp: false
+Number of signers: 1
+Signer #1 certificate DN: CN=Trade Review Android App, OU=Personal Development, O=Personal Project
+Signer #1 certificate SHA-256 digest: 29b2f82887a0591d5b1d1f9ab148b90c0b658088530e3bcc1bd7e5fee64f2af9
+Signer #1 certificate SHA-1 digest: 1a261d52f09474add55fdedf0a8de486ad21c71b
+Signer #1 certificate MD5 digest: 98b48f2e5968f2d152018ee3bac17a0c
+Signer #1 key algorithm: RSA
+Signer #1 key size (bits): 3072
+Signer #1 public key SHA-256 digest: 88a06b1c30324e227afc3f7122623acb73c5e2b4b1414c2b5d77579b36d114cd
+Signer #1 public key SHA-1 digest: dffc917c9e6e3156c9a6f7563fca079cac4d8fb7
+Signer #1 public key MD5 digest: 135313cd2ef8ee83fc1ba3ecf6def628

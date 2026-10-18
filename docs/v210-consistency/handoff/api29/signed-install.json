@@ -1,0 +1,15 @@
+{
+  "api": 29,
+  "rcActualApkSha": "1f92c1a036a9a01ef7f8264e772a18b4043544fc505414149783360f097bb1e2",
+  "rcPackage": "com.tradereview.app.rc.v200",
+  "rcNonDebuggable": true,
+  "rcInstalled": true,
+  "rcFirstHomeVisible": true,
+  "rcRestartKeptHome": true,
+  "fixedReleaseInstall": "passed-permanent-v2-pin-non-debuggable-release",
+  "legacyV03UpgradeCompatible": false,
+  "legacyV03IncompatibleInstall": "not-executed-no-old-v03-apk-supplied",
+  "samePermanentSignerUpgrade": "not-executed-no-earlier-permanent-apk",
+  "realPhone": "not-executed",
+  "fixedActualApkSha": "006906d97ba5194aeed519e546590d6dc24d5a6688fd251e8247eee484a79a35"
+}
