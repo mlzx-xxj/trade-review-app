@@ -54,6 +54,26 @@ class ConsistencyEvidenceTest(unittest.TestCase):
             with self.subTest(job=name), self.assertRaises(ValueError):
                 policy.check(value)
 
+    def input_control(self, top, bottom):
+        visible_top, visible_bottom = max(0, top), max(max(0, top), min(bottom, 271))
+        return dict(inputVisible=True, inputBoundsPx=[24, top, 1016, bottom], imeTopPx=271,
+                    inputVisibleBoundsPx=[24, visible_top, 1016, visible_bottom],
+                    inputVisibleHeightDp=(visible_bottom-visible_top)/2)
+
+    def test_multiline_field_border_under_ime_keeps_readable_intersection(self):
+        check.verify_input_visibility(self.input_control(146, 272))
+
+    def test_field_hidden_by_ime_or_less_than_one_line_is_rejected(self):
+        for top, bottom in ((271, 400), (272, 400), (224, 400), (150, 150)):
+            with self.subTest(bounds=(top, bottom)), self.assertRaises(AssertionError):
+                check.verify_input_visibility(self.input_control(top, bottom))
+
+    def test_input_readable_area_cannot_be_forged(self):
+        control = self.input_control(250, 400)
+        control.update(inputVisibleBoundsPx=[24, 150, 1016, 271], inputVisibleHeightDp=60.5)
+        with self.assertRaises(AssertionError):
+            check.verify_input_visibility(control)
+
     def test_fifo_partial_cost_and_unknown_financial_facts(self):
         ledger = financial_fixture()
         result = check.verify_financial(copy.deepcopy(ledger), ledger)

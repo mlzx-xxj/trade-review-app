@@ -199,16 +199,24 @@ class V210ConsistencyJourneyTest : ConsistencyUiProbe() {
         val b = found?.let { android.graphics.Rect().also(it::getBoundsInScreen) }
         val height = b?.height()?.div(app.resources.displayMetrics.density)
         val input = inputTag?.let { runCatching { ui.onNodeWithTag(it).fetchSemanticsNode().boundsInRoot }.getOrNull() }
+        // A multiline field may scroll beneath the keyboard. Measure its actual readable
+        // intersection above IME; the separate Save target must remain wholly above IME.
+        val inputVisibleBounds = input?.let {
+            androidx.compose.ui.geometry.Rect(it.left, maxOf(0f, it.top), it.right,
+                maxOf(maxOf(0f, it.top), minOf(it.bottom, ime?.top?.toFloat() ?: it.bottom)))
+        }
+        val inputVisibleHeight = inputVisibleBounds?.height?.div(app.resources.displayMetrics.density)
         val inputVisible = inputTag?.let {
-            input != null && runCatching { ui.onNodeWithTag(it).assertIsDisplayed() }.isSuccess &&
-                input.height / app.resources.displayMetrics.density >= 24f && input.top >= 0f &&
-                (ime == null || input.bottom <= ime.top)
+            inputVisibleBounds != null && runCatching { ui.onNodeWithTag(it).assertIsDisplayed() }.isSuccess &&
+                inputVisibleBounds.width > 0f && inputVisibleHeight != null && inputVisibleHeight >= 24f
         }
         val value = mapOf("label" to label, "orientation" to app.resources.configuration.orientation,
             "keyboardVisible" to (ime != null), "imeTopPx" to ime?.top,
             "buttonBoundsPx" to b?.let { listOf(it.left, it.top, it.right, it.bottom) }, "touchHeightDp" to height,
             "inputTag" to inputTag, "inputVisible" to inputVisible,
             "inputBoundsPx" to input?.let { listOf(it.left, it.top, it.right, it.bottom) },
+            "inputVisibleBoundsPx" to inputVisibleBounds?.let { listOf(it.left, it.top, it.right, it.bottom) },
+            "inputVisibleHeightDp" to inputVisibleHeight,
             "aboveKeyboard" to (b != null && b.top >= 0 && (ime == null || b.bottom <= ime.top)))
         observations += value
         assertTrue("Actual keyboard expected for " + label, ime != null)
@@ -367,6 +375,40 @@ class V210ConsistencyJourneyTest : ConsistencyUiProbe() {
         // Native-suite files use a separate name, preventing duplicate profile data.
         if (args.getString("visualProfile") == null) V08Metrics.write(name, json)
     }
+    private fun inspectAndCancelSharedEditors(before: LedgerSnapshot, whole: com.google.gson.JsonObject) {
+        fun inspect(tag: String, text: String, saveLabel: String, scene: String) {
+            field(tag, text)
+            orientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE, Configuration.ORIENTATION_LANDSCAPE)
+            ui.onNodeWithTag(tag).assertTextContains(text)
+            field(tag, text)
+            saveControl(saveLabel, inputTag = tag)
+            snap(scene)
+            orientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT, Configuration.ORIENTATION_PORTRAIT)
+            ui.onNodeWithTag(tag).assertTextContains(text)
+            tapText("取消", true)
+            assertEquals(before, facts())
+            assertEquals(whole, wholeFacts())
+        }
+        page(2)
+        tap("review-section-plan")
+        tap("new-plan")
+        field("plan-code", "603999")
+        inspect("plan-note", "合成横屏计划：取消后不得保存。", "保存计划", "plan-landscape-keyboard")
+        tap("review-section-post")
+        val stock = before.cycles.single { it.accountId == "stock" }
+        val reviewTag = "review-cycle-" + stock.id
+        ui.onNodeWithTag("v2-reviews").performScrollToNode(hasTestTag(reviewTag))
+        tap(reviewTag)
+        inspect("position-review-note", "合成横屏复盘：取消后不得写入。", "保存复盘", "review-landscape-keyboard")
+        page(4)
+        select("account-stock")
+        tap("configure-account")
+        inspect("account-capital", "12345", "保存账户配置", "account-landscape-keyboard")
+        ui.onNodeWithTag("v2-accounts").performScrollToIndex(0)
+        tap("new-cashflow")
+        field("cashflow-amount", "10")
+        inspect("cashflow-note", "合成横屏流水：取消后不得入库。", "保存流水", "cashflow-landscape-keyboard")
+    }
     private fun money(tag: String, value: String, list: String) {
         ui.onNodeWithTag(list).performScrollToNode(hasTestTag(tag))
         visible(ui.onNodeWithTag(tag)).assertTextEquals(value)
@@ -433,7 +475,7 @@ class V210ConsistencyJourneyTest : ConsistencyUiProbe() {
                 tap("trade-mode-positions")
                 val stock = facts().cycles.single { it.accountId == "stock" }
                 ui.onNodeWithTag("v2-trades").performScrollToNode(hasTestTag("position-" + stock.id))
-                ui.onNodeWithTag("position-quantity-" + stock.id).assertTextEquals("500 股")
+                ui.onNodeWithTag("position-quantity-" + stock.id, useUnmergedTree = true).assertIsDisplayed().assertTextEquals("500 股")
                 snap("reopened-position")
             }
             step("read reopened financial UI") { financialUi() }
@@ -512,8 +554,11 @@ class V210ConsistencyJourneyTest : ConsistencyUiProbe() {
         step("save verified future rule without repricing old unknown fees") { createRule() }
         lateinit var exported: Pair<String, LedgerSnapshot>
         step("real DocumentsUI ZIP export preview cancel and replace restore") { exported = backupRoundTrip() }
-        step("read restored financial UI") {
+        step("inspect and cancel shared editors with landscape keyboard") {
             back()
+            inspectAndCancelSharedEditors(exported.second, requireNotNull(wholeBackupAtExport))
+        }
+        step("read restored financial UI") {
             financialUi()
             assertEquals(exported.second, facts())
             assertEquals(wholeBackupAtExport, wholeFacts())
@@ -526,6 +571,7 @@ class V210ConsistencyJourneyTest : ConsistencyUiProbe() {
             "night" to (conf.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK == android.content.res.Configuration.UI_MODE_NIGHT_YES),
             "allExecutionsCreatedViaRealForm" to true, "configurationSavedViaUi" to true, "systemDocumentsUiUsed" to true,
             "zipExportedAndReadbackVerified" to true, "previewCancelPreservedFacts" to true, "replaceRestoreMatchedExport" to true,
+            "cancelledSharedEditorsPreservedFacts" to true,
             "backupFileName" to exported.first, "financialBeforeConfiguration" to LedgerJson.element(requireNotNull(originalTrading)),
             "wholeBackupAtExport" to requireNotNull(wholeBackupAtExport), "wholeBackupFactsIdentical" to true,
             "ledger" to LedgerJson.element(facts()), "operations" to operations, "controls" to observations,

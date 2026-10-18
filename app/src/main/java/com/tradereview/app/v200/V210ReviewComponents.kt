@@ -21,8 +21,8 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.window.DialogWindowProvider
 import androidx.core.view.WindowCompat
 
-/** Existing editors retain their layout; configuration editors can adapt to a short IME viewport. */
-@Composable internal fun ReviewForm(title:String,saveLabel:String,saveTag:String,error:String?,busy:Boolean,onDismiss:()->Unit,onSave:()->Unit,adaptiveActions:Boolean=false,content:@Composable ColumnScope.()->Unit){
+/** Preserve the normal form layout; keep actions and input visible in a short IME viewport. */
+@Composable internal fun ReviewForm(title:String,saveLabel:String,saveTag:String,error:String?,busy:Boolean,onDismiss:()->Unit,onSave:()->Unit,content:@Composable ColumnScope.()->Unit){
     Dialog(onDismissRequest=onDismiss,properties=DialogProperties(usePlatformDefaultWidth=false,decorFitsSystemWindows=false)){
         val view=LocalView.current;val dark=isSystemInDarkTheme()
         SideEffect{(view.parent as? DialogWindowProvider)?.window?.let{window->
@@ -33,7 +33,7 @@ import androidx.core.view.WindowCompat
         Surface(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background).windowInsetsPadding(WindowInsets.safeDrawing).imePadding(),color=MaterialTheme.colorScheme.background){
             BoxWithConstraints(Modifier.fillMaxSize()){
                 // One action row leaves space for the focused field in a landscape IME viewport.
-                val compact=adaptiveActions && maxHeight<200.dp
+                val compact=maxHeight<200.dp
                 Column(Modifier.fillMaxSize()){
                     Row(Modifier.fillMaxWidth().padding(horizontal=8.dp),verticalAlignment=Alignment.CenterVertically){
                         TextButton(onDismiss,Modifier.heightIn(min=LedgerUi.touch)){Text("取消")}

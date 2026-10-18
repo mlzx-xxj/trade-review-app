@@ -41,5 +41,6 @@
       "inputFile": "docs/v210-consistency/failures/first-fix/api35/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-api35.json",
       "inputSha256": "161aa929f23e20f01cd5aac469129bdd96d04f3767ce78a637060405d402c2a0"
     }
-  ]
+  ],
+  "checkerSourceCommit": "0436db74391425250cb64aa9d33297bf0438a400"
 }

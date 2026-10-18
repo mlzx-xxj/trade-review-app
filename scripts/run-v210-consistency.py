@@ -75,15 +75,22 @@ def run_profile(api, profile, directory):
         collect(profile)
         assert entry.successful_runner(result), f"Real consistency {profile}/{phase} failed; raw evidence retained"
         phases[phase] = hashlib.sha256(log.read_bytes()).hexdigest()
+        if phase == "journey":
+            # Preserve actual exported bytes before crossing the process boundary,
+            # so a later reopen failure cannot discard successful export evidence.
+            path = ROOT / profile
+            first = json.loads((path / f"v210-consistency-{profile}-api{api}.json").read_text())
+            name = first["backupFileName"]
+            assert re.fullmatch(r"v210-consistency-" + str(api) + "-" + re.escape(profile) + r"-[0-9]+\.zip", name)
+            raw = subprocess.run(["adb", "exec-out", "cat", "/sdcard/Download/" + name], capture_output=True, timeout=30, check=True).stdout
+            assert 0 < len(raw) <= 64 * 1024 * 1024 and raw.startswith(b"PK")
+            backup = path / "exported.zip"
+            backup.write_bytes(raw)
+            check.verify_zip(backup, first["ledger"], first["wholeBackupAtExport"])
     path = ROOT / profile
     first = json.loads((path / f"v210-consistency-{profile}-api{api}.json").read_text())
     second = json.loads((path / f"v210-consistency-reopen-{profile}-api{api}.json").read_text())
-    name = first["backupFileName"]
-    assert re.fullmatch(r"v210-consistency-" + str(api) + "-" + re.escape(profile) + r"-[0-9]+\.zip", name)
-    raw = subprocess.run(["adb", "exec-out", "cat", "/sdcard/Download/" + name], capture_output=True, timeout=30, check=True).stdout
-    assert 0 < len(raw) <= 64 * 1024 * 1024 and raw.startswith(b"PK")
     backup = path / "exported.zip"
-    backup.write_bytes(raw)
     verified = check.verify(first, second, api, profile, backup)
     for proof in (first, second):
         assert all((path / n).is_file() for n in proof["screenshots"])

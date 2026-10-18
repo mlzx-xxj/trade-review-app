@@ -19,6 +19,16 @@ TRADING = ("executions", "cycles", "lots", "matches", "audits", "plans", "review
 PROFILES = ("regular-light", "regular-dark", "narrow-light", "narrow-dark")
 
 
+def verify_input_visibility(control):
+    assert control["inputVisible"] is True and control["inputBoundsPx"]
+    left, top, right, bottom = control["inputBoundsPx"]
+    visible_top = max(0, top)
+    visible_bottom = max(visible_top, min(bottom, control["imeTopPx"]))
+    assert control["inputVisibleBoundsPx"] == [left, visible_top, right, visible_bottom]
+    assert right > left and visible_bottom - visible_top >= 48  # 24dp at tested density 2
+    assert control["inputVisibleHeightDp"] == (visible_bottom - visible_top) / 2
+
+
 def verify_financial(before, ledger):
     for key in TRADING:
         assert before[key] == ledger[key], "Configuration/restore changed " + key
@@ -110,7 +120,7 @@ def verify(first, second, api, profile, backup):
     assert abs(first["fontScale"] - (1.3 if profile.startswith("narrow") else 1.0)) < .01
     assert first["night"] == profile.endswith("dark")
     for key in ("allExecutionsCreatedViaRealForm", "configurationSavedViaUi", "systemDocumentsUiUsed",
-                "zipExportedAndReadbackVerified", "previewCancelPreservedFacts", "replaceRestoreMatchedExport"):
+                "zipExportedAndReadbackVerified", "previewCancelPreservedFacts", "replaceRestoreMatchedExport", "cancelledSharedEditorsPreservedFacts"):
         assert first[key] is True, key
     assert first["pid"] == second["previousPid"] and first["pid"] != second["pid"]
     assert second["allFactsIdentical"] is True and second["savedFieldsReadViaUi"] is True
@@ -120,6 +130,7 @@ def verify(first, second, api, profile, backup):
     before, ledger = first["financialBeforeConfiguration"], first["ledger"]
     financial = verify_financial(before, ledger)
     assert before["accounts"] == ledger["accounts"]
+    assert before["cashFlows"] == ledger["cashFlows"]
     strategies = ledger["strategies"]
     assert len(strategies) == len(before["strategies"]) == 1
     assert strategies[0]["id"] == before["strategies"][0]["id"]
@@ -141,15 +152,16 @@ def verify(first, second, api, profile, backup):
         "correct linked strategy and recreate editor", "save independent stock risk through keyboard UI",
         "save verified future rule without repricing old unknown fees",
         "real DocumentsUI ZIP export preview cancel and replace restore",
+        "inspect and cancel shared editors with landscape keyboard",
     }
     for step in expected_steps:
         assert [o["event"] for o in first["operations"] if o["step"] == step] == ["begin", "complete"]
     picker = [o for o in first["operations"] if o["step"] == "DocumentsUI"]
     assert [o["kind"] for o in picker] == ["CreateDocument", "OpenDocument", "OpenDocument"]
     assert all(re.fullmatch(r"com(?:\.google)?\.android\.documentsui", o["package"]) for o in picker)
-    assert len(first["controls"]) == 5
-    assert [c["inputTag"] for c in first["controls"]] == ["strategy-description", "strategy-description", None, "rule-name", "rule-name"]
-    assert [c["orientation"] for c in first["controls"]] == [2, 1, 1, 2, 1]
+    assert len(first["controls"]) == 9
+    assert [c["inputTag"] for c in first["controls"]] == ["strategy-description", "strategy-description", None, "rule-name", "rule-name", "plan-note", "position-review-note", "account-capital", "cashflow-note"]
+    assert [c["orientation"] for c in first["controls"]] == [2, 1, 1, 2, 1, 2, 2, 2, 2]
     assert {c["orientation"] for c in first["controls"]} == {1, 2}
     for control in first["controls"]:
         assert control["keyboardVisible"] is True and control["aboveKeyboard"] is True
@@ -158,9 +170,7 @@ def verify(first, second, api, profile, backup):
         assert right > left and top >= 0 and bottom <= control["imeTopPx"]
         assert (bottom - top) / 2 == control["touchHeightDp"]
         if control["inputTag"] is not None:
-            assert control["inputVisible"] is True and control["inputBoundsPx"]
-            left, top, right, bottom = control["inputBoundsPx"]
-            assert right > left and top >= 0 and bottom <= control["imeTopPx"] and (bottom - top) >= 48
+            verify_input_visibility(control)
     displayed = {
         ("account-net-stock", "￥2487.65"), ("account-fees-stock", "￥12.90"),
         ("account-cost-stock", "￥5500.55"), ("account-cash-stock", "待估算"),

@@ -1,0 +1,69 @@
+{
+  "api": 29,
+  "profiles": [
+    {
+      "profile": "regular-light",
+      "runnerLogSha256": "d31d3adce3c47b6abce0b108e556cae0dd12830f19e387cb942b2d96ad1818c9",
+      "result": "PASS"
+    },
+    {
+      "profile": "regular-dark",
+      "runnerLogSha256": "1e8f14294214f6a766eaa6597c039e0ee955d5338a26cd55ab47d7ed64fc139c",
+      "result": "PASS"
+    },
+    {
+      "profile": "narrow-light",
+      "runnerLogSha256": "cf0832172604762b7691580ed349fb6ef4e43c783714fc03885f47a020c5ab7a",
+      "result": "PASS"
+    },
+    {
+      "profile": "narrow-dark",
+      "runnerLogSha256": "971cc9771cf40570ce04a0a3852742a15beaa98e8c04dd6457b38f872ff5f7b9",
+      "result": "PASS"
+    }
+  ],
+  "actualInstrumentations": 4,
+  "fullUiInstrumentations": 8,
+  "reviewUiInstrumentations": 8,
+  "reviewProfiles": [
+    {
+      "profile": "regular-light",
+      "actualInstrumentations": 2,
+      "runnerLogSha256": {
+        "journey": "b3e39bc53078cb492b44f3721d933a54cc3726c9cb2e6500abafd0f57075bc63",
+        "reopen": "0fe802157306148d01ff63565005700ef01ab78ca45b688b38d64273f69c8606"
+      },
+      "result": "PASS"
+    },
+    {
+      "profile": "regular-dark",
+      "actualInstrumentations": 2,
+      "runnerLogSha256": {
+        "journey": "080bd18309aed8268ec98cb5c305a684877d4b7e0d8441c2fb94c22ec8aa126f",
+        "reopen": "516ee13adb2ed55e6ddab3e562e21a119ea1f8a8000e5ddac6a7dbabaf22416f"
+      },
+      "result": "PASS"
+    },
+    {
+      "profile": "narrow-light",
+      "actualInstrumentations": 2,
+      "runnerLogSha256": {
+        "journey": "61b496f8d27c95bf34a8f9718e1c52f47cec84bf64f9007863b23a76abfe688a",
+        "reopen": "bad3a3f08c1d49e98a0aef7dff69919dce17c247995aae2d2d00cf2658449ae8"
+      },
+      "result": "PASS"
+    },
+    {
+      "profile": "narrow-dark",
+      "actualInstrumentations": 2,
+      "runnerLogSha256": {
+        "journey": "965f4a9bf31b7a5784b94268ee8de3aec34881ad31f59f27c4943eee1f05b8bb",
+        "reopen": "f5171fa9f6b125041eae479f54a196e1281baaf66d043fa43dc78d8b7bd453a5"
+      },
+      "result": "PASS"
+    }
+  ],
+  "complete": true,
+  "result": "PASS",
+  "realPhone": "not-executed"
+}

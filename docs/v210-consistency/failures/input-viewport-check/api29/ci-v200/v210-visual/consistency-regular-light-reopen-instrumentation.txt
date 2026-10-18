@@ -1,0 +1,77 @@
+INSTRUMENTATION_STATUS: class=com.tradereview.app.v210.V210ConsistencyJourneyTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=1
+INSTRUMENTATION_STATUS: stream=
+com.tradereview.app.v210.V210ConsistencyJourneyTest:
+INSTRUMENTATION_STATUS: test=realConfigurationBackupAndReopenPreserveFinancialFacts
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.tradereview.app.v210.V210ConsistencyJourneyTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=1
+INSTRUMENTATION_STATUS: stack=java.lang.AssertionError: Failed to assert the following: (Text + EditableText = [500 股])
+Reason: Expected exactly '1' node but could not find any node that satisfies: (TestTag = 'position-quantity-cycle_cebbea172e0049a78d9c5dc9e35a899d')
+However, the unmerged tree contains '1' node that matches. Are you missing `useUnmergedNode = true` in your finder?
+
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow(SemanticsNodeInteraction.kt:178)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow$default(SemanticsNodeInteraction.kt:150)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode(SemanticsNodeInteraction.kt:84)
+	at androidx.compose.ui.test.AssertionsKt.assert(Assertions.kt:258)
+	at androidx.compose.ui.test.AssertionsKt.assert$default(Assertions.kt:250)
+	at androidx.compose.ui.test.AssertionsKt.assertTextEquals(Assertions.kt:181)
+	at androidx.compose.ui.test.AssertionsKt.assertTextEquals$default(Assertions.kt:177)
+	at com.tradereview.app.v210.V210ConsistencyJourneyTest.realConfigurationBackupAndReopenPreserveFinancialFacts$lambda$60(V210ConsistencyJourneyTest.kt:436)
+	at com.tradereview.app.v210.V210ConsistencyJourneyTest.$r8$lambda$C4R2bZ0ij6_y5scJnhy0ZphdcPg(Unknown Source:0)
+	at com.tradereview.app.v210.V210ConsistencyJourneyTest$$ExternalSyntheticLambda19.invoke(D8$$SyntheticClass:0)
+	at com.tradereview.app.v210.V210ConsistencyJourneyTest.step(V210ConsistencyJourneyTest.kt:72)
+	at com.tradereview.app.v210.V210ConsistencyJourneyTest.realConfigurationBackupAndReopenPreserveFinancialFacts(V210ConsistencyJourneyTest.kt:416)
+
+INSTRUMENTATION_STATUS: stream=
+Error in realConfigurationBackupAndReopenPreserveFinancialFacts(com.tradereview.app.v210.V210ConsistencyJourneyTest):
+java.lang.AssertionError: Failed to assert the following: (Text + EditableText = [500 股])
+Reason: Expected exactly '1' node but could not find any node that satisfies: (TestTag = 'position-quantity-cycle_cebbea172e0049a78d9c5dc9e35a899d')
+However, the unmerged tree contains '1' node that matches. Are you missing `useUnmergedNode = true` in your finder?
+
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow(SemanticsNodeInteraction.kt:178)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow$default(SemanticsNodeInteraction.kt:150)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode(SemanticsNodeInteraction.kt:84)
+	at androidx.compose.ui.test.AssertionsKt.assert(Assertions.kt:258)
+	at androidx.compose.ui.test.AssertionsKt.assert$default(Assertions.kt:250)
+	at androidx.compose.ui.test.AssertionsKt.assertTextEquals(Assertions.kt:181)
+	at androidx.compose.ui.test.AssertionsKt.assertTextEquals$default(Assertions.kt:177)
+	at com.tradereview.app.v210.V210ConsistencyJourneyTest.realConfigurationBackupAndReopenPreserveFinancialFacts$lambda$60(V210ConsistencyJourneyTest.kt:436)
+	at com.tradereview.app.v210.V210ConsistencyJourneyTest.$r8$lambda$C4R2bZ0ij6_y5scJnhy0ZphdcPg(Unknown Source:0)
+	at com.tradereview.app.v210.V210ConsistencyJourneyTest$$ExternalSyntheticLambda19.invoke(D8$$SyntheticClass:0)
+	at com.tradereview.app.v210.V210ConsistencyJourneyTest.step(V210ConsistencyJourneyTest.kt:72)
+	at com.tradereview.app.v210.V210ConsistencyJourneyTest.realConfigurationBackupAndReopenPreserveFinancialFacts(V210ConsistencyJourneyTest.kt:416)
+
+INSTRUMENTATION_STATUS: test=realConfigurationBackupAndReopenPreserveFinancialFacts
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_RESULT: stream=
+
+Time: 6.826
+There was 1 failure:
+1) realConfigurationBackupAndReopenPreserveFinancialFacts(com.tradereview.app.v210.V210ConsistencyJourneyTest)
+java.lang.AssertionError: Failed to assert the following: (Text + EditableText = [500 股])
+Reason: Expected exactly '1' node but could not find any node that satisfies: (TestTag = 'position-quantity-cycle_cebbea172e0049a78d9c5dc9e35a899d')
+However, the unmerged tree contains '1' node that matches. Are you missing `useUnmergedNode = true` in your finder?
+
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow(SemanticsNodeInteraction.kt:178)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow$default(SemanticsNodeInteraction.kt:150)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode(SemanticsNodeInteraction.kt:84)
+	at androidx.compose.ui.test.AssertionsKt.assert(Assertions.kt:258)
+	at androidx.compose.ui.test.AssertionsKt.assert$default(Assertions.kt:250)
+	at androidx.compose.ui.test.AssertionsKt.assertTextEquals(Assertions.kt:181)
+	at androidx.compose.ui.test.AssertionsKt.assertTextEquals$default(Assertions.kt:177)
+	at com.tradereview.app.v210.V210ConsistencyJourneyTest.realConfigurationBackupAndReopenPreserveFinancialFacts$lambda$60(V210ConsistencyJourneyTest.kt:436)
+	at com.tradereview.app.v210.V210ConsistencyJourneyTest.$r8$lambda$C4R2bZ0ij6_y5scJnhy0ZphdcPg(Unknown Source:0)
+	at com.tradereview.app.v210.V210ConsistencyJourneyTest$$ExternalSyntheticLambda19.invoke(D8$$SyntheticClass:0)
+	at com.tradereview.app.v210.V210ConsistencyJourneyTest.step(V210ConsistencyJourneyTest.kt:72)
+	at com.tradereview.app.v210.V210ConsistencyJourneyTest.realConfigurationBackupAndReopenPreserveFinancialFacts(V210ConsistencyJourneyTest.kt:416)
+
+FAILURES!!!
+Tests run: 1,  Failures: 1
+
+
+INSTRUMENTATION_CODE: -1
