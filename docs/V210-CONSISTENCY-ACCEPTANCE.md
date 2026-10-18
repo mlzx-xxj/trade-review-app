@@ -150,3 +150,9 @@ API29执行147项，同样4项夹具超时，另有原有NavigationTest在保存
 
 [原始截图/操作阶段/探针JSON/JUnit/logcat/来源哈希](v210-consistency/failures/first-fix/FAILURE.json)。
 这轮不是完整通过，不替代后续完整矩阵。
+
+独立复核第一轮候选五笔真实成交时，发现新校验器误把averagePrice预期为含费单位成本11.0011。
+原有MatchingEngine及MatchingEngineTest明确区分平均开仓价与含费剩余成本：正确值分别为11和5500.55。
+已修正校验器预期并独立按剩余FIFO批次价格/数量计算均价，新增拒绝含费均价的回归。
+原始成交、引擎、费用及成本公式完全不变；两API原始数据均通过纠正后的独立Decimal复核。
+此为测试校验器定义错误，不作为产品财务缺陷。

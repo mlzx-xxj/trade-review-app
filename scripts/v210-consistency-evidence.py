@@ -35,7 +35,7 @@ def verify_financial(before, ledger):
     unknown = next(c for c in ledger["cycles"] if c["accountId"] == "futures")
     assert len(ledger["cycles"]) == 2
     assert stock["remaining"] == "500" and D(stock["realized"]) == D("2487.65")
-    assert D(stock["openCost"]) == D("5500.55") and D(stock["averagePrice"]) == D("11.0011")
+    assert D(stock["openCost"]) == D("5500.55") and D(stock["averagePrice"]) == D("11")
     assert D(stock["fees"]) == D("12.90")
     assert unknown["remaining"] == "1"
     assert unknown["realized"] is None and unknown["fees"] is None and unknown["referenceMargin"] is None
@@ -66,6 +66,10 @@ def verify_financial(before, ledger):
     assert len(ledger["lots"]) == 3 and len(future_lots) == 1
     assert future_lots[0]["executionId"] == executions[3]["id"]
     assert future_lots[0]["remaining"] == "1" and future_lots[0]["allocatedFees"] is None
+    # Average opening price excludes fees; openCost separately includes unallocated fees.
+    execution_by_id = {e["id"]: e for e in executions}
+    price_cost = sum((D(execution_by_id[l["executionId"]]["price"]) * D(l["remaining"]) for l in stock_lots), D(0))
+    assert price_cost / D(stock["remaining"]) == D(stock["averagePrice"])
     assert D(500) * D(11) + (D("1.10") - D(".55")) == D(stock["openCost"])
     return dict(knownRealized="2487.65", stockRemaining="500", stockOpenCost="5500.55",
                 unknownFeeExecutions=2, unknownGross="1000", unknownNet=None)

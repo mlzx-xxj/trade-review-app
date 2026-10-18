@@ -27,7 +27,7 @@ def financial_fixture():
     return dict(
         executions=rows, audits=[], plans=[], reviews=[],
         cycles=[
-            dict(id="s", accountId="stock", remaining="500", realized="2487.65", openCost="5500.55", averagePrice="11.0011", fees="12.90"),
+            dict(id="s", accountId="stock", remaining="500", realized="2487.65", openCost="5500.55", averagePrice="11", fees="12.90"),
             dict(id="f", accountId="futures", remaining="1", realized=None, fees=None, referenceMargin=None),
         ],
         lots=[
@@ -68,6 +68,9 @@ class ConsistencyEvidenceTest(unittest.TestCase):
 
     def test_identical_before_after_does_not_hide_wrong_net(self):
         self.reject_consistent_forgery(lambda x: x["cycles"][0].update(realized="2500"))
+
+    def test_average_opening_price_must_not_include_unallocated_fees(self):
+        self.reject_consistent_forgery(lambda x: x["cycles"][0].update(averagePrice="11.0011"))
 
     def test_unknown_fee_cannot_be_replaced_with_zero(self):
         self.reject_consistent_forgery(lambda x: x["executions"][3].update(fees="0"))
