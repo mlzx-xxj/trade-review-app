@@ -147,11 +147,20 @@ def verify(first, second, api, profile, backup):
     picker = [o for o in first["operations"] if o["step"] == "DocumentsUI"]
     assert [o["kind"] for o in picker] == ["CreateDocument", "OpenDocument", "OpenDocument"]
     assert all(re.fullmatch(r"com(?:\.google)?\.android\.documentsui", o["package"]) for o in picker)
-    assert len(first["controls"]) == 4
+    assert len(first["controls"]) == 5
+    assert [c["inputTag"] for c in first["controls"]] == ["strategy-description", "strategy-description", None, "rule-name", "rule-name"]
+    assert [c["orientation"] for c in first["controls"]] == [2, 1, 1, 2, 1]
     assert {c["orientation"] for c in first["controls"]} == {1, 2}
     for control in first["controls"]:
         assert control["keyboardVisible"] is True and control["aboveKeyboard"] is True
         assert control["touchHeightDp"] >= 48 and control["buttonBoundsPx"]
+        left, top, right, bottom = control["buttonBoundsPx"]
+        assert right > left and top >= 0 and bottom <= control["imeTopPx"]
+        assert (bottom - top) / 2 == control["touchHeightDp"]
+        if control["inputTag"] is not None:
+            assert control["inputVisible"] is True and control["inputBoundsPx"]
+            left, top, right, bottom = control["inputBoundsPx"]
+            assert right > left and top >= 0 and bottom <= control["imeTopPx"] and (bottom - top) >= 48
     displayed = {
         ("account-net-stock", "￥2487.65"), ("account-fees-stock", "￥12.90"),
         ("account-cost-stock", "￥5500.55"), ("account-cash-stock", "待估算"),
@@ -165,4 +174,5 @@ def verify(first, second, api, profile, backup):
             if m["tag"] in ("account-net-stock", "period-realized-net"):
                 assert m["argb"].upper() == ("#FFFFB4B0" if profile.endswith("dark") else "#FFAF273C")
     assert len(first["screenshots"]) >= 8 and len(second["screenshots"]) >= 2
+    assert not set(first["screenshots"]) & set(second["screenshots"]), "Reopen must retain distinct original PNGs"
     return dict(api=api, profile=profile, financial=financial, **verify_zip(backup, ledger, first["wholeBackupAtExport"]))

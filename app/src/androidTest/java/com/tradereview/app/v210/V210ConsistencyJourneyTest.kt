@@ -21,6 +21,8 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiDevice
+import androidx.test.uiautomator.UiScrollable
+import androidx.test.uiautomator.UiSelector
 import androidx.test.uiautomator.Until
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonParser
@@ -77,7 +79,11 @@ class V210ConsistencyJourneyTest : ConsistencyUiProbe() {
         File(output(), "v210-consistency-operations-" + transportProfile + "-" + phase + "-api" + Build.VERSION.SDK_INT + ".json")
             .writeText(GsonBuilder().setPrettyPrinting().create().toJson(operations))
     }
-    private fun snap(scene: String, systemWindow: Boolean = false) { capture(scene + "-" + transportProfile, !systemWindow) }
+    private fun snap(scene: String, systemWindow: Boolean = false) {
+        // Keep first-run and reopened financial screens as distinct original files.
+        val phase = args.getString("consistencyPhase") ?: "journey"
+        capture(scene + "-" + transportProfile + "-" + phase, !systemWindow)
+    }
     private fun orientation(requested: Int, expected: Int) {
         instrumentation.runOnMainSync {
             androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry.getInstance()
@@ -157,9 +163,20 @@ class V210ConsistencyJourneyTest : ConsistencyUiProbe() {
         assertEquals(fee, saved.fees)
         waitFor { model.state.value.ledger == facts() }
     }
-    private fun saveControl(label: String, tag: String? = null): Map<String, Any?> {
+    private fun saveControl(label: String, tag: String? = null, inputTag: String? = null): Map<String, Any?> {
         waitFor { instrumentation.uiAutomation.windows.any { it.type == AccessibilityWindowInfo.TYPE_INPUT_METHOD } }
         if (tag != null) visible(ui.onNodeWithTag(tag))
+        var previous: List<Float>? = null
+        var stableSince = android.os.SystemClock.elapsedRealtime()
+        waitFor {
+            val keyboard = instrumentation.uiAutomation.windows.firstOrNull { it.type == AccessibilityWindowInfo.TYPE_INPUT_METHOD }
+                ?.let { android.graphics.Rect().also(it::getBoundsInScreen) }
+            val target = (inputTag ?: tag)?.let { runCatching { ui.onNodeWithTag(it).fetchSemanticsNode().boundsInRoot }.getOrNull() }
+            val geometry = listOf(keyboard?.top?.toFloat() ?: -1f, target?.top ?: -1f, target?.bottom ?: -1f)
+            val now = android.os.SystemClock.elapsedRealtime()
+            if (geometry != previous) { previous = geometry; stableSince = now }
+            keyboard != null && now - stableSince >= 150
+        }
         ui.waitForIdle()
         val ime = instrumentation.uiAutomation.windows.firstOrNull { it.type == AccessibilityWindowInfo.TYPE_INPUT_METHOD }
             ?.let { android.graphics.Rect().also(it::getBoundsInScreen) }
@@ -181,14 +198,23 @@ class V210ConsistencyJourneyTest : ConsistencyUiProbe() {
         }
         val b = found?.let { android.graphics.Rect().also(it::getBoundsInScreen) }
         val height = b?.height()?.div(app.resources.displayMetrics.density)
+        val input = inputTag?.let { runCatching { ui.onNodeWithTag(it).fetchSemanticsNode().boundsInRoot }.getOrNull() }
+        val inputVisible = inputTag?.let {
+            input != null && runCatching { ui.onNodeWithTag(it).assertIsDisplayed() }.isSuccess &&
+                input.height / app.resources.displayMetrics.density >= 24f && input.top >= 0f &&
+                (ime == null || input.bottom <= ime.top)
+        }
         val value = mapOf("label" to label, "orientation" to app.resources.configuration.orientation,
             "keyboardVisible" to (ime != null), "imeTopPx" to ime?.top,
             "buttonBoundsPx" to b?.let { listOf(it.left, it.top, it.right, it.bottom) }, "touchHeightDp" to height,
+            "inputTag" to inputTag, "inputVisible" to inputVisible,
+            "inputBoundsPx" to input?.let { listOf(it.left, it.top, it.right, it.bottom) },
             "aboveKeyboard" to (b != null && b.top >= 0 && (ime == null || b.bottom <= ime.top)))
         observations += value
         assertTrue("Actual keyboard expected for " + label, ime != null)
         assertTrue("Accessible save control is visible and above IME: " + value, value["aboveKeyboard"] == true)
         assertTrue("At least 48dp actual touch target: " + value, height != null && height >= 48f)
+        assertTrue("Focused dialog input must retain a visible text line above IME: " + value, inputTag == null || inputVisible == true)
         return value
     }
     private fun ruleEffectiveDate(day: LocalDate) {
@@ -227,8 +253,15 @@ class V210ConsistencyJourneyTest : ConsistencyUiProbe() {
         field("rule-name", "合成合约参数已更正")
         recreate()
         ui.onNodeWithTag("rule-name").assertTextContains("合成合约参数已更正")
+        orientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE, Configuration.ORIENTATION_LANDSCAPE)
+        ui.onNodeWithTag("rule-name").assertTextContains("合成合约参数已更正")
         field("rule-name", "合成合约参数已更正")
-        saveControl("保存")
+        saveControl("保存", inputTag = "rule-name")
+        snap("rule-landscape-keyboard")
+        orientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT, Configuration.ORIENTATION_PORTRAIT)
+        ui.onNodeWithTag("rule-name").assertTextContains("合成合约参数已更正")
+        field("rule-name", "合成合约参数已更正")
+        saveControl("保存", inputTag = "rule-name")
         snap("rule-keyboard")
         saveAndWait("save-contract-rule") { facts().rules.singleOrNull()?.name == "合成合约参数已更正" }
         assertEquals(id, facts().rules.single().id)
@@ -250,8 +283,23 @@ class V210ConsistencyJourneyTest : ConsistencyUiProbe() {
         tap("v2-import-backup")
         documentsWindow("OpenDocument")
         downloadsRoot()
-        val file = requireNotNull(device.wait(Until.findObject(By.text(fileName)), 15000)) { "Exported ZIP not shown in real Downloads" }
-        file.click()
+        // DocumentsUI uses a lazy grid: folders can place the ZIP below the viewport.
+        var file = device.findObject(By.text(fileName)) ?: device.findObject(By.descContains(fileName))
+        if (file == null) {
+            val list = UiScrollable(UiSelector().resourceIdMatches(".*:id/dir_list").scrollable(true)).setAsVerticalList()
+            val found = runCatching {
+                list.scrollIntoView(UiSelector().text(fileName)) ||
+                    list.scrollIntoView(UiSelector().descriptionContains(fileName))
+            }.onFailure { extraEvidence["documentsScrollError"] = it.stackTraceToString() }.getOrDefault(false)
+            file = if (found) device.findObject(By.text(fileName)) ?: device.findObject(By.descContains(fileName)) else null
+        }
+        if (file == null) {
+            val hierarchy = java.io.ByteArrayOutputStream()
+            device.dumpWindowHierarchy(hierarchy)
+            extraEvidence["documentsHierarchy"] = hierarchy.toString("UTF-8")
+            snap("system-open-not-found", true)
+        }
+        requireNotNull(file) { "Exported ZIP not shown after actual DocumentsUI scrolling" }.click()
         assertTrue(device.wait(Until.gone(By.pkg(documents)), 20000))
         var backup: BackupViewModel? = null
         ui.runOnIdle { backup = ViewModelProvider(ui.activity)[BackupViewModel::class.java] }
@@ -273,6 +321,8 @@ class V210ConsistencyJourneyTest : ConsistencyUiProbe() {
         val fileName = "v210-consistency-" + Build.VERSION.SDK_INT + "-" + transportProfile + "-" + System.currentTimeMillis() + ".zip"
         val title = requireNotNull(device.wait(Until.findObject(By.res("android:id/title").clazz("android.widget.EditText")), 10000))
         title.text = fileName
+        device.waitForIdle()
+        assertEquals(fileName, title.text)
         snap("system-save", true)
         requireNotNull(device.findObject(By.res("android:id/button1"))).click()
         assertTrue(device.wait(Until.gone(By.pkg(documents)), 20000))
@@ -434,13 +484,13 @@ class V210ConsistencyJourneyTest : ConsistencyUiProbe() {
             ui.onNodeWithTag("strategy-name").assertTextContains("合成复核策略已更正")
             ui.onNodeWithTag("strategy-description").assertTextContains(note)
             field("strategy-description", note)
-            saveControl("保存")
+            saveControl("保存", inputTag = "strategy-description")
             snap("strategy-landscape-keyboard")
             orientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT, Configuration.ORIENTATION_PORTRAIT)
             ui.onNodeWithTag("strategy-name").assertTextContains("合成复核策略已更正")
             ui.onNodeWithTag("strategy-description").assertTextContains(note)
             field("strategy-description", note)
-            saveControl("保存")
+            saveControl("保存", inputTag = "strategy-description")
             snap("strategy-keyboard")
             saveAndWait("save-strategy") { facts().strategies.singleOrNull()?.name == "合成复核策略已更正" }
             assertEquals(id, facts().strategies.single().id)

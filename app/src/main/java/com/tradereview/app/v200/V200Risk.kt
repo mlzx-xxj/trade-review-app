@@ -26,7 +26,7 @@ import java.time.LocalDate
         ReviewForm(if(editing==null)"新建策略"else"编辑策略","保存","save-strategy",null,false,{creating=false},{
             model.strategy((editing?:LedgerStrategy(newKey(),name,sortOrder=(state.strategies.maxOfOrNull{it.sortOrder}?:0)+1)).copy(name=name.trim(),description=description))
             if(name.isNotBlank())creating=false
-        }){
+        },adaptiveActions=true){
             EntryField("名称",name,{name=it},"strategy-name")
             EntryField("简短说明",description,{description=it.take(200)},"strategy-description",lines=2)
         }
@@ -48,7 +48,7 @@ import java.time.LocalDate
     ReviewForm("合约参数（离线，须自行核实）","保存","save-contract-rule",error,false,onDismiss,{
         val candidate=LedgerContractRule(value?.id?:newKey(),code.trim().lowercase(),name.trim(),multiplier.trim().ifBlank{null},margin.trim().ifBlank{null},feeMode,open.trim().ifBlank{null},close.trim().ifBlank{null},today.trim().ifBlank{null},addMode,if(addMode=="none")null else add.trim().ifBlank{null},day,verified)
         try{LedgerValidation.rule(candidate);ledgerRequire(rules.none{it.id!=candidate.id && it.code==candidate.code && it.effectiveDay==candidate.effectiveDay},"同合约同生效日已有规则，请编辑原规则或选择其他日期");onSave(candidate)}catch(e:IllegalArgumentException){error=e.message}
-    }){
+    },adaptiveActions=true){
         EntryField("完整合约代码，如rb2701",code,{code=it.lowercase()},"rule-code");EntryField("品种名称",name,{name=it},"rule-name");EntryField("每手合约乘数",multiplier,{multiplier=it},"rule-multiplier",true);EntryField("保证金率（0至1，可选）",margin,{margin=it},"rule-margin",true)
         ChoiceRow(feeMode,listOf("per_lot" to "元/手","turnover_rate" to "成交额费率"),{feeMode=it})
         EntryField("开仓手续费",open,{open=it},"rule-open-fee",true);EntryField("平昨/普通平仓手续费",close,{close=it},"rule-close-fee",true);EntryField("平今手续费",today,{today=it},"rule-today-fee",true)
