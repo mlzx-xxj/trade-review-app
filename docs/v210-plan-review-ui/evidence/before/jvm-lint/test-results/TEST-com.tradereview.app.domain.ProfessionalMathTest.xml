@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.tradereview.app.domain.ProfessionalMathTest" tests="11" skipped="0" failures="0" errors="0" timestamp="2026-10-17T21:41:59" hostname="runnervm8k3b6" time="0.014">
+  <properties/>
+  <testcase name="invalidDecimalsNegativeCostsAndZeroMultiplierAreRejected" classname="com.tradereview.app.domain.ProfessionalMathTest" time="0.002"/>
+  <testcase name="longAndShortUseExactPricesQuantityMultiplierAndCosts" classname="com.tradereview.app.domain.ProfessionalMathTest" time="0.0"/>
+  <testcase name="templateDoesNotApplyWithoutExplicitConfirmationOrToAnotherSymbol" classname="com.tradereview.app.domain.ProfessionalMathTest" time="0.001"/>
+  <testcase name="manualModeKeepsAuthoritativeAmountWhenProfessionalFieldsAreCompletedOrEdited" classname="com.tradereview.app.domain.ProfessionalMathTest" time="0.001"/>
+  <testcase name="historyAndCopyKeepIdentityAndOnlyReusableProfessionalParameters" classname="com.tradereview.app.domain.ProfessionalMathTest" time="0.001"/>
+  <testcase name="unknownFeesAndUnconfirmedConversionNeverBecomeZeroOrAutomaticResults" classname="com.tradereview.app.domain.ProfessionalMathTest" time="0.002"/>
+  <testcase name="historicalNegativeFuturesPricesAndSubcentRiskAreHandledExactly" classname="com.tradereview.app.domain.ProfessionalMathTest" time="0.0"/>
+  <testcase name="tinyPositiveAndNegativeRDoNotUnderflowIntoFlatSamples" classname="com.tradereview.app.domain.ProfessionalMathTest" time="0.001"/>
+  <testcase name="fractionalPricesLotsAndMultipliersDoNotUseBinaryFloatingPoint" classname="com.tradereview.app.domain.ProfessionalMathTest" time="0.0"/>
+  <testcase name="zeroMissingAndWrongSidedStopAreNotValidRSamples" classname="com.tradereview.app.domain.ProfessionalMathTest" time="0.0"/>
+  <testcase name="plannedCostsAreAddedOnlyToPriceRiskAndManualRiskIsAnExplicitAlternative" classname="com.tradereview.app.domain.ProfessionalMathTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.tradereview.app.backup.ExportReadbackTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-10-17T21:42:25" hostname="runnervm8k3b6" time="0.013">
+  <properties/>
+  <testcase name="oversizedProviderReadStopsAtTheExpectedExportBound" classname="com.tradereview.app.backup.ExportReadbackTest" time="0.005"/>
+  <testcase name="sameSizeTamperingAndTruncationRejectRatherThanClaimSuccess" classname="com.tradereview.app.backup.ExportReadbackTest" time="0.001"/>
+  <testcase name="hashesTheExactWrittenUtf8BytesIncludingMixedWriteMethods" classname="com.tradereview.app.backup.ExportReadbackTest" time="0.005"/>
+  <testcase name="unavailableProviderIsExplicitlyNotVerified" classname="com.tradereview.app.backup.ExportReadbackTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

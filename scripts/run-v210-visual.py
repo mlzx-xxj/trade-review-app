@@ -86,6 +86,7 @@ def main():
     old_font = adb("shell", "settings", "get", "system", "font_scale").strip()
     old_night = adb("shell", "settings", "get", "secure", "ui_night_mode").strip()
     profiles = []
+    review_profiles = []
     try:
         for profile in PROFILES:
             adb("shell", "am", "force-stop", APP)
@@ -119,6 +120,9 @@ def main():
                 assert (ROOT / profile / f"v210-{profile}-{scene}.png").is_file()
             profiles.append(dict(profile=profile, runnerLogSha256=hashlib.sha256(log.read_bytes()).hexdigest(), result="PASS"))
             full_journey(api, profile, directory)
+            review_spec=importlib.util.spec_from_file_location("review_runner",Path(__file__).with_name("run-v210-review.py"))
+            review_runner=importlib.util.module_from_spec(review_spec);review_spec.loader.exec_module(review_runner)
+            review_profiles.append(review_runner.run(api,profile,directory,ROOT))
     finally:
         # Collect diagnostics without changing a failed result, then restore AVD.
         for profile in PROFILES:
@@ -132,7 +136,7 @@ def main():
         time.sleep(1)
         adb("shell", "input", "keyevent", "KEYCODE_WAKEUP")
         adb("shell", "wm", "dismiss-keyguard")
-    report = dict(api=api, profiles=profiles, actualInstrumentations=4, fullUiInstrumentations=8, complete=True, result="PASS", realPhone="not-executed")
+    report = dict(api=api, profiles=profiles, actualInstrumentations=4, fullUiInstrumentations=8, reviewUiInstrumentations=8, reviewProfiles=review_profiles, complete=True, result="PASS", realPhone="not-executed")
     (ROOT / f"v210-runner-api{api}.json").write_text(json.dumps(report, indent=2) + "\n")
     print(json.dumps(report))
 

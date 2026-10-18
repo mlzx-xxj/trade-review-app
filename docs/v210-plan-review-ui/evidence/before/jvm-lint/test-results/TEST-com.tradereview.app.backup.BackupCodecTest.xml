@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.tradereview.app.backup.BackupCodecTest" tests="9" skipped="0" failures="0" errors="0" timestamp="2026-10-17T21:41:56" hostname="runnervm8k3b6" time="0.897">
+  <properties/>
+  <testcase name="rejectsInvalidOptionsDatesAmountsPositionsRatingsAndTags" classname="com.tradereview.app.backup.BackupCodecTest" time="0.245"/>
+  <testcase name="emptyBackupRoundTripsAndCanIntentionallyReplaceWithEmptyData" classname="com.tradereview.app.backup.BackupCodecTest" time="0.106"/>
+  <testcase name="rejectsDuplicateRecordIdentityRowIdsAndReviewDates" classname="com.tradereview.app.backup.BackupCodecTest" time="0.0"/>
+  <testcase name="inputSizeAndRecordLimitsAreEnforcedBeforeRestoring" classname="com.tradereview.app.backup.BackupCodecTest" time="0.313"/>
+  <testcase name="rejectsUnsupportedVersionMissingUnknownAndIncorrectlyTypedFields" classname="com.tradereview.app.backup.BackupCodecTest" time="0.071"/>
+  <testcase name="rejectsTruncatedWrongChecksumOrCountAndChangedPayload" classname="com.tradereview.app.backup.BackupCodecTest" time="0.063"/>
+  <testcase name="rejectsDuplicateJsonKeysLenientSyntaxNullAndDeepNesting" classname="com.tradereview.app.backup.BackupCodecTest" time="0.024"/>
+  <testcase name="completeBackupRoundTripPreservesEveryFieldAndTag" classname="com.tradereview.app.backup.BackupCodecTest" time="0.041"/>
+  <testcase name="futurePrePlanIsSupportedAndInvalidUtf8IsRejected" classname="com.tradereview.app.backup.BackupCodecTest" time="0.023"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

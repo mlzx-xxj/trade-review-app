@@ -1,0 +1,2 @@
+# Keep original native/JVM evidence bytes, including CRLF.
+evidence/** -text
