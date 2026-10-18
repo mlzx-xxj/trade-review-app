@@ -20,7 +20,7 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.window.DialogWindowProvider
 import androidx.core.view.WindowCompat
 
-/** The proven entry-window inset policy, shared only by plan/review/account editors. */
+/** The proven entry-window inset policy, shared by the app's scrolling configuration and review editors. */
 @Composable internal fun ReviewForm(title:String,saveLabel:String,saveTag:String,error:String?,busy:Boolean,onDismiss:()->Unit,onSave:()->Unit,content:@Composable ColumnScope.()->Unit){
     Dialog(onDismissRequest=onDismiss,properties=DialogProperties(usePlatformDefaultWidth=false,decorFitsSystemWindows=false)){
         val view=LocalView.current;val dark=isSystemInDarkTheme()

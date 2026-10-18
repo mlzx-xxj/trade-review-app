@@ -3,6 +3,8 @@ package com.tradereview.app.v210
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.os.Build
+import android.view.View
+import android.widget.DatePicker
 import android.view.accessibility.AccessibilityNodeInfo
 import android.view.accessibility.AccessibilityWindowInfo
 import androidx.compose.ui.semantics.SemanticsProperties
@@ -10,6 +12,12 @@ import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.test.*
 import androidx.lifecycle.ViewModelProvider
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.UiController
+import androidx.test.espresso.ViewAction
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiDevice
@@ -21,6 +29,7 @@ import com.tradereview.app.backup.BackupRepository
 import com.tradereview.app.stability.V08Metrics
 import com.tradereview.app.ui.BackupViewModel
 import com.tradereview.app.v200.*
+import org.hamcrest.Matcher
 import org.junit.Assert.*
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -182,6 +191,21 @@ class V210ConsistencyJourneyTest : ConsistencyUiProbe() {
         assertTrue("At least 48dp actual touch target: " + value, height != null && height >= 48f)
         return value
     }
+    private fun ruleEffectiveDate(day: LocalDate) {
+        hideKeyboard()
+        val button = ui.onNode(hasText("生效日期", substring = true) and hasClickAction() and hasAnyAncestor(isDialog()))
+        visible(button).performClick()
+        onView(isAssignableFrom(DatePicker::class.java)).perform(object : ViewAction {
+            override fun getConstraints(): Matcher<View> = isAssignableFrom(DatePicker::class.java)
+            override fun getDescription() = "Choose the synthetic effective date in the real system DatePicker"
+            override fun perform(controller: UiController, view: View) {
+                (view as DatePicker).updateDate(day.year, day.monthValue - 1, day.dayOfMonth)
+                controller.loopMainThreadUntilIdle()
+            }
+        })
+        onView(withId(android.R.id.button1)).perform(click())
+        ui.onNode(hasText("生效日期 " + day) and hasAnyAncestor(isDialog())).assertExists()
+    }
     private fun createRule() {
         tap("contract-rules-entry")
         tapText("新增合约规则")
@@ -192,9 +216,12 @@ class V210ConsistencyJourneyTest : ConsistencyUiProbe() {
         field("rule-open-fee", "1")
         field("rule-close-fee", "2")
         field("rule-today-fee", "3")
+        // Cover the old executions: new reference fees must never fill their null snapshots.
+        ruleEffectiveDate(anchor.minusDays(2))
         tap("rule-verified")
         saveAndWait("save-contract-rule") { facts().rules.size == 1 }
         settled()
+        assertEquals(anchor.minusDays(2).toEpochDay(), facts().rules.single().effectiveDay)
         val id = facts().rules.single().id
         tapText("编辑，不改写历史")
         field("rule-name", "合成合约参数已更正")

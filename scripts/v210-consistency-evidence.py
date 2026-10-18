@@ -1,5 +1,6 @@
 """Independent Decimal and raw ZIP checks for real MainActivity operations."""
 from decimal import Decimal, ROUND_HALF_UP
+from datetime import date
 import hashlib
 import json
 from pathlib import Path
@@ -127,6 +128,8 @@ def verify(first, second, api, profile, backup):
     assert len(ledger["rules"]) == 1 and not before["rules"]
     rule = ledger["rules"][0]
     assert rule["code"] == "i2701" and rule["name"] == "合成合约参数已更正"
+    assert rule["effectiveDay"] == (date(2026, 10, 15) - date(1970, 1, 1)).days
+    assert all(rule["effectiveDay"] <= e["tradingDay"] for e in ledger["executions"] if e["accountId"] == "futures")
     assert rule["verified"] is True and rule["multiplier"] == "100" and D(rule["marginRate"]) == D(".1")
     assert tuple(rule[k] for k in ("openFee", "closeFee", "todayFee")) == ("1", "2", "3")
     expected_steps = {
