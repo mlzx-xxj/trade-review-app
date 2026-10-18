@@ -1,0 +1,295 @@
+{
+  "sourceCommit": "14e60740fd1df6d86d75e7383b76cdba9398200e",
+  "runId": 39171159119,
+  "result": "FAIL",
+  "classification": "existing-SAF-test-driver-stale-object-during-root-navigation",
+  "api35": {
+    "nativeTests": 148,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "original143": "PASS",
+    "fiveNewCases": "PASS",
+    "nineKeyboardControls": "PASS",
+    "actualFilenameSelections": 2,
+    "independentDecimalFinancialCheck": "PASS",
+    "additionalEntryJourney": "FAIL: StaleObjectException at original TradeEntryExperienceTest.kt:284",
+    "additionalVisualAndConsistencyProfiles": "Not reached after existing entry journey failure",
+    "nativeExportedZipBytesRetained": false,
+    "wholeBackupRoundTrip": "Native UI assertions PASS; raw ZIP not independently retained in this failing artifact"
+  },
+  "api29": {
+    "result": "PENDING at evidence preparation; do not count this run as full success"
+  },
+  "artifact": {
+    "id": 12152713295,
+    "sha256": "4f767f56dab8979ac044d0871c962021f09ffe4bc3f1163e5d5d5200fac8af74"
+  },
+  "evidence": "Original screenshot shows open navigation drawer. Original hierarchy has Downloads in breadcrumb, toolbar and roots list; generic text selector can match a stale background node while drawer changes. Next driver waits for system idle, scopes Downloads to roots_list and scrolls dir_list to exact exported filename. All export/readback/preview/restore/financial assertions are retained. No production backup changes. The stack identifies the combined root-navigation line; it does not log which UiObject2 became stale, so the exact selected node is unconfirmed.",
+  "files": {
+    "api35/app/build/outputs/androidTest-results/connected/debug/TEST-emulator-5554 - 15-_app-.xml": {
+      "bytes": 23223,
+      "sha256": "27455c377b2ceacfccc339395c2e161a57373a38ff543b2ed3d3a0cffc4d29da",
+      "artifactId": 12152713295,
+      "originalPath": "app/build/outputs/androidTest-results/connected/debug/TEST-emulator-5554 - 15-_app-.xml"
+    },
+    "api35/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 15/logcat-com.tradereview.app.v210.V210ConsistencyJourneyTest-realConfigurationBackupAndReopenPreserveFinancialFacts.txt": {
+      "bytes": 1070626,
+      "sha256": "cc3a1903e7a7bc047615b678422f6d299e833191a770d6a02498a014ed9249aa",
+      "artifactId": 12152713295,
+      "originalPath": "app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 15/logcat-com.tradereview.app.v210.V210ConsistencyJourneyTest-realConfigurationBackupAndReopenPreserveFinancialFacts.txt"
+    },
+    "api35/app/build/reports/androidTests/connected/debug/com.tradereview.app.v210.V210ConsistencyJourneyTest.html": {
+      "bytes": 1839,
+      "sha256": "5213da57e5a93452c0f74e4a5349b9a3760d89ea9cbf9b3d17c42caa8b76a953",
+      "artifactId": 12152713295,
+      "originalPath": "app/build/reports/androidTests/connected/debug/com.tradereview.app.v210.V210ConsistencyJourneyTest.html"
+    },
+    "api35/app/build/reports/androidTests/connected/debug/com.tradereview.app.v210.V210ConsistencyUiTest.html": {
+      "bytes": 2145,
+      "sha256": "be447df1e92dd50326195f65749f942a70fb44d6be47eece762572d44e0c2ebf",
+      "artifactId": 12152713295,
+      "originalPath": "app/build/reports/androidTests/connected/debug/com.tradereview.app.v210.V210ConsistencyUiTest.html"
+    },
+    "api35/ci-metrics/TradeReview-v08-metrics/entry-failure-api35.json": {
+      "bytes": 29983,
+      "sha256": "10026600b04e3679e0c28a402223e32c6e98932df50fca7fb0e8882667e84bd3",
+      "artifactId": 12152713295,
+      "originalPath": "ci-metrics/TradeReview-v08-metrics/entry-failure-api35.json"
+    },
+    "api35/ci-metrics/TradeReview-v08-metrics/v210-consistency-contractruleeditorkeepsidentityanddraftafterrecreation-api35.json": {
+      "bytes": 2375,
+      "sha256": "8aa113d20dcc5f865bb072c587a241a8449bee08bc48ee78751713c044f0af7b",
+      "artifactId": 12152713295,
+      "originalPath": "ci-metrics/TradeReview-v08-metrics/v210-consistency-contractruleeditorkeepsidentityanddraftafterrecreation-api35.json"
+    },
+    "api35/ci-metrics/TradeReview-v08-metrics/v210-consistency-riskinputkeepsheadervisiblewithrealkeyboard-api35.json": {
+      "bytes": 1970,
+      "sha256": "2244ae0bce9a8ab1785b132ce59aac2d76556ee98a362efa92501dd5fd082631",
+      "artifactId": 12152713295,
+      "originalPath": "ci-metrics/TradeReview-v08-metrics/v210-consistency-riskinputkeepsheadervisiblewithrealkeyboard-api35.json"
+    },
+    "api35/ci-metrics/TradeReview-v08-metrics/v210-consistency-riskruleandaccountcontrolsexposenamesandstate-api35.json": {
+      "bytes": 2364,
+      "sha256": "7b2ebf1a98bfe314f397646d1ee197a002a6f287d99bc49f884d869874c48717",
+      "artifactId": 12152713295,
+      "originalPath": "ci-metrics/TradeReview-v08-metrics/v210-consistency-riskruleandaccountcontrolsexposenamesandstate-api35.json"
+    },
+    "api35/ci-metrics/TradeReview-v08-metrics/v210-consistency-strategyeditorkeepsidentityanddraftafterrecreation-api35.json": {
+      "bytes": 2527,
+      "sha256": "5e5a45f01e03fb044780175f397004f915b9f3340cd96e47f607d00fcc871220",
+      "artifactId": 12152713295,
+      "originalPath": "ci-metrics/TradeReview-v08-metrics/v210-consistency-strategyeditorkeepsidentityanddraftafterrecreation-api35.json"
+    },
+    "api35/ci-metrics/TradeReview-v08-metrics/v210-consistency-suite-api35.json": {
+      "bytes": 58163,
+      "sha256": "c44d944b60fd5fddc8c2ad34e7d990b1d3f59adbbaf782718d910ab2bb3e9006",
+      "artifactId": 12152713295,
+      "originalPath": "ci-metrics/TradeReview-v08-metrics/v210-consistency-suite-api35.json"
+    },
+    "api35/ci-screenshots/entry-failure.png": {
+      "bytes": 33285,
+      "sha256": "5d4fea2f76dd1395e6f177b49b7121aebd66bcbbeb7d92213683b00175ef6b83",
+      "artifactId": 12152713295,
+      "originalPath": "ci-screenshots/entry-failure.png"
+    },
+    "api35/ci-v200/consistency-native/v210-consistency-contractruleeditorkeepsidentityanddraftafterrecreation-narrow-dark-after-recreate.png": {
+      "bytes": 90333,
+      "sha256": "61ac3c9730804bd72c46efc0ebf04c84dca5abf626171db3c2ade8c4db077d50",
+      "artifactId": 12152713295,
+      "originalPath": "ci-v200/consistency-native/v210-consistency-contractruleeditorkeepsidentityanddraftafterrecreation-narrow-dark-after-recreate.png"
+    },
+    "api35/ci-v200/consistency-native/v210-consistency-contractruleeditorkeepsidentityanddraftafterrecreation-narrow-dark-before-recreate.png": {
+      "bytes": 81452,
+      "sha256": "c501dd674f19de33f0283e1c5fbc54226ac1b8ff4790c19ba71c1ddc12089f01",
+      "artifactId": 12152713295,
+      "originalPath": "ci-v200/consistency-native/v210-consistency-contractruleeditorkeepsidentityanddraftafterrecreation-narrow-dark-before-recreate.png"
+    },
+    "api35/ci-v200/consistency-native/v210-consistency-contractruleeditorkeepsidentityanddraftafterrecreation-narrow-dark-saved.png": {
+      "bytes": 90202,
+      "sha256": "269c9da488fcc863d796d8193b671db6638d70d7bd398fada729bbb29b106575",
+      "artifactId": 12152713295,
+      "originalPath": "ci-v200/consistency-native/v210-consistency-contractruleeditorkeepsidentityanddraftafterrecreation-narrow-dark-saved.png"
+    },
+    "api35/ci-v200/consistency-native/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-account-landscape-keyboard-suite-journey.png": {
+      "bytes": 66026,
+      "sha256": "72225bde37b7749e1bae24d290adbc5ed88146c5baae452f9a6248b80b221e53",
+      "artifactId": 12152713295,
+      "originalPath": "ci-v200/consistency-native/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-account-landscape-keyboard-suite-journey.png"
+    },
+    "api35/ci-v200/consistency-native/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-cashflow-landscape-keyboard-suite-journey.png": {
+      "bytes": 73286,
+      "sha256": "4f6e90f2c6a8ba92f77d6060c9e2ccef310975b129993f47a7dab5f27fcba7de",
+      "artifactId": 12152713295,
+      "originalPath": "ci-v200/consistency-native/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-cashflow-landscape-keyboard-suite-journey.png"
+    },
+    "api35/ci-v200/consistency-native/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-known-statistics-suite-journey.png": {
+      "bytes": 116281,
+      "sha256": "c5cee65691fa2ba667380679ab2e469b5fa38d8a99eaaa2f5f8981a7694f1ac3",
+      "artifactId": 12152713295,
+      "originalPath": "ci-v200/consistency-native/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-known-statistics-suite-journey.png"
+    },
+    "api35/ci-v200/consistency-native/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-plan-landscape-keyboard-suite-journey.png": {
+      "bytes": 68876,
+      "sha256": "b410c7f6652c9715d4a08075962770d62966076b1d1cbd96415fafc7afa17976",
+      "artifactId": 12152713295,
+      "originalPath": "ci-v200/consistency-native/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-plan-landscape-keyboard-suite-journey.png"
+    },
+    "api35/ci-v200/consistency-native/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-restore-confirm-suite-journey.png": {
+      "bytes": 114820,
+      "sha256": "5c06376cfc0b27f3ccafe58859863914c6c29ac4202e0e0d20b643895eb50016",
+      "artifactId": 12152713295,
+      "originalPath": "ci-v200/consistency-native/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-restore-confirm-suite-journey.png"
+    },
+    "api35/ci-v200/consistency-native/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-restore-preview-suite-journey.png": {
+      "bytes": 106926,
+      "sha256": "6a02d0753da082ad4f6c1358123d99c1000cc286a85bb06733b560dddcc8c9f8",
+      "artifactId": 12152713295,
+      "originalPath": "ci-v200/consistency-native/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-restore-preview-suite-journey.png"
+    },
+    "api35/ci-v200/consistency-native/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-restored-suite-journey.png": {
+      "bytes": 102648,
+      "sha256": "68d11e1ad1f4dd9194d3fefb345a563e7dcc3a45b05107fea1dfeb0edd0d8150",
+      "artifactId": 12152713295,
+      "originalPath": "ci-v200/consistency-native/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-restored-suite-journey.png"
+    },
+    "api35/ci-v200/consistency-native/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-review-landscape-keyboard-suite-journey.png": {
+      "bytes": 68040,
+      "sha256": "1ac841bd6da254a303d377c6b2d954bcca8622e969ecaccef1828a909eca0b14",
+      "artifactId": 12152713295,
+      "originalPath": "ci-v200/consistency-native/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-review-landscape-keyboard-suite-journey.png"
+    },
+    "api35/ci-v200/consistency-native/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-risk-keyboard-suite-journey.png": {
+      "bytes": 67031,
+      "sha256": "30e22a49a692867257f21c90d27210b299873ffd55311f724f2084ddb71ce1bb",
+      "artifactId": 12152713295,
+      "originalPath": "ci-v200/consistency-native/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-risk-keyboard-suite-journey.png"
+    },
+    "api35/ci-v200/consistency-native/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-rule-keyboard-suite-journey.png": {
+      "bytes": 90220,
+      "sha256": "2f58947a7b7caedf48171ac84a18989d32d2b868a3b0d251223c017368077b46",
+      "artifactId": 12152713295,
+      "originalPath": "ci-v200/consistency-native/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-rule-keyboard-suite-journey.png"
+    },
+    "api35/ci-v200/consistency-native/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-rule-landscape-keyboard-suite-journey.png": {
+      "bytes": 76900,
+      "sha256": "289c7ae81f5d4c55cef7a11cacf28bc909b272003d0849e14291faa2f8dd0e4c",
+      "artifactId": 12152713295,
+      "originalPath": "ci-v200/consistency-native/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-rule-landscape-keyboard-suite-journey.png"
+    },
+    "api35/ci-v200/consistency-native/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-saved-executions-suite-journey.png": {
+      "bytes": 96318,
+      "sha256": "8528833f2181fc9254deb73037d7e8d0efde281fde7c9f6fc8be70dba980e560",
+      "artifactId": 12152713295,
+      "originalPath": "ci-v200/consistency-native/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-saved-executions-suite-journey.png"
+    },
+    "api35/ci-v200/consistency-native/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-stock-account-suite-journey.png": {
+      "bytes": 95444,
+      "sha256": "936e7c832a926daab65f83afdbe6cf1ab671763790738b5931bf92d11aafd6f3",
+      "artifactId": 12152713295,
+      "originalPath": "ci-v200/consistency-native/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-stock-account-suite-journey.png"
+    },
+    "api35/ci-v200/consistency-native/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-strategy-keyboard-suite-journey.png": {
+      "bytes": 103201,
+      "sha256": "e936511fde7bd5b5db1720a66a2f4abb788fea92b25a4fa490c757870a7431b8",
+      "artifactId": 12152713295,
+      "originalPath": "ci-v200/consistency-native/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-strategy-keyboard-suite-journey.png"
+    },
+    "api35/ci-v200/consistency-native/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-strategy-landscape-keyboard-suite-journey.png": {
+      "bytes": 96235,
+      "sha256": "cf9d917f95fc4812eb84da26622dbeb1a01abf52beaf3848b5c75d484a3ff171",
+      "artifactId": 12152713295,
+      "originalPath": "ci-v200/consistency-native/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-strategy-landscape-keyboard-suite-journey.png"
+    },
+    "api35/ci-v200/consistency-native/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-system-save-suite-journey.png": {
+      "bytes": 49189,
+      "sha256": "ea127a2d21961cb9da30783d5e8931c8d8b7e0f591b797224035e096ca8a85dc",
+      "artifactId": 12152713295,
+      "originalPath": "ci-v200/consistency-native/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-system-save-suite-journey.png"
+    },
+    "api35/ci-v200/consistency-native/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-unknown-futures-account-suite-journey.png": {
+      "bytes": 84855,
+      "sha256": "f9f5d4c954f7fdd662b1cd4a063d367d0f284d83457ca9efdd47e0cbcb05c9df",
+      "artifactId": 12152713295,
+      "originalPath": "ci-v200/consistency-native/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-unknown-futures-account-suite-journey.png"
+    },
+    "api35/ci-v200/consistency-native/v210-consistency-riskinputkeepsheadervisiblewithrealkeyboard-narrow-dark-keyboard-header.png": {
+      "bytes": 72346,
+      "sha256": "5f31b633265a22794ec6f6bb8ae033e86af708cfc74a69694e58705e4a4d971a",
+      "artifactId": 12152713295,
+      "originalPath": "ci-v200/consistency-native/v210-consistency-riskinputkeepsheadervisiblewithrealkeyboard-narrow-dark-keyboard-header.png"
+    },
+    "api35/ci-v200/consistency-native/v210-consistency-riskinputkeepsheadervisiblewithrealkeyboard-narrow-dark-saved-risk.png": {
+      "bytes": 55129,
+      "sha256": "eb6e85da85072e8d85a03adc7349b7845c54fa5ad6411f94fc7a25bcaad5f27e",
+      "artifactId": 12152713295,
+      "originalPath": "ci-v200/consistency-native/v210-consistency-riskinputkeepsheadervisiblewithrealkeyboard-narrow-dark-saved-risk.png"
+    },
+    "api35/ci-v200/consistency-native/v210-consistency-riskruleandaccountcontrolsexposenamesandstate-narrow-dark-account-control.png": {
+      "bytes": 96442,
+      "sha256": "b5def6fe6180471d919d393863769ff541e884a5733339b816679bd49d8dfc02",
+      "artifactId": 12152713295,
+      "originalPath": "ci-v200/consistency-native/v210-consistency-riskruleandaccountcontrolsexposenamesandstate-narrow-dark-account-control.png"
+    },
+    "api35/ci-v200/consistency-native/v210-consistency-riskruleandaccountcontrolsexposenamesandstate-narrow-dark-risk-control.png": {
+      "bytes": 103773,
+      "sha256": "71772c90285101d01d8dae38f763dfe530d99d0bd39586581d92e2f6c90e3bcc",
+      "artifactId": 12152713295,
+      "originalPath": "ci-v200/consistency-native/v210-consistency-riskruleandaccountcontrolsexposenamesandstate-narrow-dark-risk-control.png"
+    },
+    "api35/ci-v200/consistency-native/v210-consistency-riskruleandaccountcontrolsexposenamesandstate-narrow-dark-rule-control.png": {
+      "bytes": 104828,
+      "sha256": "053c6d5d62f2b2138832bec099b3efa0515545c9a57a72b56c4492d771b647b1",
+      "artifactId": 12152713295,
+      "originalPath": "ci-v200/consistency-native/v210-consistency-riskruleandaccountcontrolsexposenamesandstate-narrow-dark-rule-control.png"
+    },
+    "api35/ci-v200/consistency-native/v210-consistency-strategyeditorkeepsidentityanddraftafterrecreation-narrow-dark-after-recreate.png": {
+      "bytes": 161854,
+      "sha256": "928c49e7901e941ac9ffd4e1eba4af1be7e79e8bcec045faf2bec127de2e9f2d",
+      "artifactId": 12152713295,
+      "originalPath": "ci-v200/consistency-native/v210-consistency-strategyeditorkeepsidentityanddraftafterrecreation-narrow-dark-after-recreate.png"
+    },
+    "api35/ci-v200/consistency-native/v210-consistency-strategyeditorkeepsidentityanddraftafterrecreation-narrow-dark-before-recreate.png": {
+      "bytes": 89334,
+      "sha256": "79c133520df2a65884a319a81f7f0dfe9e166d40961d2b790a4a8562246fbe56",
+      "artifactId": 12152713295,
+      "originalPath": "ci-v200/consistency-native/v210-consistency-strategyeditorkeepsidentityanddraftafterrecreation-narrow-dark-before-recreate.png"
+    },
+    "api35/ci-v200/consistency-native/v210-consistency-strategyeditorkeepsidentityanddraftafterrecreation-narrow-dark-saved.png": {
+      "bytes": 132706,
+      "sha256": "83c9fc18ed99429b99d54a1b2035aeb4f24735f3a26b9fcde9942f9414ae5f55",
+      "artifactId": 12152713295,
+      "originalPath": "ci-v200/consistency-native/v210-consistency-strategyeditorkeepsidentityanddraftafterrecreation-narrow-dark-saved.png"
+    },
+    "api35/ci-v200/entry-experience/journey-instrumentation.txt": {
+      "bytes": 2336,
+      "sha256": "4ced0036e0ec376d14efae4c31fb9525c334ec6f60f612f571508a301b30a18e",
+      "artifactId": 12152713295,
+      "originalPath": "ci-v200/entry-experience/journey-instrumentation.txt"
+    },
+    "api35/ci-v200/entry-experience/private-output/journey/entry-experience/entry-failure.png": {
+      "bytes": 33285,
+      "sha256": "5d4fea2f76dd1395e6f177b49b7121aebd66bcbbeb7d92213683b00175ef6b83",
+      "artifactId": 12152713295,
+      "originalPath": "ci-v200/entry-experience/private-output/journey/entry-experience/entry-failure.png"
+    },
+    "api35/ci-v200/entry-experience/private-output/journey/entry-experience/entry-failure.txt": {
+      "bytes": 5177,
+      "sha256": "dbaa72416777ba3d58eea27760bca35f57f3d722ac4a94b848d84d2035a32db8",
+      "artifactId": 12152713295,
+      "originalPath": "ci-v200/entry-experience/private-output/journey/entry-experience/entry-failure.txt"
+    },
+    "api35/ci-v200/entry-experience/private-output/journey/entry-experience/entry-failure.xml": {
+      "bytes": 66914,
+      "sha256": "360c06051713061b80cc28e75a4ea4522cd1f6c698e8dafccc9021dfbbf52311",
+      "artifactId": 12152713295,
+      "originalPath": "ci-v200/entry-experience/private-output/journey/entry-experience/entry-failure.xml"
+    },
+    "api35-job-original.log": {
+      "bytes": 86431,
+      "sha256": "e6456b9a99ab0fd90b0a982ccc6216fc2cfa749ee5e5b1c53d44db4de4c63a05",
+      "artifactId": null,
+      "originalPath": "GitHub job 117806015539 decoded original log"
+    }
+  }
+}

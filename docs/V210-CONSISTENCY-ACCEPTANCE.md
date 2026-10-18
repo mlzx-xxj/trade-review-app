@@ -210,3 +210,20 @@ API35原生148项、1失败、0错误/跳过；原143项及四个新探针全部
 App备份实现与格式不变，不将这次驱动失败视为产品恢复失败。
 [原始PNG、五探针JSON、JUnit、HTML与完整case日志/哈希](v210-consistency/failures/document-preview-selection/FAILURE.json)。
 四个新增共享表单取消回归在本次API35尚未执行。API29完整成功：148项原生零失败/错误/跳过、原22次加新增8次额外交互全部通过，四配置九次键盘触达、四个真实ZIP、整库恢复与不同PID重开均通过独立核验。成功归档12140405159，SHA-256为2d85e4a8b0ebf584afe3fbca04e4faed3eeb71b6639b2540bb5adc2ffc019b42，603个文件均核对；相应原始JSON/ZIP/XML/30份操作日志及横屏截图已一并留档。该轮整体仍因API35失败，不计为完整通过。
+
+## 第六轮：新增完整旅程通过，原有系统目录选择驱动失败
+
+来源14e60740fd1df6d86d75e7383b76cdba9398200e，
+[运行39171159119](https://github.com/mlzx-xxj/trade-review-app/actions/runs/39171159119)。
+API35全部148项原生零失败/错误/跳过，原143项与新增5项均通过。
+新增旅程实际选择两次精确ZIP文件名，完成导出、预览取消、覆盖恢复及四个共享表单取消；
+九次键盘保存/输入检查通过。四个共享表单横屏原图已逐一查看，标题、保存和输入可见。
+独立Decimal按原始JSON复核财务事实通过；本次失败归档没有保留原生旅程导出的ZIP字节，不能宣称完成独立ZIP核验。
+
+随后原有额外成交旅程在系统目录选择处抛出StaleObjectException（TradeEntryExperienceTest.kt:284）。
+原始截图显示导航抽屉打开；原始层级中Downloads同时出现在面包屑、工具栏和目录列表。
+原驱动没有等待抽屉稳定，且全局文本匹配可命中失效的背景节点。
+后续仅修该系统驱动：等待系统空闲，限定roots_list中的Downloads，真实滚动dir_list并核对精确文件名。
+保留全部原业务、回读、恢复及财务断言；生产代码一字未变。
+[原始XML、PNG、层级、操作日志及逐文件哈希](v210-consistency/failures/entry-picker-stale-node/FAILURE.json)。
+API29仍在运行；该轮整体不能计为通过，完整双API验收仍待后续。
