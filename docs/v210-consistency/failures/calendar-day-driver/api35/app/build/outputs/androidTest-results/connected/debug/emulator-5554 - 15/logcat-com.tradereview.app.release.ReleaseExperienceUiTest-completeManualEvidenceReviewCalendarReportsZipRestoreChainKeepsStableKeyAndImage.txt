@@ -1,0 +1,299 @@
+10-19 00:44:44.585  3730  3746 I TestRunner: started: completeManualEvidenceReviewCalendarReportsZipRestoreChainKeepsStableKeyAndImage(com.tradereview.app.release.ReleaseExperienceUiTest)
+10-19 00:44:44.607  3730  3746 W FileTestStorage: Output properties is not supported.
+10-19 00:44:44.607  3730  3746 I Tracing : Tracer added: class androidx.test.platform.tracing.AndroidXTracer
+10-19 00:44:44.612  3730  3730 D EventInjectionStrategy: Creating injection strategy with input manager.
+10-19 00:44:44.613  3730  3730 W tradereview.app: Accessing hidden method Landroid/hardware/input/InputManager;->getInstance()Landroid/hardware/input/InputManager; (unsupported, reflection, allowed)
+10-19 00:44:44.614  3730  3730 W tradereview.app: Accessing hidden method Landroid/hardware/input/InputManager;->injectInputEvent(Landroid/view/InputEvent;I)Z (unsupported, reflection, allowed)
+10-19 00:44:44.614  3730  3730 W tradereview.app: Accessing hidden field Landroid/hardware/input/InputManager;->INJECT_INPUT_EVENT_MODE_WAIT_FOR_FINISH:I (unsupported, reflection, allowed)
+10-19 00:44:44.619  3730  3730 W tradereview.app: Accessing hidden method Landroid/os/MessageQueue;->next()Landroid/os/Message; (unsupported, reflection, allowed)
+10-19 00:44:44.619  3730  3730 W tradereview.app: Accessing hidden field Landroid/os/MessageQueue;->mMessages:Landroid/os/Message; (unsupported, reflection, allowed)
+10-19 00:44:44.619  3730  3730 W tradereview.app: Accessing hidden method Landroid/os/Message;->recycleUnchecked()V (unsupported, reflection, allowed)
+10-19 00:44:44.619  3730  3746 D IdlingRegistry: Registering idling resources: [androidx.compose.ui.test.EspressoLink@10079e6]
+10-19 00:44:44.626  3730  3746 W Settings: Setting always_finish_activities has moved from android.provider.Settings.System to android.provider.Settings.Global, returning read-only value.
+10-19 00:44:44.631  2378  2759 V GrammaticalInflectionUtils: AttributionSource: AttributionSource { uid = 10148, packageName = null, attributionTag = null, token = android.os.Binder@c3c8da5, deviceId = 0, next = null } does not have READ_SYSTEM_GRAMMATICAL_GENDER permission.
+10-19 00:44:44.640  2599  2675 D SplashScreenView: Build android.window.SplashScreenView{483464e V.E...... ......ID 0,0-0,0}
+10-19 00:44:44.640  2599  2675 D SplashScreenView: Icon: view: null drawable: null size: 0
+10-19 00:44:44.640  2599  2675 D SplashScreenView: Branding: view: android.view.View{9a4e36f G.ED..... ......I. 0,0-0,0 #1020503 android:id/splashscreen_branding_view} drawable: null size w: 0 h: 0
+10-19 00:44:44.650  3034  3034 W SplitSelectStateCtor: Missing session instanceIds
+10-19 00:44:44.650  3034  3034 D StatsLog: LAUNCHER_SPLIT_SELECTION_EXIT_INTERRUPTED
+10-19 00:44:44.658  2310  2310 I BpBinder: onLastStrongRef automatically unlinking death recipients:
+10-19 00:44:44.713  3730  3730 D LifecycleMonitor: Lifecycle status change: androidx.activity.ComponentActivity@8f02c17 in: PRE_ON_CREATE
+10-19 00:44:44.714  3730  3730 V ActivityScenario: Activity lifecycle changed event received but ignored because the reported transition was not ON_CREATE while the last known transition was PRE_ON_CREATE
+10-19 00:44:44.718  3034  3146 D EGL_emulation: app_time_stats: avg=38340.27ms min=112.75ms max=152577.67ms count=4
+10-19 00:44:44.740  3034  3146 D EGL_emulation: app_time_stats: avg=38216.13ms min=30.76ms max=152546.42ms count=4
+10-19 00:44:44.754  3034  3034 D VRI[QuickstepLauncher]: visibilityChanged oldVisibility=true newVisibility=false
+10-19 00:44:44.774  3730  3730 D CompatChangeReporter: Compat change id reported: 309578419; UID 10148; state: ENABLED
+10-19 00:44:44.788  2599  2701 D EGL_emulation: app_time_stats: avg=22660.18ms min=22660.18ms max=22660.18ms count=1
+10-19 00:44:44.789  3730  3730 D LifecycleMonitor: Lifecycle status change: androidx.activity.ComponentActivity@8f02c17 in: CREATED
+10-19 00:44:44.789  3730  3730 V ActivityScenario: Update currentActivityStage to CREATED, currentActivity=androidx.activity.ComponentActivity@8f02c17
+10-19 00:44:44.792  3730  3730 D LifecycleMonitor: Lifecycle status change: androidx.activity.ComponentActivity@8f02c17 in: STARTED
+10-19 00:44:44.792  3730  3730 V ActivityScenario: Update currentActivityStage to STARTED, currentActivity=androidx.activity.ComponentActivity@8f02c17
+10-19 00:44:44.794  3730  3730 D LifecycleMonitor: Lifecycle status change: androidx.activity.ComponentActivity@8f02c17 in: RESUMED
+10-19 00:44:44.794  3730  3730 V ActivityScenario: Update currentActivityStage to RESUMED, currentActivity=androidx.activity.ComponentActivity@8f02c17
+10-19 00:44:44.800  3730  3730 W HWUI    : Unknown dataspace 0
+10-19 00:44:44.818  2310  2776 W ServiceManagerCppClient: Permission failure: android.permission.ACCESS_SURFACE_FLINGER from uid=10148 pid=0
+10-19 00:44:44.818  2310  2776 D PermissionCache: checking android.permission.ACCESS_SURFACE_FLINGER for uid=10148 => denied (159 us)
+10-19 00:44:44.818  2310  2776 W ServiceManagerCppClient: Permission failure: android.permission.ROTATE_SURFACE_FLINGER from uid=10148 pid=0
+10-19 00:44:44.818  2310  2776 D PermissionCache: checking android.permission.ROTATE_SURFACE_FLINGER for uid=10148 => denied (116 us)
+10-19 00:44:44.818  2310  2776 W ServiceManagerCppClient: Permission failure: android.permission.INTERNAL_SYSTEM_WINDOW from uid=10148 pid=0
+10-19 00:44:44.818  2310  2776 D PermissionCache: checking android.permission.INTERNAL_SYSTEM_WINDOW for uid=10148 => denied (115 us)
+10-19 00:44:44.820  3730  3812 I EGL_emulation: Opening libGLESv1_CM_emulation.so
+10-19 00:44:44.821  3730  3812 I EGL_emulation: Opening libGLESv2_emulation.so
+10-19 00:44:44.854  3730  3812 W HWUI    : Failed to initialize 101010-2 format, error = EGL_SUCCESS
+10-19 00:44:44.885   141   141 I hwservicemanager: getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+10-19 00:44:44.887  3730  3812 I Gralloc4: mapper 4.x is not supported
+10-19 00:44:45.011  2378  2678 W ServiceManagerCppClient: Permission failure: android.permission.ACCESS_SURFACE_FLINGER from uid=10148 pid=0
+10-19 00:44:45.012  2378  2678 D PermissionCache: checking android.permission.ACCESS_SURFACE_FLINGER for uid=10148 => denied (370 us)
+10-19 00:44:45.012  2378  2678 W ServiceManagerCppClient: Permission failure: android.permission.ROTATE_SURFACE_FLINGER from uid=10148 pid=0
+10-19 00:44:45.012  2378  2678 D PermissionCache: checking android.permission.ROTATE_SURFACE_FLINGER for uid=10148 => denied (40 us)
+10-19 00:44:45.012  2378  2678 W ServiceManagerCppClient: Permission failure: android.permission.INTERNAL_SYSTEM_WINDOW from uid=10148 pid=0
+10-19 00:44:45.012  2378  2678 D PermissionCache: checking android.permission.INTERNAL_SYSTEM_WINDOW for uid=10148 => denied (48 us)
+10-19 00:44:45.016  2378  2397 W ziparchive: Unable to open '/data/app/~~PiqrfRuS5MEmDg2ASn8myQ==/com.tradereview.app-BORkHEVPNCg8M3kcEWtm1A==/base.dm': No such file or directory
+10-19 00:44:45.020  3034  3034 D BaseDepthController: setSurface:
+10-19 00:44:45.020  3034  3034 D BaseDepthController: 	mWaitingOnSurfaceValidity: false
+10-19 00:44:45.020  3034  3034 D BaseDepthController: 	mSurface: null
+10-19 00:44:45.021  2378  2397 I ActivityTaskManager: Displayed com.tradereview.app/androidx.activity.ComponentActivity for user 0: +386ms
+10-19 00:44:45.022  3034  3034 D BaseDepthController: mSurface is null and mCurrentBlur is: 0
+10-19 00:44:45.023  3034  3034 D StateManager: goToState - fromState: Normal, toState: Normal, partial trace:
+10-19 00:44:45.023  3034  3034 D StateManager: 	at com.android.launcher3.statemanager.StateManager.moveToRestState(StateManager.java:453)
+10-19 00:44:45.023  3034  3034 D StateManager: 	at com.android.launcher3.statemanager.StateManager.moveToRestState(StateManager.java:444)
+10-19 00:44:45.023  3034  3034 D StateManager: 	at com.android.launcher3.statemanager.StatefulActivity.onStop(StatefulActivity.java:119)
+10-19 00:44:45.024  3034  3034 D StatsLog: LAUNCHER_ONSTOP
+10-19 00:44:45.032  2309  2330 I netd    : tetherGetStats() -> {[]} <0.70ms>
+10-19 00:44:45.035  2599  2674 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=false callback=android.view.ViewRootImpl$$ExternalSyntheticLambda11@d2f0c81
+10-19 00:44:45.038  2378  2802 W InputManager-JNI: Input channel object '2ffb5b4 Splash Screen com.tradereview.app (client)' was disposed without first being removed with the input manager!
+10-19 00:44:45.050  2378  2490 I ImeTracker: com.tradereview.app:e7991492: onRequestHide at ORIGIN_SERVER reason HIDE_UNSPECIFIED_WINDOW fromUser false
+10-19 00:44:45.052  2378  2490 I ImeTracker: com.tradereview.app:e7991492: onCancelled at PHASE_SERVER_SHOULD_HIDE
+10-19 00:44:45.251  3730  3736 I tradereview.app: Compiler allocated 5174KB to compile void android.view.ViewRootImpl.performTraversals()
+10-19 00:44:46.204  3730  3820 I HWUI    : Davey! duration=1019ms; Flags=0, FrameTimelineVsyncId=1646, IntendedVsync=231442645933, Vsync=231642645925, InputEventId=0, HandleInputStart=231657754360, AnimationStart=231657755381, PerformTraversalsStart=231657755753, DrawStart=231919282226, FrameDeadline=231459312599, FrameInterval=231657389750, FrameStartTime=16666666, SyncQueued=231931603278, SyncStart=231931643285, IssueDrawCommandsStart=231931688399, SwapBuffers=232301850763, FrameCompleted=232462011622, DequeueBufferDuration=3437, QueueBufferDuration=459877, GpuCompleted=232461914381, SwapBuffersCompleted=232462011622, DisplayPresentTime=144115222452437076, CommandSubmissionCompleted=232301850763,
+10-19 00:44:46.258  3730  3730 W WindowOnBackDispatcher: OnBackInvokedCallback is not enabled for the application.
+10-19 00:44:46.258  3730  3730 W WindowOnBackDispatcher: Set 'android:enableOnBackInvokedCallback="true"' in the application manifest.
+10-19 00:44:46.588  2599  2701 D EGL_emulation: app_time_stats: avg=450.08ms min=10.19ms max=1489.79ms count=4
+10-19 00:44:46.788  2378  2490 I ImeTracker: com.tradereview.app:3705b1c1: onRequestHide at ORIGIN_SERVER reason HIDE_UNSPECIFIED_WINDOW fromUser false
+10-19 00:44:46.788  2378  2490 I ImeTracker: com.tradereview.app:3705b1c1: onCancelled at PHASE_SERVER_SHOULD_HIDE
+10-19 00:44:47.112  3730  3730 D Autofill Status: Autofill popup isn't shown because autofill is not available.
+10-19 00:44:47.112  3730  3730 D Autofill Status:
+10-19 00:44:47.112  3730  3730 D Autofill Status: Did you set up autofill?
+10-19 00:44:47.112  3730  3730 D Autofill Status: 1. Go to Settings > System > Languages&input > Advanced > Autofill Service
+10-19 00:44:47.112  3730  3730 D Autofill Status: 2. Pick a service
+10-19 00:44:47.112  3730  3730 D Autofill Status:
+10-19 00:44:47.112  3730  3730 D Autofill Status: Did you add an account?
+10-19 00:44:47.112  3730  3730 D Autofill Status: 1. Go to Settings > System > Languages&input > Advanced
+10-19 00:44:47.112  3730  3730 D Autofill Status: 2. Click on the settings icon next to the Autofill Service
+10-19 00:44:47.112  3730  3730 D Autofill Status: 3. Add your account
+10-19 00:44:47.127  3730  3730 D InsetsController: show(ime(), fromIme=false)
+10-19 00:44:47.129  3730  3730 I ImeTracker: com.tradereview.app:54e66ee1: onRequestShow at ORIGIN_CLIENT reason SHOW_SOFT_INPUT_BY_INSETS_API fromUser false
+10-19 00:44:47.130  3730  3730 D InputMethodManager: showSoftInput() view=androidx.compose.ui.platform.AndroidComposeView{62711eb VFED..... .F....ID 0,0-768,1280 aid=1073741825} flags=0 reason=SHOW_SOFT_INPUT_BY_INSETS_API
+10-19 00:44:47.160  2309  2330 I netd    : tetherGetStats() -> {[]} <0.28ms>
+10-19 00:44:47.164  3020  3020 W RichInputMethodSubtype: Can't find emoji subtype
+10-19 00:44:47.164  3020  3020 W RichInputMethodSubtype: No input method subtype found; returning placeholder subtype: Multi-lingual subtype: android.view.inputmethod.InputMethodSubtype@d78b2ed0, zz
+10-19 00:44:47.192  3020  3020 I EmojiCategory: Last Emoji category id is 8
+10-19 00:44:47.198  3020  3020 W ViewPager: Requested offscreen page limit 0 too small; defaulting to 1
+10-19 00:44:47.206  3730  3730 I ImeTracker: com.tradereview.app:97ee04f8: onRequestShow at ORIGIN_CLIENT reason SHOW_SOFT_INPUT fromUser false
+10-19 00:44:47.207  3730  3730 D InputMethodManager: showSoftInput() view=androidx.compose.ui.platform.AndroidComposeView{62711eb VFED..... .F....ID 0,0-768,1280 aid=1073741825} flags=0 reason=SHOW_SOFT_INPUT
+10-19 00:44:47.210  3020  3020 I LatinIME: Starting input. Cursor position = 0,0
+10-19 00:44:47.363  3034  3034 D View    : ---- ST:requestLayout
+10-19 00:44:47.363  3034  3034 D View    : requestLayout : getStackTrace(Thread.java:1841) <- printStackStrace(View.java:27969) <- requestLayout(View.java:27999) <- requestLayout(View.java:28020) <- requestLayout(View.java:28020) <- requestLayout(View.java:28020) <- removeAllViews(ViewGroup.java:5740) <- layoutButtons(PhonePortraitNavLayoutter.kt:78) <- updateButtonLayoutSpacing(NavbarButtonsViewController.java:802) <- parseSystemUiFlags(NavbarButtonsViewController.java:484) <- updateStateForSysuiFlags(NavbarButtonsViewController.java:493) <- updateSysuiStateFlags(TaskbarActivityContext.java:817) <- onSystemUiFlagsChanged(TaskbarManager.java:502) <- onSystemUiFlagsChanged(TouchInteractionService.java:722) <- -$$Nest$monSystemUiFlagsChanged(null:0) <- lambda$onSystemUiStateChanged$13(TouchInteractionService.java:311) <- accept(D8$$SyntheticClass:0) <- executeForTouchInteractionService(TouchInteractionService.java:377) <- lambda$onSystemUiStateChanged$14(TouchInteractionService.java:308) <- $r8$lambda$8AiRCS7Y2H5KRXXuIdOdP1LQuA0(null:0) <-
+10-19 00:44:47.379  3034  3034 D View    : ---- ST:requestLayout
+10-19 00:44:47.380  3034  3034 D View    : requestLayout : getStackTrace(Thread.java:1841) <- printStackStrace(View.java:27969) <- requestLayout(View.java:27999) <- setLayoutParams(View.java:20530) <- updateViewLayout(WindowManagerGlobal.java:464) <- updateViewLayout(WindowManagerImpl.java:165) <- notifyUpdateLayoutParams(TaskbarActivityContext.java:1528) <- onTaskbarOrBubblebarWindowHeightOrInsetsChanged(TaskbarInsetsController.kt:186) <- lambda$onIsStashedChanged$7(TaskbarStashController.java:938) <- $r8$lambda$V70CIL_pG5t21J73JvZUvAfU2B0(null:0) <- run(D8$$SyntheticClass:0) <- runAfterInit(TaskbarControllers.java:263) <- onIsStashedChanged(TaskbarStashController.java:935) <- lambda$createAnimToIsStashed$3(TaskbarStashController.java:620) <- $r8$lambda$lICNXpsaTGWd-5rxHyDFfQwiuw4(null:0) <- run(D8$$SyntheticClass:0) <- onAnimationEnd(AnimatorListeners.java:54) <- onAnimationEnd(Animator.java:708) <- call(D8$$SyntheticClass:0) <- callOnList(Animator.java:666) <-
+10-19 00:44:47.381  2310  2320 W ServiceManagerCppClient: Permission failure: android.permission.ACCESS_SURFACE_FLINGER from uid=10108 pid=0
+10-19 00:44:47.381  2310  2320 D PermissionCache: checking android.permission.ACCESS_SURFACE_FLINGER for uid=10108 => denied (5814 us)
+10-19 00:44:47.382  2310  2315 W ServiceManagerCppClient: Permission failure: android.permission.ACCESS_SURFACE_FLINGER from uid=10108 pid=3020
+10-19 00:44:47.382  2310  2315 D PermissionCache: checking android.permission.ACCESS_SURFACE_FLINGER for uid=10108 => denied (5767 us)
+10-19 00:44:47.383  2310  2315 W ServiceManagerCppClient: Permission failure: android.permission.ROTATE_SURFACE_FLINGER from uid=10108 pid=3020
+10-19 00:44:47.383  2310  2315 D PermissionCache: checking android.permission.ROTATE_SURFACE_FLINGER for uid=10108 => denied (1309 us)
+10-19 00:44:47.383  2310  2315 W ServiceManagerCppClient: Permission failure: android.permission.INTERNAL_SYSTEM_WINDOW from uid=10108 pid=3020
+10-19 00:44:47.383  2310  2315 D PermissionCache: checking android.permission.INTERNAL_SYSTEM_WINDOW for uid=10108 => denied (167 us)
+10-19 00:44:47.384  3020  3026 W putmethod.latin: Missing inline cache for void com.android.inputmethod.latin.DictionaryFacilitatorImpl.resetDictionaries(android.content.Context, java.util.Locale, boolean, boolean, boolean, java.lang.String, java.lang.String, com.android.inputmethod.latin.DictionaryFacilitator$DictionaryInitializationListener)
+10-19 00:44:47.384  2310  2320 W ServiceManagerCppClient: Permission failure: android.permission.ROTATE_SURFACE_FLINGER from uid=10108 pid=0
+10-19 00:44:47.384  2310  2320 D PermissionCache: checking android.permission.ROTATE_SURFACE_FLINGER for uid=10108 => denied (3040 us)
+10-19 00:44:47.396  3034  3146 D EGL_emulation: app_time_stats: avg=2655.77ms min=2655.77ms max=2655.77ms count=1
+10-19 00:44:47.412  3034  3034 W FrameTracker: Missed App frame:UNKNOWN: 24, 2049, 22450215, CUJ=J<TASKBAR_COLLAPSE>
+10-19 00:44:47.412  3034  3034 W FrameTracker: Missed SF frame:UNKNOWN: 24, 2049, 22450215, CUJ=J<TASKBAR_COLLAPSE>
+10-19 00:44:47.443  3020  3051 I EGL_emulation: Opening libGLESv1_CM_emulation.so
+10-19 00:44:47.448  3020  3051 I EGL_emulation: Opening libGLESv2_emulation.so
+10-19 00:44:47.453  3020  3051 W HWUI    : Failed to initialize 101010-2 format, error = EGL_SUCCESS
+10-19 00:44:47.478   141   141 I hwservicemanager: getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+10-19 00:44:47.479  3020  3051 I Gralloc4: mapper 4.x is not supported
+10-19 00:44:47.520  3730  3812 D EGL_emulation: app_time_stats: avg=310.22ms min=17.18ms max=1083.16ms count=8
+10-19 00:44:47.802  2378  2678 D WifiNl80211Manager: Scan result ready event
+10-19 00:44:47.802  2378  2678 D WifiNative: Scan result ready event
+10-19 00:44:47.807  2378  2515 I HalDevMgr: bestIfaceCreationProposal is null, requestIface=STA, existingIface=[name=wlan0 type=STA]
+10-19 00:44:47.838  3730  3730 D InsetsController: hide(ime(), fromIme=false)
+10-19 00:44:47.839  3730  3730 I ImeTracker: com.tradereview.app:5f0be35f: onRequestHide at ORIGIN_CLIENT reason HIDE_SOFT_INPUT_BY_INSETS_API fromUser false
+10-19 00:44:47.839  3730  3730 I ImeTracker: com.tradereview.app:84cca71f: onRequestHide at ORIGIN_CLIENT reason HIDE_SOFT_INPUT_REQUEST_HIDE_WITH_CONTROL fromUser false
+10-19 00:44:47.841  3730  3730 I ImeTracker: com.tradereview.app:5f0be35f: onCancelled at PHASE_CLIENT_APPLY_ANIMATION
+10-19 00:44:48.041  3730  3812 D EGL_emulation: app_time_stats: avg=162.24ms min=26.36ms max=339.02ms count=8
+10-19 00:44:48.041  3730  3730 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=false callback=android.view.ViewRootImpl$$ExternalSyntheticLambda11@8332d87
+10-19 00:44:48.290  2378  2678 W ServiceManagerCppClient: Permission failure: android.permission.ACCESS_SURFACE_FLINGER from uid=10108 pid=0
+10-19 00:44:48.290  2378  2678 D PermissionCache: checking android.permission.ACCESS_SURFACE_FLINGER for uid=10108 => denied (92 us)
+10-19 00:44:48.290  2378  2678 W ServiceManagerCppClient: Permission failure: android.permission.ROTATE_SURFACE_FLINGER from uid=10108 pid=0
+10-19 00:44:48.290  2378  2678 D PermissionCache: checking android.permission.ROTATE_SURFACE_FLINGER for uid=10108 => denied (18 us)
+10-19 00:44:48.290  2378  2678 W ServiceManagerCppClient: Permission failure: android.permission.INTERNAL_SYSTEM_WINDOW from uid=10108 pid=0
+10-19 00:44:48.290  2378  2678 D PermissionCache: checking android.permission.INTERNAL_SYSTEM_WINDOW for uid=10108 => denied (13 us)
+10-19 00:44:48.297  2378  2618 I ImeTracker: com.tradereview.app:54e66ee1: onCancelled at PHASE_WM_SHOW_IME_RUNNER
+10-19 00:44:48.297  3020  3020 I Choreographer: Skipped 55 frames!  The application may be doing too much work on its main thread.
+10-19 00:44:48.303  2378  2618 W InputManager-JNI: Input channel object '37e0eae com.tradereview.app/androidx.activity.ComponentActivity (client)' was disposed without first being removed with the input manager!
+10-19 00:44:48.316  2378  2401 W WindowManager: container Window{37e0eae u0 com.tradereview.app/androidx.activity.ComponentActivity}does not have a surface
+10-19 00:44:48.320  2378  2678 I ImeTracker: com.tradereview.app:84cca71f: onFailed at PHASE_WM_HAS_IME_INSETS_CONTROL_TARGET
+10-19 00:44:48.321  3020  3033 I HWUI    : Davey! duration=1149ms; Flags=1, FrameTimelineVsyncId=1982, IntendedVsync=233509312517, Vsync=233725979175, InputEventId=0, HandleInputStart=233729117957, AnimationStart=233729118528, PerformTraversalsStart=233729118708, DrawStart=233861867253, FrameDeadline=233525979183, FrameInterval=233729045111, FrameStartTime=16666666, SyncQueued=233868366276, SyncStart=233868593951, IssueDrawCommandsStart=233870603409, SwapBuffers=234416693261, FrameCompleted=234658573145, DequeueBufferDuration=4338, QueueBufferDuration=6213029, GpuCompleted=234658501170, SwapBuffersCompleted=234658573145, DisplayPresentTime=0, CommandSubmissionCompleted=234416693261,
+10-19 00:44:48.358  3034  3034 D View    : ---- ST:requestLayout
+10-19 00:44:48.358  3034  3034 D View    : requestLayout : getStackTrace(Thread.java:1841) <- printStackStrace(View.java:27969) <- requestLayout(View.java:27999) <- requestLayout(View.java:28020) <- requestLayout(View.java:28020) <- requestLayout(View.java:28020) <- removeAllViews(ViewGroup.java:5740) <- layoutButtons(PhonePortraitNavLayoutter.kt:78) <- updateButtonLayoutSpacing(NavbarButtonsViewController.java:802) <- parseSystemUiFlags(NavbarButtonsViewController.java:484) <- updateStateForSysuiFlags(NavbarButtonsViewController.java:493) <- updateSysuiStateFlags(TaskbarActivityContext.java:817) <- onSystemUiFlagsChanged(TaskbarManager.java:502) <- onSystemUiFlagsChanged(TouchInteractionService.java:722) <- -$$Nest$monSystemUiFlagsChanged(null:0) <- lambda$onSystemUiStateChanged$13(TouchInteractionService.java:311) <- accept(D8$$SyntheticClass:0) <- executeForTouchInteractionService(TouchInteractionService.java:377) <- lambda$onSystemUiStateChanged$14(TouchInteractionService.java:308) <- $r8$lambda$8AiRCS7Y2H5KRXXuIdOdP1LQuA0(null:0) <-
+10-19 00:44:48.359  3034  3034 D View    : ---- ST:requestLayout
+10-19 00:44:48.359  3034  3034 D View    : requestLayout : getStackTrace(Thread.java:1841) <- printStackStrace(View.java:27969) <- requestLayout(View.java:27999) <- setLayoutParams(View.java:20530) <- updateViewLayout(WindowManagerGlobal.java:464) <- updateViewLayout(WindowManagerImpl.java:165) <- notifyUpdateLayoutParams(TaskbarActivityContext.java:1528) <- onTaskbarOrBubblebarWindowHeightOrInsetsChanged(TaskbarInsetsController.kt:186) <- lambda$onIsStashedChanged$7(TaskbarStashController.java:938) <- $r8$lambda$V70CIL_pG5t21J73JvZUvAfU2B0(null:0) <- run(D8$$SyntheticClass:0) <- runAfterInit(TaskbarControllers.java:263) <- onIsStashedChanged(TaskbarStashController.java:935) <- lambda$createAnimToIsStashed$3(TaskbarStashController.java:620) <- $r8$lambda$lICNXpsaTGWd-5rxHyDFfQwiuw4(null:0) <- run(D8$$SyntheticClass:0) <- onAnimationEnd(AnimatorListeners.java:54) <- onAnimationEnd(Animator.java:708) <- call(D8$$SyntheticClass:0) <- callOnList(Animator.java:666) <-
+10-19 00:44:48.385  3730  3730 E ViewRootImpl: Calling showInsets(8,true) on window that no longer has views.
+10-19 00:44:48.385  3730  3730 D InsetsController: show(ime(), fromIme=true)
+10-19 00:44:48.385  3730  3730 W InsetsController: collectSourceControls can't continue for type: ime, fromIme: true requires a control with a leash but we have control: null
+10-19 00:44:48.385  3730  3730 I ImeTracker: com.tradereview.app:97ee04f8: onFailed at PHASE_CLIENT_COLLECT_SOURCE_CONTROLS
+10-19 00:44:48.390  2599  2701 D EGL_emulation: app_time_stats: avg=900.90ms min=19.78ms max=1782.03ms count=2
+10-19 00:44:48.397  3020  3052 I HWUI    : Davey! duration=1015ms; Flags=0, FrameTimelineVsyncId=2042, IntendedVsync=233742645841, Vsync=234659312471, InputEventId=0, HandleInputStart=234665798152, AnimationStart=234665798933, PerformTraversalsStart=234665809734, DrawStart=234672408903, FrameDeadline=234675979137, FrameInterval=234665707452, FrameStartTime=16666666, SyncQueued=234672563251, SyncStart=234672857450, IssueDrawCommandsStart=234676415757, SwapBuffers=234697599601, FrameCompleted=234758191310, DequeueBufferDuration=3216, QueueBufferDuration=18064502, GpuCompleted=234757701135, SwapBuffersCompleted=234758191310, DisplayPresentTime=0, CommandSubmissionCompleted=234697599601,
+10-19 00:44:48.397  2378  2490 I ImeTracker: com.tradereview.app:7d6f5843: onRequestHide at ORIGIN_SERVER reason HIDE_UNSPECIFIED_WINDOW fromUser false
+10-19 00:44:48.397  2378  2490 I ImeTracker: com.tradereview.app:7d6f5843: onCancelled at PHASE_SERVER_SHOULD_HIDE
+10-19 00:44:48.398  3034  3146 D EGL_emulation: app_time_stats: avg=1002.07ms min=1002.07ms max=1002.07ms count=1
+10-19 00:44:48.475  3034  3034 W FrameTracker: Missed SF frame:UNKNOWN: 66, 2233, 52848069, CUJ=J<TASKBAR_EXPAND>
+10-19 00:44:48.530  3730  3812 D EGL_emulation: app_time_stats: avg=336.42ms min=141.45ms max=477.52ms count=3
+10-19 00:44:48.775  3730  3730 W WindowOnBackDispatcher: OnBackInvokedCallback is not enabled for the application.
+10-19 00:44:48.775  3730  3730 W WindowOnBackDispatcher: Set 'android:enableOnBackInvokedCallback="true"' in the application manifest.
+10-19 00:44:48.978  2378  2490 I ImeTracker: com.tradereview.app:531fcf1b: onRequestHide at ORIGIN_SERVER reason HIDE_UNSPECIFIED_WINDOW fromUser false
+10-19 00:44:48.979  2378  2490 I ImeTracker: com.tradereview.app:531fcf1b: onCancelled at PHASE_SERVER_SHOULD_HIDE
+10-19 00:44:49.183  3730  3730 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=false callback=android.view.ViewRootImpl$$ExternalSyntheticLambda11@4c58cd4
+10-19 00:44:49.194  2378  2618 W InputManager-JNI: Input channel object 'da43440 com.tradereview.app/androidx.activity.ComponentActivity (client)' was disposed without first being removed with the input manager!
+10-19 00:44:49.198  3730  3730 W WindowOnBackDispatcher: OnBackInvokedCallback is not enabled for the application.
+10-19 00:44:49.198  3730  3730 W WindowOnBackDispatcher: Set 'android:enableOnBackInvokedCallback="true"' in the application manifest.
+10-19 00:44:49.209  2378  2401 W WindowManager: container Window{da43440 u0 com.tradereview.app/androidx.activity.ComponentActivity}does not have a surface
+10-19 00:44:49.330  2378  2490 I ImeTracker: com.tradereview.app:1bbe78b6: onRequestHide at ORIGIN_SERVER reason HIDE_UNSPECIFIED_WINDOW fromUser false
+10-19 00:44:49.330  2378  2490 I ImeTracker: com.tradereview.app:1bbe78b6: onCancelled at PHASE_SERVER_SHOULD_HIDE
+10-19 00:44:49.595  3730  3812 D EGL_emulation: app_time_stats: avg=88.69ms min=20.86ms max=435.26ms count=12
+10-19 00:44:49.943  3730  3746 I UiAutomation: Initialized for user 0 on display 0
+10-19 00:44:49.948  2378  2378 W IPCThreadState: Sending oneway calls to frozen process.
+10-19 00:44:49.948  2378  2378 W IPCThreadState: Sending oneway calls to frozen process.
+10-19 00:44:49.948  2378  2378 W IPCThreadState: Sending oneway calls to frozen process.
+10-19 00:44:49.952  3730  3838 V UiAutomation: Init UiAutomation@1857730[id=1, displayId=0, flags=0]
+10-19 00:44:49.953  2310  2320 D PermissionCache: checking android.permission.READ_FRAME_BUFFER for uid=1000 => granted (55 us)
+10-19 00:44:50.057  3099  3234 W MediaProvider: isAppCloneUserPair for user 0: false
+10-19 00:44:50.058  3099  3234 W MediaProvider: isAppCloneUserPair for user 0: false
+10-19 00:44:50.058  3099  3234 W MediaProvider: isAppCloneUserPair for user 0: false
+10-19 00:44:50.059  3099  3234 W MediaProvider: isAppCloneUserPair for user 0: false
+10-19 00:44:50.130  3730  3730 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=false callback=android.view.ViewRootImpl$$ExternalSyntheticLambda11@fc33382
+10-19 00:44:50.222  2378  2759 W InputManager-JNI: Input channel object '51a962b com.tradereview.app/androidx.activity.ComponentActivity (client)' was disposed without first being removed with the input manager!
+10-19 00:44:50.227  3730  3730 W WindowOnBackDispatcher: OnBackInvokedCallback is not enabled for the application.
+10-19 00:44:50.227  3730  3730 W WindowOnBackDispatcher: Set 'android:enableOnBackInvokedCallback="true"' in the application manifest.
+10-19 00:44:50.233  2378  2401 W WindowManager: container Window{51a962b u0 com.tradereview.app/androidx.activity.ComponentActivity}does not have a surface
+10-19 00:44:50.311  2599  2701 D EGL_emulation: app_time_stats: avg=319.17ms min=4.61ms max=1068.90ms count=6
+10-19 00:44:50.403  2378  2490 I ImeTracker: com.tradereview.app:93c918ad: onRequestHide at ORIGIN_SERVER reason HIDE_UNSPECIFIED_WINDOW fromUser false
+10-19 00:44:50.404  2378  2490 I ImeTracker: com.tradereview.app:93c918ad: onCancelled at PHASE_SERVER_SHOULD_HIDE
+10-19 00:44:50.462  3730  3730 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=false callback=android.view.ViewRootImpl$$ExternalSyntheticLambda11@5620a50
+10-19 00:44:50.488  2378  2393 W InputManager-JNI: Input channel object '47001a6 com.tradereview.app/androidx.activity.ComponentActivity (client)' was disposed without first being removed with the input manager!
+10-19 00:44:50.491  2378  2401 W WindowManager: container Window{47001a6 u0 com.tradereview.app/androidx.activity.ComponentActivity}does not have a surface
+10-19 00:44:50.516  2378  2490 I ImeTracker: com.tradereview.app:d41041d: onRequestHide at ORIGIN_SERVER reason HIDE_UNSPECIFIED_WINDOW fromUser false
+10-19 00:44:50.516  2378  2490 I ImeTracker: com.tradereview.app:d41041d: onCancelled at PHASE_SERVER_SHOULD_HIDE
+10-19 00:44:50.634  3730  3812 D EGL_emulation: app_time_stats: avg=346.58ms min=56.63ms max=900.15ms count=3
+10-19 00:44:51.463  2378  2802 V GrammaticalInflectionUtils: AttributionSource: AttributionSource { uid = 10149, packageName = null, attributionTag = null, token = android.os.Binder@c3c8da5, deviceId = 0, next = null } does not have READ_SYSTEM_GRAMMATICAL_GENDER permission.
+10-19 00:44:51.468  2599  2675 D SplashScreenView: Build android.window.SplashScreenView{fb762d1 V.E...... ......ID 0,0-0,0}
+10-19 00:44:51.468  2599  2675 D SplashScreenView: Icon: view: null drawable: null size: 0
+10-19 00:44:51.468  2599  2675 D SplashScreenView: Branding: view: android.view.View{fd6f136 G.ED..... ......I. 0,0-0,0 #1020503 android:id/splashscreen_branding_view} drawable: null size w: 0 h: 0
+10-19 00:44:51.471  3730  3730 D LifecycleMonitor: Lifecycle status change: androidx.activity.ComponentActivity@8f02c17 in: PAUSED
+10-19 00:44:51.471  3730  3730 V ActivityScenario: Update currentActivityStage to PAUSED, currentActivity=androidx.activity.ComponentActivity@8f02c17
+10-19 00:44:51.472  3034  3034 I TopTaskTracker: onTaskMovedToFront: (moved taskInfo to front) taskId=8, baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10000000 cmp=com.tradereview.app.test/androidx.test.core.app.InstrumentationActivityInvoker$EmptyActivity }
+10-19 00:44:51.474  2310  2310 I BpBinder: onLastStrongRef automatically unlinking death recipients:
+10-19 00:44:51.514  2309  2330 I netd    : tetherGetStats() -> {[]} <0.37ms>
+10-19 00:44:51.538   141   141 I hwservicemanager: getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+10-19 00:44:51.538  2378  2401 I Gralloc4: mapper 4.x is not supported
+10-19 00:44:51.556  3755  3755 D CompatChangeReporter: Compat change id reported: 309578419; UID 10149; state: ENABLED
+10-19 00:44:51.563  3730  3730 D VRI[ComponentActivity]: visibilityChanged oldVisibility=true newVisibility=false
+10-19 00:44:51.573  2378  3846 I EGL_emulation: Opening libGLESv1_CM_emulation.so
+10-19 00:44:51.574  2378  3846 I EGL_emulation: Opening libGLESv2_emulation.so
+10-19 00:44:51.589  2378  3846 W HWUI    : Failed to initialize 101010-2 format, error = EGL_SUCCESS
+10-19 00:44:51.590  3755  3755 W HWUI    : Unknown dataspace 0
+10-19 00:44:51.617  2599  2701 D EGL_emulation: app_time_stats: avg=326.27ms min=8.38ms max=1102.37ms count=4
+10-19 00:44:51.630  2310  2320 W ServiceManagerCppClient: Permission failure: android.permission.ACCESS_SURFACE_FLINGER from uid=10149 pid=0
+10-19 00:44:51.630  2310  2320 D PermissionCache: checking android.permission.ACCESS_SURFACE_FLINGER for uid=10149 => denied (186 us)
+10-19 00:44:51.630  2310  2320 W ServiceManagerCppClient: Permission failure: android.permission.ROTATE_SURFACE_FLINGER from uid=10149 pid=0
+10-19 00:44:51.630  2310  2320 D PermissionCache: checking android.permission.ROTATE_SURFACE_FLINGER for uid=10149 => denied (321 us)
+10-19 00:44:51.630  2310  2320 W ServiceManagerCppClient: Permission failure: android.permission.INTERNAL_SYSTEM_WINDOW from uid=10149 pid=0
+10-19 00:44:51.630  2310  2320 D PermissionCache: checking android.permission.INTERNAL_SYSTEM_WINDOW for uid=10149 => denied (137 us)
+10-19 00:44:51.631  3755  3842 I EGL_emulation: Opening libGLESv1_CM_emulation.so
+10-19 00:44:51.635  3755  3842 I EGL_emulation: Opening libGLESv2_emulation.so
+10-19 00:44:51.739  3730  3730 D LifecycleMonitor: Lifecycle status change: androidx.activity.ComponentActivity@8f02c17 in: STOPPED
+10-19 00:44:51.739  3730  3730 V ActivityScenario: Update currentActivityStage to STOPPED, currentActivity=androidx.activity.ComponentActivity@8f02c17
+10-19 00:44:51.751  3755  3842 W HWUI    : Failed to initialize 101010-2 format, error = EGL_SUCCESS
+10-19 00:44:51.778  3730  3730 D LifecycleMonitor: Lifecycle status change: androidx.activity.ComponentActivity@8f02c17 in: DESTROYED
+10-19 00:44:51.779   141   141 I hwservicemanager: getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+10-19 00:44:51.779  3755  3842 I Gralloc4: mapper 4.x is not supported
+10-19 00:44:51.779  3730  3730 V ActivityScenario: Update currentActivityStage to DESTROYED, currentActivity=null
+10-19 00:44:51.787  3730  3730 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=false callback=android.view.ViewRootImpl$$ExternalSyntheticLambda11@7298559
+10-19 00:44:51.801  2378  2831 W InputManager-JNI: Input channel object '32a6c05 com.tradereview.app/androidx.activity.ComponentActivity (client)' was disposed without first being removed with the input manager!
+10-19 00:44:51.806  3034  3034 I TopTaskTracker: onTaskRemoved: taskId=7
+10-19 00:44:51.806  3034  3034 I TopTaskTracker: onTaskRemoved: taskId=7
+10-19 00:44:51.828  3730  3746 D IdlingRegistry: Unregistering idling resources: [androidx.compose.ui.test.EspressoLink@10079e6]
+10-19 00:44:51.852  3730  3746 E TestRunner: failed: completeManualEvidenceReviewCalendarReportsZipRestoreChainKeepsStableKeyAndImage(com.tradereview.app.release.ReleaseExperienceUiTest)
+10-19 00:44:51.856  3730  3746 E TestRunner: ----- begin exception -----
+10-19 00:44:51.856  3730  3746 E TestRunner: java.lang.AssertionError: Failed to assert the following: (Text + EditableText = [CNY：+123.45 · 1 笔])
+10-19 00:44:51.856  3730  3746 E TestRunner: Reason: Expected exactly '1' node but could not find any node that satisfies: (TestTag = 'day-pnl-CNY')
+10-19 00:44:51.856  3730  3746 E TestRunner:
+10-19 00:44:51.856  3730  3746 E TestRunner: 	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow(SemanticsNodeInteraction.kt:178)
+10-19 00:44:51.856  3730  3746 E TestRunner: 	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow$default(SemanticsNodeInteraction.kt:150)
+10-19 00:44:51.856  3730  3746 E TestRunner: 	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode(SemanticsNodeInteraction.kt:84)
+10-19 00:44:51.856  3730  3746 E TestRunner: 	at androidx.compose.ui.test.AssertionsKt.assert(Assertions.kt:258)
+10-19 00:44:51.856  3730  3746 E TestRunner: 	at androidx.compose.ui.test.AssertionsKt.assert$default(Assertions.kt:250)
+10-19 00:44:51.856  3730  3746 E TestRunner: 	at androidx.compose.ui.test.AssertionsKt.assertTextEquals(Assertions.kt:181)
+10-19 00:44:51.856  3730  3746 E TestRunner: 	at androidx.compose.ui.test.AssertionsKt.assertTextEquals$default(Assertions.kt:177)
+10-19 00:44:51.856  3730  3746 E TestRunner: 	at com.tradereview.app.release.ReleaseExperienceUiTest.completeManualEvidenceReviewCalendarReportsZipRestoreChainKeepsStableKeyAndImage(ReleaseExperienceUiTest.kt:64)
+10-19 00:44:51.856  3730  3746 E TestRunner: 	at java.lang.reflect.Method.invoke(Native Method)
+10-19 00:44:51.856  3730  3746 E TestRunner: 	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
+10-19 00:44:51.856  3730  3746 E TestRunner: 	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+10-19 00:44:51.856  3730  3746 E TestRunner: 	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
+10-19 00:44:51.856  3730  3746 E TestRunner: 	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+10-19 00:44:51.856  3730  3746 E TestRunner: 	at androidx.test.internal.runner.junit4.statement.RunBefores.evaluate(RunBefores.java:80)
+10-19 00:44:51.856  3730  3746 E TestRunner: 	at androidx.test.internal.runner.junit4.statement.RunAfters.evaluate(RunAfters.java:61)
+10-19 00:44:51.856  3730  3746 E TestRunner: 	at org.junit.rules.ExternalResource$1.evaluate(ExternalResource.java:54)
+10-19 00:44:51.856  3730  3746 E TestRunner: 	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1$evaluate$1.invoke(AndroidComposeTestRule.android.kt:295)
+10-19 00:44:51.856  3730  3746 E TestRunner: 	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1$evaluate$1.invoke(AndroidComposeTestRule.android.kt:295)
+10-19 00:44:51.856  3730  3746 E TestRunner: 	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.withDisposableContent(ComposeUiTest.android.kt:565)
+10-19 00:44:51.856  3730  3746 E TestRunner: 	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1$1$1$1.invoke(ComposeUiTest.android.kt:370)
+10-19 00:44:51.856  3730  3746 E TestRunner: 	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.withComposeIdlingResource(ComposeUiTest.android.kt:439)
+10-19 00:44:51.856  3730  3746 E TestRunner: 	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$withComposeIdlingResource(ComposeUiTest.android.kt:235)
+10-19 00:44:51.856  3730  3746 E TestRunner: 	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1$1$1.invoke(ComposeUiTest.android.kt:369)
+10-19 00:44:51.856  3730  3746 E TestRunner: 	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.withWindowRecomposer(ComposeUiTest.android.kt:413)
+10-19 00:44:51.856  3730  3746 E TestRunner: 	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$withWindowRecomposer(ComposeUiTest.android.kt:235)
+10-19 00:44:51.856  3730  3746 E TestRunner: 	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1$1.invoke(ComposeUiTest.android.kt:368)
+10-19 00:44:51.856  3730  3746 E TestRunner: 	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.withTestCoroutines(ComposeUiTest.android.kt:426)
+10-19 00:44:51.856  3730  3746 E TestRunner: 	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$withTestCoroutines(ComposeUiTest.android.kt:235)
+10-19 00:44:51.856  3730  3746 E TestRunner: 	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1.invoke(ComposeUiTest.android.kt:367)
+10-19 00:44:51.856  3730  3746 E TestRunner: 	at androidx.compose.ui.test.EspressoLink.withStrategy(EspressoLink.android.kt:69)
+10-19 00:44:51.856  3730  3746 E TestRunner: 	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1.invoke(ComposeUiTest.android.kt:366)
+10-19 00:44:51.856  3730  3746 E TestRunner: 	at androidx.compose.ui.test.IdlingResourceRegistry.withRegistry(IdlingResourceRegistry.jvm.kt:148)
+10-19 00:44:51.856  3730  3746 E TestRunner: 	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1.invoke(ComposeUiTest.android.kt:365)
+10-19 00:44:51.856  3730  3746 E TestRunner: 	at androidx.compose.ui.test.ComposeRootRegistry.withRegistry(ComposeRootRegistry.android.kt:139)
+10-19 00:44:51.856  3730  3746 E TestRunner: 	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.runTest(ComposeUiTest.android.kt:364)
+10-19 00:44:51.856  3730  3746 E TestRunner: 	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1.evaluate(AndroidComposeTestRule.android.kt:295)
+10-19 00:44:51.856  3730  3746 E TestRunner: 	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
+10-19 00:44:51.856  3730  3746 E TestRunner: 	at org.junit.runners.BlockJUnit4ClassRunner$1.evaluate(BlockJUnit4ClassRunner.java:100)
+10-19 00:44:51.856  3730  3746 E TestRunner: 	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:366)
+10-19 00:44:51.856  3730  3746 E TestRunner: 	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:103)
+10-19 00:44:51.856  3730  3746 E TestRunner: 	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:63)
+10-19 00:44:51.856  3730  3746 E TestRunner: 	at org.junit.runners.ParentRunner$4.run(ParentRunner.java:331)
+10-19 00:44:51.856  3730  3746 E TestRunner: 	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:79)
+10-19 00:44:51.856  3730  3746 E TestRunner: 	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:329)
+10-19 00:44:51.856  3730  3746 E TestRunner: 	at org.junit.runners.ParentRunner.access$100(ParentRunner.java:66)
+10-19 00:44:51.856  3730  3746 E TestRunner: 	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:293)
+10-19 00:44:51.856  3730  3746 E TestRunner: 	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
+10-19 00:44:51.856  3730  3746 E TestRunner: 	at org.junit.runners.ParentRunner.run(ParentRunner.java:413)
+10-19 00:44:51.856  3730  3746 E TestRunner: 	at androidx.test.ext.junit.runners.AndroidJUnit4.run(AndroidJUnit4.java:162)
+10-19 00:44:51.856  3730  3746 E TestRunner: 	at org.junit.runners.Suite.runChild(Suite.java:128)
+10-19 00:44:51.856  3730  3746 E TestRunner: 	at org.junit.runners.Suite.runChild(Suite.java:27)
+10-19 00:44:51.856  3730  3746 E TestRunner: 	at org.junit.runners.ParentRunner$4.run(ParentRunner.java:331)
+10-19 00:44:51.856  3730  3746 E TestRunner: 	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:79)
+10-19 00:44:51.856  3730  3746 E TestRunner: 	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:329)
+10-19 00:44:51.856  3730  3746 E TestRunner: 	at org.junit.runners.ParentRunner.access$100(ParentRunner.java:66)
+10-19 00:44:51.856  3730  3746 E TestRunner: 	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:293)
+10-19 00:44:51.856  3730  3746 E TestRunner: 	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
+10-19 00:44:51.856  3730  3746 E TestRunner: 	at org.junit.runners.ParentRunner.run(ParentRunner.java:413)
+10-19 00:44:51.856  3730  3746 E TestRunner: 	at org.junit.runner.JUnitCore.run(JUnitCore.java:137)
+10-19 00:44:51.856  3730  3746 E TestRunner: 	at org.junit.runner.JUnitCore.run(JUnitCore.java:115)
+10-19 00:44:51.856  3730  3746 E TestRunner: 	at androidx.test.internal.runner.TestExecutor.execute(TestExecutor.java:68)
+10-19 00:44:51.856  3730  3746 E TestRunner: 	at androidx.test.internal.runner.TestExecutor.execute(TestExecutor.java:59)
+10-19 00:44:51.856  3730  3746 E TestRunner: 	at androidx.test.runner.AndroidJUnitRunner.onStart(AndroidJUnitRunner.java:463)
+10-19 00:44:51.856  3730  3746 E TestRunner: 	at android.app.Instrumentation$InstrumentationThread.run(Instrumentation.java:2594)
+10-19 00:44:51.856  3730  3746 E TestRunner: ----- end exception -----
+10-19 00:44:51.864  3730  3746 I TestRunner: finished: completeManualEvidenceReviewCalendarReportsZipRestoreChainKeepsStableKeyAndImage(com.tradereview.app.release.ReleaseExperienceUiTest)
