@@ -37,6 +37,7 @@ def check(document):
     signing_env=secret_steps[0][1]["env"]
     require(signing_env.get("TRADE_REVIEW_SIGNING_CERT_SHA256")=="${{ vars.TRADE_REVIEW_SIGNING_CERT_SHA256 }}" and "TRADE_REVIEW_UPGRADE_CERT_SHA256" not in signing_env,"Use permanent Environment public pin, never the old V0.3 upgrade variable")
     require(jobs["trusted-signing"]["environment"]==ENVIRONMENT,"Signing must bind protected Environment")
+    require(jobs["signed-install"].get("environment")==ENVIRONMENT,"Formal upgrade tests must bind the existing protected Environment")
     for name in ("trusted-signing","signed-install","publish"):
         condition=jobs[name]["if"]
         for guard in ("github.repository == 'mlzx-xxj/trade-review-app'","github.ref == 'refs/heads/main'","github.event_name == 'push'","github.event_name == 'workflow_dispatch'"):

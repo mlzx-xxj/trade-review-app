@@ -6,6 +6,7 @@ from pathlib import Path
 import re
 import subprocess
 import time
+import sys
 from xml.etree import ElementTree as ET
 
 ROOT=Path("ci-v200");ROOT.mkdir(exist_ok=True)
@@ -49,7 +50,7 @@ def start(package):
 
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument("--directory",required=True);p.add_argument("--aapt",required=True);p.add_argument("--apksigner",required=True);p.add_argument("--old-apk");a=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument("--directory",required=True);p.add_argument("--aapt",required=True);p.add_argument("--apksigner",required=True);p.add_argument("--old-apk");p.add_argument("--stable-apk");a=p.parse_args()
     assert adb("shell","getprop","ro.kernel.qemu").stdout.strip()=="1","Never run on a personal phone"
     api=int(adb("shell","getprop","ro.build.version.sdk").stdout.strip());folder=Path(a.directory)
     rc=folder/"TradeReview-v2.0-RC.apk";data=identity.inspect(rc,a.aapt,a.apksigner);identity.require_identity(data,"rc")
@@ -89,6 +90,10 @@ def main():
         assert "Success" in adb("install",str(fixed)).stdout
         start("com.tradereview.app");window("com.tradereview.app","累计表现","permanent-v2-fresh-home")
         capture("56-v200-fixed-release-install");report["fixedReleaseInstall"]="passed-permanent-v2-pin-non-debuggable-release"
+        if a.stable_apk:
+            import stable_upgrade
+            stable_upgrade.run(sys.modules[__name__],a.stable_apk,fixed,a.aapt,a.apksigner)
+            report["samePermanentSignerUpgrade"]=stable_upgrade.PASS
     (ROOT/f"package-probes-api{api}.json").write_text(json.dumps(report,indent=2)+"\n");print(json.dumps(report))
 
 

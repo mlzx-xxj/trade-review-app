@@ -10,7 +10,7 @@ spec=importlib.util.spec_from_file_location('v200',Path(__file__).resolve().pare
 SOURCE='a'*40
 
 
-def rc():return dict(applicationId='com.tradereview.app.rc.v200',versionCode=22,versionName='2.0.0-rc.3',debuggable=False,certificateSha256='b'*64,apkSha256='c'*64,apkBytes=100,abis=['arm64-v8a','armeabi-v7a','x86','x86_64'])
+def rc():return dict(applicationId='com.tradereview.app.rc.v200',versionCode=23,versionName='2.1.0-rc.3',debuggable=False,certificateSha256='b'*64,apkSha256='c'*64,apkBytes=100,abis=['arm64-v8a','armeabi-v7a','x86','x86_64'])
 def status(configured=False):return dict(sourceCommit=SOURCE,configured=configured,permanentPinVerified=configured,legacyV03UpgradeCompatible=False,realPhoneAcceptance='not-confirmed')
 
 
@@ -20,7 +20,7 @@ class IdentityTest(unittest.TestCase):
         data=rc();data['certificateSha256']=gate.PIN
         with self.assertRaises(ValueError):gate.require_identity(data,'rc')
     def test_formal_release_requires_permanent_pin(self):
-        data=rc();data.update(applicationId='com.tradereview.app',versionName='2.0.0')
+        data=rc();data.update(applicationId='com.tradereview.app',versionName='2.1.0')
         with self.assertRaises(ValueError):gate.require_identity(data,'release')
         data['certificateSha256']=gate.PIN;gate.require_identity(data,'release')
     def test_debuggable_or_wrong_version_or_package_rejected(self):

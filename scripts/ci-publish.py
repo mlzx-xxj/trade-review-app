@@ -7,6 +7,7 @@ import subprocess
 import tempfile
 import zipfile
 from ci_security import api, digest, provenance, require, require_trusted
+from release_version import VERSION_NAME
 
 
 def asset_names(directory):
@@ -73,9 +74,9 @@ def main():
         return
     require("404" in existing.stderr,"Cannot safely determine whether the release exists")
     notes=Path(os.environ["RUNNER_TEMP"])/"public-ci-release-notes.txt"
-    notes.write_text("V2.0 RC 测试候选；独立包名、临时签名，不保证覆盖旧版或未来RC升级。若含新永久V2证书候选仍需真机验收，不能覆盖旧V0.3证书；先验证完整ZIP备份再由所有者决定重新安装恢复，不自动认定稳定版。仅可信main、完整209 JVM及API29/35各124测试成功后发布。签名和权限见SIGNING.txt、身份与SHA见RC-IDENTITY.json。ZIP/JSON为明文。\n\n"+(directory/"CI-RESULTS.txt").read_text())
+    notes.write_text(f"V{VERSION_NAME} RC 测试候选；独立包名、临时签名，不保证覆盖旧版或未来RC升级。若含新永久V2证书候选仍需真机验收，不能覆盖旧V0.3证书；先验证完整ZIP备份再由所有者决定重新安装恢复，不自动认定稳定版。仅可信main、完整JVM、Lint及API29/35原有和新增回归成功后发布。签名和权限见SIGNING.txt、身份与SHA见RC-IDENTITY.json。ZIP/JSON为明文。\n\n"+(directory/"CI-RESULTS.txt").read_text())
     require(all(digest(directory/name)==sha for name,sha in hashes.items()),"Candidate changed immediately before publication")
-    subprocess.run(["gh","release","create",tag,*[str(directory/name) for name in names],"--repo",p["repository"],"--target",p["sourceCommit"],"--title","交易复盘 V2.0 · 已验证main RC","--prerelease","--notes-file",str(notes)],check=True)
+    subprocess.run(["gh","release","create",tag,*[str(directory/name) for name in names],"--repo",p["repository"],"--target",p["sourceCommit"],"--title",f"交易复盘 V{VERSION_NAME} · 已验证main RC","--prerelease","--notes-file",str(notes)],check=True)
     release=api(f"repos/{p['repository']}/releases/tags/{tag}")
     actual={a["name"]:a.get("digest") for a in release["assets"]}
     require(actual=={name:"sha256:"+sha for name,sha in hashes.items()},"Uploaded release asset digest mismatch; do not use this candidate")
