@@ -1,0 +1,59 @@
+INSTRUMENTATION_STATUS: class=com.tradereview.app.v210.V210ConsistencyJourneyTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=1
+INSTRUMENTATION_STATUS: stream=
+com.tradereview.app.v210.V210ConsistencyJourneyTest:
+INSTRUMENTATION_STATUS: test=realConfigurationBackupAndReopenPreserveFinancialFacts
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.tradereview.app.v210.V210ConsistencyJourneyTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=1
+INSTRUMENTATION_STATUS: stack=androidx.test.uiautomator.StaleObjectException
+	at androidx.test.uiautomator.UiObject2.getAccessibilityNodeInfo(UiObject2.java:1018)
+	at androidx.test.uiautomator.UiObject2.getApplicationPackage(UiObject2.java:383)
+	at com.tradereview.app.v210.V210ConsistencyJourneyTest.documentsWindow(V210ConsistencyJourneyTest.kt:280)
+	at com.tradereview.app.v210.V210ConsistencyJourneyTest.backupRoundTrip(V210ConsistencyJourneyTest.kt:344)
+	at com.tradereview.app.v210.V210ConsistencyJourneyTest.realConfigurationBackupAndReopenPreserveFinancialFacts$lambda$77(V210ConsistencyJourneyTest.kt:573)
+	at com.tradereview.app.v210.V210ConsistencyJourneyTest.$r8$lambda$p1GvAyGcJX_7eny9ffMxWjcLMAs(Unknown Source:0)
+	at com.tradereview.app.v210.V210ConsistencyJourneyTest$$ExternalSyntheticLambda27.invoke(D8$$SyntheticClass:0)
+	at com.tradereview.app.v210.V210ConsistencyJourneyTest.step(V210ConsistencyJourneyTest.kt:72)
+	at com.tradereview.app.v210.V210ConsistencyJourneyTest.realConfigurationBackupAndReopenPreserveFinancialFacts(V210ConsistencyJourneyTest.kt:573)
+
+INSTRUMENTATION_STATUS: stream=
+Error in realConfigurationBackupAndReopenPreserveFinancialFacts(com.tradereview.app.v210.V210ConsistencyJourneyTest):
+androidx.test.uiautomator.StaleObjectException
+	at androidx.test.uiautomator.UiObject2.getAccessibilityNodeInfo(UiObject2.java:1018)
+	at androidx.test.uiautomator.UiObject2.getApplicationPackage(UiObject2.java:383)
+	at com.tradereview.app.v210.V210ConsistencyJourneyTest.documentsWindow(V210ConsistencyJourneyTest.kt:280)
+	at com.tradereview.app.v210.V210ConsistencyJourneyTest.backupRoundTrip(V210ConsistencyJourneyTest.kt:344)
+	at com.tradereview.app.v210.V210ConsistencyJourneyTest.realConfigurationBackupAndReopenPreserveFinancialFacts$lambda$77(V210ConsistencyJourneyTest.kt:573)
+	at com.tradereview.app.v210.V210ConsistencyJourneyTest.$r8$lambda$p1GvAyGcJX_7eny9ffMxWjcLMAs(Unknown Source:0)
+	at com.tradereview.app.v210.V210ConsistencyJourneyTest$$ExternalSyntheticLambda27.invoke(D8$$SyntheticClass:0)
+	at com.tradereview.app.v210.V210ConsistencyJourneyTest.step(V210ConsistencyJourneyTest.kt:72)
+	at com.tradereview.app.v210.V210ConsistencyJourneyTest.realConfigurationBackupAndReopenPreserveFinancialFacts(V210ConsistencyJourneyTest.kt:573)
+
+INSTRUMENTATION_STATUS: test=realConfigurationBackupAndReopenPreserveFinancialFacts
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_RESULT: stream=
+
+Time: 46.373
+There was 1 failure:
+1) realConfigurationBackupAndReopenPreserveFinancialFacts(com.tradereview.app.v210.V210ConsistencyJourneyTest)
+androidx.test.uiautomator.StaleObjectException
+	at androidx.test.uiautomator.UiObject2.getAccessibilityNodeInfo(UiObject2.java:1018)
+	at androidx.test.uiautomator.UiObject2.getApplicationPackage(UiObject2.java:383)
+	at com.tradereview.app.v210.V210ConsistencyJourneyTest.documentsWindow(V210ConsistencyJourneyTest.kt:280)
+	at com.tradereview.app.v210.V210ConsistencyJourneyTest.backupRoundTrip(V210ConsistencyJourneyTest.kt:344)
+	at com.tradereview.app.v210.V210ConsistencyJourneyTest.realConfigurationBackupAndReopenPreserveFinancialFacts$lambda$77(V210ConsistencyJourneyTest.kt:573)
+	at com.tradereview.app.v210.V210ConsistencyJourneyTest.$r8$lambda$p1GvAyGcJX_7eny9ffMxWjcLMAs(Unknown Source:0)
+	at com.tradereview.app.v210.V210ConsistencyJourneyTest$$ExternalSyntheticLambda27.invoke(D8$$SyntheticClass:0)
+	at com.tradereview.app.v210.V210ConsistencyJourneyTest.step(V210ConsistencyJourneyTest.kt:72)
+	at com.tradereview.app.v210.V210ConsistencyJourneyTest.realConfigurationBackupAndReopenPreserveFinancialFacts(V210ConsistencyJourneyTest.kt:573)
+
+FAILURES!!!
+Tests run: 1,  Failures: 1
+
+
+INSTRUMENTATION_CODE: -1

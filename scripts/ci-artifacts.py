@@ -112,6 +112,8 @@ def pack_device(api_number):
         copy_file(source,root / "entry-run-logs" / source.name)
     for source in Path("ci-v200/v210-visual").glob("*-instrumentation.txt"):
         copy_file(source,root / "visual-run-logs" / source.name)
+    for source in Path("ci-v200/v210-consistency").glob("*/exported.zip"):
+        copy_file(source,root / "synthetic-backups" / (source.parent.name + ".zip"))
     output("evidence_digest", manifest(root, f"device-{api_number}"))
 
 

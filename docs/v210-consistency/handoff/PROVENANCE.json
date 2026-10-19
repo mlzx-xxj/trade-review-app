@@ -1,0 +1,526 @@
+{
+  "sourceCommit": "67e97ccfaffbfaae10be7d796bb8d5b29454bb35",
+  "runUrl": "https://github.com/mlzx-xxj/trade-review-app/actions/runs/39101525143",
+  "retainedOriginalFiles": [
+    {
+      "file": "build-evidence/ci-context.json",
+      "originalPath": "ci-context.json",
+      "sourceCommit": "67e97ccfaffbfaae10be7d796bb8d5b29454bb35",
+      "runId": 39101525143,
+      "artifactId": 12127485268,
+      "archiveSha256": "7b024b06780382b0d9760ad9f5ec33a53085eb4a1ab2327bed899b4b534e0d96",
+      "sha256": "37d6fa8e60b3ab7cb65141b7081fbcb6eb6c364c25c6596d19fc0529f3cad771",
+      "bytes": 489
+    },
+    {
+      "file": "build-evidence/lint-results-debug.xml",
+      "originalPath": "lint-results-debug.xml",
+      "sourceCommit": "67e97ccfaffbfaae10be7d796bb8d5b29454bb35",
+      "runId": 39101525143,
+      "artifactId": 12127485268,
+      "archiveSha256": "7b024b06780382b0d9760ad9f5ec33a53085eb4a1ab2327bed899b4b534e0d96",
+      "sha256": "4b5a1ef09c7ad9d486bb17a7848b7473fad5f182313604d823c69588f0bed93b",
+      "bytes": 23147
+    },
+    {
+      "file": "build-evidence/lint-results-rc.xml",
+      "originalPath": "lint-results-rc.xml",
+      "sourceCommit": "67e97ccfaffbfaae10be7d796bb8d5b29454bb35",
+      "runId": 39101525143,
+      "artifactId": 12127485268,
+      "archiveSha256": "7b024b06780382b0d9760ad9f5ec33a53085eb4a1ab2327bed899b4b534e0d96",
+      "sha256": "9fa13cedbe6369229357cff11e9af503be4cd547c799f7801e1a6e09f82a72f7",
+      "bytes": 24716
+    },
+    {
+      "file": "build-evidence/lint-results-release.xml",
+      "originalPath": "lint-results-release.xml",
+      "sourceCommit": "67e97ccfaffbfaae10be7d796bb8d5b29454bb35",
+      "runId": 39101525143,
+      "artifactId": 12127485268,
+      "archiveSha256": "7b024b06780382b0d9760ad9f5ec33a53085eb4a1ab2327bed899b4b534e0d96",
+      "sha256": "9fa13cedbe6369229357cff11e9af503be4cd547c799f7801e1a6e09f82a72f7",
+      "bytes": 24716
+    },
+    {
+      "file": "build-evidence/test-results/TEST-com.tradereview.app.backup.BackupCodecTest.xml",
+      "originalPath": "test-results/TEST-com.tradereview.app.backup.BackupCodecTest.xml",
+      "sourceCommit": "67e97ccfaffbfaae10be7d796bb8d5b29454bb35",
+      "runId": 39101525143,
+      "artifactId": 12127485268,
+      "archiveSha256": "7b024b06780382b0d9760ad9f5ec33a53085eb4a1ab2327bed899b4b534e0d96",
+      "sha256": "82c360017108d83869b12c9c936a88c8ee20e4abbe6815468c23250ead5c171e",
+      "bytes": 1620
+    },
+    {
+      "file": "build-evidence/test-results/TEST-com.tradereview.app.backup.ExportReadbackTest.xml",
+      "originalPath": "test-results/TEST-com.tradereview.app.backup.ExportReadbackTest.xml",
+      "sourceCommit": "67e97ccfaffbfaae10be7d796bb8d5b29454bb35",
+      "runId": 39101525143,
+      "artifactId": 12127485268,
+      "archiveSha256": "7b024b06780382b0d9760ad9f5ec33a53085eb4a1ab2327bed899b4b534e0d96",
+      "sha256": "53bda16360498eba691516c54c9d5d2943d10f0cdb3d110d01f043fef92fc4e6",
+      "bytes": 907
+    },
+    {
+      "file": "build-evidence/test-results/TEST-com.tradereview.app.backup.FileHashTest.xml",
+      "originalPath": "test-results/TEST-com.tradereview.app.backup.FileHashTest.xml",
+      "sourceCommit": "67e97ccfaffbfaae10be7d796bb8d5b29454bb35",
+      "runId": 39101525143,
+      "artifactId": 12127485268,
+      "archiveSha256": "7b024b06780382b0d9760ad9f5ec33a53085eb4a1ab2327bed899b4b534e0d96",
+      "sha256": "695261a466ae7b174491f442333a2e3ad0c447d2ac9944e440a1c874e9830806",
+      "bytes": 630
+    },
+    {
+      "file": "build-evidence/test-results/TEST-com.tradereview.app.backup.FullZipArchiveTest.xml",
+      "originalPath": "test-results/TEST-com.tradereview.app.backup.FullZipArchiveTest.xml",
+      "sourceCommit": "67e97ccfaffbfaae10be7d796bb8d5b29454bb35",
+      "runId": 39101525143,
+      "artifactId": 12127485268,
+      "archiveSha256": "7b024b06780382b0d9760ad9f5ec33a53085eb4a1ab2327bed899b4b534e0d96",
+      "sha256": "11ef250660dffc00ce61ab96ed35d35d81fffd91cc04cb67bc5bfe0fee870f47",
+      "bytes": 1971
+    },
+    {
+      "file": "build-evidence/test-results/TEST-com.tradereview.app.backup.TradeCsvTest.xml",
+      "originalPath": "test-results/TEST-com.tradereview.app.backup.TradeCsvTest.xml",
+      "sourceCommit": "67e97ccfaffbfaae10be7d796bb8d5b29454bb35",
+      "runId": 39101525143,
+      "artifactId": 12127485268,
+      "archiveSha256": "7b024b06780382b0d9760ad9f5ec33a53085eb4a1ab2327bed899b4b534e0d96",
+      "sha256": "0c5a7e650654e3c78b19b58eef0f479004a7e2e3e1554819ed9064827c59eaa0",
+      "bytes": 723
+    },
+    {
+      "file": "build-evidence/test-results/TEST-com.tradereview.app.backup.V03BackupTest.xml",
+      "originalPath": "test-results/TEST-com.tradereview.app.backup.V03BackupTest.xml",
+      "sourceCommit": "67e97ccfaffbfaae10be7d796bb8d5b29454bb35",
+      "runId": 39101525143,
+      "artifactId": 12127485268,
+      "archiveSha256": "7b024b06780382b0d9760ad9f5ec33a53085eb4a1ab2327bed899b4b534e0d96",
+      "sha256": "cea03056b945ce7f5665f8974727c1d17ff2d9bf58c0390df0c6cf73bfa3415d",
+      "bytes": 773
+    },
+    {
+      "file": "build-evidence/test-results/TEST-com.tradereview.app.backup.V04BackupTest.xml",
+      "originalPath": "test-results/TEST-com.tradereview.app.backup.V04BackupTest.xml",
+      "sourceCommit": "67e97ccfaffbfaae10be7d796bb8d5b29454bb35",
+      "runId": 39101525143,
+      "artifactId": 12127485268,
+      "archiveSha256": "7b024b06780382b0d9760ad9f5ec33a53085eb4a1ab2327bed899b4b534e0d96",
+      "sha256": "a68ae282b7f3c0f74565cdc2cd336b78b79b261ce47436a5b155d71d716baf0e",
+      "bytes": 1060
+    },
+    {
+      "file": "build-evidence/test-results/TEST-com.tradereview.app.backup.V05BackupTest.xml",
+      "originalPath": "test-results/TEST-com.tradereview.app.backup.V05BackupTest.xml",
+      "sourceCommit": "67e97ccfaffbfaae10be7d796bb8d5b29454bb35",
+      "runId": 39101525143,
+      "artifactId": 12127485268,
+      "archiveSha256": "7b024b06780382b0d9760ad9f5ec33a53085eb4a1ab2327bed899b4b534e0d96",
+      "sha256": "8e4c20fe54f5ab5a00338aefa27008da79c80a0561f5dd9ffc9e74a641bf7b36",
+      "bytes": 1092
+    },
+    {
+      "file": "build-evidence/test-results/TEST-com.tradereview.app.backup.V06BackupTest.xml",
+      "originalPath": "test-results/TEST-com.tradereview.app.backup.V06BackupTest.xml",
+      "sourceCommit": "67e97ccfaffbfaae10be7d796bb8d5b29454bb35",
+      "runId": 39101525143,
+      "artifactId": 12127485268,
+      "archiveSha256": "7b024b06780382b0d9760ad9f5ec33a53085eb4a1ab2327bed899b4b534e0d96",
+      "sha256": "9957e384cc3abf5782d01014789245b8d7e78d5dab9afd938663a7234c17a250",
+      "bytes": 769
+    },
+    {
+      "file": "build-evidence/test-results/TEST-com.tradereview.app.backup.V07BackupTest.xml",
+      "originalPath": "test-results/TEST-com.tradereview.app.backup.V07BackupTest.xml",
+      "sourceCommit": "67e97ccfaffbfaae10be7d796bb8d5b29454bb35",
+      "runId": 39101525143,
+      "artifactId": 12127485268,
+      "archiveSha256": "7b024b06780382b0d9760ad9f5ec33a53085eb4a1ab2327bed899b4b534e0d96",
+      "sha256": "af06c7091a1f9a55d889628174d2365ce1d9e956b81b93b4e72f1ea9f71b8042",
+      "bytes": 909
+    },
+    {
+      "file": "build-evidence/test-results/TEST-com.tradereview.app.device.ExperiencePolicyTest.xml",
+      "originalPath": "test-results/TEST-com.tradereview.app.device.ExperiencePolicyTest.xml",
+      "sourceCommit": "67e97ccfaffbfaae10be7d796bb8d5b29454bb35",
+      "runId": 39101525143,
+      "artifactId": 12127485268,
+      "archiveSha256": "7b024b06780382b0d9760ad9f5ec33a53085eb4a1ab2327bed899b4b534e0d96",
+      "sha256": "7088fcdd90d622ce54d36d33dc5eb670a8c847290445af12651ec720faf3fff7",
+      "bytes": 741
+    },
+    {
+      "file": "build-evidence/test-results/TEST-com.tradereview.app.domain.AdvancedParityTest.xml",
+      "originalPath": "test-results/TEST-com.tradereview.app.domain.AdvancedParityTest.xml",
+      "sourceCommit": "67e97ccfaffbfaae10be7d796bb8d5b29454bb35",
+      "runId": 39101525143,
+      "artifactId": 12127485268,
+      "archiveSha256": "7b024b06780382b0d9760ad9f5ec33a53085eb4a1ab2327bed899b4b534e0d96",
+      "sha256": "9e71e8b7549ef151333f059e632be2ccd68056d2ba781d218e7c9040a7e4e9aa",
+      "bytes": 659
+    },
+    {
+      "file": "build-evidence/test-results/TEST-com.tradereview.app.domain.AnalyticsScopeTest.xml",
+      "originalPath": "test-results/TEST-com.tradereview.app.domain.AnalyticsScopeTest.xml",
+      "sourceCommit": "67e97ccfaffbfaae10be7d796bb8d5b29454bb35",
+      "runId": 39101525143,
+      "artifactId": 12127485268,
+      "archiveSha256": "7b024b06780382b0d9760ad9f5ec33a53085eb4a1ab2327bed899b4b534e0d96",
+      "sha256": "2aef6fcc3e628fb980b2bb1705c28d5611e9024ef76ce1842294f4fa47fb7fb3",
+      "bytes": 786
+    },
+    {
+      "file": "build-evidence/test-results/TEST-com.tradereview.app.domain.AnalyticsTest.xml",
+      "originalPath": "test-results/TEST-com.tradereview.app.domain.AnalyticsTest.xml",
+      "sourceCommit": "67e97ccfaffbfaae10be7d796bb8d5b29454bb35",
+      "runId": 39101525143,
+      "artifactId": 12127485268,
+      "archiveSha256": "7b024b06780382b0d9760ad9f5ec33a53085eb4a1ab2327bed899b4b534e0d96",
+      "sha256": "0088a19eb883648f62dc20fd3ed053e4b3e964b2fbd3f9eb9da964e4fbe79cbe",
+      "bytes": 1120
+    },
+    {
+      "file": "build-evidence/test-results/TEST-com.tradereview.app.domain.CalendarAnalyticsTest.xml",
+      "originalPath": "test-results/TEST-com.tradereview.app.domain.CalendarAnalyticsTest.xml",
+      "sourceCommit": "67e97ccfaffbfaae10be7d796bb8d5b29454bb35",
+      "runId": 39101525143,
+      "artifactId": 12127485268,
+      "archiveSha256": "7b024b06780382b0d9760ad9f5ec33a53085eb4a1ab2327bed899b4b534e0d96",
+      "sha256": "c45613e6a357e9ca459e8ec7dbc0155711750c3a9fb060c0d0283dafcea54121",
+      "bytes": 1775
+    },
+    {
+      "file": "build-evidence/test-results/TEST-com.tradereview.app.domain.FastEntryTest.xml",
+      "originalPath": "test-results/TEST-com.tradereview.app.domain.FastEntryTest.xml",
+      "sourceCommit": "67e97ccfaffbfaae10be7d796bb8d5b29454bb35",
+      "runId": 39101525143,
+      "artifactId": 12127485268,
+      "archiveSha256": "7b024b06780382b0d9760ad9f5ec33a53085eb4a1ab2327bed899b4b534e0d96",
+      "sha256": "f15bd3c8cbfe57a89c4c50f0e17a80d900d876af391a4fddd9ad0ab291dc061f",
+      "bytes": 1020
+    },
+    {
+      "file": "build-evidence/test-results/TEST-com.tradereview.app.domain.OcrTradeParserTest.xml",
+      "originalPath": "test-results/TEST-com.tradereview.app.domain.OcrTradeParserTest.xml",
+      "sourceCommit": "67e97ccfaffbfaae10be7d796bb8d5b29454bb35",
+      "runId": 39101525143,
+      "artifactId": 12127485268,
+      "archiveSha256": "7b024b06780382b0d9760ad9f5ec33a53085eb4a1ab2327bed899b4b534e0d96",
+      "sha256": "d5615d0c85be881c8aa7c71c5dd38e11a44d977ad845a4d7b513cf63e12eaa47",
+      "bytes": 1776
+    },
+    {
+      "file": "build-evidence/test-results/TEST-com.tradereview.app.domain.PreflightRulesTest.xml",
+      "originalPath": "test-results/TEST-com.tradereview.app.domain.PreflightRulesTest.xml",
+      "sourceCommit": "67e97ccfaffbfaae10be7d796bb8d5b29454bb35",
+      "runId": 39101525143,
+      "artifactId": 12127485268,
+      "archiveSha256": "7b024b06780382b0d9760ad9f5ec33a53085eb4a1ab2327bed899b4b534e0d96",
+      "sha256": "c940052b7e8e443cf63989f55e388538584f9ea7998e768e41813f2bece707bc",
+      "bytes": 921
+    },
+    {
+      "file": "build-evidence/test-results/TEST-com.tradereview.app.domain.ProfessionalMathTest.xml",
+      "originalPath": "test-results/TEST-com.tradereview.app.domain.ProfessionalMathTest.xml",
+      "sourceCommit": "67e97ccfaffbfaae10be7d796bb8d5b29454bb35",
+      "runId": 39101525143,
+      "artifactId": 12127485268,
+      "archiveSha256": "7b024b06780382b0d9760ad9f5ec33a53085eb4a1ab2327bed899b4b534e0d96",
+      "sha256": "0a18beb19962648df87b1cf2eb4493ac23b74cb67803b16ec81310548654acd8",
+      "bytes": 2042
+    },
+    {
+      "file": "build-evidence/test-results/TEST-com.tradereview.app.domain.ReviewGoalsTest.xml",
+      "originalPath": "test-results/TEST-com.tradereview.app.domain.ReviewGoalsTest.xml",
+      "sourceCommit": "67e97ccfaffbfaae10be7d796bb8d5b29454bb35",
+      "runId": 39101525143,
+      "artifactId": 12127485268,
+      "archiveSha256": "7b024b06780382b0d9760ad9f5ec33a53085eb4a1ab2327bed899b4b534e0d96",
+      "sha256": "d4681a6afa8fc60bca83256a11de968ae2427f475bde6ca02d620a5e935474f6",
+      "bytes": 1150
+    },
+    {
+      "file": "build-evidence/test-results/TEST-com.tradereview.app.domain.ReviewReportsTest.xml",
+      "originalPath": "test-results/TEST-com.tradereview.app.domain.ReviewReportsTest.xml",
+      "sourceCommit": "67e97ccfaffbfaae10be7d796bb8d5b29454bb35",
+      "runId": 39101525143,
+      "artifactId": 12127485268,
+      "archiveSha256": "7b024b06780382b0d9760ad9f5ec33a53085eb4a1ab2327bed899b4b534e0d96",
+      "sha256": "e21fc45cb1082253707bc2a1ce3693f4efb38d375f34a4d88c2208bd0e278215",
+      "bytes": 1465
+    },
+    {
+      "file": "build-evidence/test-results/TEST-com.tradereview.app.domain.RiskAnalyticsTest.xml",
+      "originalPath": "test-results/TEST-com.tradereview.app.domain.RiskAnalyticsTest.xml",
+      "sourceCommit": "67e97ccfaffbfaae10be7d796bb8d5b29454bb35",
+      "runId": 39101525143,
+      "artifactId": 12127485268,
+      "archiveSha256": "7b024b06780382b0d9760ad9f5ec33a53085eb4a1ab2327bed899b4b534e0d96",
+      "sha256": "ea3d06dcd4ba571d894150dacf40498bb3d8ad108b2e43fed8f27c83ba0b484f",
+      "bytes": 1249
+    },
+    {
+      "file": "build-evidence/test-results/TEST-com.tradereview.app.domain.RiskEngineTest.xml",
+      "originalPath": "test-results/TEST-com.tradereview.app.domain.RiskEngineTest.xml",
+      "sourceCommit": "67e97ccfaffbfaae10be7d796bb8d5b29454bb35",
+      "runId": 39101525143,
+      "artifactId": 12127485268,
+      "archiveSha256": "7b024b06780382b0d9760ad9f5ec33a53085eb4a1ab2327bed899b4b534e0d96",
+      "sha256": "ce3c7d478cb7f8a25e056759ee4e08429b7c26440ad1e9e629e291f500351858",
+      "bytes": 1107
+    },
+    {
+      "file": "build-evidence/test-results/TEST-com.tradereview.app.domain.SmartInsightsParityTest.xml",
+      "originalPath": "test-results/TEST-com.tradereview.app.domain.SmartInsightsParityTest.xml",
+      "sourceCommit": "67e97ccfaffbfaae10be7d796bb8d5b29454bb35",
+      "runId": 39101525143,
+      "artifactId": 12127485268,
+      "archiveSha256": "7b024b06780382b0d9760ad9f5ec33a53085eb4a1ab2327bed899b4b534e0d96",
+      "sha256": "9ef8eaddbec75309cc8cabf6a4d16de58fd02bde855477da6c43bb3b36806602",
+      "bytes": 971
+    },
+    {
+      "file": "build-evidence/test-results/TEST-com.tradereview.app.domain.SmartInsightsTest.xml",
+      "originalPath": "test-results/TEST-com.tradereview.app.domain.SmartInsightsTest.xml",
+      "sourceCommit": "67e97ccfaffbfaae10be7d796bb8d5b29454bb35",
+      "runId": 39101525143,
+      "artifactId": 12127485268,
+      "archiveSha256": "7b024b06780382b0d9760ad9f5ec33a53085eb4a1ab2327bed899b4b534e0d96",
+      "sha256": "8faf03755e9bc26074313e58996ba452318f8c5ba6d3afdf13f72965ab27d992",
+      "bytes": 1918
+    },
+    {
+      "file": "build-evidence/test-results/TEST-com.tradereview.app.domain.TradeFilterTest.xml",
+      "originalPath": "test-results/TEST-com.tradereview.app.domain.TradeFilterTest.xml",
+      "sourceCommit": "67e97ccfaffbfaae10be7d796bb8d5b29454bb35",
+      "runId": 39101525143,
+      "artifactId": 12127485268,
+      "archiveSha256": "7b024b06780382b0d9760ad9f5ec33a53085eb4a1ab2327bed899b4b534e0d96",
+      "sha256": "80284ae9340a43419274bab0355f8c079ceb4421040b1c0081f6fe11f81cf6ce",
+      "bytes": 1458
+    },
+    {
+      "file": "build-evidence/test-results/TEST-com.tradereview.app.v200.AutomaticEntryTest.xml",
+      "originalPath": "test-results/TEST-com.tradereview.app.v200.AutomaticEntryTest.xml",
+      "sourceCommit": "67e97ccfaffbfaae10be7d796bb8d5b29454bb35",
+      "runId": 39101525143,
+      "artifactId": 12127485268,
+      "archiveSha256": "7b024b06780382b0d9760ad9f5ec33a53085eb4a1ab2327bed899b4b534e0d96",
+      "sha256": "2726d1a92ea77acdc2d8289d6e13f18b1c5c65cd18ce3040eb5b5d90f47083d4",
+      "bytes": 3002
+    },
+    {
+      "file": "build-evidence/test-results/TEST-com.tradereview.app.v200.ChartScaleTest.xml",
+      "originalPath": "test-results/TEST-com.tradereview.app.v200.ChartScaleTest.xml",
+      "sourceCommit": "67e97ccfaffbfaae10be7d796bb8d5b29454bb35",
+      "runId": 39101525143,
+      "artifactId": 12127485268,
+      "archiveSha256": "7b024b06780382b0d9760ad9f5ec33a53085eb4a1ab2327bed899b4b534e0d96",
+      "sha256": "768df3ba39332664262627b2d1d2f5f85c1f348315dffbc8eb92e2c6c44abe47",
+      "bytes": 1799
+    },
+    {
+      "file": "build-evidence/test-results/TEST-com.tradereview.app.v200.LedgerBackupTest.xml",
+      "originalPath": "test-results/TEST-com.tradereview.app.v200.LedgerBackupTest.xml",
+      "sourceCommit": "67e97ccfaffbfaae10be7d796bb8d5b29454bb35",
+      "runId": 39101525143,
+      "artifactId": 12127485268,
+      "archiveSha256": "7b024b06780382b0d9760ad9f5ec33a53085eb4a1ab2327bed899b4b534e0d96",
+      "sha256": "54a6f620afd636404fb3825b910406da3e07b3576c0b8007d27098cd0ee3ad61",
+      "bytes": 1355
+    },
+    {
+      "file": "build-evidence/test-results/TEST-com.tradereview.app.v200.LedgerCsvTest.xml",
+      "originalPath": "test-results/TEST-com.tradereview.app.v200.LedgerCsvTest.xml",
+      "sourceCommit": "67e97ccfaffbfaae10be7d796bb8d5b29454bb35",
+      "runId": 39101525143,
+      "artifactId": 12127485268,
+      "archiveSha256": "7b024b06780382b0d9760ad9f5ec33a53085eb4a1ab2327bed899b4b534e0d96",
+      "sha256": "869c03e2aa36434a0442e1e5ed7a15b3909162674c9b8612be6965aa7e8fded7",
+      "bytes": 758
+    },
+    {
+      "file": "build-evidence/test-results/TEST-com.tradereview.app.v200.MatchingEngineTest.xml",
+      "originalPath": "test-results/TEST-com.tradereview.app.v200.MatchingEngineTest.xml",
+      "sourceCommit": "67e97ccfaffbfaae10be7d796bb8d5b29454bb35",
+      "runId": 39101525143,
+      "artifactId": 12127485268,
+      "archiveSha256": "7b024b06780382b0d9760ad9f5ec33a53085eb4a1ab2327bed899b4b534e0d96",
+      "sha256": "a331363b3edfc46062ac1941748275a5fd77cf7a9acbc38ca59d2535e767418d",
+      "bytes": 5208
+    },
+    {
+      "file": "build-evidence/test-results/TEST-com.tradereview.app.v200.PendingAmountsTest.xml",
+      "originalPath": "test-results/TEST-com.tradereview.app.v200.PendingAmountsTest.xml",
+      "sourceCommit": "67e97ccfaffbfaae10be7d796bb8d5b29454bb35",
+      "runId": 39101525143,
+      "artifactId": 12127485268,
+      "archiveSha256": "7b024b06780382b0d9760ad9f5ec33a53085eb4a1ab2327bed899b4b534e0d96",
+      "sha256": "32a73235af89eb667d4c8f357f84f7d94442330939e8a8c63e93bac04f449724",
+      "bytes": 2304
+    },
+    {
+      "file": "api29/TEST-native.xml",
+      "originalPath": "androidTest-results/0-TEST-emulator-5554 - 10-_app-.xml",
+      "sourceCommit": "67e97ccfaffbfaae10be7d796bb8d5b29454bb35",
+      "runId": 39101525143,
+      "artifactId": 12127038634,
+      "archiveSha256": "fcbefeb479840a2e6ee1b202e349bad7e249ec08a2542ba35d8e422988ac4a57",
+      "sha256": "5557057178bab140fdc39a215dfd4fc64f8130bd740c21c338c3d4e2155b4796",
+      "bytes": 22499
+    },
+    {
+      "file": "api29/v210-runner.json",
+      "originalPath": "metrics/v210-runner-api29.json",
+      "sourceCommit": "67e97ccfaffbfaae10be7d796bb8d5b29454bb35",
+      "runId": 39101525143,
+      "artifactId": 12127038634,
+      "archiveSha256": "fcbefeb479840a2e6ee1b202e349bad7e249ec08a2542ba35d8e422988ac4a57",
+      "sha256": "7e6d347459750a52507a957f713fc46c3d7cdc46860c8ae8b09fd67886244354",
+      "bytes": 2124
+    },
+    {
+      "file": "api35/TEST-native.xml",
+      "originalPath": "androidTest-results/0-TEST-emulator-5554 - 15-_app-.xml",
+      "sourceCommit": "67e97ccfaffbfaae10be7d796bb8d5b29454bb35",
+      "runId": 39101525143,
+      "artifactId": 12127576832,
+      "archiveSha256": "70fb9e55309f8afe64bdf22464e8e76a250eba6e3fb25146c7d1c4ed43ca7f72",
+      "sha256": "8741a25427fbcc30799b3895d64c4a90dc14a0de10a018db3c38ae85b12fa84f",
+      "bytes": 22492
+    },
+    {
+      "file": "api35/v210-runner.json",
+      "originalPath": "metrics/v210-runner-api35.json",
+      "sourceCommit": "67e97ccfaffbfaae10be7d796bb8d5b29454bb35",
+      "runId": 39101525143,
+      "artifactId": 12127576832,
+      "archiveSha256": "70fb9e55309f8afe64bdf22464e8e76a250eba6e3fb25146c7d1c4ed43ca7f72",
+      "sha256": "aa5c1e90a6543b0d69c367b268e0ac06336bd01c01e14f17b2ba1e58f96d73c4",
+      "bytes": 2124
+    },
+    {
+      "file": "screenshots/v210-full-narrow-dark-pending-home.png",
+      "originalPath": "screenshots/v210-full-narrow-dark-pending-home.png",
+      "sourceCommit": "67e97ccfaffbfaae10be7d796bb8d5b29454bb35",
+      "runId": 39101525143,
+      "artifactId": 12127576832,
+      "archiveSha256": "70fb9e55309f8afe64bdf22464e8e76a250eba6e3fb25146c7d1c4ed43ca7f72",
+      "sha256": "5f2a7b38da7bff91341d358cddc40cecda9b3ba8e2d56f82f7fa813a3979a108",
+      "bytes": 94617
+    },
+    {
+      "file": "screenshots/v210-narrow-dark-stock-position.png",
+      "originalPath": "screenshots/v210-narrow-dark-stock-position.png",
+      "sourceCommit": "67e97ccfaffbfaae10be7d796bb8d5b29454bb35",
+      "runId": 39101525143,
+      "artifactId": 12127576832,
+      "archiveSha256": "70fb9e55309f8afe64bdf22464e8e76a250eba6e3fb25146c7d1c4ed43ca7f72",
+      "sha256": "af22e9e08a66eccd664192152244851f6fe8e67cb635a81a49d0126376ad3a8e",
+      "bytes": 97268
+    },
+    {
+      "file": "screenshots/v210-full-narrow-dark-month-statistics.png",
+      "originalPath": "screenshots/v210-full-narrow-dark-month-statistics.png",
+      "sourceCommit": "67e97ccfaffbfaae10be7d796bb8d5b29454bb35",
+      "runId": 39101525143,
+      "artifactId": 12127576832,
+      "archiveSha256": "70fb9e55309f8afe64bdf22464e8e76a250eba6e3fb25146c7d1c4ed43ca7f72",
+      "sha256": "ece2bbed1018dcef3ea34a92a82bac55086252cac81a60424d5b901b3d33d58f",
+      "bytes": 100449
+    },
+    {
+      "file": "screenshots/v210-review-narrow-dark-stock-plan-keyboard.png",
+      "originalPath": "screenshots/v210-review-narrow-dark-stock-plan-keyboard.png",
+      "sourceCommit": "67e97ccfaffbfaae10be7d796bb8d5b29454bb35",
+      "runId": 39101525143,
+      "artifactId": 12127576832,
+      "archiveSha256": "70fb9e55309f8afe64bdf22464e8e76a250eba6e3fb25146c7d1c4ed43ca7f72",
+      "sha256": "7a6cf8ba18f9775f51c41066bfb51469f978edce068694d02823261e51ebe2ea",
+      "bytes": 111368
+    },
+    {
+      "file": "screenshots/v210-review-narrow-dark-review-cycles.png",
+      "originalPath": "screenshots/v210-review-narrow-dark-review-cycles.png",
+      "sourceCommit": "67e97ccfaffbfaae10be7d796bb8d5b29454bb35",
+      "runId": 39101525143,
+      "artifactId": 12127576832,
+      "archiveSha256": "70fb9e55309f8afe64bdf22464e8e76a250eba6e3fb25146c7d1c4ed43ca7f72",
+      "sha256": "11814182713e7dbbd87aa3472e334ae3023ecdf5f028377ad64896bbd89cc40f",
+      "bytes": 90354
+    },
+    {
+      "file": "screenshots/v210-review-narrow-dark-stock-account-known.png",
+      "originalPath": "screenshots/v210-review-narrow-dark-stock-account-known.png",
+      "sourceCommit": "67e97ccfaffbfaae10be7d796bb8d5b29454bb35",
+      "runId": 39101525143,
+      "artifactId": 12127576832,
+      "archiveSha256": "70fb9e55309f8afe64bdf22464e8e76a250eba6e3fb25146c7d1c4ed43ca7f72",
+      "sha256": "e2491b297545e1f245fa6ee715332b92f830831fd4b97f82251d26db9aeb136e",
+      "bytes": 92169
+    },
+    {
+      "file": "screenshots/45-v200-risk-strategy.png",
+      "originalPath": "screenshots/45-v200-risk-strategy.png",
+      "sourceCommit": "67e97ccfaffbfaae10be7d796bb8d5b29454bb35",
+      "runId": 39101525143,
+      "artifactId": 12127576832,
+      "archiveSha256": "70fb9e55309f8afe64bdf22464e8e76a250eba6e3fb25146c7d1c4ed43ca7f72",
+      "sha256": "68107432c0afb553197d167365286c842cc0260f524caed22dacb87e176e23eb",
+      "bytes": 84597
+    },
+    {
+      "file": "screenshots/55-v200-restore-confirmation.png",
+      "originalPath": "screenshots/55-v200-restore-confirmation.png",
+      "sourceCommit": "67e97ccfaffbfaae10be7d796bb8d5b29454bb35",
+      "runId": 39101525143,
+      "artifactId": 12127576832,
+      "archiveSha256": "70fb9e55309f8afe64bdf22464e8e76a250eba6e3fb25146c7d1c4ed43ca7f72",
+      "sha256": "785247076bcb075ad200551e5c26fda8d288bd39b4b494f784396fcc96e60eec",
+      "bytes": 133459
+    },
+    {
+      "file": "api29/signed-install.json",
+      "originalPath": "package-probes-api29.json",
+      "sourceCommit": "67e97ccfaffbfaae10be7d796bb8d5b29454bb35",
+      "runId": 39101525143,
+      "artifactId": 12127845895,
+      "archiveSha256": "dac48ee110664d6b9a85d4c1d557fe636a80b660672cfe092ae5883cd0f75905",
+      "sha256": "c426368f34889e41ed753ba66f810cd7de5fa0fcc173f1b4f3d15cacf644ed3f",
+      "bytes": 642
+    },
+    {
+      "file": "api35/signed-install.json",
+      "originalPath": "package-probes-api35.json",
+      "sourceCommit": "67e97ccfaffbfaae10be7d796bb8d5b29454bb35",
+      "runId": 39101525143,
+      "artifactId": 12127810881,
+      "archiveSha256": "3746151d70a22386d3accf9d39b8179458c3a7bc6ac74a479cf25ee11ee79fcb",
+      "sha256": "68acb955b23e3e3cf626b51cff0abcbc34731f6bd8116b256b13d42a2d4da813",
+      "bytes": 642
+    },
+    {
+      "file": "signing/FIXED-IDENTITY.json",
+      "originalPath": "dist/FIXED-IDENTITY.json",
+      "sourceCommit": "67e97ccfaffbfaae10be7d796bb8d5b29454bb35",
+      "runId": 39101525143,
+      "artifactId": 12127558855,
+      "archiveSha256": "2da25a1e03b79b6e1997bbdc66b7f924f9305a03439434345d246336e2bc0a65",
+      "sha256": "06faad70b90701df3cfcd5bb27c35b0867207872d7a0850b3fcb1517a81b6199",
+      "bytes": 949
+    },
+    {
+      "file": "signing/SIGNING-STATUS.json",
+      "originalPath": "dist/SIGNING-STATUS.json",
+      "sourceCommit": "67e97ccfaffbfaae10be7d796bb8d5b29454bb35",
+      "runId": 39101525143,
+      "artifactId": 12127558855,
+      "archiveSha256": "2da25a1e03b79b6e1997bbdc66b7f924f9305a03439434345d246336e2bc0a65",
+      "sha256": "666c9df715666fc9a62539a30b8b33e674b073509a716541d88f5c2ea053a607",
+      "bytes": 232
+    }
+  ]
+}

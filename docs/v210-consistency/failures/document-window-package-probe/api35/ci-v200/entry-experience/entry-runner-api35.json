@@ -1,0 +1,15 @@
+{
+  "api": 35,
+  "complete": true,
+  "actualInstrumentations": 2,
+  "source": "same locally compiled test and production MainActivity",
+  "forceStopBetweenPhases": true,
+  "runnerLogSha256": {
+    "journey": "e389fd995c638363a1306d3ca1133ef0f3c7d283c9ac68d68a28428a3b4e521d",
+    "reopen": "96aaa263c1c650262ea028ebbc1e674f9d15d11dd3a3a72509e2f1a72f5ee3bc"
+  },
+  "journeyPid": 8003,
+  "reopenPid": 8273,
+  "result": "PASS",
+  "realPhone": "not-executed"
+}

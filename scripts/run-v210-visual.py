@@ -20,6 +20,21 @@ SCENES = ("empty", "stock-filled", "stock-position", "futures-filled", "keyboard
 DENSITY_SCENES = ("density-top", "density-long", "density-short", "density-pending")
 
 
+def retain_read_failure(profile, name, response):
+    """Keep original transport bytes without retrying an operation or UI test."""
+    folder = ROOT / "collection-failures"
+    folder.mkdir(parents=True, exist_ok=True)
+    prefix = folder / (profile + "-" + name)
+    stdout, stderr = response.stdout or b"", response.stderr or b""
+    Path(str(prefix) + ".stdout.bin").write_bytes(stdout)
+    Path(str(prefix) + ".stderr.bin").write_bytes(stderr)
+    Path(str(prefix) + ".json").write_text(json.dumps(dict(
+        profile=profile, fileName=name, command=response.args, returnCode=response.returncode,
+        stdoutBytes=len(stdout), stderrBytes=len(stderr),
+        stdoutSha256=hashlib.sha256(stdout).hexdigest(), stderrSha256=hashlib.sha256(stderr).hexdigest(),
+        operation="read existing private synthetic evidence", retried=False), indent=2) + "\n")
+
+
 def full_journey(api, profile, directory):
     """Extra production UI fixture, including a real process boundary. No execution inserts."""
     for phase in ("journey", "reopen"):
@@ -38,7 +53,10 @@ def full_journey(api, profile, directory):
         assert 0 < len(listing) <= 80
         for name in listing:
             assert re.fullmatch(r"v210-full-[A-Za-z0-9-]+\.(?:png|json|txt)", name)
-            response = subprocess.run(["adb", "shell", "-T", "run-as", APP, "cat", f"files/v210-evidence/{profile}/v210-full/{name}"], capture_output=True, timeout=30, check=True)
+            response = subprocess.run(["adb", "shell", "-T", "run-as", APP, "cat", f"files/v210-evidence/{profile}/v210-full/{name}"], capture_output=True, timeout=30, check=False)
+            if response.returncode:
+                retain_read_failure(profile, name, response)
+                response.check_returncode()
             assert len(response.stdout) <= 8 * 1024 * 1024
             if name.endswith(".png"):assert response.stdout.startswith(b"\x89PNG\r\n\x1a\n")
             target = ROOT / profile / "full" / name
@@ -64,6 +82,7 @@ def collect(api, profile):
         if result.returncode:
             if b"No such file or directory" in result.stderr + result.stdout:
                 continue
+            retain_read_failure(profile, name, result)
             raise RuntimeError("Cannot read private synthetic visual evidence")
         assert len(result.stdout) <= 8 * 1024 * 1024, "Evidence exceeds file bound"
         if name.endswith(".png"):

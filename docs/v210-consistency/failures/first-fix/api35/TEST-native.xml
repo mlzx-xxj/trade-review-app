@@ -1,0 +1,180 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<testsuite name="com.tradereview.app.backup.BackupRepositoryTest" tests="148" failures="2" errors="0" skipped="0" time="798.355" timestamp="2026-10-18T08:06:01" hostname="localhost">
+  <properties>
+    <property name="device" value="emulator-5554 - 15" />
+    <property name="flavor" value="" />
+    <property name="project" value=":app" />
+  </properties>
+  <testcase name="exportDecodeReplaceRoundTripPreservesAllData" classname="com.tradereview.app.backup.BackupRepositoryTest" time="0.262" />
+  <testcase name="mergeIsIdempotentUsesStableKeysAndHandlesCollidingRowIds" classname="com.tradereview.app.backup.BackupRepositoryTest" time="0.097" />
+  <testcase name="reviewInsertFailureRollsBackTradeAndReviewWritesInBothModes" classname="com.tradereview.app.backup.BackupRepositoryTest" time="0.127" />
+  <testcase name="invalidBackupCannotReachDatabaseWrites" classname="com.tradereview.app.backup.BackupRepositoryTest" time="0.028" />
+  <testcase name="mergeFailureRollsBackPartialInsert" classname="com.tradereview.app.backup.BackupRepositoryTest" time="0.033" />
+  <testcase name="previewDoesNotWriteAndChangedDatabaseRejectsStaleConfirmation" classname="com.tradereview.app.backup.BackupRepositoryTest" time="0.055" />
+  <testcase name="conflictsKeepLocalValuesAndMissingPlanOrReviewIsFilled" classname="com.tradereview.app.backup.BackupRepositoryTest" time="0.023" />
+  <testcase name="overwriteFailureAfterDeleteAndFirstInsertRollsBackBothTables" classname="com.tradereview.app.backup.BackupRepositoryTest" time="0.055" />
+  <testcase name="officialV6ToV7PreservesEvidenceGoalsAndAllOldFactsAndCreatesOnlyNewTables" classname="com.tradereview.app.data.MigrationTest" time="0.227" />
+  <testcase name="officialV1MigrationPreservesEveryFieldAndStableKeysAcrossReopen" classname="com.tradereview.app.data.MigrationTest" time="0.103" />
+  <testcase name="v3ToV4PreservesEveryTableAndAddsNonDestructiveDefaults" classname="com.tradereview.app.data.MigrationTest" time="0.153" />
+  <testcase name="officialV4ToV5PreservesEveryOldTableAndNullableProfessionalDefaults" classname="com.tradereview.app.data.MigrationTest" time="0.177" />
+  <testcase name="officialV5ToV6KeepsProfessionalRiskAndOldNineTablesAndAddsEvidenceTargets" classname="com.tradereview.app.data.MigrationTest" time="0.159" />
+  <testcase name="officialV2ToV3PreservesRecordsSeedsAllStableTagsAndKeepsCustomSymbols" classname="com.tradereview.app.data.MigrationTest" time="0.098" />
+  <testcase name="emptyV1DatabaseMigratesAndAcceptsNewRecords" classname="com.tradereview.app.data.MigrationTest" time="0.076" />
+  <testcase name="tradesAndDailyReviewPersistAcrossReopenAndSupportEditDelete" classname="com.tradereview.app.data.TradeDatabaseTest" time="0.026" />
+  <testcase name="entryFailureKeepsDraftAndDoesNotUpdateTradeOrRecents" classname="com.tradereview.app.data.V03DataTest" time="0.028" />
+  <testcase name="favoritesRecentSearchAndUserOrderingPersist" classname="com.tradereview.app.data.V03DataTest" time="0.053" />
+  <testcase name="customTagRenameHideOrderAndFavoriteKeepHistoricalReferences" classname="com.tradereview.app.data.V03DataTest" time="0.051" />
+  <testcase name="delayedDraftWriteCannotResurrectSavedOrDeletedEntry" classname="com.tradereview.app.data.V03DataTest" time="0.028" />
+  <testcase name="legacyV02BackupCanReplaceAndThenExportAsNewFormat" classname="com.tradereview.app.data.V03DataTest" time="0.103" />
+  <testcase name="fastCrudCopyAndDraftRestorePersistAcrossReopen" classname="com.tradereview.app.data.V03DataTest" time="0.029" />
+  <testcase name="v03FullBackupRoundTripAndActualLateCatalogFailureRollBackEveryTable" classname="com.tradereview.app.data.V03DataTest" time="0.129" />
+  <testcase name="changingPresetAfterPreviewRejectsStaleRestoreAndMergeKeepsLocalConflicts" classname="com.tradereview.app.data.V04DataTest" time="0.051" />
+  <testcase name="bothJvmAndArtV03ChecksumsImportAndReExportWithIdenticalCanonicalV04Bytes" classname="com.tradereview.app.data.V04DataTest" time="0.103" />
+  <testcase name="v03GoldenBackupRestoresHiddenCustomLabelsNotesReviewsAndDefaults" classname="com.tradereview.app.data.V04DataTest" time="0.029" />
+  <testcase name="canonicalV04GoldenBackupRestoresEveryNewFieldAndMatchesJvmDigest" classname="com.tradereview.app.data.V04DataTest" time="0.076" />
+  <testcase name="failureInNewFilterTableRollsBackAllTablesAndPaletteInBothModes" classname="com.tradereview.app.data.V04DataTest" time="0.053" />
+  <testcase name="newPreferencesAndSavedFiltersSurviveCompleteRestoreAndIdempotentMerge" classname="com.tradereview.app.data.V04DataTest" time="0.078" />
+  <testcase name="riskOrTemplateChangesInvalidateRestorePreviewAndOldFormatsPreserveAmounts" classname="com.tradereview.app.data.V05DataTest" time="0.175" />
+  <testcase name="partialProfessionalDraftSurvivesNativeRoomAndJsonWithoutInventingFees" classname="com.tradereview.app.data.V05DataTest" time="0.076" />
+  <testcase name="nativeProfessionalRoundTripEditingAndDeletionKeepOneAuthorityAndStableIdentity" classname="com.tradereview.app.data.V05DataTest" time="0.026" />
+  <testcase name="riskConsentIsRequiredAndStaleRuleConfirmationDoesNotWriteAnything" classname="com.tradereview.app.data.V05DataTest" time="0.054" />
+  <testcase name="lastTableFailureRollsBackAllNineTablesForBothRestoreModes" classname="com.tradereview.app.data.V05DataTest" time="0.076" />
+  <testcase name="backupRestoresAllNewDataAndMergeKeepsLocalConflictsAsWholeTrades" classname="com.tradereview.app.data.V05DataTest" time="0.077" />
+  <testcase name="mergeKeepsLocalChecksAndRulesAndPreviewDetectsAnyNewStateChange" classname="com.tradereview.app.data.V07DataTest" time="0.278" />
+  <testcase name="fullZipAndJsonRoundTripsAllSixteenTablesAndPictures" classname="com.tradereview.app.data.V07DataTest" time="0.154" />
+  <testcase name="v06GoldenImportKeepsProfessionalFactsAndSuppliesNewDefaults" classname="com.tradereview.app.data.V07DataTest" time="0.054" />
+  <testcase name="damagedOcrInputShowsErrorAndCannotChangeAnyHistoryOrEvidence" classname="com.tradereview.app.data.V07DataTest" time="0.077" />
+  <testcase name="lateRestoreFailureRollsBackOldAndAllNewTablesAndPreservesFiles" classname="com.tradereview.app.data.V07DataTest" time="0.079" />
+  <testcase name="unverifiedOcrCannotSaveAndVerifiedNewTradePreservesExistingQuickDraftAndHistory" classname="com.tradereview.app.data.V07DataTest" time="0.126" />
+  <testcase name="invalidSourceMissingPermissionsOversizeAndLowSpaceNeverCreateRows" classname="com.tradereview.app.evidence.EvidenceDataTest" time="0.054" />
+  <testcase name="failureAfterFilePublicationRollsBackDatabaseAndCleansOnlyNewOrphans" classname="com.tradereview.app.evidence.EvidenceDataTest" time="0.178" />
+  <testcase name="oddPixelDimensionsDoNotExceedPrivateImageEdgeAfterSampling" classname="com.tradereview.app.evidence.EvidenceDataTest" time="0.051" />
+  <testcase name="tenImageLimitCaptionDeleteAndCascadeTradeCleanupAreReal" classname="com.tradereview.app.evidence.EvidenceDataTest" time="0.229" />
+  <testcase name="jsonScopeIsHonestOldFormatsImportAndPreviewIncludesGoalsAndImages" classname="com.tradereview.app.evidence.EvidenceDataTest" time="0.177" />
+  <testcase name="missingOrCorruptedPrivateFilesRefuseFullExportAndRead" classname="com.tradereview.app.evidence.EvidenceDataTest" time="0.024" />
+  <testcase name="missingPrivateImageCanBeRecoveredFromFullZipWithoutChangingTradeIdentity" classname="com.tradereview.app.evidence.EvidenceDataTest" time="0.129" />
+  <testcase name="pickerImportCopiesPrivateImageNormalizesOrientationAndRemovesGps" classname="com.tradereview.app.evidence.EvidenceDataTest" time="0.049" />
+  <testcase name="completeZipRestoresEveryNewTableAndMergeRetainsStableReferences" classname="com.tradereview.app.evidence.EvidenceDataTest" time="0.155" />
+  <testcase name="bundledChineseLatinDigitsWorkWithoutInternetPermission" classname="com.tradereview.app.ocr.BundledOcrTest" time="4.192" />
+  <testcase name="freshGuideSkipAndExistingUpgradePersistWithoutBusinessWrites" classname="com.tradereview.app.release.ExperienceDataTest" time="0.049" />
+  <testcase name="writeOnlyProviderShowsUnverifiedAndCsvNeverUpdatesBackupHistory" classname="com.tradereview.app.release.ExperienceDataTest" time="0.077" />
+  <testcase name="outputFailureAndReadableCorruptionKeepPreviousSuccessfulTimesAndTransactions" classname="com.tradereview.app.release.ExperienceDataTest" time="0.079" />
+  <testcase name="verifiedJsonAndZipOnlyUpdateAfterRealProviderOutputAndRestoresDoNotImportDeviceHistory" classname="com.tradereview.app.release.ExperienceDataTest" time="0.153" />
+  <testcase name="reminderDisableAndSnoozeSurviveReopen" classname="com.tradereview.app.release.ExperienceDataTest" time="0.002" />
+  <testcase name="completeManualEvidenceReviewCalendarReportsZipRestoreChainKeepsStableKeyAndImage" classname="com.tradereview.app.release.ReleaseExperienceUiTest" time="10.428" />
+  <testcase name="homeHasOneFastEntryAndDirectPlanPostReviewAndCalendarNavigation" classname="com.tradereview.app.release.ReleaseExperienceUiTest" time="1.957" />
+  <testcase name="documentSelectionAloneNeverAdvancesBackupTimeAndPrivacyIsVisible" classname="com.tradereview.app.release.ReleaseExperienceUiTest" time="2.261" />
+  <testcase name="firstUseCanSkipDoesNotInventDataAndGuideCanBeReopened" classname="com.tradereview.app.release.ReleaseExperienceUiTest" time="1.827" />
+  <testcase name="largeFontDarkThemeKeyboardAndLandscapeKeepSaveUsable" classname="com.tradereview.app.stability.ActivityCompatibilityTest" time="5.599" />
+  <testcase name="actualActivityDraftSurvivesRecreationAndBackgroundResume" classname="com.tradereview.app.stability.ActivityCompatibilityTest" time="2.444" />
+  <testcase name="realThousandFiveThousandTenThousandListsAndCalendarRemainInteractive" classname="com.tradereview.app.stability.ActivityCompatibilityTest" time="19.061" />
+  <testcase name="boundedRevisitsDoNotRecyclePixelsStillHeldByUiAndCorruptionCannotHideBehindCache" classname="com.tradereview.app.stability.ImageCacheTest" time="0.329" />
+  <testcase name="missingFileAndWrongDimensionsAreRejectedAndLargeViewIsNotRetainedInThumbnailCache" classname="com.tradereview.app.stability.ImageCacheTest" time="0.026" />
+  <testcase name="evaluatePackagedChineseLatinNumbersRotationAndUnsafeScreenshotsWithoutNetwork" classname="com.tradereview.app.stability.OcrEvaluationTest" time="36.403" />
+  <testcase name="existingAttachmentIndexAvoidsFullMetadataMaterialization" classname="com.tradereview.app.stability.PerformanceBaselineTest" time="1.532" />
+  <testcase name="deterministicLargeDataAnalyticsRoomJsonAndZipBaseline" classname="com.tradereview.app.stability.PerformanceBaselineTest" time="62.132" />
+  <testcase name="privateImageRepeatedThumbnailBaseline" classname="com.tradereview.app.stability.PerformanceBaselineTest" time="0.4" />
+  <testcase name="cancellationMidwayThroughReplaceRollsBackEveryTableAndPreservesImages" classname="com.tradereview.app.stability.ReliabilityTest" time="0.075" />
+  <testcase name="staleDeleteAfterRestoreCannotDeleteReusedRowOrItsEvidence" classname="com.tradereview.app.stability.ReliabilityTest" time="0.076" />
+  <testcase name="cancelledAndFailingOcrCannotPublishLateResultOrChangeAnyHistory" classname="com.tradereview.app.stability.ReliabilityTest" time="0.477" />
+  <testcase name="lowSpaceAfterZipPreviewPreservesOriginalAndCanRetryWithoutDuplicates" classname="com.tradereview.app.stability.ReliabilityTest" time="0.139" />
+  <testcase name="invalidFileShowsVisibleErrorWithoutChangingExistingData" classname="com.tradereview.app.ui.BackupSettingsTest" time="1.373" />
+  <testcase name="contentResolverJsonExportImportAndCsvWorkOffline" classname="com.tradereview.app.ui.BackupSettingsTest" time="0.645" />
+  <testcase name="previewAndSecondConfirmationAreRequiredBeforeRestore" classname="com.tradereview.app.ui.BackupSettingsTest" time="1.396" />
+  <testcase name="planOnlyDayAndFlatDayAreNotNoDataOrFakePnl" classname="com.tradereview.app.ui.CalendarAnalyticsUiTest" time="1.699" />
+  <testcase name="chartsExposeExactTapValuesAndPalettePersists" classname="com.tradereview.app.ui.CalendarAnalyticsUiTest" time="2.161" />
+  <testcase name="editingJournalFromCalendarUsesSelectedDayInsteadOfPreviouslyViewedDay" classname="com.tradereview.app.ui.CalendarAnalyticsUiTest" time="1.344" />
+  <testcase name="hiddenHistoricalTagCanBeSelectedAndEmptyFilterHasFriendlyState" classname="com.tradereview.app.ui.CalendarAnalyticsUiTest" time="1.867" />
+  <testcase name="monthNavigationTodayAndDailyDetailsKeepCurrenciesSeparateAndEditTrade" classname="com.tradereview.app.ui.CalendarAnalyticsUiTest" time="1.938" />
+  <testcase name="combinationFiltersAreSharedByListAndStatisticsAndPresetRestoresThem" classname="com.tradereview.app.ui.CalendarAnalyticsUiTest" time="5.473" />
+  <testcase name="calendarRestoresSelectedMonthAndScrollAfterDailyDetail" classname="com.tradereview.app.ui.CalendarAnalyticsUiTest" time="1.233" />
+  <testcase name="captureMajorScreensWithClearlySyntheticFixtures" classname="com.tradereview.app.ui.CalendarAnalyticsUiTest" time="9.913" />
+  <testcase name="manageNewTagRenameHideAndFavoriteSymbolThroughSettings" classname="com.tradereview.app.ui.FastEntryUiTest" time="4.37" />
+  <testcase name="emptyOrZeroAmountRejectedThenExplicitFlatSavesWithoutKeyboard" classname="com.tradereview.app.ui.FastEntryUiTest" time="2.408" />
+  <testcase name="closingAndReopeningRestoresDraftAndSaveContinueClearsAmount" classname="com.tradereview.app.ui.FastEntryUiTest" time="3.264" />
+  <testcase name="copyPreviousClearsAmountAndCompletionWithVisibleFeedback" classname="com.tradereview.app.ui.FastEntryUiTest" time="1.812" />
+  <testcase name="bottomNavigationShowsEachPage" classname="com.tradereview.app.ui.NavigationTest" time="1.201" />
+  <testcase name="userCanCreateEditAndDeleteATrade" classname="com.tradereview.app.ui.NavigationTest" time="3.334" />
+  <testcase name="riskWarningCannotSilentlySaveOrChangeFactsAndConsentIsRecorded" classname="com.tradereview.app.ui.ProfessionalUiTest" time="2.009" />
+  <testcase name="ruleAndUserTemplateSettingsPersistWithoutSupplyingGuessedParameters" classname="com.tradereview.app.ui.ProfessionalUiTest" time="9.882" />
+  <testcase name="professionalDraftRestoreAndHistoricalManualEditsKeepMoneyAndIdentity" classname="com.tradereview.app.ui.ProfessionalUiTest" time="6.513" />
+  <testcase name="automaticModeNeedsConfirmationPreservesManualDraftAndSavesExactResult" classname="com.tradereview.app.ui.ProfessionalUiTest" time="3.807" />
+  <testcase name="riskStatisticsUseOnlyValidSamplesAndDarkProfessionalScreenStillWorks" classname="com.tradereview.app.ui.ProfessionalUiTest" time="9.22" />
+  <testcase name="predefinedAndTextGoalsCreateTrackArchiveAndKeepFactsUnchanged" classname="com.tradereview.app.ui.ReviewEvidenceUiTest" time="5.391" />
+  <testcase name="systemPickerResultPrivateThumbnailsViewerSwitchCaptionAndDeleteWork" classname="com.tradereview.app.ui.ReviewEvidenceUiTest" time="5.264" />
+  <testcase name="fullZipPreviewNeedsSecondConsentAndJsonScopeNeverClaimsImageBackup" classname="com.tradereview.app.ui.ReviewEvidenceUiTest" time="2.261" />
+  <testcase name="weeklyMonthlyReportsUseAllCurrenciesAllowHistoryAndDrillIntoRealTrades" classname="com.tradereview.app.ui.ReviewEvidenceUiTest" time="3.576" />
+  <testcase name="insightsExplainAndDrillRealRecordsAndPreflightTracksGoalAndPersonalCheckHistory" classname="com.tradereview.app.ui.SmartReviewUiTest" time="6.796" />
+  <testcase name="blockedScreenshotStaysDraftAndRestoreRequiresFreshConfirmation" classname="com.tradereview.app.ui.SmartReviewUiTest" time="1.393" />
+  <testcase name="duplicateWarningShowsExistingFactsAndNeedsExplicitConsentBeforeNewRecord" classname="com.tradereview.app.ui.SmartReviewUiTest" time="4.618" />
+  <testcase name="realBundledOcrPickerConfirmationCreatesOnlyVerifiedTradeAndKeepsPrivateEvidence" classname="com.tradereview.app.ui.SmartReviewUiTest" time="11.521" />
+  <testcase name="repeatedT1CancelAndReopenKeepTheQuoteCurrentAndFactsUnchanged" classname="com.tradereview.app.v200.EntryQuoteLifecycleTest" time="93.29" />
+  <testcase name="v7ToV8PreservesUnknownMarketsAmountsKeysAttachmentsAndStrategyIdentity" classname="com.tradereview.app.v200.LedgerMigrationTest" time="0.151" />
+  <testcase name="entireV1ToV8ChainPreservesOriginalPnlAndDoesNotCreatePositions" classname="com.tradereview.app.v200.LedgerMigrationTest" time="0.129" />
+  <testcase name="confirmingOneExecutionMultiplierDoesNotVerifyAnUnverifiedFeeRule" classname="com.tradereview.app.v200.LedgerRepositoryTest" time="0.027" />
+  <testcase name="legacyJsonReplacementPreservesNewLedgerItDoesNotContain" classname="com.tradereview.app.v200.LedgerRepositoryTest" time="0.078" />
+  <testcase name="deletingTheLastFactDoesNotReuseItsAuditedSaveOrder" classname="com.tradereview.app.v200.LedgerRepositoryTest" time="0.051" />
+  <testcase name="cashFlowsRemainSeparateFromRiskFundAndRealizedPnl" classname="com.tradereview.app.v200.LedgerRepositoryTest" time="0.026" />
+  <testcase name="currentAndClosedCyclesBothAcceptMultipleDatedReviewsWithoutChangingExecutionFacts" classname="com.tradereview.app.v200.LedgerRepositoryTest" time="0.051" />
+  <testcase name="stalePreviewAndOverSellingCannotLeaveHalfChangedFacts" classname="com.tradereview.app.v200.LedgerRepositoryTest" time="0.026" />
+  <testcase name="ambiguousSameDayContractRulesAreRejectedAndChangingRulesNeverRepricesHistoricalFees" classname="com.tradereview.app.v200.LedgerRepositoryTest" time="0.05" />
+  <testcase name="completeZipRestoresNewLedgerAndOldPrivateScreenshotsTogether" classname="com.tradereview.app.v200.LedgerRepositoryTest" time="0.102" />
+  <testcase name="automaticOrderNeedsNoConfirmationAndAnEditCannotMoveTheOriginalFact" classname="com.tradereview.app.v200.LedgerRepositoryTest" time="0.052" />
+  <testcase name="failedZipReplacementRollsBackNewLedgerLegacyFactsAndBothExistingImageReferences" classname="com.tradereview.app.v200.LedgerRepositoryTest" time="0.128" />
+  <testcase name="oversizeRiskRequiresExplicitAcknowledgementAndRemainsStableAfterRulesChange" classname="com.tradereview.app.v200.LedgerRepositoryTest" time="0.051" />
+  <testcase name="saveThenPartialSaleAndPreviewedEditRebuildAuthoritativePnlAndKeepsOriginalAudit" classname="com.tradereview.app.v200.LedgerRepositoryTest" time="0.052" />
+  <testcase name="sameMinuteUnknownOrderRequiresConfirmationAndKeepsStableOrderInBackup" classname="com.tradereview.app.v200.LedgerRepositoryTest" time="0.052" />
+  <testcase name="frozenLegacyEditKeepsItsConfirmedOrderWithoutAnotherTechnicalConfirmation" classname="com.tradereview.app.v200.LedgerRepositoryTest" time="0.053" />
+  <testcase name="newAutomaticStockUsesPersonalFixedRatesWhileHistoricalAccountAndFactsStayIntact" classname="com.tradereview.app.v200.LedgerRepositoryTest" time="0.052" />
+  <testcase name="restoreFailureRollsBackNewLedgerAndLegacyRecordsTogether" classname="com.tradereview.app.v200.LedgerRepositoryTest" time="0.051" />
+  <testcase name="pendingFeesZipRestoreFailureRollsBackThenSuccessfulRestoreKeepsUnknownValues" classname="com.tradereview.app.v200.LedgerRepositoryTest" time="0.177" />
+  <testcase name="strategyRenameDeactivateAndHistoricalPlanAssociationStayStable" classname="com.tradereview.app.v200.LedgerRepositoryTest" time="0.026" />
+  <testcase name="changedMatchingRepricesLaterAutoCloseOnlyFromItsSavedRuleAndAuditsIt" classname="com.tradereview.app.v200.LedgerRepositoryTest" time="0.127" />
+  <testcase name="entireV1ToV9ChainKeepsOriginalAmountAndStableIdentity" classname="com.tradereview.app.v200.PendingMigrationTest" time="0.077" />
+  <testcase name="v8ToV9PreservesAllKnownFactsCachesReviewPlanAuditAndLegacyImage" classname="com.tradereview.app.v200.PendingMigrationTest" time="0.128" />
+  <testcase name="migrationKeepsForeignKeysWithBothEnforcementStatesAndLegacyRenameBehavior" classname="com.tradereview.app.v200.PendingMigrationTest" time="0.13" />
+  <testcase name="actualFormJourneyAndReopenEvidence" classname="com.tradereview.app.v200.TradeEntryExperienceTest" time="82.056" />
+  <testcase name="executionEditDeleteAndFailurePublishOnMainWithoutChangingFactsBeforeConfirmation" classname="com.tradereview.app.v200.UiPublicationThreadTest" time="0.253" />
+  <testcase name="jsonZipPreviewRefreshRestoreCancelAndErrorsPublishOnMain" classname="com.tradereview.app.v200.UiPublicationThreadTest" time="0.303" />
+  <testcase name="emitterProbeDetectsWorkerAndMainWithoutMaskingThePublisher" classname="com.tradereview.app.v200.UiPublicationThreadTest" time="0.052" />
+  <testcase name="realMainDraftLargeFontDarkKeyboardAndRecreationKeepSaveVisible" classname="com.tradereview.app.v200.V200MainUiTest" time="7.993" />
+  <testcase name="realizedCalendarWeeklyMonthlyChartsAccountsAndFullZipRestoreUseRealFacts" classname="com.tradereview.app.v200.V200MainUiTest" time="6.672" />
+  <testcase name="symbolPlanAndOpenAndClosedPositionReviewsKeepFactsSeparate" classname="com.tradereview.app.v200.V200MainUiTest" time="4.437" />
+  <testcase name="fivePagesAndFixedRiskEntryHaveNoHomeTransactionOrOldFeatureButtons" classname="com.tradereview.app.v200.V200MainUiTest" time="1.668" />
+  <testcase name="stockEntryEditDeleteRequirePreviewAndPreserveActualAudit" classname="com.tradereview.app.v200.V200MainUiTest" time="6.709" />
+  <testcase name="separateRiskFundsAndCustomStrategyRequireExplicitExceededRiskConfirmation" classname="com.tradereview.app.v200.V200MainUiTest" time="31.926">
+    <failure>java.lang.AssertionError: 保存独立风险金: busy=false, problem=null, pending=false, executions=0
+at com.tradereview.app.v200.V200MainUiTest.separateRiskFundsAndCustomStrategyRequireExplicitExceededRiskConfirmation$step(V200MainUiTest.kt:87)
+at com.tradereview.app.v200.V200MainUiTest.separateRiskFundsAndCustomStrategyRequireExplicitExceededRiskConfirmation(V200MainUiTest.kt:95)
+... 55 trimmed
+Caused by: androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 30000 ms
+at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:504)
+at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:339)
+at com.tradereview.app.v200.V200MainUiTest.wait(V200MainUiTest.kt:46)
+at com.tradereview.app.v200.V200MainUiTest.separateRiskFundsAndCustomStrategyRequireExplicitExceededRiskConfirmation$step(V200MainUiTest.kt:86)
+... 57 more
+</failure>
+  </testcase>
+  <testcase name="realConfigurationBackupAndReopenPreserveFinancialFacts" classname="com.tradereview.app.v210.V210ConsistencyJourneyTest" time="22.668">
+    <failure>java.lang.AssertionError: Accessible save control is visible and above IME: {label=保存, orientation=2, keyboardVisible=true, imeTopPx=271, buttonBoundsPx=null, touchHeightDp=null, aboveKeyboard=false}
+at org.junit.Assert.fail(Assert.java:89)
+at org.junit.Assert.assertTrue(Assert.java:42)
+at com.tradereview.app.v210.V210ConsistencyJourneyTest.saveControl(V210ConsistencyJourneyTest.kt:181)
+at com.tradereview.app.v210.V210ConsistencyJourneyTest.saveControl$default(V210ConsistencyJourneyTest.kt:151)
+at com.tradereview.app.v210.V210ConsistencyJourneyTest.realConfigurationBackupAndReopenPreserveFinancialFacts$lambda$54(V210ConsistencyJourneyTest.kt:410)
+at com.tradereview.app.v210.V210ConsistencyJourneyTest.$r8$lambda$TBr-1QJrdiqB-TSNBK8E5UycyjQ(Unknown Source:0)
+at com.tradereview.app.v210.V210ConsistencyJourneyTest$$ExternalSyntheticLambda23.invoke(D8$$SyntheticClass:0)
+at com.tradereview.app.v210.V210ConsistencyJourneyTest.step(V210ConsistencyJourneyTest.kt:61)
+at com.tradereview.app.v210.V210ConsistencyJourneyTest.realConfigurationBackupAndReopenPreserveFinancialFacts(V210ConsistencyJourneyTest.kt:395)
+</failure>
+  </testcase>
+  <testcase name="riskRuleAndAccountControlsExposeNamesAndState" classname="com.tradereview.app.v210.V210ConsistencyUiTest" time="6.509" />
+  <testcase name="contractRuleEditorKeepsIdentityAndDraftAfterRecreation" classname="com.tradereview.app.v210.V210ConsistencyUiTest" time="12.964" />
+  <testcase name="strategyEditorKeepsIdentityAndDraftAfterRecreation" classname="com.tradereview.app.v210.V210ConsistencyUiTest" time="9.532" />
+  <testcase name="riskInputKeepsHeaderVisibleWithRealKeyboard" classname="com.tradereview.app.v210.V210ConsistencyUiTest" time="5.016" />
+  <testcase name="repeatedSameTextBeforeNextFrameIsShownAndDrainedWithoutChangingLedger" classname="com.tradereview.app.v210.V210FeedbackLifecycleTest" time="5.782" />
+  <testcase name="realHomeStatisticsDataNavigationAndProcessReopen" classname="com.tradereview.app.v210.V210HomeStatisticsJourneyTest" time="77.254" />
+  <testcase name="largeAmountsRemainReadableOnNarrowDarkLargeFontAndRecreation" classname="com.tradereview.app.v210.V210LayoutTest" time="9.171" />
+  <testcase name="realPlansReviewsCashAndProcessReopen" classname="com.tradereview.app.v210.V210PlanReviewJourneyTest" time="93.405" />
+  <testcase name="sameRealFormDataAndDeviceVisualEvidence" classname="com.tradereview.app.v210.V210VisualJourneyTest" time="34.37" />
+</testsuite>

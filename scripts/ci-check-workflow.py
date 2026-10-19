@@ -19,7 +19,10 @@ def check(document):
         require(permissions.get("actions") in (None,"read"),"Actions permission must never allow writes")
         require(permissions.get("contents")==("write" if name=="publish" else "read"),"Wrong contents permission")
         if "write" in permissions.values():writes.append(name)
-        require(0<int(job["timeout-minutes"])<=45,"Every job needs a bounded timeout")
+        # Eight additional real UI/process-boundary instrumentations per API.
+        # Only the read-only device matrix gets this explicit, bounded budget.
+        maximum=60 if name=="device-tests" else 45
+        require(0<int(job["timeout-minutes"])<=maximum,"Every job needs its bounded timeout")
         for step in job["steps"]:
             if "uses" in step:
                 require(re.fullmatch(r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+(?:/[A-Za-z0-9_.-]+)*@[0-9a-f]{40}",step["uses"]) is not None,"Actions must use immutable commit pins")

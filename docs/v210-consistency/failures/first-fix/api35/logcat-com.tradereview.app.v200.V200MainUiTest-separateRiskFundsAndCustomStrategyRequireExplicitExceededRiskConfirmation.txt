@@ -1,0 +1,259 @@
+10-18 08:00:41.310  3710  3724 I TestRunner: started: separateRiskFundsAndCustomStrategyRequireExplicitExceededRiskConfirmation(com.tradereview.app.v200.V200MainUiTest)
+10-18 08:00:41.311  3009  3009 D StatsLog: LAUNCHER_ONRESUME
+10-18 08:00:41.312  3009  3009 I TopTaskTracker: onTaskRemoved: taskId=94
+10-18 08:00:41.312  3009  3009 I TopTaskTracker: onTaskRemoved: taskId=94
+10-18 08:00:41.313  3710  3724 D IdlingRegistry: Registering idling resources: [androidx.compose.ui.test.EspressoLink@802d98c]
+10-18 08:00:41.314  3710  3724 W Settings: Setting always_finish_activities has moved from android.provider.Settings.System to android.provider.Settings.Global, returning read-only value.
+10-18 08:00:41.329  2353  2647 V GrammaticalInflectionUtils: AttributionSource: AttributionSource { uid = 10148, packageName = null, attributionTag = null, token = android.os.Binder@e88bbe7, deviceId = 0, next = null } does not have READ_SYSTEM_GRAMMATICAL_GENDER permission.
+10-18 08:00:41.332  3009  3009 D StateManager: createAtomicAnimation - fromState: Background, toState: Normal, partial trace:
+10-18 08:00:41.332  3009  3009 D StateManager: 	at com.android.quickstep.util.WorkspaceRevealAnim.prepareToAnimate(WorkspaceRevealAnim.java:130)
+10-18 08:00:41.332  3009  3009 D StateManager: 	at com.android.quickstep.util.WorkspaceRevealAnim.<init>(WorkspaceRevealAnim.java:66)
+10-18 08:00:41.332  3009  3009 D StateManager: 	at com.android.launcher3.QuickstepTransitionManager.createWallpaperOpenAnimations(QuickstepTransitionManager.java:1716)
+10-18 08:00:41.345  3009  3073 D EGL_emulation: app_time_stats: avg=495.55ms min=67.54ms max=1033.90ms count=3
+10-18 08:00:41.357  3733  3733 D VRI[InstrumentationActivityInvoker$EmptyActivity]: visibilityChanged oldVisibility=true newVisibility=false
+10-18 08:00:41.367  2575  2663 D SplashScreenView: Build android.window.SplashScreenView{5973337 V.E...... ......ID 0,0-0,0}
+10-18 08:00:41.367  2575  2663 D SplashScreenView: Icon: view: null drawable: null size: 0
+10-18 08:00:41.367  2575  2663 D SplashScreenView: Branding: view: android.view.View{685c0a4 G.ED..... ......I. 0,0-0,0 #1020503 android:id/splashscreen_branding_view} drawable: null size w: 0 h: 0
+10-18 08:00:41.368  2287  2287 I BpBinder: onLastStrongRef automatically unlinking death recipients:
+10-18 08:00:41.386  3009  3009 W SplitSelectStateCtor: Missing session instanceIds
+10-18 08:00:41.386  3009  3009 D StatsLog: LAUNCHER_SPLIT_SELECTION_EXIT_INTERRUPTED
+10-18 08:00:41.400  3009  3009 I TopTaskTracker: onTaskMovedToFront: (moved taskInfo to front) taskId=96, baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10008000 cmp=com.tradereview.app/.MainActivity }
+10-18 08:00:41.412  3710  3710 D LifecycleMonitor: Lifecycle status change: com.tradereview.app.MainActivity@1e6a890 in: PRE_ON_CREATE
+10-18 08:00:41.413  3710  3710 V ActivityScenario: Activity lifecycle changed event received but ignored because the reported transition was not ON_CREATE while the last known transition was PRE_ON_CREATE
+10-18 08:00:41.418  3733  3733 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=false callback=android.view.ViewRootImpl$$ExternalSyntheticLambda11@32917c1
+10-18 08:00:41.419  2353  2424 W InputManager-JNI: Input channel object '5dbe061 com.tradereview.app.test/androidx.test.core.app.InstrumentationActivityInvoker$EmptyActivity (client)' was disposed without first being removed with the input manager!
+10-18 08:00:41.427  3710  3710 D LifecycleMonitor: Lifecycle status change: com.tradereview.app.MainActivity@1e6a890 in: CREATED
+10-18 08:00:41.427  3710  3710 V ActivityScenario: Update currentActivityStage to CREATED, currentActivity=com.tradereview.app.MainActivity@1e6a890
+10-18 08:00:41.428  3710  3710 D LifecycleMonitor: Lifecycle status change: com.tradereview.app.MainActivity@1e6a890 in: STARTED
+10-18 08:00:41.428  3710  3710 V ActivityScenario: Update currentActivityStage to STARTED, currentActivity=com.tradereview.app.MainActivity@1e6a890
+10-18 08:00:41.432  3710  3710 D LifecycleMonitor: Lifecycle status change: com.tradereview.app.MainActivity@1e6a890 in: RESUMED
+10-18 08:00:41.432  3710  3710 V ActivityScenario: Update currentActivityStage to RESUMED, currentActivity=com.tradereview.app.MainActivity@1e6a890
+10-18 08:00:41.439  3710  3710 D AutofillManager: Fill dialog is enabled:false, hints=[]
+10-18 08:00:41.487  2575  2662 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=false callback=android.view.ViewRootImpl$$ExternalSyntheticLambda11@5b96c67
+10-18 08:00:41.496  2353  4334 W InputManager-JNI: Input channel object 'd2480bd Splash Screen com.tradereview.app.test (client)' was disposed without first being removed with the input manager!
+10-18 08:00:41.514  3009  3009 D VRI[QuickstepLauncher]: visibilityChanged oldVisibility=true newVisibility=false
+10-18 08:00:41.514  3009  3009 I TopTaskTracker: onTaskRemoved: taskId=95
+10-18 08:00:41.514  3009  3009 I TopTaskTracker: onTaskRemoved: taskId=95
+10-18 08:00:41.612  2353  2372 W ziparchive: Unable to open '/data/app/~~fqkFJylWo07U1WIkLCA2jQ==/com.tradereview.app-SlyazdTiAlWlo7wMmL2Dlg==/base.dm': No such file or directory
+10-18 08:00:41.614  3009  3009 D BaseDepthController: setSurface:
+10-18 08:00:41.614  3009  3009 D BaseDepthController: 	mWaitingOnSurfaceValidity: false
+10-18 08:00:41.614  3009  3009 D BaseDepthController: 	mSurface: null
+10-18 08:00:41.614  3009  3009 D BaseDepthController: mSurface is null and mCurrentBlur is: 0
+10-18 08:00:41.615  3009  3009 D StateManager: goToState - fromState: Normal, toState: Normal, partial trace:
+10-18 08:00:41.615  3009  3009 D StateManager: 	at com.android.launcher3.statemanager.StateManager.moveToRestState(StateManager.java:453)
+10-18 08:00:41.615  3009  3009 D StateManager: 	at com.android.launcher3.statemanager.StateManager.moveToRestState(StateManager.java:444)
+10-18 08:00:41.615  3009  3009 D StateManager: 	at com.android.launcher3.statemanager.StatefulActivity.onStop(StatefulActivity.java:119)
+10-18 08:00:41.615  3009  3009 D StatsLog: LAUNCHER_ONSTOP
+10-18 08:00:41.619  3710  3724 W SurfaceComposerClient: Sync transaction timed out waiting for commit callback.
+10-18 08:00:41.631  2353  2372 I ActivityTaskManager: Displayed com.tradereview.app/.MainActivity for user 0: +282ms
+10-18 08:00:41.635  2575  2662 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=false callback=android.view.ViewRootImpl$$ExternalSyntheticLambda11@cdb9e09
+10-18 08:00:41.637  2353  2424 W InputManager-JNI: Input channel object '5d0331f Splash Screen com.tradereview.app (client)' was disposed without first being removed with the input manager!
+10-18 08:00:41.643  2353  2466 I ImeTracker: com.tradereview.app:3469b1df: onRequestHide at ORIGIN_SERVER reason HIDE_UNSPECIFIED_WINDOW fromUser false
+10-18 08:00:41.643  2353  2466 I ImeTracker: com.tradereview.app:3469b1df: onCancelled at PHASE_SERVER_SHOULD_HIDE
+10-18 08:00:41.656  3009  3009 W FrameTracker: Missed App frame:UNKNOWN: 24, 163006, 37284619, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+10-18 08:00:41.656  3009  3009 W FrameTracker: Missed SF frame:UNKNOWN: 24, 163006, 37284619, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+10-18 08:00:41.657  3009  3009 W FrameTracker: Missed SF frame:UNKNOWN: 80, 163064, 35983424, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+10-18 08:00:41.657  3009  3009 W FrameTracker: Missing SF jank callback for vsyncId: 163130, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME_FALLBACK>
+10-18 08:00:41.658  3009  3025 V PerfettoTrigger: Not triggering com.android.telemetry.interaction-jank-monitor-78 - not enough time since last trigger
+10-18 08:00:41.705  3710  3710 E FrameTracker: force finish cuj, time out: J<IME_INSETS_SHOW_ANIMATION::0@1@com.tradereview.app>
+10-18 08:00:41.775  2353  2363 I system_server: NativeAlloc concurrent mark compact GC freed 15MB AllocSpace bytes, 6(120KB) LOS objects, 49% free, 21MB/42MB, paused 615us,1.152ms total 219.352ms
+10-18 08:00:41.777  2353  2364 I BpBinder: onLastStrongRef automatically unlinking death recipients:
+10-18 08:00:41.825  3710  3710 W WindowOnBackDispatcher: OnBackInvokedCallback is not enabled for the application.
+10-18 08:00:41.825  3710  3710 W WindowOnBackDispatcher: Set 'android:enableOnBackInvokedCallback="true"' in the application manifest.
+10-18 08:00:42.136  3710  3710 D Autofill Status: Autofill popup isn't shown because autofill is not available.
+10-18 08:00:42.136  3710  3710 D Autofill Status:
+10-18 08:00:42.136  3710  3710 D Autofill Status: Did you set up autofill?
+10-18 08:00:42.136  3710  3710 D Autofill Status: 1. Go to Settings > System > Languages&input > Advanced > Autofill Service
+10-18 08:00:42.136  3710  3710 D Autofill Status: 2. Pick a service
+10-18 08:00:42.136  3710  3710 D Autofill Status:
+10-18 08:00:42.136  3710  3710 D Autofill Status: Did you add an account?
+10-18 08:00:42.136  3710  3710 D Autofill Status: 1. Go to Settings > System > Languages&input > Advanced
+10-18 08:00:42.136  3710  3710 D Autofill Status: 2. Click on the settings icon next to the Autofill Service
+10-18 08:00:42.136  3710  3710 D Autofill Status: 3. Add your account
+10-18 08:00:42.152  3710  3710 D InsetsController: show(ime(), fromIme=false)
+10-18 08:00:42.153  3710  3710 I ImeTracker: com.tradereview.app:57114da: onRequestShow at ORIGIN_CLIENT reason SHOW_SOFT_INPUT_BY_INSETS_API fromUser false
+10-18 08:00:42.154  3710  3710 D InputMethodManager: showSoftInput() view=androidx.compose.ui.platform.AndroidComposeView{efe32f9 VFED..... .F....ID 0,0-768,1280 aid=1073741824} flags=0 reason=SHOW_SOFT_INPUT_BY_INSETS_API
+10-18 08:00:42.167  2998  2998 I LatinIME: Starting input. Cursor position = 0,0
+10-18 08:00:42.175  2286  2286 I netd    : tetherGetStats() -> {[]} <0.38ms>
+10-18 08:00:42.184  3710  3710 I ImeTracker: com.tradereview.app:db5a67be: onRequestShow at ORIGIN_CLIENT reason SHOW_SOFT_INPUT fromUser false
+10-18 08:00:42.184  3710  3710 D InputMethodManager: showSoftInput() view=androidx.compose.ui.platform.AndroidComposeView{efe32f9 VFED..... .F....ID 0,0-768,1280 aid=1073741824} flags=0 reason=SHOW_SOFT_INPUT
+10-18 08:00:42.200  3009  3009 D View    : ---- ST:requestLayout
+10-18 08:00:42.200  3009  3009 D View    : requestLayout : getStackTrace(Thread.java:1841) <- printStackStrace(View.java:27969) <- requestLayout(View.java:27999) <- requestLayout(View.java:28020) <- requestLayout(View.java:28020) <- requestLayout(View.java:28020) <- removeAllViews(ViewGroup.java:5740) <- layoutButtons(PhonePortraitNavLayoutter.kt:78) <- updateButtonLayoutSpacing(NavbarButtonsViewController.java:802) <- parseSystemUiFlags(NavbarButtonsViewController.java:484) <- updateStateForSysuiFlags(NavbarButtonsViewController.java:493) <- updateSysuiStateFlags(TaskbarActivityContext.java:817) <- onSystemUiFlagsChanged(TaskbarManager.java:502) <- onSystemUiFlagsChanged(TouchInteractionService.java:722) <- -$$Nest$monSystemUiFlagsChanged(null:0) <- lambda$onSystemUiStateChanged$13(TouchInteractionService.java:311) <- accept(D8$$SyntheticClass:0) <- executeForTouchInteractionService(TouchInteractionService.java:377) <- lambda$onSystemUiStateChanged$14(TouchInteractionService.java:308) <- $r8$lambda$8AiRCS7Y2H5KRXXuIdOdP1LQuA0(null:0) <-
+10-18 08:00:42.208  3009  3009 D View    : ---- ST:requestLayout
+10-18 08:00:42.208  3009  3009 D View    : requestLayout : getStackTrace(Thread.java:1841) <- printStackStrace(View.java:27969) <- requestLayout(View.java:27999) <- setLayoutParams(View.java:20530) <- updateViewLayout(WindowManagerGlobal.java:464) <- updateViewLayout(WindowManagerImpl.java:165) <- notifyUpdateLayoutParams(TaskbarActivityContext.java:1528) <- onTaskbarOrBubblebarWindowHeightOrInsetsChanged(TaskbarInsetsController.kt:186) <- lambda$onIsStashedChanged$7(TaskbarStashController.java:938) <- $r8$lambda$V70CIL_pG5t21J73JvZUvAfU2B0(null:0) <- run(D8$$SyntheticClass:0) <- runAfterInit(TaskbarControllers.java:263) <- onIsStashedChanged(TaskbarStashController.java:935) <- lambda$createAnimToIsStashed$3(TaskbarStashController.java:620) <- $r8$lambda$lICNXpsaTGWd-5rxHyDFfQwiuw4(null:0) <- run(D8$$SyntheticClass:0) <- onAnimationEnd(AnimatorListeners.java:54) <- onAnimationEnd(Animator.java:708) <- call(D8$$SyntheticClass:0) <- callOnList(Animator.java:666) <-
+10-18 08:00:42.241  3710  3710 D InsetsController: show(ime(), fromIme=true)
+10-18 08:00:42.254  3710  3710 D InsetsController: show(ime(), fromIme=true)
+10-18 08:00:42.254  3710  3710 I ImeTracker: com.tradereview.app:db5a67be: onCancelled at PHASE_CLIENT_APPLY_ANIMATION
+10-18 08:00:42.276  3710  3710 I ImeTracker: com.tradereview.app:57114da: onShown
+10-18 08:00:42.304  3009  3009 W FrameTracker: Missed SF frame:JANK_SURFACEFLINGER_DEADLINE_MISSED, 163536, 13668979, CUJ=J<TASKBAR_COLLAPSE>
+10-18 08:00:42.375  3710  3710 E FrameTracker: force finish cuj, time out: J<IME_INSETS_SHOW_ANIMATION::0@1@com.tradereview.app>
+10-18 08:00:42.569  3710  3710 D Autofill Status: Autofill popup isn't shown because autofill is not available.
+10-18 08:00:42.569  3710  3710 D Autofill Status:
+10-18 08:00:42.569  3710  3710 D Autofill Status: Did you set up autofill?
+10-18 08:00:42.569  3710  3710 D Autofill Status: 1. Go to Settings > System > Languages&input > Advanced > Autofill Service
+10-18 08:00:42.569  3710  3710 D Autofill Status: 2. Pick a service
+10-18 08:00:42.569  3710  3710 D Autofill Status:
+10-18 08:00:42.569  3710  3710 D Autofill Status: Did you add an account?
+10-18 08:00:42.569  3710  3710 D Autofill Status: 1. Go to Settings > System > Languages&input > Advanced
+10-18 08:00:42.569  3710  3710 D Autofill Status: 2. Click on the settings icon next to the Autofill Service
+10-18 08:00:42.569  3710  3710 D Autofill Status: 3. Add your account
+10-18 08:00:42.585  3710  3710 D InsetsController: show(ime(), fromIme=false)
+10-18 08:00:42.585  3710  3710 I ImeTracker: com.tradereview.app:11e295c0: onRequestShow at ORIGIN_CLIENT reason SHOW_SOFT_INPUT_BY_INSETS_API fromUser false
+10-18 08:00:42.585  3710  3710 I ImeTracker: com.tradereview.app:11e295c0: onCancelled at PHASE_CLIENT_APPLY_ANIMATION
+10-18 08:00:42.586  2353  2466 I ImeTracker: com.tradereview.app:e1db1f3a: onRequestShow at ORIGIN_SERVER reason ATTACH_NEW_INPUT fromUser false
+10-18 08:00:42.589  2998  2998 I LatinIME: Starting input. Cursor position = 0,0
+10-18 08:00:42.624  3710  3710 I ImeTracker: com.tradereview.app:a5992e33: onRequestShow at ORIGIN_CLIENT reason SHOW_SOFT_INPUT fromUser false
+10-18 08:00:42.624  3710  3710 D InputMethodManager: showSoftInput() view=androidx.compose.ui.platform.AndroidComposeView{efe32f9 VFED..... .F....ID 0,0-768,1280 aid=1073741824} flags=0 reason=SHOW_SOFT_INPUT
+10-18 08:00:42.630  3710  3710 D InsetsController: show(ime(), fromIme=true)
+10-18 08:00:42.633  3710  3710 I ImeTracker: com.tradereview.app:e1db1f3a: onCancelled at PHASE_CLIENT_APPLY_ANIMATION
+10-18 08:00:42.633  3710  3710 D InsetsController: show(ime(), fromIme=true)
+10-18 08:00:42.634  3710  3710 I ImeTracker: com.tradereview.app:a5992e33: onCancelled at PHASE_CLIENT_APPLY_ANIMATION
+10-18 08:00:42.721  3710  3790 D EGL_emulation: app_time_stats: avg=79.16ms min=15.68ms max=179.90ms count=14
+10-18 08:00:43.755  3710  3790 D EGL_emulation: app_time_stats: avg=344.56ms min=316.85ms max=383.87ms count=3
+10-18 08:00:44.884  2353  2498 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET, states=14
+10-18 08:00:44.884  2353  2498 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET6, states=14
+10-18 08:00:44.884  2353  2498 D InetDiagMessage: Destroyed live tcp sockets for uids={10072} in 0ms
+10-18 08:00:45.039  3710  3790 D EGL_emulation: app_time_stats: avg=320.82ms min=316.64ms max=333.11ms count=4
+10-18 08:00:46.198  3710  3710 E FrameTracker: force finish cuj, time out: J<IME_INSETS_SHOW_ANIMATION::0@1@com.tradereview.app>
+10-18 08:00:46.339  3710  3790 D EGL_emulation: app_time_stats: avg=325.07ms min=316.42ms max=333.69ms count=4
+10-18 08:00:47.655  3710  3790 D EGL_emulation: app_time_stats: avg=329.10ms min=316.75ms max=336.04ms count=4
+10-18 08:00:48.956  3710  3790 D EGL_emulation: app_time_stats: avg=325.04ms min=314.91ms max=334.79ms count=4
+10-18 08:00:50.272  3710  3790 D EGL_emulation: app_time_stats: avg=329.01ms min=316.70ms max=333.32ms count=4
+10-18 08:00:50.331  3710  3710 E FrameTracker: force finish cuj, time out: J<IME_INSETS_SHOW_ANIMATION::0@1@com.tradereview.app>
+10-18 08:00:51.271  2353  4975 D WifiNl80211Manager: Scan result ready event
+10-18 08:00:51.271  2353  4975 D WifiNative: Scan result ready event
+10-18 08:00:51.273  2353  2491 I HalDevMgr: bestIfaceCreationProposal is null, requestIface=STA, existingIface=[name=wlan0 type=STA]
+10-18 08:00:51.572  3710  3790 D EGL_emulation: app_time_stats: avg=325.04ms min=316.44ms max=333.69ms count=4
+10-18 08:00:52.517  3710  3710 E FrameTracker: force finish cuj, time out: J<IME_INSETS_SHOW_ANIMATION::0@1@com.tradereview.app>
+10-18 08:00:52.872  3710  3790 D EGL_emulation: app_time_stats: avg=325.02ms min=317.28ms max=332.82ms count=4
+10-18 08:00:54.172  3710  3790 D EGL_emulation: app_time_stats: avg=324.90ms min=316.27ms max=349.70ms count=4
+10-18 08:00:55.488  3710  3790 D EGL_emulation: app_time_stats: avg=329.00ms min=319.08ms max=336.02ms count=4
+10-18 08:00:56.788  3710  3790 D EGL_emulation: app_time_stats: avg=325.05ms min=316.70ms max=333.26ms count=4
+10-18 08:00:58.088  3710  3790 D EGL_emulation: app_time_stats: avg=324.92ms min=316.51ms max=333.42ms count=4
+10-18 08:00:59.392  3710  3790 D EGL_emulation: app_time_stats: avg=325.90ms min=316.92ms max=333.93ms count=4
+10-18 08:01:00.024  2575  2680 D EGL_emulation: app_time_stats: avg=3134.15ms min=22.39ms max=18407.04ms count=6
+10-18 08:01:00.688  3710  3790 D EGL_emulation: app_time_stats: avg=324.10ms min=313.20ms max=344.25ms count=4
+10-18 08:01:01.988  3710  3790 D EGL_emulation: app_time_stats: avg=325.01ms min=316.63ms max=333.30ms count=4
+10-18 08:01:03.305  3710  3790 D EGL_emulation: app_time_stats: avg=329.16ms min=316.77ms max=333.56ms count=4
+10-18 08:01:04.624  3710  3790 D EGL_emulation: app_time_stats: avg=329.65ms min=316.42ms max=349.98ms count=4
+10-18 08:01:04.919  2575  2680 D EGL_emulation: app_time_stats: avg=4895.06ms min=4895.06ms max=4895.06ms count=1
+10-18 08:01:05.922  3710  3790 D EGL_emulation: app_time_stats: avg=324.41ms min=315.65ms max=334.19ms count=4
+10-18 08:01:07.223  3710  3790 D EGL_emulation: app_time_stats: avg=325.24ms min=314.65ms max=333.62ms count=4
+10-18 08:01:08.539  3710  3790 D EGL_emulation: app_time_stats: avg=329.05ms min=313.42ms max=336.90ms count=4
+10-18 08:01:09.839  3710  3790 D EGL_emulation: app_time_stats: avg=324.87ms min=314.65ms max=334.89ms count=4
+10-18 08:01:11.139  3710  3790 D EGL_emulation: app_time_stats: avg=325.05ms min=316.65ms max=333.29ms count=4
+10-18 08:01:12.439  3710  3790 D EGL_emulation: app_time_stats: avg=324.95ms min=314.53ms max=333.48ms count=4
+10-18 08:01:12.783  3066  3226 W MediaProvider: isAppCloneUserPair for user 0: false
+10-18 08:01:12.784  3066  3226 W MediaProvider: isAppCloneUserPair for user 0: false
+10-18 08:01:12.831  3066  4875 W MediaProvider: isAppCloneUserPair for user 0: false
+10-18 08:01:12.881  2353  2424 V GrammaticalInflectionUtils: AttributionSource: AttributionSource { uid = 10149, packageName = null, attributionTag = null, token = android.os.Binder@e88bbe7, deviceId = 0, next = null } does not have READ_SYSTEM_GRAMMATICAL_GENDER permission.
+10-18 08:01:12.893  2575  2663 D SplashScreenView: Build android.window.SplashScreenView{95b78e8 V.E...... ......ID 0,0-0,0}
+10-18 08:01:12.893  2575  2663 D SplashScreenView: Icon: view: null drawable: null size: 0
+10-18 08:01:12.893  2575  2663 D SplashScreenView: Branding: view: android.view.View{6395b01 G.ED..... ......I. 0,0-0,0 #1020503 android:id/splashscreen_branding_view} drawable: null size w: 0 h: 0
+10-18 08:01:12.897  3009  3009 I TopTaskTracker: onTaskMovedToFront: (moved taskInfo to front) taskId=97, baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10000000 cmp=com.tradereview.app.test/androidx.test.core.app.InstrumentationActivityInvoker$EmptyActivity }
+10-18 08:01:12.898  3710  3710 D LifecycleMonitor: Lifecycle status change: com.tradereview.app.MainActivity@1e6a890 in: PAUSED
+10-18 08:01:12.900  3710  3710 V ActivityScenario: Update currentActivityStage to PAUSED, currentActivity=com.tradereview.app.MainActivity@1e6a890
+10-18 08:01:12.901  2287  2287 I BpBinder: onLastStrongRef automatically unlinking death recipients:
+10-18 08:01:12.915  2286  2286 I netd    : tetherGetStats() -> {[]} <0.36ms>
+10-18 08:01:12.992  2353  2393 I libprocessgroup: Removed cgroup /sys/fs/cgroup/uid_1000/pid_3181
+10-18 08:01:12.994  2294  2294 I Zygote  : Process 3181 exited due to signal 9 (Killed)
+10-18 08:01:13.005  3710  3710 D VRI[MainActivity]: visibilityChanged oldVisibility=true newVisibility=false
+10-18 08:01:13.035  2287  2287 I BpBinder: onLastStrongRef automatically unlinking death recipients:
+10-18 08:01:13.047  2353  2372 W ziparchive: Unable to open '/data/app/~~ZYUHcnjdNTmPKdYiu9X0hA==/com.tradereview.app.test-efyjm1r74oa-CtTFMf2WRQ==/base.dm': No such file or directory
+10-18 08:01:13.050  2353  2372 I ActivityTaskManager: Displayed com.tradereview.app.test/androidx.test.core.app.InstrumentationActivityInvoker$EmptyActivity for user 0: +165ms
+10-18 08:01:13.050  3009  3009 D StatsLog: LAUNCHER_ONRESUME
+10-18 08:01:13.055  3009  3009 D BaseDepthController: setSurface:
+10-18 08:01:13.055  3009  3009 D BaseDepthController: 	mWaitingOnSurfaceValidity: false
+10-18 08:01:13.055  3009  3009 D BaseDepthController: 	mSurface: Surface(name=com.android.launcher3/com.android.launcher3.uioverrides.QuickstepLauncher)/@0x1c1d022
+10-18 08:01:13.063  3710  3710 D LifecycleMonitor: Lifecycle status change: com.tradereview.app.MainActivity@1e6a890 in: STOPPED
+10-18 08:01:13.063  3710  3710 V ActivityScenario: Update currentActivityStage to STOPPED, currentActivity=com.tradereview.app.MainActivity@1e6a890
+10-18 08:01:13.077  3009  3009 I TopTaskTracker: onTaskMovedToFront: (moved taskInfo to front) taskId=6, baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.HOME] flg=0x10000100 cmp=com.android.launcher3/.uioverrides.QuickstepLauncher }
+10-18 08:01:13.085  3710  3710 D LifecycleMonitor: Lifecycle status change: com.tradereview.app.MainActivity@1e6a890 in: DESTROYED
+10-18 08:01:13.085  3710  3710 V ActivityScenario: Update currentActivityStage to DESTROYED, currentActivity=null
+10-18 08:01:13.087  3710  3710 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=false callback=android.view.ViewRootImpl$$ExternalSyntheticLambda11@aad86ac
+10-18 08:01:13.088  3710  3724 D IdlingRegistry: Unregistering idling resources: [androidx.compose.ui.test.EspressoLink@802d98c]
+10-18 08:01:13.109  3009  3009 D StateManager: createAtomicAnimation - fromState: Background, toState: Normal, partial trace:
+10-18 08:01:13.109  3009  3009 D StateManager: 	at com.android.quickstep.util.WorkspaceRevealAnim.prepareToAnimate(WorkspaceRevealAnim.java:130)
+10-18 08:01:13.109  3009  3009 D StateManager: 	at com.android.quickstep.util.WorkspaceRevealAnim.<init>(WorkspaceRevealAnim.java:66)
+10-18 08:01:13.109  3009  3009 D StateManager: 	at com.android.launcher3.QuickstepTransitionManager.createWallpaperOpenAnimations(QuickstepTransitionManager.java:1716)
+10-18 08:01:13.116  2353  2562 W InputManager-JNI: Input channel object 'b321704 com.tradereview.app/com.tradereview.app.MainActivity (client)' was disposed without first being removed with the input manager!
+10-18 08:01:13.119  3009  3009 D View    : ---- ST:requestLayout
+10-18 08:01:13.119  3009  3009 D View    : requestLayout : getStackTrace(Thread.java:1841) <- printStackStrace(View.java:27969) <- requestLayout(View.java:27999) <- setLayoutParams(View.java:20530) <- updateViewLayout(WindowManagerGlobal.java:464) <- updateViewLayout(WindowManagerImpl.java:165) <- notifyUpdateLayoutParams(TaskbarActivityContext.java:1528) <- onTaskbarOrBubblebarWindowHeightOrInsetsChanged(TaskbarInsetsController.kt:186) <- lambda$onIsStashedChanged$7(TaskbarStashController.java:938) <- $r8$lambda$V70CIL_pG5t21J73JvZUvAfU2B0(null:0) <- run(D8$$SyntheticClass:0) <- runAfterInit(TaskbarControllers.java:263) <- onIsStashedChanged(TaskbarStashController.java:935) <- lambda$createAnimToIsStashed$3(TaskbarStashController.java:620) <- $r8$lambda$lICNXpsaTGWd-5rxHyDFfQwiuw4(null:0) <- run(D8$$SyntheticClass:0) <- onAnimationEnd(AnimatorListeners.java:54) <- onAnimationEnd(Animator.java:708) <- call(D8$$SyntheticClass:0) <- callOnList(Animator.java:666) <-
+10-18 08:01:13.129  3710  3710 I ImeTracker: com.tradereview.app:c483a6ea: onRequestHide at ORIGIN_CLIENT reason HIDE_SOFT_INPUT fromUser false
+10-18 08:01:13.131  3710  3710 I ImeTracker: com.tradereview.app:c483a6ea: onFailed at PHASE_CLIENT_VIEW_SERVED
+10-18 08:01:13.133  3009  3073 D EGL_emulation: app_time_stats: avg=6357.52ms min=61.39ms max=30851.44ms count=5
+10-18 08:01:13.139  3710  3724 E TestRunner: failed: separateRiskFundsAndCustomStrategyRequireExplicitExceededRiskConfirmation(com.tradereview.app.v200.V200MainUiTest)
+10-18 08:01:13.143  3710  3724 E TestRunner: ----- begin exception -----
+10-18 08:01:13.143  3710  3724 E TestRunner: java.lang.AssertionError: 保存独立风险金: busy=false, problem=null, pending=false, executions=0
+10-18 08:01:13.143  3710  3724 E TestRunner: 	at com.tradereview.app.v200.V200MainUiTest.separateRiskFundsAndCustomStrategyRequireExplicitExceededRiskConfirmation$step(V200MainUiTest.kt:87)
+10-18 08:01:13.143  3710  3724 E TestRunner: 	at com.tradereview.app.v200.V200MainUiTest.separateRiskFundsAndCustomStrategyRequireExplicitExceededRiskConfirmation(V200MainUiTest.kt:95)
+10-18 08:01:13.143  3710  3724 E TestRunner: 	at java.lang.reflect.Method.invoke(Native Method)
+10-18 08:01:13.143  3710  3724 E TestRunner: 	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
+10-18 08:01:13.143  3710  3724 E TestRunner: 	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+10-18 08:01:13.143  3710  3724 E TestRunner: 	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
+10-18 08:01:13.143  3710  3724 E TestRunner: 	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+10-18 08:01:13.143  3710  3724 E TestRunner: 	at androidx.test.internal.runner.junit4.statement.RunBefores.evaluate(RunBefores.java:80)
+10-18 08:01:13.143  3710  3724 E TestRunner: 	at org.junit.rules.TestWatcher$1.evaluate(TestWatcher.java:61)
+10-18 08:01:13.143  3710  3724 E TestRunner: 	at org.junit.rules.ExternalResource$1.evaluate(ExternalResource.java:54)
+10-18 08:01:13.143  3710  3724 E TestRunner: 	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1$evaluate$1.invoke(AndroidComposeTestRule.android.kt:295)
+10-18 08:01:13.143  3710  3724 E TestRunner: 	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1$evaluate$1.invoke(AndroidComposeTestRule.android.kt:295)
+10-18 08:01:13.143  3710  3724 E TestRunner: 	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.withDisposableContent(ComposeUiTest.android.kt:565)
+10-18 08:01:13.143  3710  3724 E TestRunner: 	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1$1$1$1.invoke(ComposeUiTest.android.kt:370)
+10-18 08:01:13.143  3710  3724 E TestRunner: 	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.withComposeIdlingResource(ComposeUiTest.android.kt:439)
+10-18 08:01:13.143  3710  3724 E TestRunner: 	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$withComposeIdlingResource(ComposeUiTest.android.kt:235)
+10-18 08:01:13.143  3710  3724 E TestRunner: 	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1$1$1.invoke(ComposeUiTest.android.kt:369)
+10-18 08:01:13.143  3710  3724 E TestRunner: 	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.withWindowRecomposer(ComposeUiTest.android.kt:413)
+10-18 08:01:13.143  3710  3724 E TestRunner: 	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$withWindowRecomposer(ComposeUiTest.android.kt:235)
+10-18 08:01:13.143  3710  3724 E TestRunner: 	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1$1.invoke(ComposeUiTest.android.kt:368)
+10-18 08:01:13.143  3710  3724 E TestRunner: 	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.withTestCoroutines(ComposeUiTest.android.kt:426)
+10-18 08:01:13.143  3710  3724 E TestRunner: 	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$withTestCoroutines(ComposeUiTest.android.kt:235)
+10-18 08:01:13.143  3710  3724 E TestRunner: 	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1.invoke(ComposeUiTest.android.kt:367)
+10-18 08:01:13.143  3710  3724 E TestRunner: 	at androidx.compose.ui.test.EspressoLink.withStrategy(EspressoLink.android.kt:69)
+10-18 08:01:13.143  3710  3724 E TestRunner: 	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1.invoke(ComposeUiTest.android.kt:366)
+10-18 08:01:13.143  3710  3724 E TestRunner: 	at androidx.compose.ui.test.IdlingResourceRegistry.withRegistry(IdlingResourceRegistry.jvm.kt:148)
+10-18 08:01:13.143  3710  3724 E TestRunner: 	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1.invoke(ComposeUiTest.android.kt:365)
+10-18 08:01:13.143  3710  3724 E TestRunner: 	at androidx.compose.ui.test.ComposeRootRegistry.withRegistry(ComposeRootRegistry.android.kt:139)
+10-18 08:01:13.143  3710  3724 E TestRunner: 	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.runTest(ComposeUiTest.android.kt:364)
+10-18 08:01:13.143  3710  3724 E TestRunner: 	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1.evaluate(AndroidComposeTestRule.android.kt:295)
+10-18 08:01:13.143  3710  3724 E TestRunner: 	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
+10-18 08:01:13.143  3710  3724 E TestRunner: 	at org.junit.runners.BlockJUnit4ClassRunner$1.evaluate(BlockJUnit4ClassRunner.java:100)
+10-18 08:01:13.143  3710  3724 E TestRunner: 	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:366)
+10-18 08:01:13.143  3710  3724 E TestRunner: 	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:103)
+10-18 08:01:13.143  3710  3724 E TestRunner: 	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:63)
+10-18 08:01:13.143  3710  3724 E TestRunner: 	at org.junit.runners.ParentRunner$4.run(ParentRunner.java:331)
+10-18 08:01:13.143  3710  3724 E TestRunner: 	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:79)
+10-18 08:01:13.143  3710  3724 E TestRunner: 	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:329)
+10-18 08:01:13.143  3710  3724 E TestRunner: 	at org.junit.runners.ParentRunner.access$100(ParentRunner.java:66)
+10-18 08:01:13.152  3710  3724 E TestRunner: 	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:293)
+10-18 08:01:13.152  3710  3724 E TestRunner: 	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
+10-18 08:01:13.152  3710  3724 E TestRunner: 	at org.junit.runners.ParentRunner.run(ParentRunner.java:413)
+10-18 08:01:13.152  3710  3724 E TestRunner: 	at androidx.test.ext.junit.runners.AndroidJUnit4.run(AndroidJUnit4.java:162)
+10-18 08:01:13.152  3710  3724 E TestRunner: 	at org.junit.runners.Suite.runChild(Suite.java:128)
+10-18 08:01:13.152  3710  3724 E TestRunner: 	at org.junit.runners.Suite.runChild(Suite.java:27)
+10-18 08:01:13.152  3710  3724 E TestRunner: 	at org.junit.runners.ParentRunner$4.run(ParentRunner.java:331)
+10-18 08:01:13.152  3710  3724 E TestRunner: 	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:79)
+10-18 08:01:13.152  3710  3724 E TestRunner: 	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:329)
+10-18 08:01:13.152  3710  3724 E TestRunner: 	at org.junit.runners.ParentRunner.access$100(ParentRunner.java:66)
+10-18 08:01:13.152  3710  3724 E TestRunner: 	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:293)
+10-18 08:01:13.152  3710  3724 E TestRunner: 	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
+10-18 08:01:13.152  3710  3724 E TestRunner: 	at org.junit.runners.ParentRunner.run(ParentRunner.java:413)
+10-18 08:01:13.152  3710  3724 E TestRunner: 	at org.junit.runner.JUnitCore.run(JUnitCore.java:137)
+10-18 08:01:13.152  3710  3724 E TestRunner: 	at org.junit.runner.JUnitCore.run(JUnitCore.java:115)
+10-18 08:01:13.152  3710  3724 E TestRunner: 	at androidx.test.internal.runner.TestExecutor.execute(TestExecutor.java:68)
+10-18 08:01:13.152  3710  3724 E TestRunner: 	at androidx.test.internal.runner.TestExecutor.execute(TestExecutor.java:59)
+10-18 08:01:13.152  3710  3724 E TestRunner: 	at androidx.test.runner.AndroidJUnitRunner.onStart(AndroidJUnitRunner.java:463)
+10-18 08:01:13.152  3710  3724 E TestRunner: 	at android.app.Instrumentation$InstrumentationThread.run(Instrumentation.java:2594)
+10-18 08:01:13.152  3710  3724 E TestRunner: Caused by: androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 30000 ms
+10-18 08:01:13.152  3710  3724 E TestRunner: 	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:504)
+10-18 08:01:13.152  3710  3724 E TestRunner: 	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:339)
+10-18 08:01:13.152  3710  3724 E TestRunner: 	at com.tradereview.app.v200.V200MainUiTest.wait(V200MainUiTest.kt:46)
+10-18 08:01:13.152  3710  3724 E TestRunner: 	at com.tradereview.app.v200.V200MainUiTest.separateRiskFundsAndCustomStrategyRequireExplicitExceededRiskConfirmation$step(V200MainUiTest.kt:86)
+10-18 08:01:13.152  3710  3724 E TestRunner: 	... 57 more
+10-18 08:01:13.152  3710  3724 E TestRunner: ----- end exception -----
+10-18 08:01:13.176  2575  2680 D EGL_emulation: app_time_stats: avg=8256.31ms min=8256.31ms max=8256.31ms count=1
+10-18 08:01:13.187  3009  3009 I TopTaskTracker: onTaskRemoved: taskId=96
+10-18 08:01:13.187  3009  3009 I TopTaskTracker: onTaskRemoved: taskId=96
+10-18 08:01:13.196  3733  3733 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=false callback=android.view.ViewRootImpl$$ExternalSyntheticLambda11@36ad1a2
+10-18 08:01:13.208  2353  2466 I ImeTracker: com.android.launcher3:3bff616c: onRequestHide at ORIGIN_SERVER reason HIDE_UNSPECIFIED_WINDOW fromUser false
+10-18 08:01:13.214  2353  4334 W InputManager-JNI: Input channel object '8c91160 com.tradereview.app.test/androidx.test.core.app.InstrumentationActivityInvoker$EmptyActivity (client)' was disposed without first being removed with the input manager!
+10-18 08:01:13.215  3710  3724 I TestRunner: finished: separateRiskFundsAndCustomStrategyRequireExplicitExceededRiskConfirmation(com.tradereview.app.v200.V200MainUiTest)

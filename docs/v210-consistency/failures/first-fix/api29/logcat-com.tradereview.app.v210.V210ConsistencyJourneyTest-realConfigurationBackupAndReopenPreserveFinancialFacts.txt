@@ -1,0 +1,1546 @@
+10-18 08:02:35.885  8753  8773 I TestRunner: started: realConfigurationBackupAndReopenPreserveFinancialFacts(com.tradereview.app.v210.V210ConsistencyJourneyTest)
+10-18 08:02:35.888  5224  5266 I ActivityTaskManager: Displayed com.tradereview.app.test/androidx.test.core.app.InstrumentationActivityInvoker$EmptyActivity: +149ms
+10-18 08:02:35.914  5636  5636 I PhenotypeExpConfig: refreshConfiguration() : Force = false : UpdateAvailable = false : Age = 5 minutes : MaxAge = 720 minutes
+10-18 08:02:35.914  5636  5636 I AndroidIME: DummyIme.onDeactivate()
+10-18 08:02:35.922  5365  5540 D EGL_emulation: eglMakeCurrent: 0x7d6f33663860: ver 3 0 (tinfo 0x7d6f33618fe0)
+10-18 08:02:35.931  5224  5358 W InputReader: Device has associated, but no associated display id.
+10-18 08:02:35.931  5224  5358 I chatty  : uid=1000(system) Binder:5224_4 identical 8 lines
+10-18 08:02:35.931  5224  5358 W InputReader: Device has associated, but no associated display id.
+10-18 08:02:35.942  5636  8867 D EGL_emulation: eglMakeCurrent: 0x7d6f33658e20: ver 3 0 (tinfo 0x7d6f337156c0)
+10-18 08:02:35.961  1709  9575 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 3936256
+10-18 08:02:35.967  6076  6184 D EGL_emulation: eglMakeCurrent: 0xe7573f80: ver 3 0 (tinfo 0xc3e89960)
+10-18 08:02:35.978  1709  9575 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 3936256
+10-18 08:02:35.979  1709  9575 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 3936256
+10-18 08:02:36.009  6076  6076 W ThreadPoolDumper: Queue length for executor EventBus is now 11. Perhaps some tasks are too long, or the pool is too small.
+10-18 08:02:36.029  1709  9575 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 3936256
+10-18 08:02:36.030  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 3936256
+10-18 08:02:36.031  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 3936256
+10-18 08:02:36.038  5511  6008 D EGL_emulation: eglMakeCurrent: 0x7d6ee7009140: ver 3 0 (tinfo 0x7d6ee709a2e0)
+10-18 08:02:36.046  6076  6145 W SessionLifecycleManager: Handover failed. Creating new session controller.
+10-18 08:02:36.050  5224  5262 W InputReader: Device has associated, but no associated display id.
+10-18 08:02:36.050  5224  5262 I chatty  : uid=1000(system) android.anim identical 8 lines
+10-18 08:02:36.050  5224  5262 W InputReader: Device has associated, but no associated display id.
+10-18 08:02:36.052  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2519040
+10-18 08:02:36.071  8753  8765 I tradereview.ap: Background young concurrent copying GC freed 185344(5658KB) AllocSpace objects, 8(136KB) LOS objects, 30% free, 12MB/18MB, paused 540us total 241.802ms
+10-18 08:02:36.100  5194  5194 E Layer   : [Surface(name=AppWindowToken{c5e8670 token=Token{a1b80b3 ActivityRecord{3d0be22 u0 com.google.android.apps.nexuslauncher/.NexusLauncherActivity t2}}})/@0xa1231c7 - animation-leash#0] No local sync point found
+10-18 08:02:36.100  5194  5194 E Layer   : [Surface(name=AppWindowToken{14f6790 token=Token{becb253 ActivityRecord{873242 u0 com.tradereview.app.test/androidx.test.core.app.InstrumentationActivityInvoker$EmptyActivity t93}}})/@0xe930649 - animation-leash#0] No local sync point found
+10-18 08:02:36.114  8782  8899 D EGL_emulation: eglMakeCurrent: 0x7d6f31ac8780: ver 3 0 (tinfo 0x7d6f31a57ac0)
+10-18 08:02:36.146  5365  5382 I ndroid.systemu: NativeAlloc concurrent copying GC freed 4873(397KB) AllocSpace objects, 0(0B) LOS objects, 46% free, 6994KB/12MB, paused 1.363ms total 330.380ms
+10-18 08:02:36.175  5511  5524 W System  : A resource failed to call release.
+10-18 08:02:36.175  5511  5524 W System  : A resource failed to call release.
+10-18 08:02:36.193  6076  8018 E sb.v.u.LiteSuggestSourc: On-device lite suggest model loading error.
+10-18 08:02:36.235  6076  6222 W LocationOracle: No location history returned by ContextManager
+10-18 08:02:36.248  5224  5235 I system_server: NativeAlloc concurrent copying GC freed 77324(3415KB) AllocSpace objects, 29(900KB) LOS objects, 34% free, 11MB/17MB, paused 813us total 335.539ms
+10-18 08:02:36.277  5718  6307 W GCoreFlp: No location to return for getLastLocation()
+10-18 08:02:36.330  5224  5310 W InputReader: Device has associated, but no associated display id.
+10-18 08:02:36.330  5224  5310 I chatty  : uid=1000(system) Binder:5224_3 identical 3 lines
+10-18 08:02:36.330  5224  5310 W InputReader: Device has associated, but no associated display id.
+10-18 08:02:36.331  5511  5535 D ConfigMonitor: Display size changed from Point(768, 1280) to Point(640, 1136)
+10-18 08:02:36.330  5224  5310 W InputReader: Device has associated, but no associated display id.
+10-18 08:02:36.334  5224  5310 I chatty  : uid=1000(system) Binder:5224_3 identical 3 lines
+10-18 08:02:36.334  5224  5310 W InputReader: Device has associated, but no associated display id.
+10-18 08:02:36.350  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 3936256
+10-18 08:02:36.367  5224  8903 D HostConnection: HostConnection::get() New Host Connection established 0x7d6ed35915e0, tid 8903
+10-18 08:02:36.377  5224  8903 D HostConnection: HostComposition ext ANDROID_EMU_CHECKSUM_HELPER_v1 ANDROID_EMU_native_sync_v2 ANDROID_EMU_dma_v1 ANDROID_EMU_direct_mem ANDROID_EMU_host_composition_v1 ANDROID_EMU_host_composition_v2 ANDROID_EMU_YUV_Cache ANDROID_EMU_sync_buffer_data ANDROID_EMU_hwc_color_transform GL_OES_EGL_image_external_essl3 GL_OES_vertex_array_object GL_KHR_texture_compression_astc_ldr ANDROID_EMU_host_side_tracing ANDROID_EMU_gles_max_version_3_0
+10-18 08:02:36.392  5224  8903 D EGL_emulation: eglCreateContext: 0x7d6ed3591ae0: maj 3 min 0 rcv 3
+10-18 08:02:36.397  5224  8903 D EGL_emulation: eglMakeCurrent: 0x7d6ed3591ae0: ver 3 0 (tinfo 0x7d6ee429ba20)
+10-18 08:02:36.418  5224  5261 W InputReader: Device has associated, but no associated display id.
+10-18 08:02:36.418  5224  5261 I chatty  : uid=1000(system) android.display identical 8 lines
+10-18 08:02:36.418  5224  5261 W InputReader: Device has associated, but no associated display id.
+10-18 08:02:36.460  5636 10106 I DlamWrapper: close(): Successfully wrote DLAM properties file.
+10-18 08:02:36.463  5224  5261 I InputManager-JNI: Viewport [0] to add: local:0
+10-18 08:02:36.463  5224  6182 W InputReader: Device has associated, but no associated display id.
+10-18 08:02:36.463  5224  6182 I chatty  : uid=1000(system) Binder:5224_E identical 8 lines
+10-18 08:02:36.463  5224  6182 W InputReader: Device has associated, but no associated display id.
+10-18 08:02:36.464  5224  5324 I InputReader: Reconfiguring input devices.  changes=0x00000004
+10-18 08:02:36.464  5224  5324 I InputReader: Touch device 'virtio_input_multi_touch_10' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+10-18 08:02:36.464  5224  5324 I InputReader: Touch device 'virtio_input_multi_touch_7' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+10-18 08:02:36.464  5224  5324 I InputReader: Touch device 'virtio_input_multi_touch_4' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+10-18 08:02:36.464  5224  5324 I InputReader: Touch device 'virtio_input_multi_touch_8' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+10-18 08:02:36.464  5224  5324 I InputReader: Touch device 'virtio_input_multi_touch_9' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+10-18 08:02:36.464  5224  5324 I InputReader: Device reconfigured: id=9, name='virtio_input_multi_touch_1', size 681x1136, orientation 0, mode 1, display id 0
+10-18 08:02:36.464  5224  5324 I InputReader: Touch device 'virtio_input_multi_touch_11' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+10-18 08:02:36.465  5224  5324 I InputReader: Touch device 'virtio_input_multi_touch_5' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+10-18 08:02:36.465  5224  5324 I InputReader: Touch device 'virtio_input_multi_touch_2' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+10-18 08:02:36.465  5224  5324 I InputReader: Touch device 'virtio_input_multi_touch_6' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+10-18 08:02:36.465  5224  5324 I InputReader: Touch device 'virtio_input_multi_touch_3' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+10-18 08:02:36.473  6076  6184 D EGL_emulation: eglMakeCurrent: 0xe7573f80: ver 3 0 (tinfo 0xc3e89960)
+10-18 08:02:36.478  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2912256
+10-18 08:02:36.504  5718  6192 E ModuleIdSetter: exception when setting module id
+10-18 08:02:36.504  5718  6192 E ModuleIdSetter: java.lang.IllegalStateException: Unable to get current module info in ModuleManager created with non-module Context
+10-18 08:02:36.504  5718  6192 E ModuleIdSetter: 	at com.google.android.chimera.config.ModuleManager.getCurrentModule(:com.google.android.gms@202414023@20.24.14 (040800-319035315):2)
+10-18 08:02:36.504  5718  6192 E ModuleIdSetter: 	at aewd.a(:com.google.android.gms@202414023@20.24.14 (040800-319035315):4)
+10-18 08:02:36.504  5718  6192 E ModuleIdSetter: 	at aewg.b(:com.google.android.gms@202414023@20.24.14 (040800-319035315):9)
+10-18 08:02:36.504  5718  6192 E ModuleIdSetter: 	at aeso.a(Unknown Source:0)
+10-18 08:02:36.504  5718  6192 E ModuleIdSetter: 	at rpm.a(:com.google.android.gms@202414023@20.24.14 (040800-319035315):0)
+10-18 08:02:36.504  5718  6192 E ModuleIdSetter: 	at rlv.c(:com.google.android.gms@202414023@20.24.14 (040800-319035315):1)
+10-18 08:02:36.504  5718  6192 E ModuleIdSetter: 	at rlt.b(:com.google.android.gms@202414023@20.24.14 (040800-319035315):1)
+10-18 08:02:36.504  5718  6192 E ModuleIdSetter: 	at rok.b(:com.google.android.gms@202414023@20.24.14 (040800-319035315):6)
+10-18 08:02:36.504  5718  6192 E ModuleIdSetter: 	at rok.c(:com.google.android.gms@202414023@20.24.14 (040800-319035315):6)
+10-18 08:02:36.504  5718  6192 E ModuleIdSetter: 	at rok.b(:com.google.android.gms@202414023@20.24.14 (040800-319035315):10)
+10-18 08:02:36.504  5718  6192 E ModuleIdSetter: 	at rok.a(:com.google.android.gms@202414023@20.24.14 (040800-319035315):17)
+10-18 08:02:36.504  5718  6192 E ModuleIdSetter: 	at rok.g(:com.google.android.gms@202414023@20.24.14 (040800-319035315):3)
+10-18 08:02:36.504  5718  6192 E ModuleIdSetter: 	at sdr.a(:com.google.android.gms@202414023@20.24.14 (040800-319035315):2)
+10-18 08:02:36.504  5718  6192 E ModuleIdSetter: 	at scr.a(:com.google.android.gms@202414023@20.24.14 (040800-319035315):10)
+10-18 08:02:36.504  5718  6192 E ModuleIdSetter: 	at sci.a(:com.google.android.gms@202414023@20.24.14 (040800-319035315):0)
+10-18 08:02:36.504  5718  6192 E ModuleIdSetter: 	at scl.handleMessage(:com.google.android.gms@202414023@20.24.14 (040800-319035315):28)
+10-18 08:02:36.504  5718  6192 E ModuleIdSetter: 	at android.os.Handler.dispatchMessage(Handler.java:107)
+10-18 08:02:36.504  5718  6192 E ModuleIdSetter: 	at aekz.a(:com.google.android.gms@202414023@20.24.14 (040800-319035315):2)
+10-18 08:02:36.504  5718  6192 E ModuleIdSetter: 	at aekz.dispatchMessage(:com.google.android.gms@202414023@20.24.14 (040800-319035315):14)
+10-18 08:02:36.504  5718  6192 E ModuleIdSetter: 	at android.os.Looper.loop(Looper.java:214)
+10-18 08:02:36.504  5718  6192 E ModuleIdSetter: 	at android.os.HandlerThread.run(HandlerThread.java:67)
+10-18 08:02:36.518  5718  6307 W GCoreFlp: No location to return for getLastLocation()
+10-18 08:02:36.520  5511  5908 D GridBackupTable: Backup table found
+10-18 08:02:36.551  5636  5636 I DeviceStatusMonitor: onReceive() : Action = android.intent.action.CONFIGURATION_CHANGED
+10-18 08:02:36.551  5636  5636 I ConfigNotification: Get device mode by ui mode:1 and smallestScreenWidthDp:320
+10-18 08:02:36.551  5636  5636 I ConfigNotification: Get device mode by ui mode:1 and smallestScreenWidthDp:384
+10-18 08:02:36.577  6076  6184 D EGL_emulation: eglMakeCurrent: 0xe7573f80: ver 3 0 (tinfo 0xc3e89960)
+10-18 08:02:36.581  5224  5261 W InputReader: Device has associated, but no associated display id.
+10-18 08:02:36.582  5224  5261 I chatty  : uid=1000(system) android.display identical 8 lines
+10-18 08:02:36.582  5224  5261 W InputReader: Device has associated, but no associated display id.
+10-18 08:02:36.606  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2912256
+10-18 08:02:36.623  5718  9725 W ctxmgr  : [AclManager] No 3 for (accnt=account#-517948760#, com.google.android.gms(10119):UserVelocityProducer, vrsn=202414023, 0, 3pPkg = null ,  3pMdlId = null ,  pid = 5718). Was: 3 for 1, account#-517948760# [CONTEXT service_id=47 ]
+10-18 08:02:36.638  5511  6008 D EGL_emulation: eglMakeCurrent: 0x7d6ee7009140: ver 3 0 (tinfo 0x7d6ee709a2e0)
+10-18 08:02:36.640  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2912256
+10-18 08:02:36.643  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2912256
+10-18 08:02:36.655  5511  6008 D EGL_emulation: eglMakeCurrent: 0x7d6ee7009140: ver 3 0 (tinfo 0x7d6ee709a2e0)
+10-18 08:02:36.664  5636  5636 I DeviceStatusMonitor: onReceive() : Action = android.intent.action.CONFIGURATION_CHANGED
+10-18 08:02:36.664  5636  5636 I ConfigNotification: Get device mode by ui mode:1 and smallestScreenWidthDp:320
+10-18 08:02:36.664  5636  5636 I ConfigNotification: Get device mode by ui mode:1 and smallestScreenWidthDp:320
+10-18 08:02:36.685  6076  6184 D EGL_emulation: eglMakeCurrent: 0xe7573f80: ver 3 0 (tinfo 0xc3e89960)
+10-18 08:02:36.690  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2912256
+10-18 08:02:36.711  5511  6008 D EGL_emulation: eglMakeCurrent: 0x7d6ee7009140: ver 3 0 (tinfo 0x7d6ee709a2e0)
+10-18 08:02:36.721  5224  5507 E InputDispatcher: Window handle Window{ffb924b u0 com.google.android.apps.nexuslauncher/com.google.android.apps.nexuslauncher.NexusLauncherActivity} has no registered input channel
+10-18 08:02:36.742  6076  6145 W SearchServiceCore: Abort, client detached.
+10-18 08:02:36.748  5636  5636 I DeviceStatusMonitor: onReceive() : Action = android.intent.action.CONFIGURATION_CHANGED
+10-18 08:02:36.748  5636  5636 I ConfigNotification: Get device mode by ui mode:1 and smallestScreenWidthDp:320
+10-18 08:02:36.748  5636  5636 I ConfigNotification: Get device mode by ui mode:1 and smallestScreenWidthDp:320
+10-18 08:02:36.763  5511  5511 D ConfigMonitor: Configuration changed.
+10-18 08:02:36.764  6076  6076 W PhoneWindow: Previously focused view reported id 2131755217 during save, but can't be found during restore.
+10-18 08:02:36.795  6076  6171 I PBSessionCacheImpl: Deleted sessionId[155362059033] from persistence.
+10-18 08:02:36.823  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2912256
+10-18 08:02:36.825  1709  1709 I chatty  : uid=1000(system) allocator@2.0-s identical 1 line
+10-18 08:02:36.825  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2912256
+10-18 08:02:36.829  5718 10371 I LogUtils: [Places]: ?: Couldn't find platform key file. [CONTEXT service_id=253 ]
+10-18 08:02:36.831  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 49152
+10-18 08:02:36.841  5511  6113 D HostConnection: HostConnection::get() New Host Connection established 0x7d6f33661900, tid 6113
+10-18 08:02:36.846  5511  6113 D HostConnection: HostComposition ext ANDROID_EMU_CHECKSUM_HELPER_v1 ANDROID_EMU_native_sync_v2 ANDROID_EMU_dma_v1 ANDROID_EMU_direct_mem ANDROID_EMU_host_composition_v1 ANDROID_EMU_host_composition_v2 ANDROID_EMU_YUV_Cache ANDROID_EMU_sync_buffer_data ANDROID_EMU_hwc_color_transform GL_OES_EGL_image_external_essl3 GL_OES_vertex_array_object GL_KHR_texture_compression_astc_ldr ANDROID_EMU_host_side_tracing ANDROID_EMU_gles_max_version_3_0
+10-18 08:02:36.847  5511  6113 D EGL_emulation: eglCreateContext: 0x7d6f33661a40: maj 3 min 0 rcv 3
+10-18 08:02:36.848  5511  6113 D EGL_emulation: eglMakeCurrent: 0x7d6f33661a40: ver 3 0 (tinfo 0x7d6ee7218340)
+10-18 08:02:36.873  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2912256
+10-18 08:02:36.878  6076  6076 D eglCodecCommon: allocate: Ask for block of size 0x2c7000
+10-18 08:02:36.878  6076  6076 D eglCodecCommon: allocate: ioctl allocate returned offset 0x3ff960000 size 0x2c8000
+10-18 08:02:36.905 10400 10400 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 0 <<<<<<
+10-18 08:02:36.907 10400 10400 I AndroidRuntime: Using default boot image
+10-18 08:02:36.907 10400 10400 I AndroidRuntime: Leaving lock profiling enabled
+10-18 08:02:36.909 10400 10400 I app_process: Core platform API reporting enabled, enforcing=false
+10-18 08:02:36.909  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2912256
+10-18 08:02:36.911  1709  1709 I chatty  : uid=1000(system) allocator@2.0-s identical 1 line
+10-18 08:02:36.911  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2912256
+10-18 08:02:36.912  6076  6184 D EGL_emulation: eglMakeCurrent: 0xe7573f80: ver 3 0 (tinfo 0xc3e89960)
+10-18 08:02:36.916  6076  6076 E SearchServiceClient: SearchServiceClient disposed and cannot be reused.
+10-18 08:02:36.923  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 126976
+10-18 08:02:36.924  6076  6184 D EGL_emulation: eglMakeCurrent: 0xe7573f80: ver 3 0 (tinfo 0xc3e89960)
+10-18 08:02:36.951  6076  6076 E SearchServiceClient: SearchServiceClient disposed and cannot be reused.
+10-18 08:02:36.957  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2912256
+10-18 08:02:36.965  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 49152
+10-18 08:02:36.974  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2912256
+10-18 08:02:36.975  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2912256
+10-18 08:02:36.975  6076  6184 D EGL_emulation: eglMakeCurrent: 0xe7573f80: ver 3 0 (tinfo 0xc3e89960)
+10-18 08:02:36.979  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2912256
+10-18 08:02:36.981 10400 10400 D ICU     : Time zone APEX file found: /apex/com.android.tzdata/etc/icu/icu_tzdata.dat
+10-18 08:02:36.984  5511  6008 D EGL_emulation: eglMakeCurrent: 0x7d6ee7009140: ver 3 0 (tinfo 0x7d6ee709a2e0)
+10-18 08:02:36.994 10400 10400 W app_process: Unexpected CPU variant for X86 using defaults: x86_64
+10-18 08:02:36.994 10400 10400 I app_process: The ClassLoaderContext is a special shared library.
+10-18 08:02:37.005 10400 10400 W app_process: JNI RegisterNativeMethods: attempt to register 0 native methods for android.media.AudioAttributes
+10-18 08:02:37.008 10400 10400 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-18 08:02:37.029  6076  6145 W SessionLifecycleManager: Handover failed. Creating new session controller.
+10-18 08:02:37.047  6076  6214 E sb.v.u.LiteSuggestSourc: On-device lite suggest model loading error.
+10-18 08:02:37.057  5365  5540 D EGL_emulation: eglMakeCurrent: 0x7d6f33663860: ver 3 0 (tinfo 0x7d6f33618fe0)
+10-18 08:02:37.059  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 126976
+10-18 08:02:37.079  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 249856
+10-18 08:02:37.081  5365  5540 D EGL_emulation: eglMakeCurrent: 0x7d6f33663860: ver 3 0 (tinfo 0x7d6f33618fe0)
+10-18 08:02:37.088  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 249856
+10-18 08:02:37.112 10400 10400 D AndroidRuntime: Shutting down VM
+10-18 08:02:37.115  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2912256
+10-18 08:02:37.126  5224  5275 D EGL_emulation: eglMakeCurrent: 0x7d6ee22e7de0: ver 3 0 (tinfo 0x7d6ee2278160)
+10-18 08:02:37.126  5224  5275 E EGL_emulation: eglQueryContext 32c0  EGL_BAD_ATTRIBUTE
+10-18 08:02:37.126  5224  5275 E EGL_emulation: tid 5275: eglQueryContext(1903): error 0x3004 (EGL_BAD_ATTRIBUTE)
+10-18 08:02:37.133  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2912256
+10-18 08:02:37.161  5224  5275 D EGL_emulation: eglMakeCurrent: 0x7d6ee22e7de0: ver 3 0 (tinfo 0x7d6ee2278160)
+10-18 08:02:37.178  6076  6109 I earchbox:searc: Background young concurrent copying GC freed 30267(1323KB) AllocSpace objects, 0(0B) LOS objects, 6% free, 9857KB/10MB, paused 565us total 230.723ms
+10-18 08:02:37.189  5224  5275 D EGL_emulation: eglMakeCurrent: 0x7d6ee22e7de0: ver 3 0 (tinfo 0x7d6ee2278160)
+10-18 08:02:37.216  5718  5718 I GeofencerStateMachine: removeGeofences: removeRequest=RemoveGeofencingRequest[REMOVE_BY_PENDING_INTENT pendingIntent=PendingIntent[creatorPackage=com.google.android.gms], packageName=com.google.android.gms]
+10-18 08:02:37.218  5718  5718 I GeofencerStateMachine: removeGeofences: removeRequest=RemoveGeofencingRequest[REMOVE_BY_PENDING_INTENT pendingIntent=PendingIntent[creatorPackage=com.google.android.gms], packageName=com.google.android.gms]
+10-18 08:02:37.222  6076  6145 I MicroDetectionWorker: #startMicroDetector [speakerMode: 0]
+10-18 08:02:37.223  6076  6145 I AudioController: Created new AudioSource
+10-18 08:02:37.263  5718 10417 I PlacesLogger: [PlaceInferenceEngine]: [anon] Changed inference mode: 0 [CONTEXT service_id=253 ]
+10-18 08:02:37.263  5718  6307 W GCoreFlp: No location to return for getLastLocation()
+10-18 08:02:37.268  5718 10365 I LogUtils: [Places]: ?: Couldn't find platform key file. [CONTEXT service_id=253 ]
+10-18 08:02:37.268  5718 10339 I LogUtils: [Places]: ?: Couldn't find platform key file. [CONTEXT service_id=253 ]
+10-18 08:02:37.269  5365  5365 D StatusBar: disable<e i a s b h r c s > disable2<q i n >
+10-18 08:02:37.275  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2912256
+10-18 08:02:37.277  6076  6214 I MicroDataManager: Created a new hotword model for:
+10-18 08:02:37.277  6076  6214 I MicroDataManager:  LOC: https://www.gstatic.com/android-search/hotword/x_google/3605cc4ae88f9e7148bcd037e6ddddb4/hotword.data SR: 16000 CC: 1
+10-18 08:02:37.280  5865  7605 I PeopleChimeraService: onService. callbacks = aabq@93fdcd1, request = com.google.android.gms.common.internal.GetServiceRequest@1ee336
+10-18 08:02:37.286  6076  6145 I MicroDetectionWorker: onReady
+10-18 08:02:37.295  5224  5275 D EGL_emulation: eglMakeCurrent: 0x7d6ee22e7de0: ver 3 0 (tinfo 0x7d6ee2278160)
+10-18 08:02:37.317  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2912256
+10-18 08:02:37.325  5224  5275 D EGL_emulation: eglMakeCurrent: 0x7d6ee22e7de0: ver 3 0 (tinfo 0x7d6ee2278160)
+10-18 08:02:37.329  6076  6197 I MicroRecognitionRunner: Starting detection.
+10-18 08:02:37.329  6076  6197 I MultipleReaderAudioSrc: Using micInputStream
+10-18 08:02:37.330  6076  6214 I MicrophoneInputStream: mic_starting  SR : 16000 CC : 16 SO : 1999
+10-18 08:02:37.351  5224  5275 D EGL_emulation: eglMakeCurrent: 0x7d6ee22e7de0: ver 3 0 (tinfo 0x7d6ee2278160)
+10-18 08:02:37.365  5511  5908 V GridSizeMigrationTask: Workspace migration completed in 852
+10-18 08:02:37.365  5511  5908 D LoaderTask: loadWorkspace: loading default favorites
+10-18 08:02:37.374  5224  5275 D EGL_emulation: eglMakeCurrent: 0x7d6ee22e7de0: ver 3 0 (tinfo 0x7d6ee2278160)
+10-18 08:02:37.375  5224  5275 E Surface : getSlotFromBufferLocked: unknown buffer: 0x0
+10-18 08:02:37.377  5194  5194 D SurfaceFlinger: Setting power mode 0 on display 0
+10-18 08:02:37.379  5511  6008 D EGL_emulation: eglMakeCurrent: 0x7d6ee7009140: ver 3 0 (tinfo 0x7d6ee709a2e0)
+10-18 08:02:37.384  5194  5194 D SurfaceFlinger: Finished setting power mode 0 on display 0
+10-18 08:02:37.387  1740 10421 I AudioFlinger: AudioFlinger's thread 0x77d91af8f580 tid=10421 ready to run
+10-18 08:02:37.389  6076  6214 I MicrophoneInputStream: mic_started  SR : 16000 CC : 16 SO : 1999
+10-18 08:02:37.389  5224  8565 I AudioService.RecordingActivityMonitor: rec update riid:79 uid:10122 session:57 src:HOTWORD pack:com.google.android.googlequicksearchbox
+10-18 08:02:37.393  6076  6145 I MicroDetector: Keeping mic open: false
+10-18 08:02:37.394  6076  7422 I DeviceStateChecker: DeviceStateChecker cancelled
+10-18 08:02:37.398  6076  8017 I MicroRecognitionRunner: Stopping hotword detection.
+10-18 08:02:37.398  6076  6171 I AudioController: internalShutdown
+10-18 08:02:37.400  5718 10339 I LogUtils: [Places]: ?: Couldn't find platform key file. [CONTEXT service_id=253 ]
+10-18 08:02:37.405  5718 10365 I LogUtils: [Places]: ?: Couldn't find platform key file. [CONTEXT service_id=253 ]
+10-18 08:02:37.413  5718 10365 I LogUtils: [Places]: ?: Couldn't find platform key file. [CONTEXT service_id=253 ]
+10-18 08:02:37.419  6076  6076 D j       : setAvailableAccounts() 0 -> 0.
+10-18 08:02:37.419  6076  6076 D j       : availableAccounts hasn't changed, returning.
+10-18 08:02:37.419  6076  6076 D j       : modelLoaded
+10-18 08:02:37.426  5718  9725 I ctxmgr  : [ProducerStatusImpl] updateStateForNewContextData: inactive, contextName=7 [CONTEXT service_id=47 ]
+10-18 08:02:37.431  6076  6145 W SearchServiceCore: Abort, client detached.
+10-18 08:02:37.434  5511  5908 D LoaderTask: loadWorkspace: loading default favorites
+10-18 08:02:37.441  5718 10371 W Conscrypt: Could not set socket write timeout: java.net.SocketException: Socket closed
+10-18 08:02:37.441  5718 10371 W Conscrypt: 	at com.google.android.gms.org.conscrypt.Platform.setSocketWriteTimeout(:com.google.android.gms@202414023@20.24.14 (040800-319035315):2)
+10-18 08:02:37.441  5718 10371 W Conscrypt: 	at com.google.android.gms.org.conscrypt.ConscryptFileDescriptorSocket.setSoWriteTimeout(:com.google.android.gms@202414023@20.24.14 (040800-319035315):0)
+10-18 08:02:37.444  6076  6171 I MicrophoneInputStream: mic_close  SR : 16000 CC : 16 SO : 1999
+10-18 08:02:37.444  6076  6171 E AudioSource: Stop listening is called on already closed AudioSource
+10-18 08:02:37.445  6076  6197 I MicroRecognitionRunner: Detection finished
+10-18 08:02:37.452  6076 10428 I PBSessionCacheImpl: Deleted sessionId[155362059034] from persistence.
+10-18 08:02:37.475  5718 10371 W Conscrypt: Could not set socket write timeout: java.net.SocketException: Socket closed
+10-18 08:02:37.475  5718 10371 W Conscrypt: 	at com.google.android.gms.org.conscrypt.Platform.setSocketWriteTimeout(:com.google.android.gms@202414023@20.24.14 (040800-319035315):2)
+10-18 08:02:37.475  5718 10371 W Conscrypt: 	at com.google.android.gms.org.conscrypt.ConscryptFileDescriptorSocket.setSoWriteTimeout(:com.google.android.gms@202414023@20.24.14 (040800-319035315):0)
+10-18 08:02:37.480  5718 10426 I LogUtils: [Places]: ?: Couldn't find platform key file. [CONTEXT service_id=253 ]
+10-18 08:02:37.483  5718  6307 W GCoreFlp: No location to return for getLastLocation()
+10-18 08:02:37.492  5511  5511 E libprocessgroup: set_timerslack_ns write failed: Operation not permitted
+10-18 08:02:37.502  5718 10417 I LogUtils: [Places]: ?: PlacesBleScanner start() with priority 2 [CONTEXT service_id=253 ]
+10-18 08:02:37.503  5718 10417 I PlacesLogger: [PlaceInferenceEngine]: [anon] Changed inference mode: 1 [CONTEXT service_id=253 ]
+10-18 08:02:37.513  5718  6307 W GCoreFlp: No location to return for getLastLocation()
+10-18 08:02:37.513  5718  5718 E BeaconBle: Missing BluetoothAdapter [CONTEXT service_id=111 ]
+10-18 08:02:37.513  5718  5718 I BeaconBle: BLE 'KK+' software access layer enabled [CONTEXT service_id=111 ]
+10-18 08:02:37.546  5718  5718 I BeaconBle: Client requested scan, settings=BleSettings [scanMode=ZERO_POWER, callbackType=ALL_MATCHES, reportDelayMillis=0, 1 filters, 0 clients, callingClientName=Places] [CONTEXT service_id=111 ]
+10-18 08:02:37.547  5718  5718 I BeaconBle: Scan : No clients left, canceling alarm. [CONTEXT service_id=111 ]
+10-18 08:02:37.549  5718  5718 E BeaconBle: Scan couldn't start for Places [CONTEXT service_id=111 ]
+10-18 08:02:37.550  5718  5718 W Places  : BLE failure while scanning - code 5
+10-18 08:02:37.557  5365  5365 D Tonal   : Tonal Palette - index: 10. Main color: ffe590b7
+10-18 08:02:37.557  5365  5365 D Tonal   : Colors: ff060104, ff1b0613, ff2f0b23, ff481135, ff671850, ff861f5d, ffa42773, ffbe4d91, ffd85a9e, ffde73aa, ffe590b7, ffefb9d1, fff5d6e5
+10-18 08:02:37.557  5365  5365 D Tonal   : Gradients:
+10-18 08:02:37.557  5365  5365 D Tonal   : 	Normal GradientColors(ffe590b7, ffe590b7)
+10-18 08:02:37.557  5365  5365 D Tonal   : 	Dark GradientColors(ff481135, ff481135)
+10-18 08:02:37.557  5365  5365 D Tonal   : 	Extra dark: GradientColors(ff2f0b23, ff2f0b23)
+10-18 08:02:37.557  5365  5365 D Tonal   : Tonal Palette - index: 10. Main color: ffe590b7
+10-18 08:02:37.557  5365  5365 D Tonal   : Colors: ff060104, ff1b0613, ff2f0b23, ff481135, ff671850, ff861f5d, ffa42773, ffbe4d91, ffd85a9e, ffde73aa, ffe590b7, ffefb9d1, fff5d6e5
+10-18 08:02:37.557  5365  5365 D Tonal   : Gradients:
+10-18 08:02:37.557  5365  5365 D Tonal   : 	Normal GradientColors(ffe590b7, ffe590b7)
+10-18 08:02:37.557  5365  5365 D Tonal   : 	Dark GradientColors(ff481135, ff481135)
+10-18 08:02:37.557  5365  5365 D Tonal   : 	Extra dark: GradientColors(ff2f0b23, ff2f0b23)
+10-18 08:02:37.570  5718 10417 W LogUtils: [Places]: ?: Failed to download inference model weights SLS
+10-18 08:02:37.570  5718 10417 W LogUtils: ckdr: NOT_FOUND: Requested entity was not found.
+10-18 08:02:37.570  5718 10417 W LogUtils: 	at ckdq.c(:com.google.android.gms@202414023@20.24.14 (040800-319035315):3)
+10-18 08:02:37.570  5718 10417 W LogUtils: 	at sjo.a(:com.google.android.gms@202414023@20.24.14 (040800-319035315):57)
+10-18 08:02:37.570  5718 10417 W LogUtils: 	at bjxj.call(:com.google.android.gms@202414023@20.24.14 (040800-319035315):0)
+10-18 08:02:37.570  5718 10417 W LogUtils: 	at bjvu.run(:com.google.android.gms@202414023@20.24.14 (040800-319035315):1)
+10-18 08:02:37.570  5718 10417 W LogUtils: 	at soy.b(:com.google.android.gms@202414023@20.24.14 (040800-319035315):12)
+10-18 08:02:37.570  5718 10417 W LogUtils: 	at soy.run(:com.google.android.gms@202414023@20.24.14 (040800-319035315):7)
+10-18 08:02:37.570  5718 10417 W LogUtils: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)
+10-18 08:02:37.570  5718 10417 W LogUtils: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)
+10-18 08:02:37.570  5718 10417 W LogUtils: 	at sux.run(:com.google.android.gms@202414023@20.24.14 (040800-319035315):0)
+10-18 08:02:37.570  5718 10417 W LogUtils: 	at java.lang.Thread.run(Thread.java:919)
+10-18 08:02:37.570  5718 10417 W LogUtils:
+10-18 08:02:37.570  5718 10417 W LogUtils: [CONTEXT service_id=253 ]
+10-18 08:02:37.570  5718 10417 W PlacesLogger: [PlaceInferenceEngine]: Failed to download model weights. Status code: 7 [CONTEXT service_id=253 ]
+10-18 08:02:37.573  5718 10367 I LogUtils: [Places]: ?: Couldn't find platform key file. [CONTEXT service_id=253 ]
+10-18 08:02:37.574  5718 10367 I LogUtils: [Places]: ?: Couldn't find platform key file. [CONTEXT service_id=253 ]
+10-18 08:02:37.584  5365  5365 I Choreographer: Skipped 39 frames!  The application may be doing too much work on its main thread.
+10-18 08:02:37.592  5365  5365 W View    : requestLayout() improperly called by com.android.keyguard.AlphaOptimizedLinearLayout{77a7623 V.E...... ......ID 5,0-35,44 #7f0a041c app:id/wifi_group} during layout: running second layout pass
+10-18 08:02:37.592  5365  5365 W View    : requestLayout() improperly called by com.android.keyguard.AlphaOptimizedLinearLayout{de787fe V.E...... ......ID 5,0-35,44 #7f0a041c app:id/wifi_group} during layout: running second layout pass
+10-18 08:02:37.595  5365  5540 D EGL_emulation: eglMakeCurrent: 0x7d6f33663860: ver 3 0 (tinfo 0x7d6f33618fe0)
+10-18 08:02:37.601  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 126976
+10-18 08:02:37.602  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 16384
+10-18 08:02:37.603  5365  5745 D HostConnection: HostConnection::get() New Host Connection established 0x7d6ee1e4bce0, tid 5745
+10-18 08:02:37.605  5365  5745 D HostConnection: HostComposition ext ANDROID_EMU_CHECKSUM_HELPER_v1 ANDROID_EMU_native_sync_v2 ANDROID_EMU_dma_v1 ANDROID_EMU_direct_mem ANDROID_EMU_host_composition_v1 ANDROID_EMU_host_composition_v2 ANDROID_EMU_YUV_Cache ANDROID_EMU_sync_buffer_data ANDROID_EMU_hwc_color_transform GL_OES_EGL_image_external_essl3 GL_OES_vertex_array_object GL_KHR_texture_compression_astc_ldr ANDROID_EMU_host_side_tracing ANDROID_EMU_gles_max_version_3_0
+10-18 08:02:37.605  5365  5745 D EGL_emulation: eglCreateContext: 0x7d6ee1e4bd80: maj 3 min 0 rcv 3
+10-18 08:02:37.606  5365  5745 D EGL_emulation: eglMakeCurrent: 0x7d6ee1e4bd80: ver 3 0 (tinfo 0x7d6ee1f16c20)
+10-18 08:02:37.609  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 16384
+10-18 08:02:37.612  1709  1709 I chatty  : uid=1000(system) allocator@2.0-s identical 3 lines
+10-18 08:02:37.613  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 16384
+10-18 08:02:37.614  5365  5540 D EGL_emulation: eglMakeCurrent: 0x7d6f33663860: ver 3 0 (tinfo 0x7d6f33618fe0)
+10-18 08:02:37.618  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 249856
+10-18 08:02:37.626  5365  5365 I OpaEnabledReceiver: Dispatching OPA eligble = false; AGSA = true; OPA enabled = false
+10-18 08:02:37.626  5365  5365 I OpaLayout: Setting opa enabled to false
+10-18 08:02:37.626  5365  5365 I OpaLayout: Setting opa enabled to false
+10-18 08:02:37.649  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 16384
+10-18 08:02:37.653  1709  1709 I chatty  : uid=1000(system) allocator@2.0-s identical 4 lines
+10-18 08:02:37.654  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 16384
+10-18 08:02:37.670  5636  5636 I DeviceStatusMonitor: onReceive() : Action = android.intent.action.SCREEN_OFF
+10-18 08:02:38.192 10435 10435 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 0 <<<<<<
+10-18 08:02:38.193 10435 10435 I AndroidRuntime: Using default boot image
+10-18 08:02:38.193 10435 10435 I AndroidRuntime: Leaving lock profiling enabled
+10-18 08:02:38.193 10435 10435 I app_process: Core platform API reporting enabled, enforcing=false
+10-18 08:02:38.222 10435 10435 D ICU     : Time zone APEX file found: /apex/com.android.tzdata/etc/icu/icu_tzdata.dat
+10-18 08:02:38.224 10435 10435 W app_process: Unexpected CPU variant for X86 using defaults: x86_64
+10-18 08:02:38.227 10435 10435 I app_process: The ClassLoaderContext is a special shared library.
+10-18 08:02:38.234 10435 10435 W app_process: JNI RegisterNativeMethods: attempt to register 0 native methods for android.media.AudioAttributes
+10-18 08:02:38.236 10435 10435 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-18 08:02:38.238  5224  5275 W InputReader: Device has associated, but no associated display id.
+10-18 08:02:38.238  5224  5275 I chatty  : uid=1000(system) PowerManagerSer identical 8 lines
+10-18 08:02:38.238  5224  5275 W InputReader: Device has associated, but no associated display id.
+10-18 08:02:38.239 10435 10435 D AndroidRuntime: Shutting down VM
+10-18 08:02:38.245  5365  5365 D KeyguardClockSwitch: Updating clock: 802
+10-18 08:02:38.245  5194  5194 D SurfaceFlinger: Setting power mode 2 on display 0
+10-18 08:02:38.254  5895  5895 I GsaVoiceInteractionSrv: O received Intent { act=android.intent.action.USER_PRESENT flg=0x24200010 }
+10-18 08:02:38.279  8753  8773 D IdlingRegistry: Registering idling resources: [androidx.compose.ui.test.EspressoLink@53aba9d]
+10-18 08:02:38.284  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2912256
+10-18 08:02:38.286  8753  8773 W Settings: Setting always_finish_activities has moved from android.provider.Settings.System to android.provider.Settings.Global, returning read-only value.
+10-18 08:02:38.286  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2912256
+10-18 08:02:38.287  5511  6008 D EGL_emulation: eglMakeCurrent: 0x7d6ee7009140: ver 3 0 (tinfo 0x7d6ee709a2e0)
+10-18 08:02:38.295  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2912256
+10-18 08:02:38.300  5194  5194 D SurfaceFlinger: Finished setting power mode 2 on display 0
+10-18 08:02:38.308  5224  5262 E system_server: Invalid ID 0x00000000.
+10-18 08:02:38.327  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2912256
+10-18 08:02:38.334  6076  6145 W SessionLifecycleManager: Handover failed. Creating new session controller.
+10-18 08:02:38.338  6076 10428 E sb.v.u.LiteSuggestSourc: On-device lite suggest model loading error.
+10-18 08:02:38.341  5511  5511 E libprocessgroup: set_timerslack_ns write failed: Operation not permitted
+10-18 08:02:38.342  5224  7567 W InputReader: Device has associated, but no associated display id.
+10-18 08:02:38.343  5224  7567 I chatty  : uid=1000(system) Binder:5224_14 identical 34 lines
+10-18 08:02:38.343  5224  7567 W InputReader: Device has associated, but no associated display id.
+10-18 08:02:38.343  8753  8753 W ActivityThread: handleWindowVisibility: no activity for token android.os.BinderProxy@93e64e0
+10-18 08:02:38.343  5224  7567 W InputReader: Device has associated, but no associated display id.
+10-18 08:02:38.343  5224  7567 I chatty  : uid=1000(system) Binder:5224_14 identical 2 lines
+10-18 08:02:38.343  5224  7567 W InputReader: Device has associated, but no associated display id.
+10-18 08:02:38.361  5224  5262 W InputReader: Device has associated, but no associated display id.
+10-18 08:02:38.361  5224  5262 I chatty  : uid=1000(system) android.anim identical 8 lines
+10-18 08:02:38.361  5224  5262 W InputReader: Device has associated, but no associated display id.
+10-18 08:02:38.368  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2912256
+10-18 08:02:38.377  8753  8753 D LifecycleMonitor: Lifecycle status change: com.tradereview.app.MainActivity@9f9fb5b in: PRE_ON_CREATE
+10-18 08:02:38.377  8753  8753 V ActivityScenario: Activity lifecycle changed event received but ignored because the reported transition was not ON_CREATE while the last known transition was PRE_ON_CREATE
+10-18 08:02:38.380  8753  8753 D LifecycleMonitor: Lifecycle status change: com.tradereview.app.MainActivity@9f9fb5b in: CREATED
+10-18 08:02:38.380  8753  8753 V ActivityScenario: Update currentActivityStage to CREATED, currentActivity=com.tradereview.app.MainActivity@9f9fb5b
+10-18 08:02:38.382  5365  5540 D EGL_emulation: eglMakeCurrent: 0x7d6f33663860: ver 3 0 (tinfo 0x7d6f33618fe0)
+10-18 08:02:38.389  8753  8753 D LifecycleMonitor: Lifecycle status change: com.tradereview.app.MainActivity@9f9fb5b in: STARTED
+10-18 08:02:38.389  8753  8753 V ActivityScenario: Update currentActivityStage to STARTED, currentActivity=com.tradereview.app.MainActivity@9f9fb5b
+10-18 08:02:38.390  8753  8753 D LifecycleMonitor: Lifecycle status change: com.tradereview.app.MainActivity@9f9fb5b in: RESUMED
+10-18 08:02:38.390  8753  8753 V ActivityScenario: Update currentActivityStage to RESUMED, currentActivity=com.tradereview.app.MainActivity@9f9fb5b
+10-18 08:02:38.409  6076  6184 D EGL_emulation: eglMakeCurrent: 0xe7573f80: ver 3 0 (tinfo 0xc3e89960)
+10-18 08:02:38.415  5224  5266 I ActivityTaskManager: Displayed com.tradereview.app/.MainActivity: +28ms
+10-18 08:02:38.428  5365  5540 D EGL_emulation: eglMakeCurrent: 0x7d6f33663860: ver 3 0 (tinfo 0x7d6f33618fe0)
+10-18 08:02:38.444  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2912256
+10-18 08:02:38.452  5636  5636 I DeviceStatusMonitor: onReceive() : Action = android.intent.action.SCREEN_ON
+10-18 08:02:38.452  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2912256
+10-18 08:02:38.454  5511  6008 D EGL_emulation: eglMakeCurrent: 0x7d6ee7009140: ver 3 0 (tinfo 0x7d6ee709a2e0)
+10-18 08:02:38.456  8753  8856 D EGL_emulation: eglMakeCurrent: 0x7d6f33634a20: ver 3 0 (tinfo 0x7d6f33618b40)
+10-18 08:02:38.463  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2912256
+10-18 08:02:38.482  5365  5365 D KeyguardClockSwitch: Updating clock: 802
+10-18 08:02:38.496  5365  5540 D EGL_emulation: eglMakeCurrent: 0x7d6f33663860: ver 3 0 (tinfo 0x7d6f33618fe0)
+10-18 08:02:38.539  5365  5540 D EGL_emulation: eglMakeCurrent: 0x7d6f33663860: ver 3 0 (tinfo 0x7d6f33618fe0)
+10-18 08:02:38.559  6076  6145 W SearchServiceCore: Abort, client detached.
+10-18 08:02:38.559  6076  6145 I chatty  : uid=10122(com.google.android.googlequicksearchbox) EventBus0 identical 1 line
+10-18 08:02:38.560  6076  6145 W SearchServiceCore: Abort, client detached.
+10-18 08:02:38.563  6076 10428 I PBSessionCacheImpl: Deleted sessionId[155362059037] from persistence.
+10-18 08:02:38.564  6076  6145 E MicroDetectionWorker: Stale runnable..ignoring
+10-18 08:02:38.647  8753  8773 I TestRunner: Consistency begin: create strategy through UI
+10-18 08:02:39.080  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2543616
+10-18 08:02:39.082  1709  1709 I chatty  : uid=1000(system) allocator@2.0-s identical 1 line
+10-18 08:02:39.082  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2543616
+10-18 08:02:39.091  8753  8856 D EGL_emulation: eglMakeCurrent: 0x7d6f33634a20: ver 3 0 (tinfo 0x7d6f33618b40)
+10-18 08:02:39.124  8753  8856 I chatty  : uid=10146(com.tradereview.app) RenderThread identical 1 line
+10-18 08:02:39.131  8753  8856 D EGL_emulation: eglMakeCurrent: 0x7d6f33634a20: ver 3 0 (tinfo 0x7d6f33618b40)
+10-18 08:02:39.222  8753  8753 I AssistStructure: Flattened final assist data: 908 bytes, containing 2 windows, 6 views
+10-18 08:02:39.228  5718  5718 W ktk     : Pending fill request while another request in the same session was triggered. [CONTEXT service_id=177 ]
+10-18 08:02:39.257  8753  8856 D EGL_emulation: eglMakeCurrent: 0x7d6f33634a20: ver 3 0 (tinfo 0x7d6f33618b40)
+10-18 08:02:39.260  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2523136
+10-18 08:02:39.262  8753  8856 D EGL_emulation: eglMakeCurrent: 0x7d6f33634a20: ver 3 0 (tinfo 0x7d6f33618b40)
+10-18 08:02:39.271  8753  8753 D Autofill Status: Autofill popup isn't shown because autofill is not available.
+10-18 08:02:39.271  8753  8753 D Autofill Status:
+10-18 08:02:39.271  8753  8753 D Autofill Status: Did you set up autofill?
+10-18 08:02:39.271  8753  8753 D Autofill Status: 1. Go to Settings > System > Languages&input > Advanced > Autofill Service
+10-18 08:02:39.271  8753  8753 D Autofill Status: 2. Pick a service
+10-18 08:02:39.271  8753  8753 D Autofill Status:
+10-18 08:02:39.271  8753  8753 D Autofill Status: Did you add an account?
+10-18 08:02:39.271  8753  8753 D Autofill Status: 1. Go to Settings > System > Languages&input > Advanced
+10-18 08:02:39.271  8753  8753 D Autofill Status: 2. Click on the settings icon next to the Autofill Service
+10-18 08:02:39.271  8753  8753 D Autofill Status: 3. Add your account
+10-18 08:02:39.275  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2523136
+10-18 08:02:39.279  5636  5636 I KeyboardViewUtil: systemKeyboardHeightRatio:1.000000; userKeyboardHeightRatio:1.000000.
+10-18 08:02:39.280  5636  5636 I LatinIme: initialize() : Language = en-US
+10-18 08:02:39.280  5636  5636 I Delight5Facilitator: initializeForIme() : Locale = [en_US]
+10-18 08:02:39.288  5636  5636 I AndroidIME: LatinIme.onActivate() : EditorInfo = Package = com.tradereview.app : Type = Text : Learning = Enable : Suggestion = Show : AutoCorrection = Enable : Microphone = Show : NoPersonalizedLearning = Disable
+10-18 08:02:39.315  5636  5636 I KeyboardViewHelper: Get view with height ratio:1.000000; experiment height ratio:1.000000.
+10-18 08:02:39.324  5636  5636 I EmojiSearchExtension: Created (instance count = 6)
+10-18 08:02:39.325  5636  5636 I Conv2QueryExtension: Current locale: en_US, config allows these locales: de,en,es,fr,it,ms,pt,ta
+10-18 08:02:39.325  5636  5636 I Conv2QueryExtension: Conv2Query not enabled due to current app [com.tradereview.app] not in whitelist
+10-18 08:02:39.325  5636  5636 I Conv2QueryExtension: onActivate() : Disabled by unsupported host app
+10-18 08:02:39.330  5636 10180 I KeyboardGroupDefParser: parseKeyboardGroupDef() 2131296522 -> extension_emoji_search_extension_view : WaitTime = 6 ms : RunTime = 0 ms
+10-18 08:02:39.330  5636 10180 I KeyboardGroupDefParser: parseKeyboardGroupDef() 2131296524 -> extension_emoji_search_keyboards : WaitTime = 6 ms : RunTime = 0 ms
+10-18 08:02:39.344  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 8192
+10-18 08:02:39.354  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2789376
+10-18 08:02:39.359  1709  9575 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2789376
+10-18 08:02:39.359  1709  9575 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2789376
+10-18 08:02:39.368  5636  8867 D EGL_emulation: eglMakeCurrent: 0x7d6f33658e20: ver 3 0 (tinfo 0x7d6f337156c0)
+10-18 08:02:39.404  8753  8856 D EGL_emulation: eglMakeCurrent: 0x7d6f33634a20: ver 3 0 (tinfo 0x7d6f33618b40)
+10-18 08:02:39.412  5636  8867 D EGL_emulation: eglMakeCurrent: 0x7d6f33658e20: ver 3 0 (tinfo 0x7d6f337156c0)
+10-18 08:02:39.413  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2789376
+10-18 08:02:39.418  5636  8867 D EGL_emulation: eglMakeCurrent: 0x7d6f33658e20: ver 3 0 (tinfo 0x7d6f337156c0)
+10-18 08:02:39.443  5636  5636 I KeyboardViewHelper: Get view with height ratio:1.000000; experiment height ratio:1.000000.
+10-18 08:02:39.462  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2789376
+10-18 08:02:39.498  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2789376
+10-18 08:02:39.541  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2555904
+10-18 08:02:39.543  8753  8856 D EGL_emulation: eglMakeCurrent: 0x7d6f33634a20: ver 3 0 (tinfo 0x7d6f33618b40)
+10-18 08:02:39.552  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2555904
+10-18 08:02:39.647  8753  8753 I AssistStructure: Flattened final assist data: 920 bytes, containing 2 windows, 6 views
+10-18 08:02:39.653  5718  5718 W ktk     : Pending fill request while another request in the same session was triggered. [CONTEXT service_id=177 ]
+10-18 08:02:39.673  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2555904
+10-18 08:02:39.673  8753  8753 D Autofill Status: Autofill popup isn't shown because autofill is not available.
+10-18 08:02:39.673  8753  8753 D Autofill Status:
+10-18 08:02:39.673  8753  8753 D Autofill Status: Did you set up autofill?
+10-18 08:02:39.673  8753  8753 D Autofill Status: 1. Go to Settings > System > Languages&input > Advanced > Autofill Service
+10-18 08:02:39.673  8753  8753 D Autofill Status: 2. Pick a service
+10-18 08:02:39.673  8753  8753 D Autofill Status:
+10-18 08:02:39.673  8753  8753 D Autofill Status: Did you add an account?
+10-18 08:02:39.673  8753  8753 D Autofill Status: 1. Go to Settings > System > Languages&input > Advanced
+10-18 08:02:39.673  8753  8753 D Autofill Status: 2. Click on the settings icon next to the Autofill Service
+10-18 08:02:39.673  8753  8753 D Autofill Status: 3. Add your account
+10-18 08:02:39.675  5636  5636 I KeyboardViewUtil: systemKeyboardHeightRatio:1.000000; userKeyboardHeightRatio:1.000000.
+10-18 08:02:39.676  5636  5636 I AndroidIME: LatinIme.onDeactivate()
+10-18 08:02:39.677  5636  5636 I AndroidIME: LatinIme.onActivate() : EditorInfo = Package = com.tradereview.app : Type = Text : Learning = Enable : Suggestion = Show : AutoCorrection = Enable : Microphone = Show : NoPersonalizedLearning = Disable
+10-18 08:02:39.678  5636  6261 I native  : input-context-store.cc:123 Ignoring stale client request for FetchSuggestions
+10-18 08:02:39.681  5636  5636 I Conv2QueryExtension: Current locale: en_US, config allows these locales: de,en,es,fr,it,ms,pt,ta
+10-18 08:02:39.681  5636  5636 I Conv2QueryExtension: Conv2Query not enabled due to current app [com.tradereview.app] not in whitelist
+10-18 08:02:39.681  5636  5636 I Conv2QueryExtension: onActivate() : Disabled by unsupported host app
+10-18 08:02:39.925  8753  8856 D EGL_emulation: eglMakeCurrent: 0x7d6f33634a20: ver 3 0 (tinfo 0x7d6f33618b40)
+10-18 08:02:39.934  5224  7834 E InputDispatcher: Window handle Window{3423c94 u0 com.tradereview.app/com.tradereview.app.MainActivity} has no registered input channel
+10-18 08:02:39.943  8753  8856 D EGL_emulation: eglMakeCurrent: 0x7d6f33634a20: ver 3 0 (tinfo 0x7d6f33618b40)
+10-18 08:02:39.948  5636  5636 I PhenotypeExpConfig: refreshConfiguration() : Force = false : UpdateAvailable = false : Age = 5 minutes : MaxAge = 720 minutes
+10-18 08:02:39.948  8753  8753 W IInputConnectionWrapper: beginBatchEdit on inactive InputConnection
+10-18 08:02:39.949  8753  8753 W IInputConnectionWrapper: endBatchEdit on inactive InputConnection
+10-18 08:02:39.967  5636  6261 W native  : neural_spatial_model.cc:382 Output symbol table doesn't contain symbol: @
+10-18 08:02:39.967  5636  6261 W native  : neural_spatial_model.cc:382 Output symbol table doesn't contain symbol: &
+10-18 08:02:39.970  5636  6261 I native  : crank.cc:69 Overriding decoder candidates by Crank
+10-18 08:02:39.973  5636  5636 I AndroidIME: LatinIme.onDeactivate()
+10-18 08:02:39.996  5636  8867 D EGL_emulation: eglMakeCurrent: 0x7d6f33658e20: ver 3 0 (tinfo 0x7d6f337156c0)
+10-18 08:02:41.132  5224  5261 I system_server: Explicit concurrent copying GC freed 59186(3446KB) AllocSpace objects, 38(1048KB) LOS objects, 35% free, 10MB/16MB, paused 415us total 21.277ms
+10-18 08:02:42.295  5224  7834 D WificondControl: Scan result ready event
+10-18 08:02:42.792  8753  8773 I TestRunner: Consistency complete: create strategy through UI
+10-18 08:02:42.792  8753  8773 I TestRunner: Consistency begin: save five real-form executions
+10-18 08:02:43.060  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2912256
+10-18 08:02:43.062  1709  1709 I chatty  : uid=1000(system) allocator@2.0-s identical 1 line
+10-18 08:02:43.062  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2912256
+10-18 08:02:43.065  8753  8856 D EGL_emulation: eglMakeCurrent: 0x7d6f33634a20: ver 3 0 (tinfo 0x7d6f33618b40)
+10-18 08:02:43.130  8753  8856 I chatty  : uid=10146(com.tradereview.app) RenderThread identical 1 line
+10-18 08:02:43.155  8753  8856 D EGL_emulation: eglMakeCurrent: 0x7d6f33634a20: ver 3 0 (tinfo 0x7d6f33618b40)
+10-18 08:02:43.236  8753  8765 I tradereview.ap: Background concurrent copying GC freed 171454(6110KB) AllocSpace objects, 1(24KB) LOS objects, 33% free, 11MB/17MB, paused 1.179ms total 195.114ms
+10-18 08:02:43.315  8753  8753 I AssistStructure: Flattened final assist data: 1052 bytes, containing 2 windows, 7 views
+10-18 08:02:43.330  5718  5718 W ktk     : Pending fill request while another request in the same session was triggered. [CONTEXT service_id=177 ]
+10-18 08:02:43.359  8753  8753 D Autofill Status: Autofill popup isn't shown because autofill is not available.
+10-18 08:02:43.359  8753  8753 D Autofill Status:
+10-18 08:02:43.359  8753  8753 D Autofill Status: Did you set up autofill?
+10-18 08:02:43.359  8753  8753 D Autofill Status: 1. Go to Settings > System > Languages&input > Advanced > Autofill Service
+10-18 08:02:43.359  8753  8753 D Autofill Status: 2. Pick a service
+10-18 08:02:43.359  8753  8753 D Autofill Status:
+10-18 08:02:43.359  8753  8753 D Autofill Status: Did you add an account?
+10-18 08:02:43.359  8753  8753 D Autofill Status: 1. Go to Settings > System > Languages&input > Advanced
+10-18 08:02:43.359  8753  8753 D Autofill Status: 2. Click on the settings icon next to the Autofill Service
+10-18 08:02:43.359  8753  8753 D Autofill Status: 3. Add your account
+10-18 08:02:43.369  5636  5636 I KeyboardViewUtil: systemKeyboardHeightRatio:1.000000; userKeyboardHeightRatio:1.000000.
+10-18 08:02:43.369  5636  5636 I AndroidIME: DummyIme.onActivate() : EditorInfo = Package = com.tradereview.app : Type = Number : Learning = Disable : Suggestion = Hide : AutoCorrection = Disable : Microphone = Hide : NoPersonalizedLearning = Disable
+10-18 08:02:43.370  5636  5636 I Conv2QueryExtension: Current locale: en_US, config allows these locales: de,en,es,fr,it,ms,pt,ta
+10-18 08:02:43.370  5636  5636 I Conv2QueryExtension: Conv2Query not enabled due to current app [com.tradereview.app] not in whitelist
+10-18 08:02:43.370  5636  5636 I Conv2QueryExtension: onActivate() : Disabled by unsupported host app
+10-18 08:02:43.370  5636  5636 I CurrentMicStatusHolder: Current Mic status = {MicIconHidden-PasswordOrNumberOrDateInputType,}
+10-18 08:02:43.376  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2789376
+10-18 08:02:43.379  1709  1709 I chatty  : uid=1000(system) allocator@2.0-s identical 1 line
+10-18 08:02:43.379  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2789376
+10-18 08:02:43.380  5636  8867 D EGL_emulation: eglMakeCurrent: 0x7d6f33658e20: ver 3 0 (tinfo 0x7d6f337156c0)
+10-18 08:02:43.408  5636  5636 I KeyboardViewHelper: Get view with height ratio:1.000000; experiment height ratio:1.000000.
+10-18 08:02:43.658  5718 10367 I LogUtils: [Places]: ?: Couldn't find platform key file. [CONTEXT service_id=253 ]
+10-18 08:02:43.664  5718 10365 I LogUtils: [Places]: ?: Couldn't find platform key file. [CONTEXT service_id=253 ]
+10-18 08:02:43.676  5718 10417 I LogUtils: [Places]: ?: PlacesBleScanner stop() [CONTEXT service_id=253 ]
+10-18 08:02:43.677  5718  5718 I BeaconBle: Scan : No clients left, canceling alarm. [CONTEXT service_id=111 ]
+10-18 08:02:43.678  5718  5718 I BeaconBle: Scan canceled successfully. [CONTEXT service_id=111 ]
+10-18 08:02:43.680  5718 10417 I PlacesLogger: [PlaceInferenceEngine]: [anon] Changed inference mode: 0 [CONTEXT service_id=253 ]
+10-18 08:02:43.694  5718  6307 W GCoreFlp: No location to return for getLastLocation()
+10-18 08:02:43.736  5718  9807 I LogUtils: [Places]: ?: Couldn't find platform key file. [CONTEXT service_id=253 ]
+10-18 08:02:43.765  5718 10339 I LogUtils: [Places]: ?: Couldn't find platform key file. [CONTEXT service_id=253 ]
+10-18 08:02:43.786  5718  5718 I GeofencerStateMachine: removeGeofences: removeRequest=RemoveGeofencingRequest[REMOVE_BY_PENDING_INTENT pendingIntent=PendingIntent[creatorPackage=com.google.android.gms], packageName=com.google.android.gms]
+10-18 08:02:43.940  8753  8753 I AssistStructure: Flattened final assist data: 1072 bytes, containing 2 windows, 7 views
+10-18 08:02:43.946  5718  5718 W ktk     : Pending fill request while another request in the same session was triggered. [CONTEXT service_id=177 ]
+10-18 08:02:43.962  8753  8753 D Autofill Status: Autofill popup isn't shown because autofill is not available.
+10-18 08:02:43.962  8753  8753 D Autofill Status:
+10-18 08:02:43.962  8753  8753 D Autofill Status: Did you set up autofill?
+10-18 08:02:43.962  8753  8753 D Autofill Status: 1. Go to Settings > System > Languages&input > Advanced > Autofill Service
+10-18 08:02:43.962  8753  8753 D Autofill Status: 2. Pick a service
+10-18 08:02:43.962  8753  8753 D Autofill Status:
+10-18 08:02:43.962  8753  8753 D Autofill Status: Did you add an account?
+10-18 08:02:43.962  8753  8753 D Autofill Status: 1. Go to Settings > System > Languages&input > Advanced
+10-18 08:02:43.962  8753  8753 D Autofill Status: 2. Click on the settings icon next to the Autofill Service
+10-18 08:02:43.962  8753  8753 D Autofill Status: 3. Add your account
+10-18 08:02:43.964  5636  5636 I KeyboardViewUtil: systemKeyboardHeightRatio:1.000000; userKeyboardHeightRatio:1.000000.
+10-18 08:02:43.964  5636  5636 I AndroidIME: DummyIme.onDeactivate()
+10-18 08:02:43.964  5636  5636 I AndroidIME: DummyIme.onActivate() : EditorInfo = Package = com.tradereview.app : Type = Number : Learning = Disable : Suggestion = Hide : AutoCorrection = Disable : Microphone = Hide : NoPersonalizedLearning = Disable
+10-18 08:02:43.965  5636  5636 I Conv2QueryExtension: Current locale: en_US, config allows these locales: de,en,es,fr,it,ms,pt,ta
+10-18 08:02:43.965  5636  5636 I Conv2QueryExtension: Conv2Query not enabled due to current app [com.tradereview.app] not in whitelist
+10-18 08:02:43.965  5636  5636 I Conv2QueryExtension: onActivate() : Disabled by unsupported host app
+10-18 08:02:43.966  5636  5636 I CurrentMicStatusHolder: Current Mic status = {MicIconHidden-PasswordOrNumberOrDateInputType,}
+10-18 08:02:44.189  8753  8753 I AssistStructure: Flattened final assist data: 1076 bytes, containing 2 windows, 7 views
+10-18 08:02:44.195  5718  5718 W ktk     : Pending fill request while another request in the same session was triggered. [CONTEXT service_id=177 ]
+10-18 08:02:44.212  8753  8753 D Autofill Status: Autofill popup isn't shown because autofill is not available.
+10-18 08:02:44.212  8753  8753 D Autofill Status:
+10-18 08:02:44.212  8753  8753 D Autofill Status: Did you set up autofill?
+10-18 08:02:44.212  8753  8753 D Autofill Status: 1. Go to Settings > System > Languages&input > Advanced > Autofill Service
+10-18 08:02:44.212  8753  8753 D Autofill Status: 2. Pick a service
+10-18 08:02:44.212  8753  8753 D Autofill Status:
+10-18 08:02:44.212  8753  8753 D Autofill Status: Did you add an account?
+10-18 08:02:44.212  8753  8753 D Autofill Status: 1. Go to Settings > System > Languages&input > Advanced
+10-18 08:02:44.212  8753  8753 D Autofill Status: 2. Click on the settings icon next to the Autofill Service
+10-18 08:02:44.212  8753  8753 D Autofill Status: 3. Add your account
+10-18 08:02:44.221  5636  5636 I KeyboardViewUtil: systemKeyboardHeightRatio:1.000000; userKeyboardHeightRatio:1.000000.
+10-18 08:02:44.221  5636  5636 I AndroidIME: DummyIme.onDeactivate()
+10-18 08:02:44.222  5636  5636 I AndroidIME: DummyIme.onActivate() : EditorInfo = Package = com.tradereview.app : Type = Number : Learning = Disable : Suggestion = Hide : AutoCorrection = Disable : Microphone = Hide : NoPersonalizedLearning = Disable
+10-18 08:02:44.224  5636  5636 I Conv2QueryExtension: Current locale: en_US, config allows these locales: de,en,es,fr,it,ms,pt,ta
+10-18 08:02:44.224  5636  5636 I Conv2QueryExtension: Conv2Query not enabled due to current app [com.tradereview.app] not in whitelist
+10-18 08:02:44.224  5636  5636 I Conv2QueryExtension: onActivate() : Disabled by unsupported host app
+10-18 08:02:44.224  5636  5636 I CurrentMicStatusHolder: Current Mic status = {MicIconHidden-PasswordOrNumberOrDateInputType,}
+10-18 08:02:44.811  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 385024
+10-18 08:02:44.812  1709  1709 I chatty  : uid=1000(system) allocator@2.0-s identical 1 line
+10-18 08:02:44.812  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 385024
+10-18 08:02:44.825  8753  8856 D EGL_emulation: eglMakeCurrent: 0x7d6f33634a20: ver 3 0 (tinfo 0x7d6f33618b40)
+10-18 08:02:44.846  5636  5636 I PhenotypeExpConfig: refreshConfiguration() : Force = false : UpdateAvailable = false : Age = 5 minutes : MaxAge = 720 minutes
+10-18 08:02:44.846  5636  5636 I AndroidIME: DummyIme.onDeactivate()
+10-18 08:02:44.877  5636  8867 D EGL_emulation: eglMakeCurrent: 0x7d6f33658e20: ver 3 0 (tinfo 0x7d6f337156c0)
+10-18 08:02:44.885  8753  8856 D EGL_emulation: eglMakeCurrent: 0x7d6f33634a20: ver 3 0 (tinfo 0x7d6f33618b40)
+10-18 08:02:45.244  8753  8856 I chatty  : uid=10146(com.tradereview.app) RenderThread identical 6 lines
+10-18 08:02:45.274  8753  8856 D EGL_emulation: eglMakeCurrent: 0x7d6f33634a20: ver 3 0 (tinfo 0x7d6f33618b40)
+10-18 08:02:45.507  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2912256
+10-18 08:02:45.508  1709  1709 I chatty  : uid=1000(system) allocator@2.0-s identical 1 line
+10-18 08:02:45.509  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2912256
+10-18 08:02:45.512  8753  8856 D EGL_emulation: eglMakeCurrent: 0x7d6f33634a20: ver 3 0 (tinfo 0x7d6f33618b40)
+10-18 08:02:45.541  8753  8856 I chatty  : uid=10146(com.tradereview.app) RenderThread identical 1 line
+10-18 08:02:45.589  8753  8856 D EGL_emulation: eglMakeCurrent: 0x7d6f33634a20: ver 3 0 (tinfo 0x7d6f33618b40)
+10-18 08:02:45.697  8753  8753 I AssistStructure: Flattened final assist data: 1052 bytes, containing 2 windows, 7 views
+10-18 08:02:45.712  5718  5718 W ktk     : Pending fill request while another request in the same session was triggered. [CONTEXT service_id=177 ]
+10-18 08:02:45.749  8753  8753 D Autofill Status: Autofill popup isn't shown because autofill is not available.
+10-18 08:02:45.749  8753  8753 D Autofill Status:
+10-18 08:02:45.749  8753  8753 D Autofill Status: Did you set up autofill?
+10-18 08:02:45.749  8753  8753 D Autofill Status: 1. Go to Settings > System > Languages&input > Advanced > Autofill Service
+10-18 08:02:45.749  8753  8753 D Autofill Status: 2. Pick a service
+10-18 08:02:45.749  8753  8753 D Autofill Status:
+10-18 08:02:45.749  8753  8753 D Autofill Status: Did you add an account?
+10-18 08:02:45.749  8753  8753 D Autofill Status: 1. Go to Settings > System > Languages&input > Advanced
+10-18 08:02:45.749  8753  8753 D Autofill Status: 2. Click on the settings icon next to the Autofill Service
+10-18 08:02:45.749  8753  8753 D Autofill Status: 3. Add your account
+10-18 08:02:45.754  5636  5636 I KeyboardViewUtil: systemKeyboardHeightRatio:1.000000; userKeyboardHeightRatio:1.000000.
+10-18 08:02:45.754  5636  5636 I AndroidIME: DummyIme.onActivate() : EditorInfo = Package = com.tradereview.app : Type = Number : Learning = Disable : Suggestion = Hide : AutoCorrection = Disable : Microphone = Hide : NoPersonalizedLearning = Disable
+10-18 08:02:45.755  5636  5636 I Conv2QueryExtension: Current locale: en_US, config allows these locales: de,en,es,fr,it,ms,pt,ta
+10-18 08:02:45.755  5636  5636 I Conv2QueryExtension: Conv2Query not enabled due to current app [com.tradereview.app] not in whitelist
+10-18 08:02:45.756  5636  5636 I Conv2QueryExtension: onActivate() : Disabled by unsupported host app
+10-18 08:02:45.756  5636  5636 I CurrentMicStatusHolder: Current Mic status = {MicIconHidden-PasswordOrNumberOrDateInputType,}
+10-18 08:02:45.764  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2789376
+10-18 08:02:45.780  1709  1709 I chatty  : uid=1000(system) allocator@2.0-s identical 1 line
+10-18 08:02:45.793  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2789376
+10-18 08:02:45.794  5636  8867 D EGL_emulation: eglMakeCurrent: 0x7d6f33658e20: ver 3 0 (tinfo 0x7d6f337156c0)
+10-18 08:02:46.174  8753  8753 I AssistStructure: Flattened final assist data: 1072 bytes, containing 2 windows, 7 views
+10-18 08:02:46.178  5718  5718 W ktk     : Pending fill request while another request in the same session was triggered. [CONTEXT service_id=177 ]
+10-18 08:02:46.195  8753  8753 D Autofill Status: Autofill popup isn't shown because autofill is not available.
+10-18 08:02:46.195  8753  8753 D Autofill Status:
+10-18 08:02:46.195  8753  8753 D Autofill Status: Did you set up autofill?
+10-18 08:02:46.195  8753  8753 D Autofill Status: 1. Go to Settings > System > Languages&input > Advanced > Autofill Service
+10-18 08:02:46.195  8753  8753 D Autofill Status: 2. Pick a service
+10-18 08:02:46.195  8753  8753 D Autofill Status:
+10-18 08:02:46.195  8753  8753 D Autofill Status: Did you add an account?
+10-18 08:02:46.195  8753  8753 D Autofill Status: 1. Go to Settings > System > Languages&input > Advanced
+10-18 08:02:46.195  8753  8753 D Autofill Status: 2. Click on the settings icon next to the Autofill Service
+10-18 08:02:46.195  8753  8753 D Autofill Status: 3. Add your account
+10-18 08:02:46.202  5636  5636 I KeyboardViewUtil: systemKeyboardHeightRatio:1.000000; userKeyboardHeightRatio:1.000000.
+10-18 08:02:46.202  5636  5636 I AndroidIME: DummyIme.onDeactivate()
+10-18 08:02:46.202  5636  5636 I AndroidIME: DummyIme.onActivate() : EditorInfo = Package = com.tradereview.app : Type = Number : Learning = Disable : Suggestion = Hide : AutoCorrection = Disable : Microphone = Hide : NoPersonalizedLearning = Disable
+10-18 08:02:46.202  5636  5636 I Conv2QueryExtension: Current locale: en_US, config allows these locales: de,en,es,fr,it,ms,pt,ta
+10-18 08:02:46.202  5636  5636 I Conv2QueryExtension: Conv2Query not enabled due to current app [com.tradereview.app] not in whitelist
+10-18 08:02:46.202  5636  5636 I Conv2QueryExtension: onActivate() : Disabled by unsupported host app
+10-18 08:02:46.203  5636  5636 I CurrentMicStatusHolder: Current Mic status = {MicIconHidden-PasswordOrNumberOrDateInputType,}
+10-18 08:02:46.422  8753  8753 I AssistStructure: Flattened final assist data: 1076 bytes, containing 2 windows, 7 views
+10-18 08:02:46.427  5718  5718 W ktk     : Pending fill request while another request in the same session was triggered. [CONTEXT service_id=177 ]
+10-18 08:02:46.446  8753  8753 D Autofill Status: Autofill popup isn't shown because autofill is not available.
+10-18 08:02:46.446  8753  8753 D Autofill Status:
+10-18 08:02:46.446  8753  8753 D Autofill Status: Did you set up autofill?
+10-18 08:02:46.446  8753  8753 D Autofill Status: 1. Go to Settings > System > Languages&input > Advanced > Autofill Service
+10-18 08:02:46.446  8753  8753 D Autofill Status: 2. Pick a service
+10-18 08:02:46.446  8753  8753 D Autofill Status:
+10-18 08:02:46.446  8753  8753 D Autofill Status: Did you add an account?
+10-18 08:02:46.446  8753  8753 D Autofill Status: 1. Go to Settings > System > Languages&input > Advanced
+10-18 08:02:46.446  8753  8753 D Autofill Status: 2. Click on the settings icon next to the Autofill Service
+10-18 08:02:46.446  8753  8753 D Autofill Status: 3. Add your account
+10-18 08:02:46.453  5636  5636 I KeyboardViewUtil: systemKeyboardHeightRatio:1.000000; userKeyboardHeightRatio:1.000000.
+10-18 08:02:46.453  5636  5636 I AndroidIME: DummyIme.onDeactivate()
+10-18 08:02:46.453  5636  5636 I AndroidIME: DummyIme.onActivate() : EditorInfo = Package = com.tradereview.app : Type = Number : Learning = Disable : Suggestion = Hide : AutoCorrection = Disable : Microphone = Hide : NoPersonalizedLearning = Disable
+10-18 08:02:46.454  5636  5636 I Conv2QueryExtension: Current locale: en_US, config allows these locales: de,en,es,fr,it,ms,pt,ta
+10-18 08:02:46.454  5636  5636 I Conv2QueryExtension: Conv2Query not enabled due to current app [com.tradereview.app] not in whitelist
+10-18 08:02:46.454  5636  5636 I Conv2QueryExtension: onActivate() : Disabled by unsupported host app
+10-18 08:02:46.455  5636  5636 I CurrentMicStatusHolder: Current Mic status = {MicIconHidden-PasswordOrNumberOrDateInputType,}
+10-18 08:02:46.786  8753  8856 D EGL_emulation: eglMakeCurrent: 0x7d6f33634a20: ver 3 0 (tinfo 0x7d6f33618b40)
+10-18 08:02:46.796  8753  8856 D EGL_emulation: eglMakeCurrent: 0x7d6f33634a20: ver 3 0 (tinfo 0x7d6f33618b40)
+10-18 08:02:46.798  5636  5636 I PhenotypeExpConfig: refreshConfiguration() : Force = false : UpdateAvailable = false : Age = 5 minutes : MaxAge = 720 minutes
+10-18 08:02:46.798  5636  5636 I AndroidIME: DummyIme.onDeactivate()
+10-18 08:02:46.837  5636  8867 D EGL_emulation: eglMakeCurrent: 0x7d6f33658e20: ver 3 0 (tinfo 0x7d6f337156c0)
+10-18 08:02:47.044  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2912256
+10-18 08:02:47.046  1709  1709 I chatty  : uid=1000(system) allocator@2.0-s identical 1 line
+10-18 08:02:47.047  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2912256
+10-18 08:02:47.057  8753  8856 D EGL_emulation: eglMakeCurrent: 0x7d6f33634a20: ver 3 0 (tinfo 0x7d6f33618b40)
+10-18 08:02:47.091  8753  8856 I chatty  : uid=10146(com.tradereview.app) RenderThread identical 1 line
+10-18 08:02:47.125  8753  8856 D EGL_emulation: eglMakeCurrent: 0x7d6f33634a20: ver 3 0 (tinfo 0x7d6f33618b40)
+10-18 08:02:47.226  8753  8753 I AssistStructure: Flattened final assist data: 1052 bytes, containing 2 windows, 7 views
+10-18 08:02:47.258  5718  5718 W ktk     : Pending fill request while another request in the same session was triggered. [CONTEXT service_id=177 ]
+10-18 08:02:47.305  5636  5636 I KeyboardViewUtil: systemKeyboardHeightRatio:1.000000; userKeyboardHeightRatio:1.000000.
+10-18 08:02:47.305  5636  5636 I AndroidIME: DummyIme.onActivate() : EditorInfo = Package = com.tradereview.app : Type = Number : Learning = Disable : Suggestion = Hide : AutoCorrection = Disable : Microphone = Hide : NoPersonalizedLearning = Disable
+10-18 08:02:47.310  8753  8753 D Autofill Status: Autofill popup isn't shown because autofill is not available.
+10-18 08:02:47.310  8753  8753 D Autofill Status:
+10-18 08:02:47.310  8753  8753 D Autofill Status: Did you set up autofill?
+10-18 08:02:47.310  8753  8753 D Autofill Status: 1. Go to Settings > System > Languages&input > Advanced > Autofill Service
+10-18 08:02:47.310  8753  8753 D Autofill Status: 2. Pick a service
+10-18 08:02:47.310  8753  8753 D Autofill Status:
+10-18 08:02:47.310  8753  8753 D Autofill Status: Did you add an account?
+10-18 08:02:47.310  8753  8753 D Autofill Status: 1. Go to Settings > System > Languages&input > Advanced
+10-18 08:02:47.310  8753  8753 D Autofill Status: 2. Click on the settings icon next to the Autofill Service
+10-18 08:02:47.310  8753  8753 D Autofill Status: 3. Add your account
+10-18 08:02:47.321  5636  5636 I Conv2QueryExtension: Current locale: en_US, config allows these locales: de,en,es,fr,it,ms,pt,ta
+10-18 08:02:47.321  5636  5636 I Conv2QueryExtension: Conv2Query not enabled due to current app [com.tradereview.app] not in whitelist
+10-18 08:02:47.321  5636  5636 I Conv2QueryExtension: onActivate() : Disabled by unsupported host app
+10-18 08:02:47.321  5636  5636 I CurrentMicStatusHolder: Current Mic status = {MicIconHidden-PasswordOrNumberOrDateInputType,}
+10-18 08:02:47.340  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2789376
+10-18 08:02:47.341  1709  9575 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2789376
+10-18 08:02:47.344  1709  9575 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2789376
+10-18 08:02:47.347  5636  8867 D EGL_emulation: eglMakeCurrent: 0x7d6f33658e20: ver 3 0 (tinfo 0x7d6f337156c0)
+10-18 08:02:47.955  8753  8753 I AssistStructure: Flattened final assist data: 1072 bytes, containing 2 windows, 7 views
+10-18 08:02:47.960  5718  5718 W ktk     : Pending fill request while another request in the same session was triggered. [CONTEXT service_id=177 ]
+10-18 08:02:47.980  8753  8753 D Autofill Status: Autofill popup isn't shown because autofill is not available.
+10-18 08:02:47.980  8753  8753 D Autofill Status:
+10-18 08:02:47.980  8753  8753 D Autofill Status: Did you set up autofill?
+10-18 08:02:47.980  8753  8753 D Autofill Status: 1. Go to Settings > System > Languages&input > Advanced > Autofill Service
+10-18 08:02:47.980  8753  8753 D Autofill Status: 2. Pick a service
+10-18 08:02:47.980  8753  8753 D Autofill Status:
+10-18 08:02:47.980  8753  8753 D Autofill Status: Did you add an account?
+10-18 08:02:47.980  8753  8753 D Autofill Status: 1. Go to Settings > System > Languages&input > Advanced
+10-18 08:02:47.980  8753  8753 D Autofill Status: 2. Click on the settings icon next to the Autofill Service
+10-18 08:02:47.980  8753  8753 D Autofill Status: 3. Add your account
+10-18 08:02:47.981  5636  5636 I KeyboardViewUtil: systemKeyboardHeightRatio:1.000000; userKeyboardHeightRatio:1.000000.
+10-18 08:02:47.981  5636  5636 I AndroidIME: DummyIme.onDeactivate()
+10-18 08:02:47.981  5636  5636 I AndroidIME: DummyIme.onActivate() : EditorInfo = Package = com.tradereview.app : Type = Number : Learning = Disable : Suggestion = Hide : AutoCorrection = Disable : Microphone = Hide : NoPersonalizedLearning = Disable
+10-18 08:02:47.983  5636  5636 I Conv2QueryExtension: Current locale: en_US, config allows these locales: de,en,es,fr,it,ms,pt,ta
+10-18 08:02:47.983  5636  5636 I Conv2QueryExtension: Conv2Query not enabled due to current app [com.tradereview.app] not in whitelist
+10-18 08:02:47.983  5636  5636 I Conv2QueryExtension: onActivate() : Disabled by unsupported host app
+10-18 08:02:47.987  5636  5636 I CurrentMicStatusHolder: Current Mic status = {MicIconHidden-PasswordOrNumberOrDateInputType,}
+10-18 08:02:48.208  8753  8753 I AssistStructure: Flattened final assist data: 1076 bytes, containing 2 windows, 7 views
+10-18 08:02:48.214  5718  5718 W ktk     : Pending fill request while another request in the same session was triggered. [CONTEXT service_id=177 ]
+10-18 08:02:48.236  8753  8753 D Autofill Status: Autofill popup isn't shown because autofill is not available.
+10-18 08:02:48.236  8753  8753 D Autofill Status:
+10-18 08:02:48.236  8753  8753 D Autofill Status: Did you set up autofill?
+10-18 08:02:48.236  8753  8753 D Autofill Status: 1. Go to Settings > System > Languages&input > Advanced > Autofill Service
+10-18 08:02:48.236  8753  8753 D Autofill Status: 2. Pick a service
+10-18 08:02:48.236  8753  8753 D Autofill Status:
+10-18 08:02:48.236  8753  8753 D Autofill Status: Did you add an account?
+10-18 08:02:48.236  8753  8753 D Autofill Status: 1. Go to Settings > System > Languages&input > Advanced
+10-18 08:02:48.236  8753  8753 D Autofill Status: 2. Click on the settings icon next to the Autofill Service
+10-18 08:02:48.236  8753  8753 D Autofill Status: 3. Add your account
+10-18 08:02:48.242  5636  5636 I KeyboardViewUtil: systemKeyboardHeightRatio:1.000000; userKeyboardHeightRatio:1.000000.
+10-18 08:02:48.242  5636  5636 I AndroidIME: DummyIme.onDeactivate()
+10-18 08:02:48.242  5636  5636 I AndroidIME: DummyIme.onActivate() : EditorInfo = Package = com.tradereview.app : Type = Number : Learning = Disable : Suggestion = Hide : AutoCorrection = Disable : Microphone = Hide : NoPersonalizedLearning = Disable
+10-18 08:02:48.243  5636  5636 I Conv2QueryExtension: Current locale: en_US, config allows these locales: de,en,es,fr,it,ms,pt,ta
+10-18 08:02:48.243  5636  5636 I Conv2QueryExtension: Conv2Query not enabled due to current app [com.tradereview.app] not in whitelist
+10-18 08:02:48.243  5636  5636 I Conv2QueryExtension: onActivate() : Disabled by unsupported host app
+10-18 08:02:48.243  5636  5636 I CurrentMicStatusHolder: Current Mic status = {MicIconHidden-PasswordOrNumberOrDateInputType,}
+10-18 08:02:48.326  8753  8765 I tradereview.ap: Background concurrent copying GC freed 182427(5953KB) AllocSpace objects, 0(0B) LOS objects, 30% free, 13MB/19MB, paused 653us total 100.965ms
+10-18 08:02:48.568  8753  8856 D EGL_emulation: eglMakeCurrent: 0x7d6f33634a20: ver 3 0 (tinfo 0x7d6f33618b40)
+10-18 08:02:48.574  8753  8856 D EGL_emulation: eglMakeCurrent: 0x7d6f33634a20: ver 3 0 (tinfo 0x7d6f33618b40)
+10-18 08:02:48.588  5636  5636 I PhenotypeExpConfig: refreshConfiguration() : Force = false : UpdateAvailable = false : Age = 5 minutes : MaxAge = 720 minutes
+10-18 08:02:48.588  5636  5636 I AndroidIME: DummyIme.onDeactivate()
+10-18 08:02:48.626  5636  8867 D EGL_emulation: eglMakeCurrent: 0x7d6f33658e20: ver 3 0 (tinfo 0x7d6f337156c0)
+10-18 08:02:48.685  5718  5718 I BeaconBle: Scan : No clients left, canceling alarm. [CONTEXT service_id=111 ]
+10-18 08:02:48.831  1709  9575 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2912256
+10-18 08:02:48.841  1709  9575 I chatty  : uid=1000(system) HwBinder:1709_3 identical 1 line
+10-18 08:02:48.841  1709  9575 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2912256
+10-18 08:02:48.843  8753  8856 D EGL_emulation: eglMakeCurrent: 0x7d6f33634a20: ver 3 0 (tinfo 0x7d6f33618b40)
+10-18 08:02:48.876  8753  8856 I chatty  : uid=10146(com.tradereview.app) RenderThread identical 1 line
+10-18 08:02:48.925  8753  8856 D EGL_emulation: eglMakeCurrent: 0x7d6f33634a20: ver 3 0 (tinfo 0x7d6f33618b40)
+10-18 08:02:49.174  8753  8753 I AssistStructure: Flattened final assist data: 1052 bytes, containing 2 windows, 7 views
+10-18 08:02:49.179  5718  5718 W ktk     : Pending fill request while another request in the same session was triggered. [CONTEXT service_id=177 ]
+10-18 08:02:49.213  8753  8856 D EGL_emulation: eglMakeCurrent: 0x7d6f33634a20: ver 3 0 (tinfo 0x7d6f33618b40)
+10-18 08:02:49.214  8753  8753 D Autofill Status: Autofill popup isn't shown because autofill is not available.
+10-18 08:02:49.214  8753  8753 D Autofill Status:
+10-18 08:02:49.214  8753  8753 D Autofill Status: Did you set up autofill?
+10-18 08:02:49.214  8753  8753 D Autofill Status: 1. Go to Settings > System > Languages&input > Advanced > Autofill Service
+10-18 08:02:49.214  8753  8753 D Autofill Status: 2. Pick a service
+10-18 08:02:49.214  8753  8753 D Autofill Status:
+10-18 08:02:49.214  8753  8753 D Autofill Status: Did you add an account?
+10-18 08:02:49.214  8753  8753 D Autofill Status: 1. Go to Settings > System > Languages&input > Advanced
+10-18 08:02:49.214  8753  8753 D Autofill Status: 2. Click on the settings icon next to the Autofill Service
+10-18 08:02:49.214  8753  8753 D Autofill Status: 3. Add your account
+10-18 08:02:49.224  5636  5636 I KeyboardViewUtil: systemKeyboardHeightRatio:1.000000; userKeyboardHeightRatio:1.000000.
+10-18 08:02:49.224  5636  5636 I AndroidIME: PasswordIme.onActivate() : EditorInfo = Package = com.tradereview.app : Type = Text : Learning = Enable : Suggestion = Show : AutoCorrection = Enable : Microphone = Show : NoPersonalizedLearning = Disable
+10-18 08:02:49.227  5636  5636 I Conv2QueryExtension: Current locale: en_US, config allows these locales: de,en,es,fr,it,ms,pt,ta
+10-18 08:02:49.227  5636  5636 I Conv2QueryExtension: Conv2Query not enabled due to current app [com.tradereview.app] not in whitelist
+10-18 08:02:49.227  5636  5636 I Conv2QueryExtension: onActivate() : Disabled by unsupported host app
+10-18 08:02:49.242  1709  9575 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2789376
+10-18 08:02:49.250  1709  9575 I chatty  : uid=1000(system) HwBinder:1709_3 identical 1 line
+10-18 08:02:49.255  1709  9575 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2789376
+10-18 08:02:49.262  5636  8867 D EGL_emulation: eglMakeCurrent: 0x7d6f33658e20: ver 3 0 (tinfo 0x7d6f337156c0)
+10-18 08:02:49.287  5636  5636 I KeyboardViewHelper: Get view with height ratio:1.000000; experiment height ratio:1.000000.
+10-18 08:02:49.313  8753  8856 D EGL_emulation: eglMakeCurrent: 0x7d6f33634a20: ver 3 0 (tinfo 0x7d6f33618b40)
+10-18 08:02:49.363  6076  6145 I WorkerManager: dispose()
+10-18 08:02:49.363  6076  6145 W ThreadPoolDumper: Queue length for executor EventBus is now 11. Perhaps some tasks are too long, or the pool is too small.
+10-18 08:02:49.689  8753  8753 I AssistStructure: Flattened final assist data: 1068 bytes, containing 2 windows, 7 views
+10-18 08:02:49.695  5718  5718 W ktk     : Pending fill request while another request in the same session was triggered. [CONTEXT service_id=177 ]
+10-18 08:02:49.715  5636  5636 I AndroidIME: PasswordIme.onDeactivate()
+10-18 08:02:49.716  5636  5636 I AndroidIME: DummyIme.onActivate() : EditorInfo = Package = com.tradereview.app : Type = Number : Learning = Disable : Suggestion = Hide : AutoCorrection = Disable : Microphone = Hide : NoPersonalizedLearning = Disable
+10-18 08:02:49.720  8753  8753 D Autofill Status: Autofill popup isn't shown because autofill is not available.
+10-18 08:02:49.720  8753  8753 D Autofill Status:
+10-18 08:02:49.720  8753  8753 D Autofill Status: Did you set up autofill?
+10-18 08:02:49.720  8753  8753 D Autofill Status: 1. Go to Settings > System > Languages&input > Advanced > Autofill Service
+10-18 08:02:49.720  8753  8753 D Autofill Status: 2. Pick a service
+10-18 08:02:49.720  8753  8753 D Autofill Status:
+10-18 08:02:49.720  8753  8753 D Autofill Status: Did you add an account?
+10-18 08:02:49.720  8753  8753 D Autofill Status: 1. Go to Settings > System > Languages&input > Advanced
+10-18 08:02:49.720  8753  8753 D Autofill Status: 2. Click on the settings icon next to the Autofill Service
+10-18 08:02:49.720  8753  8753 D Autofill Status: 3. Add your account
+10-18 08:02:49.723  5636  5636 I KeyboardViewUtil: systemKeyboardHeightRatio:1.000000; userKeyboardHeightRatio:1.000000.
+10-18 08:02:49.723  5636  5636 I AndroidIME: DummyIme.onDeactivate()
+10-18 08:02:49.723  5636  5636 I AndroidIME: DummyIme.onActivate() : EditorInfo = Package = com.tradereview.app : Type = Number : Learning = Disable : Suggestion = Hide : AutoCorrection = Disable : Microphone = Hide : NoPersonalizedLearning = Disable
+10-18 08:02:49.723  5636  5636 I Conv2QueryExtension: Current locale: en_US, config allows these locales: de,en,es,fr,it,ms,pt,ta
+10-18 08:02:49.723  5636  5636 I Conv2QueryExtension: Conv2Query not enabled due to current app [com.tradereview.app] not in whitelist
+10-18 08:02:49.723  5636  5636 I Conv2QueryExtension: onActivate() : Disabled by unsupported host app
+10-18 08:02:49.723  5636  5636 I CurrentMicStatusHolder: Current Mic status = {MicIconHidden-PasswordOrNumberOrDateInputType,}
+10-18 08:02:49.835  8753  8765 I tradereview.ap: Background concurrent copying GC freed 191405(6262KB) AllocSpace objects, 0(0B) LOS objects, 30% free, 13MB/19MB, paused 396us total 131.396ms
+10-18 08:02:50.023  8753  8753 I AssistStructure: Flattened final assist data: 1072 bytes, containing 2 windows, 7 views
+10-18 08:02:50.029  5718  5718 W ktk     : Pending fill request while another request in the same session was triggered. [CONTEXT service_id=177 ]
+10-18 08:02:50.048  8753  8753 D Autofill Status: Autofill popup isn't shown because autofill is not available.
+10-18 08:02:50.048  8753  8753 D Autofill Status:
+10-18 08:02:50.048  8753  8753 D Autofill Status: Did you set up autofill?
+10-18 08:02:50.048  8753  8753 D Autofill Status: 1. Go to Settings > System > Languages&input > Advanced > Autofill Service
+10-18 08:02:50.048  8753  8753 D Autofill Status: 2. Pick a service
+10-18 08:02:50.048  8753  8753 D Autofill Status:
+10-18 08:02:50.048  8753  8753 D Autofill Status: Did you add an account?
+10-18 08:02:50.048  8753  8753 D Autofill Status: 1. Go to Settings > System > Languages&input > Advanced
+10-18 08:02:50.048  8753  8753 D Autofill Status: 2. Click on the settings icon next to the Autofill Service
+10-18 08:02:50.048  8753  8753 D Autofill Status: 3. Add your account
+10-18 08:02:50.050  5636  5636 I KeyboardViewUtil: systemKeyboardHeightRatio:1.000000; userKeyboardHeightRatio:1.000000.
+10-18 08:02:50.050  5636  5636 I AndroidIME: DummyIme.onDeactivate()
+10-18 08:02:50.050  5636  5636 I AndroidIME: DummyIme.onActivate() : EditorInfo = Package = com.tradereview.app : Type = Number : Learning = Disable : Suggestion = Hide : AutoCorrection = Disable : Microphone = Hide : NoPersonalizedLearning = Disable
+10-18 08:02:50.051  5636  5636 I Conv2QueryExtension: Current locale: en_US, config allows these locales: de,en,es,fr,it,ms,pt,ta
+10-18 08:02:50.051  5636  5636 I Conv2QueryExtension: Conv2Query not enabled due to current app [com.tradereview.app] not in whitelist
+10-18 08:02:50.051  5636  5636 I Conv2QueryExtension: onActivate() : Disabled by unsupported host app
+10-18 08:02:50.051  5636  5636 I CurrentMicStatusHolder: Current Mic status = {MicIconHidden-PasswordOrNumberOrDateInputType,}
+10-18 08:02:50.403  8753  8856 D EGL_emulation: eglMakeCurrent: 0x7d6f33634a20: ver 3 0 (tinfo 0x7d6f33618b40)
+10-18 08:02:50.415  8753  8856 D EGL_emulation: eglMakeCurrent: 0x7d6f33634a20: ver 3 0 (tinfo 0x7d6f33618b40)
+10-18 08:02:50.442  5636  5636 I PhenotypeExpConfig: refreshConfiguration() : Force = false : UpdateAvailable = false : Age = 5 minutes : MaxAge = 720 minutes
+10-18 08:02:50.442  5636  5636 I AndroidIME: DummyIme.onDeactivate()
+10-18 08:02:50.465  5636  8867 D EGL_emulation: eglMakeCurrent: 0x7d6f33658e20: ver 3 0 (tinfo 0x7d6f337156c0)
+10-18 08:02:50.662  1709  9575 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2912256
+10-18 08:02:50.663  1709  9575 I chatty  : uid=1000(system) HwBinder:1709_3 identical 1 line
+10-18 08:02:50.663  1709  9575 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2912256
+10-18 08:02:50.674  8753  8856 D EGL_emulation: eglMakeCurrent: 0x7d6f33634a20: ver 3 0 (tinfo 0x7d6f33618b40)
+10-18 08:02:50.725  8753  8856 I chatty  : uid=10146(com.tradereview.app) RenderThread identical 1 line
+10-18 08:02:50.753  8753  8856 D EGL_emulation: eglMakeCurrent: 0x7d6f33634a20: ver 3 0 (tinfo 0x7d6f33618b40)
+10-18 08:02:50.860  8753  8753 I AssistStructure: Flattened final assist data: 1052 bytes, containing 2 windows, 7 views
+10-18 08:02:50.879  5718  5718 W ktk     : Pending fill request while another request in the same session was triggered. [CONTEXT service_id=177 ]
+10-18 08:02:50.915  8753  8753 D Autofill Status: Autofill popup isn't shown because autofill is not available.
+10-18 08:02:50.915  8753  8753 D Autofill Status:
+10-18 08:02:50.915  8753  8753 D Autofill Status: Did you set up autofill?
+10-18 08:02:50.915  8753  8753 D Autofill Status: 1. Go to Settings > System > Languages&input > Advanced > Autofill Service
+10-18 08:02:50.915  8753  8753 D Autofill Status: 2. Pick a service
+10-18 08:02:50.915  8753  8753 D Autofill Status:
+10-18 08:02:50.915  8753  8753 D Autofill Status: Did you add an account?
+10-18 08:02:50.915  8753  8753 D Autofill Status: 1. Go to Settings > System > Languages&input > Advanced
+10-18 08:02:50.915  8753  8753 D Autofill Status: 2. Click on the settings icon next to the Autofill Service
+10-18 08:02:50.915  8753  8753 D Autofill Status: 3. Add your account
+10-18 08:02:50.940  5636  5636 I KeyboardViewUtil: systemKeyboardHeightRatio:1.000000; userKeyboardHeightRatio:1.000000.
+10-18 08:02:50.941  5636  5636 I AndroidIME: PasswordIme.onActivate() : EditorInfo = Package = com.tradereview.app : Type = Text : Learning = Enable : Suggestion = Show : AutoCorrection = Enable : Microphone = Show : NoPersonalizedLearning = Disable
+10-18 08:02:50.944  5636  5636 I Conv2QueryExtension: Current locale: en_US, config allows these locales: de,en,es,fr,it,ms,pt,ta
+10-18 08:02:50.944  5636  5636 I Conv2QueryExtension: Conv2Query not enabled due to current app [com.tradereview.app] not in whitelist
+10-18 08:02:50.945  5636  5636 I Conv2QueryExtension: onActivate() : Disabled by unsupported host app
+10-18 08:02:50.955  1709  9575 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2789376
+10-18 08:02:50.965  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2789376
+10-18 08:02:50.965  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2789376
+10-18 08:02:50.979  5636  8867 D EGL_emulation: eglMakeCurrent: 0x7d6f33658e20: ver 3 0 (tinfo 0x7d6f337156c0)
+10-18 08:02:51.114  5365  5382 I ndroid.systemu: NativeAlloc concurrent copying GC freed 70015(3404KB) AllocSpace objects, 27(540KB) LOS objects, 44% free, 7523KB/13MB, paused 609us total 157.031ms
+10-18 08:02:51.573  8753  8753 I AssistStructure: Flattened final assist data: 1068 bytes, containing 2 windows, 7 views
+10-18 08:02:51.579  5718  5718 W ktk     : Pending fill request while another request in the same session was triggered. [CONTEXT service_id=177 ]
+10-18 08:02:51.595  5636  5636 I AndroidIME: PasswordIme.onDeactivate()
+10-18 08:02:51.595  5636  5636 I AndroidIME: DummyIme.onActivate() : EditorInfo = Package = com.tradereview.app : Type = Number : Learning = Disable : Suggestion = Hide : AutoCorrection = Disable : Microphone = Hide : NoPersonalizedLearning = Disable
+10-18 08:02:51.597  8753  8753 D Autofill Status: Autofill popup isn't shown because autofill is not available.
+10-18 08:02:51.597  8753  8753 D Autofill Status:
+10-18 08:02:51.597  8753  8753 D Autofill Status: Did you set up autofill?
+10-18 08:02:51.597  8753  8753 D Autofill Status: 1. Go to Settings > System > Languages&input > Advanced > Autofill Service
+10-18 08:02:51.597  8753  8753 D Autofill Status: 2. Pick a service
+10-18 08:02:51.597  8753  8753 D Autofill Status:
+10-18 08:02:51.597  8753  8753 D Autofill Status: Did you add an account?
+10-18 08:02:51.597  8753  8753 D Autofill Status: 1. Go to Settings > System > Languages&input > Advanced
+10-18 08:02:51.597  8753  8753 D Autofill Status: 2. Click on the settings icon next to the Autofill Service
+10-18 08:02:51.597  8753  8753 D Autofill Status: 3. Add your account
+10-18 08:02:51.603  5636  5636 I KeyboardViewUtil: systemKeyboardHeightRatio:1.000000; userKeyboardHeightRatio:1.000000.
+10-18 08:02:51.603  5636  5636 I AndroidIME: DummyIme.onDeactivate()
+10-18 08:02:51.603  5636  5636 I AndroidIME: DummyIme.onActivate() : EditorInfo = Package = com.tradereview.app : Type = Number : Learning = Disable : Suggestion = Hide : AutoCorrection = Disable : Microphone = Hide : NoPersonalizedLearning = Disable
+10-18 08:02:51.605  5636  5636 I Conv2QueryExtension: Current locale: en_US, config allows these locales: de,en,es,fr,it,ms,pt,ta
+10-18 08:02:51.605  5636  5636 I Conv2QueryExtension: Conv2Query not enabled due to current app [com.tradereview.app] not in whitelist
+10-18 08:02:51.605  5636  5636 I Conv2QueryExtension: onActivate() : Disabled by unsupported host app
+10-18 08:02:51.605  5636  5636 I CurrentMicStatusHolder: Current Mic status = {MicIconHidden-PasswordOrNumberOrDateInputType,}
+10-18 08:02:51.905  8753  8753 I AssistStructure: Flattened final assist data: 1072 bytes, containing 2 windows, 7 views
+10-18 08:02:51.912  5718  5718 W ktk     : Pending fill request while another request in the same session was triggered. [CONTEXT service_id=177 ]
+10-18 08:02:51.932  8753  8753 D Autofill Status: Autofill popup isn't shown because autofill is not available.
+10-18 08:02:51.932  8753  8753 D Autofill Status:
+10-18 08:02:51.932  8753  8753 D Autofill Status: Did you set up autofill?
+10-18 08:02:51.932  8753  8753 D Autofill Status: 1. Go to Settings > System > Languages&input > Advanced > Autofill Service
+10-18 08:02:51.932  8753  8753 D Autofill Status: 2. Pick a service
+10-18 08:02:51.932  8753  8753 D Autofill Status:
+10-18 08:02:51.932  8753  8753 D Autofill Status: Did you add an account?
+10-18 08:02:51.932  8753  8753 D Autofill Status: 1. Go to Settings > System > Languages&input > Advanced
+10-18 08:02:51.932  8753  8753 D Autofill Status: 2. Click on the settings icon next to the Autofill Service
+10-18 08:02:51.932  8753  8753 D Autofill Status: 3. Add your account
+10-18 08:02:51.936  5636  5636 I KeyboardViewUtil: systemKeyboardHeightRatio:1.000000; userKeyboardHeightRatio:1.000000.
+10-18 08:02:51.936  5636  5636 I AndroidIME: DummyIme.onDeactivate()
+10-18 08:02:51.936  5636  5636 I AndroidIME: DummyIme.onActivate() : EditorInfo = Package = com.tradereview.app : Type = Number : Learning = Disable : Suggestion = Hide : AutoCorrection = Disable : Microphone = Hide : NoPersonalizedLearning = Disable
+10-18 08:02:51.938  5636  5636 I Conv2QueryExtension: Current locale: en_US, config allows these locales: de,en,es,fr,it,ms,pt,ta
+10-18 08:02:51.938  5636  5636 I Conv2QueryExtension: Conv2Query not enabled due to current app [com.tradereview.app] not in whitelist
+10-18 08:02:51.938  5636  5636 I Conv2QueryExtension: onActivate() : Disabled by unsupported host app
+10-18 08:02:51.938  5636  5636 I CurrentMicStatusHolder: Current Mic status = {MicIconHidden-PasswordOrNumberOrDateInputType,}
+10-18 08:02:52.280  8753  8856 D EGL_emulation: eglMakeCurrent: 0x7d6f33634a20: ver 3 0 (tinfo 0x7d6f33618b40)
+10-18 08:02:52.293  5636  5636 I PhenotypeExpConfig: refreshConfiguration() : Force = false : UpdateAvailable = false : Age = 5 minutes : MaxAge = 720 minutes
+10-18 08:02:52.293  5636  5636 I AndroidIME: DummyIme.onDeactivate()
+10-18 08:02:52.312  5636  8867 D EGL_emulation: eglMakeCurrent: 0x7d6f33658e20: ver 3 0 (tinfo 0x7d6f337156c0)
+10-18 08:02:52.342  8753  8856 D EGL_emulation: eglMakeCurrent: 0x7d6f33634a20: ver 3 0 (tinfo 0x7d6f33618b40)
+10-18 08:02:53.658  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2912256
+10-18 08:02:53.717  6346 10066 W ExifInterface: Invalid image: ExifInterface got an unsupported image format file(ExifInterface supports JPEG and some RAW image formats only) or a corrupted JPEG file to ExifInterface.
+10-18 08:02:53.717  6346 10066 W ExifInterface: java.io.IOException: Invalid byte order: ffff8950
+10-18 08:02:53.717  6346 10066 W ExifInterface: 	at android.media.ExifInterface.readByteOrder(ExifInterface.java:3121)
+10-18 08:02:53.717  6346 10066 W ExifInterface: 	at android.media.ExifInterface.isOrfFormat(ExifInterface.java:2437)
+10-18 08:02:53.717  6346 10066 W ExifInterface: 	at android.media.ExifInterface.getMimeType(ExifInterface.java:2315)
+10-18 08:02:53.717  6346 10066 W ExifInterface: 	at android.media.ExifInterface.loadAttributes(ExifInterface.java:1753)
+10-18 08:02:53.717  6346 10066 W ExifInterface: 	at android.media.ExifInterface.<init>(ExifInterface.java:1447)
+10-18 08:02:53.717  6346 10066 W ExifInterface: 	at com.android.providers.media.scan.ModernMediaScanner.scanItemImage(ModernMediaScanner.java:729)
+10-18 08:02:53.717  6346 10066 W ExifInterface: 	at com.android.providers.media.scan.ModernMediaScanner.scanItem(ModernMediaScanner.java:502)
+10-18 08:02:53.717  6346 10066 W ExifInterface: 	at com.android.providers.media.scan.ModernMediaScanner.access$500(ModernMediaScanner.java:118)
+10-18 08:02:53.717  6346 10066 W ExifInterface: 	at com.android.providers.media.scan.ModernMediaScanner$Scan.visitFile(ModernMediaScanner.java:406)
+10-18 08:02:53.717  6346 10066 W ExifInterface: 	at com.android.providers.media.scan.ModernMediaScanner$Scan.visitFile(ModernMediaScanner.java:207)
+10-18 08:02:53.717  6346 10066 W ExifInterface: 	at java.nio.file.Files.walkFileTree(Files.java:2670)
+10-18 08:02:53.717  6346 10066 W ExifInterface: 	at java.nio.file.Files.walkFileTree(Files.java:2742)
+10-18 08:02:53.717  6346 10066 W ExifInterface: 	at com.android.providers.media.scan.ModernMediaScanner$Scan.walkFileTree(ModernMediaScanner.java:267)
+10-18 08:02:53.717  6346 10066 W ExifInterface: 	at com.android.providers.media.scan.ModernMediaScanner$Scan.run(ModernMediaScanner.java:245)
+10-18 08:02:53.717  6346 10066 W ExifInterface: 	at com.android.providers.media.scan.ModernMediaScanner.scanFile(ModernMediaScanner.java:174)
+10-18 08:02:53.717  6346 10066 W ExifInterface: 	at com.android.providers.media.MediaProvider.updateInternal(MediaProvider.java:5024)
+10-18 08:02:53.717  6346 10066 W ExifInterface: 	at com.android.providers.media.MediaProvider.update(MediaProvider.java:4486)
+10-18 08:02:53.717  6346 10066 W ExifInterface: 	at android.content.ContentProvider$Transport.update(ContentProvider.java:420)
+10-18 08:02:53.717  6346 10066 W ExifInterface: 	at android.content.ContentProviderNative.onTransact(ContentProviderNative.java:215)
+10-18 08:02:53.717  6346 10066 W ExifInterface: 	at android.os.Binder.execTransactInternal(Binder.java:1021)
+10-18 08:02:53.717  6346 10066 W ExifInterface: 	at android.os.Binder.execTransact(Binder.java:994)
+10-18 08:02:53.720  8753  8773 I TestRunner: Consistency complete: save five real-form executions
+10-18 08:02:53.720  8753  8773 I TestRunner: Consistency begin: correct linked strategy and recreate editor
+10-18 08:02:54.108  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2523136
+10-18 08:02:54.110  1709  1709 I chatty  : uid=1000(system) allocator@2.0-s identical 1 line
+10-18 08:02:54.110  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2523136
+10-18 08:02:54.112  8753  8856 D EGL_emulation: eglMakeCurrent: 0x7d6f33634a20: ver 3 0 (tinfo 0x7d6f33618b40)
+10-18 08:02:54.160  8753  8856 D EGL_emulation: eglMakeCurrent: 0x7d6f33634a20: ver 3 0 (tinfo 0x7d6f33618b40)
+10-18 08:02:54.181  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2555904
+10-18 08:02:54.189  8753  8856 D EGL_emulation: eglMakeCurrent: 0x7d6f33634a20: ver 3 0 (tinfo 0x7d6f33618b40)
+10-18 08:02:54.194  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2555904
+10-18 08:02:54.287  8753  8753 I AssistStructure: Flattened final assist data: 936 bytes, containing 2 windows, 6 views
+10-18 08:02:54.291  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2555904
+10-18 08:02:54.295  5718  5718 W ktk     : Pending fill request while another request in the same session was triggered. [CONTEXT service_id=177 ]
+10-18 08:02:54.363  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 49152
+10-18 08:02:54.370  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 49152
+10-18 08:02:54.372  8753  8856 D EGL_emulation: eglMakeCurrent: 0x7d6f33634a20: ver 3 0 (tinfo 0x7d6f33618b40)
+10-18 08:02:54.374  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 49152
+10-18 08:02:54.377  8753  8753 D Autofill Status: Autofill popup isn't shown because autofill is not available.
+10-18 08:02:54.377  8753  8753 D Autofill Status:
+10-18 08:02:54.377  8753  8753 D Autofill Status: Did you set up autofill?
+10-18 08:02:54.377  8753  8753 D Autofill Status: 1. Go to Settings > System > Languages&input > Advanced > Autofill Service
+10-18 08:02:54.377  8753  8753 D Autofill Status: 2. Pick a service
+10-18 08:02:54.377  8753  8753 D Autofill Status:
+10-18 08:02:54.377  8753  8753 D Autofill Status: Did you add an account?
+10-18 08:02:54.377  8753  8753 D Autofill Status: 1. Go to Settings > System > Languages&input > Advanced
+10-18 08:02:54.377  8753  8753 D Autofill Status: 2. Click on the settings icon next to the Autofill Service
+10-18 08:02:54.377  8753  8753 D Autofill Status: 3. Add your account
+10-18 08:02:54.409  5636  5636 I KeyboardViewUtil: systemKeyboardHeightRatio:1.000000; userKeyboardHeightRatio:1.000000.
+10-18 08:02:54.410  5636  5636 I AndroidIME: LatinIme.onActivate() : EditorInfo = Package = com.tradereview.app : Type = Text : Learning = Enable : Suggestion = Show : AutoCorrection = Enable : Microphone = Show : NoPersonalizedLearning = Disable
+10-18 08:02:54.413  5636  6261 I native  : crank.cc:69 Overriding decoder candidates by Crank
+10-18 08:02:54.414  5636  5636 I KeyboardViewHelper: Get view with height ratio:1.000000; experiment height ratio:1.000000.
+10-18 08:02:54.437  5636  5636 I Conv2QueryExtension: Current locale: en_US, config allows these locales: de,en,es,fr,it,ms,pt,ta
+10-18 08:02:54.437  5636  5636 I Conv2QueryExtension: Conv2Query not enabled due to current app [com.tradereview.app] not in whitelist
+10-18 08:02:54.437  5636  5636 I Conv2QueryExtension: onActivate() : Disabled by unsupported host app
+10-18 08:02:54.468  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2789376
+10-18 08:02:54.470  1709  1709 I chatty  : uid=1000(system) allocator@2.0-s identical 1 line
+10-18 08:02:54.476  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2789376
+10-18 08:02:54.482  5636  8867 D EGL_emulation: eglMakeCurrent: 0x7d6f33658e20: ver 3 0 (tinfo 0x7d6f337156c0)
+10-18 08:02:54.507  8753  8856 D EGL_emulation: eglMakeCurrent: 0x7d6f33634a20: ver 3 0 (tinfo 0x7d6f33618b40)
+10-18 08:02:54.628  8753  8856 D EGL_emulation: eglMakeCurrent: 0x7d6f33634a20: ver 3 0 (tinfo 0x7d6f33618b40)
+10-18 08:02:54.740  8753  8753 I AssistStructure: Flattened final assist data: 940 bytes, containing 2 windows, 6 views
+10-18 08:02:54.745  5718  5718 W ktk     : Pending fill request while another request in the same session was triggered. [CONTEXT service_id=177 ]
+10-18 08:02:54.807  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 49152
+10-18 08:02:54.808  1709  1709 I chatty  : uid=1000(system) allocator@2.0-s identical 1 line
+10-18 08:02:54.808  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 49152
+10-18 08:02:54.817  8753  8856 D EGL_emulation: eglMakeCurrent: 0x7d6f33634a20: ver 3 0 (tinfo 0x7d6f33618b40)
+10-18 08:02:54.879  5636  5636 I KeyboardViewUtil: systemKeyboardHeightRatio:1.000000; userKeyboardHeightRatio:1.000000.
+10-18 08:02:54.880  5636  5636 I AndroidIME: LatinIme.onDeactivate()
+10-18 08:02:54.881  5636  5636 I AndroidIME: LatinIme.onActivate() : EditorInfo = Package = com.tradereview.app : Type = Text : Learning = Enable : Suggestion = Show : AutoCorrection = Enable : Microphone = Show : NoPersonalizedLearning = Disable
+10-18 08:02:54.883  5636  6261 I native  : input-context-store.cc:123 Ignoring stale client request for FetchSuggestions
+10-18 08:02:54.887  5636  6261 I native  : crank.cc:69 Overriding decoder candidates by Crank
+10-18 08:02:54.887  5636  6261 I native  : input-context-store.cc:123 Ignoring stale client request for OverrideDecodedCandidates
+10-18 08:02:54.889  5636  5636 I Conv2QueryExtension: Current locale: en_US, config allows these locales: de,en,es,fr,it,ms,pt,ta
+10-18 08:02:54.889  5636  6261 I native  : crank.cc:69 Overriding decoder candidates by Crank
+10-18 08:02:54.889  5636  5636 I Conv2QueryExtension: Conv2Query not enabled due to current app [com.tradereview.app] not in whitelist
+10-18 08:02:54.889  5636  5636 I Conv2QueryExtension: onActivate() : Disabled by unsupported host app
+10-18 08:02:55.004  8753  8856 D EGL_emulation: eglMakeCurrent: 0x7d6f33634a20: ver 3 0 (tinfo 0x7d6f33618b40)
+10-18 08:02:55.045  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 3444736
+10-18 08:02:55.062  8753  8856 D EGL_emulation: eglMakeCurrent: 0x7d6f33634a20: ver 3 0 (tinfo 0x7d6f33618b40)
+10-18 08:02:55.086  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 3444736
+10-18 08:02:55.089  8753  8753 D LifecycleMonitor: Lifecycle status change: com.tradereview.app.MainActivity@9f9fb5b in: PAUSED
+10-18 08:02:55.089  8753  8753 V ActivityScenario: Update currentActivityStage to PAUSED, currentActivity=com.tradereview.app.MainActivity@9f9fb5b
+10-18 08:02:55.090  8753  8856 D EGL_emulation: eglMakeCurrent: 0x7d6f33634a20: ver 3 0 (tinfo 0x7d6f33618b40)
+10-18 08:02:55.092  8753  8753 D LifecycleMonitor: Lifecycle status change: com.tradereview.app.MainActivity@9f9fb5b in: STOPPED
+10-18 08:02:55.092  8753  8753 V ActivityScenario: Update currentActivityStage to STOPPED, currentActivity=com.tradereview.app.MainActivity@9f9fb5b
+10-18 08:02:55.110  8753  8753 D LifecycleMonitor: Lifecycle status change: com.tradereview.app.MainActivity@9f9fb5b in: DESTROYED
+10-18 08:02:55.110  8753  8753 V ActivityScenario: Update currentActivityStage to DESTROYED, currentActivity=null
+10-18 08:02:55.125  8753  8753 D LifecycleMonitor: Lifecycle status change: com.tradereview.app.MainActivity@f56d6b2 in: PRE_ON_CREATE
+10-18 08:02:55.125  8753  8753 V ActivityScenario: Activity lifecycle changed event received but ignored because the reported transition was not ON_CREATE while the last known transition was DESTROYED
+10-18 08:02:55.136  8753  8753 D LifecycleMonitor: Lifecycle status change: com.tradereview.app.MainActivity@f56d6b2 in: CREATED
+10-18 08:02:55.136  8753  8753 V ActivityScenario: Update currentActivityStage to CREATED, currentActivity=com.tradereview.app.MainActivity@f56d6b2
+10-18 08:02:55.140  8753  8753 D LifecycleMonitor: Lifecycle status change: com.tradereview.app.MainActivity@f56d6b2 in: STARTED
+10-18 08:02:55.140  8753  8753 V ActivityScenario: Update currentActivityStage to STARTED, currentActivity=com.tradereview.app.MainActivity@f56d6b2
+10-18 08:02:55.140  8753  8753 D LifecycleMonitor: Lifecycle status change: com.tradereview.app.MainActivity@f56d6b2 in: RESUMED
+10-18 08:02:55.141  8753  8753 V ActivityScenario: Update currentActivityStage to RESUMED, currentActivity=com.tradereview.app.MainActivity@f56d6b2
+10-18 08:02:55.157  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2912256
+10-18 08:02:55.158  1709  1709 I chatty  : uid=1000(system) allocator@2.0-s identical 1 line
+10-18 08:02:55.158  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2912256
+10-18 08:02:55.159  8753  8856 D EGL_emulation: eglMakeCurrent: 0x7d6f33634a20: ver 3 0 (tinfo 0x7d6f33618b40)
+10-18 08:02:55.180  5636  5636 I PhenotypeExpConfig: refreshConfiguration() : Force = false : UpdateAvailable = false : Age = 5 minutes : MaxAge = 720 minutes
+10-18 08:02:55.189  5636  5636 I AndroidIME: LatinIme.onDeactivate()
+10-18 08:02:55.194  8753  8753 W IInputConnectionWrapper: beginBatchEdit on inactive InputConnection
+10-18 08:02:55.194  8753  8753 W IInputConnectionWrapper: endBatchEdit on inactive InputConnection
+10-18 08:02:55.249  5636  8867 D EGL_emulation: eglMakeCurrent: 0x7d6f33658e20: ver 3 0 (tinfo 0x7d6f337156c0)
+10-18 08:02:55.257  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 3444736
+10-18 08:02:55.261  1709  1709 I chatty  : uid=1000(system) allocator@2.0-s identical 1 line
+10-18 08:02:55.261  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 3444736
+10-18 08:02:55.264  8753  8856 D EGL_emulation: eglMakeCurrent: 0x7d6f33634a20: ver 3 0 (tinfo 0x7d6f33618b40)
+10-18 08:02:55.377  8753  8856 I chatty  : uid=10146(com.tradereview.app) RenderThread identical 3 lines
+10-18 08:02:55.390  8753  8856 D EGL_emulation: eglMakeCurrent: 0x7d6f33634a20: ver 3 0 (tinfo 0x7d6f33618b40)
+10-18 08:02:55.450  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2912256
+10-18 08:02:55.464  5224  6126 W InputReader: Device has associated, but no associated display id.
+10-18 08:02:55.465  5224  6126 I chatty  : uid=1000(system) Binder:5224_D identical 8 lines
+10-18 08:02:55.465  5224  6126 W InputReader: Device has associated, but no associated display id.
+10-18 08:02:55.503  5636 10192 I DlamWrapper: close(): Successfully wrote DLAM properties file.
+10-18 08:02:55.504  5224  5261 I InputManager-JNI: Viewport [0] to add: local:0
+10-18 08:02:55.510  5224  5324 I InputReader: Reconfiguring input devices.  changes=0x00000004
+10-18 08:02:55.510  5224  5324 I InputReader: Touch device 'virtio_input_multi_touch_10' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+10-18 08:02:55.510  5224  5324 I InputReader: Touch device 'virtio_input_multi_touch_7' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+10-18 08:02:55.510  5224  5324 I InputReader: Touch device 'virtio_input_multi_touch_4' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+10-18 08:02:55.510  5224  5324 I InputReader: Touch device 'virtio_input_multi_touch_8' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+10-18 08:02:55.510  5224  5324 I InputReader: Touch device 'virtio_input_multi_touch_9' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+10-18 08:02:55.510  5224  5324 I InputReader: Device reconfigured: id=9, name='virtio_input_multi_touch_1', size 681x1136, orientation 1, mode 1, display id 0
+10-18 08:02:55.510  5224  5324 I InputReader: Touch device 'virtio_input_multi_touch_11' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+10-18 08:02:55.510  5224  5324 I InputReader: Touch device 'virtio_input_multi_touch_5' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+10-18 08:02:55.510  5224  5324 I InputReader: Touch device 'virtio_input_multi_touch_2' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+10-18 08:02:55.510  5224  5324 I InputReader: Touch device 'virtio_input_multi_touch_6' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+10-18 08:02:55.510  5224  5324 I InputReader: Touch device 'virtio_input_multi_touch_3' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+10-18 08:02:55.519  5365  5365 D StatusBar: disable<e i a s b h r c s > disable2<q i n >
+10-18 08:02:55.524  5636  5636 I KeyboardViewUtil: systemKeyboardHeightRatio:1.000000; userKeyboardHeightRatio:1.000000.
+10-18 08:02:55.526  8753  8753 D LifecycleMonitor: Lifecycle status change: com.tradereview.app.MainActivity@f56d6b2 in: PAUSED
+10-18 08:02:55.526  8753  8753 V ActivityScenario: Update currentActivityStage to PAUSED, currentActivity=com.tradereview.app.MainActivity@f56d6b2
+10-18 08:02:55.526  8753  8856 D EGL_emulation: eglMakeCurrent: 0x7d6f33634a20: ver 3 0 (tinfo 0x7d6f33618b40)
+10-18 08:02:55.527  8753  8753 D LifecycleMonitor: Lifecycle status change: com.tradereview.app.MainActivity@f56d6b2 in: STOPPED
+10-18 08:02:55.527  8753  8753 V ActivityScenario: Update currentActivityStage to STOPPED, currentActivity=com.tradereview.app.MainActivity@f56d6b2
+10-18 08:02:55.530  5636  5636 I DeviceStatusMonitor: onReceive() : Action = android.intent.action.CONFIGURATION_CHANGED
+10-18 08:02:55.530  5636  5636 I ConfigNotification: Get device mode by ui mode:1 and smallestScreenWidthDp:320
+10-18 08:02:55.530  5636  5636 I ConfigNotification: Get device mode by ui mode:1 and smallestScreenWidthDp:320
+10-18 08:02:55.541  8753  8753 D LifecycleMonitor: Lifecycle status change: com.tradereview.app.MainActivity@f56d6b2 in: DESTROYED
+10-18 08:02:55.541  8753  8753 V ActivityScenario: Update currentActivityStage to DESTROYED, currentActivity=null
+10-18 08:02:55.548  8753  8753 D LifecycleMonitor: Lifecycle status change: com.tradereview.app.MainActivity@f728311 in: PRE_ON_CREATE
+10-18 08:02:55.548  8753  8753 V ActivityScenario: Activity lifecycle changed event received but ignored because the reported transition was not ON_CREATE while the last known transition was DESTROYED
+10-18 08:02:55.555  8753  8753 D LifecycleMonitor: Lifecycle status change: com.tradereview.app.MainActivity@f728311 in: CREATED
+10-18 08:02:55.555  8753  8753 V ActivityScenario: Update currentActivityStage to CREATED, currentActivity=com.tradereview.app.MainActivity@f728311
+10-18 08:02:55.556  8753  8753 D LifecycleMonitor: Lifecycle status change: com.tradereview.app.MainActivity@f728311 in: STARTED
+10-18 08:02:55.556  8753  8753 V ActivityScenario: Update currentActivityStage to STARTED, currentActivity=com.tradereview.app.MainActivity@f728311
+10-18 08:02:55.556  8753  8753 D LifecycleMonitor: Lifecycle status change: com.tradereview.app.MainActivity@f728311 in: RESUMED
+10-18 08:02:55.556  8753  8753 V ActivityScenario: Update currentActivityStage to RESUMED, currentActivity=com.tradereview.app.MainActivity@f728311
+10-18 08:02:55.576  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2912256
+10-18 08:02:55.577  1709  1709 I chatty  : uid=1000(system) allocator@2.0-s identical 1 line
+10-18 08:02:55.578  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2912256
+10-18 08:02:55.578  8753  8856 D EGL_emulation: eglMakeCurrent: 0x7d6f33634a20: ver 3 0 (tinfo 0x7d6f33618b40)
+10-18 08:02:55.602  5365  5540 D EGL_emulation: eglMakeCurrent: 0x7d6f33663860: ver 3 0 (tinfo 0x7d6f33618fe0)
+10-18 08:02:55.605  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 249856
+10-18 08:02:55.607  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 16384
+10-18 08:02:55.608  5365  5745 D HostConnection: HostConnection::get() New Host Connection established 0x7d6ee1e4bce0, tid 5745
+10-18 08:02:55.611  5365  5745 D HostConnection: HostComposition ext ANDROID_EMU_CHECKSUM_HELPER_v1 ANDROID_EMU_native_sync_v2 ANDROID_EMU_dma_v1 ANDROID_EMU_direct_mem ANDROID_EMU_host_composition_v1 ANDROID_EMU_host_composition_v2 ANDROID_EMU_YUV_Cache ANDROID_EMU_sync_buffer_data ANDROID_EMU_hwc_color_transform GL_OES_EGL_image_external_essl3 GL_OES_vertex_array_object GL_KHR_texture_compression_astc_ldr ANDROID_EMU_host_side_tracing ANDROID_EMU_gles_max_version_3_0
+10-18 08:02:55.612  5365  5745 D EGL_emulation: eglCreateContext: 0x7d6ee1e4bd80: maj 3 min 0 rcv 3
+10-18 08:02:55.614  5365  5745 D EGL_emulation: eglMakeCurrent: 0x7d6ee1e4bd80: ver 3 0 (tinfo 0x7d6ee1f16c20)
+10-18 08:02:55.632  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 16384
+10-18 08:02:55.637  1709  1709 I chatty  : uid=1000(system) allocator@2.0-s identical 1 line
+10-18 08:02:55.639  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 16384
+10-18 08:02:55.640  5365  5540 D EGL_emulation: eglMakeCurrent: 0x7d6f33663860: ver 3 0 (tinfo 0x7d6f33618fe0)
+10-18 08:02:55.641  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2215936
+10-18 08:02:55.642  1709  9575 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2215936
+10-18 08:02:55.643  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2215936
+10-18 08:02:55.643  8753  8856 D EGL_emulation: eglMakeCurrent: 0x7d6f33634a20: ver 3 0 (tinfo 0x7d6f33618b40)
+10-18 08:02:55.645  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 249856
+10-18 08:02:55.658  8753  8856 D EGL_emulation: eglMakeCurrent: 0x7d6f33634a20: ver 3 0 (tinfo 0x7d6f33618b40)
+10-18 08:02:55.662  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 221184
+10-18 08:02:55.678  5365  5540 D EGL_emulation: eglMakeCurrent: 0x7d6f33663860: ver 3 0 (tinfo 0x7d6f33618fe0)
+10-18 08:02:55.681  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 221184
+10-18 08:02:55.692  8753  8856 D EGL_emulation: eglMakeCurrent: 0x7d6f33634a20: ver 3 0 (tinfo 0x7d6f33618b40)
+10-18 08:02:55.698  5365  5365 I OpaEnabledReceiver: Dispatching OPA eligble = false; AGSA = true; OPA enabled = false
+10-18 08:02:55.698  5365  5365 I OpaLayout: Setting opa enabled to false
+10-18 08:02:55.698  5365  5365 I OpaLayout: Setting opa enabled to false
+10-18 08:02:55.713  5365  5540 D EGL_emulation: eglMakeCurrent: 0x7d6f33663860: ver 3 0 (tinfo 0x7d6f33618fe0)
+10-18 08:02:55.715  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 249856
+10-18 08:02:55.720  5365  5540 D EGL_emulation: eglMakeCurrent: 0x7d6f33663860: ver 3 0 (tinfo 0x7d6f33618fe0)
+10-18 08:02:55.725  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 221184
+10-18 08:02:55.762  5365  5540 D EGL_emulation: eglMakeCurrent: 0x7d6f33663860: ver 3 0 (tinfo 0x7d6f33618fe0)
+10-18 08:02:55.848  8753  8753 I AssistStructure: Flattened final assist data: 1192 bytes, containing 2 windows, 6 views
+10-18 08:02:55.875  5718  5718 W ktk     : Pending fill request while another request in the same session was triggered. [CONTEXT service_id=177 ]
+10-18 08:02:55.940  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 49152
+10-18 08:02:55.941  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 49152
+10-18 08:02:55.943  8753  8856 D EGL_emulation: eglMakeCurrent: 0x7d6f33634a20: ver 3 0 (tinfo 0x7d6f33618b40)
+10-18 08:02:55.943  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 49152
+10-18 08:02:55.953  8753  8753 D Autofill Status: Autofill popup isn't shown because autofill is not available.
+10-18 08:02:55.953  8753  8753 D Autofill Status:
+10-18 08:02:55.953  8753  8753 D Autofill Status: Did you set up autofill?
+10-18 08:02:55.953  8753  8753 D Autofill Status: 1. Go to Settings > System > Languages&input > Advanced > Autofill Service
+10-18 08:02:55.953  8753  8753 D Autofill Status: 2. Pick a service
+10-18 08:02:55.953  8753  8753 D Autofill Status:
+10-18 08:02:55.953  8753  8753 D Autofill Status: Did you add an account?
+10-18 08:02:55.953  8753  8753 D Autofill Status: 1. Go to Settings > System > Languages&input > Advanced
+10-18 08:02:55.953  8753  8753 D Autofill Status: 2. Click on the settings icon next to the Autofill Service
+10-18 08:02:55.953  8753  8753 D Autofill Status: 3. Add your account
+10-18 08:02:55.973  5636  5636 I KeyboardViewUtil: systemKeyboardHeightRatio:1.000000; userKeyboardHeightRatio:1.000000.
+10-18 08:02:55.974  5636  5636 I LatinIme: initialize() : Language = en-US
+10-18 08:02:55.977  5636  5636 I Delight5Facilitator: initializeForIme() : Locale = [en_US]
+10-18 08:02:55.977  5636  5636 I AndroidIME: LatinIme.onActivate() : EditorInfo = Package = com.tradereview.app : Type = Text : Learning = Enable : Suggestion = Show : AutoCorrection = Enable : Microphone = Show : NoPersonalizedLearning = Disable
+10-18 08:02:55.982  5636  6261 I native  : crank.cc:69 Overriding decoder candidates by Crank
+10-18 08:02:56.021  5636  5636 I KeyboardViewHelper: Get view with height ratio:1.000000; experiment height ratio:1.000000.
+10-18 08:02:56.045  5636  5636 I EmojiSearchExtension: Created (instance count = 7)
+10-18 08:02:56.050  5636  5636 I Conv2QueryExtension: Current locale: en_US, config allows these locales: de,en,es,fr,it,ms,pt,ta
+10-18 08:02:56.050  5636  5636 I Conv2QueryExtension: Conv2Query not enabled due to current app [com.tradereview.app] not in whitelist
+10-18 08:02:56.050  5636  5636 I Conv2QueryExtension: onActivate() : Disabled by unsupported host app
+10-18 08:02:56.053  5636 10179 I KeyboardGroupDefParser: parseKeyboardGroupDef() 2131296524 -> extension_emoji_search_keyboards : WaitTime = 4 ms : RunTime = 4 ms
+10-18 08:02:56.053  5636 10180 I KeyboardGroupDefParser: parseKeyboardGroupDef() 2131296522 -> extension_emoji_search_extension_view : WaitTime = 4 ms : RunTime = 4 ms
+10-18 08:02:56.088  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2465792
+10-18 08:02:56.093  1709  1709 I chatty  : uid=1000(system) allocator@2.0-s identical 1 line
+10-18 08:02:56.097  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2465792
+10-18 08:02:56.100  5636  8867 D EGL_emulation: eglMakeCurrent: 0x7d6f33658e20: ver 3 0 (tinfo 0x7d6f337156c0)
+10-18 08:02:56.148  8753  8856 D EGL_emulation: eglMakeCurrent: 0x7d6f33634a20: ver 3 0 (tinfo 0x7d6f33618b40)
+10-18 08:02:56.180  5636  8867 D EGL_emulation: eglMakeCurrent: 0x7d6f33658e20: ver 3 0 (tinfo 0x7d6f337156c0)
+10-18 08:02:56.183  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2465792
+10-18 08:02:56.202  5636  8867 D EGL_emulation: eglMakeCurrent: 0x7d6f33658e20: ver 3 0 (tinfo 0x7d6f337156c0)
+10-18 08:02:56.239  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2465792
+10-18 08:02:56.256  5636  8867 D EGL_emulation: eglMakeCurrent: 0x7d6f33658e20: ver 3 0 (tinfo 0x7d6f337156c0)
+10-18 08:02:56.257  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2465792
+10-18 08:02:56.261  5636  8867 D EGL_emulation: eglMakeCurrent: 0x7d6f33658e20: ver 3 0 (tinfo 0x7d6f337156c0)
+10-18 08:02:56.279  1709  9575 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2465792
+10-18 08:02:56.288  8753  8856 D EGL_emulation: eglMakeCurrent: 0x7d6f33634a20: ver 3 0 (tinfo 0x7d6f33618b40)
+10-18 08:02:56.327  8753  8765 I tradereview.ap: Background young concurrent copying GC freed 123023(4549KB) AllocSpace objects, 0(0B) LOS objects, 20% free, 16MB/20MB, paused 580us total 315.967ms
+10-18 08:02:56.329  5636 10069 I putmethod.lati: IncrementDisableThreadFlip blocked for 8.507ms
+10-18 08:02:56.354  5636  5655 I putmethod.lati: Background young concurrent copying GC freed 63190(2170KB) AllocSpace objects, 2(104KB) LOS objects, 0% free, 14MB/14MB, paused 7.328ms total 230.059ms
+10-18 08:02:56.396  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2912256
+10-18 08:02:56.475  6346 10066 W ExifInterface: Invalid image: ExifInterface got an unsupported image format file(ExifInterface supports JPEG and some RAW image formats only) or a corrupted JPEG file to ExifInterface.
+10-18 08:02:56.475  6346 10066 W ExifInterface: java.io.IOException: Invalid byte order: ffff8950
+10-18 08:02:56.475  6346 10066 W ExifInterface: 	at android.media.ExifInterface.readByteOrder(ExifInterface.java:3121)
+10-18 08:02:56.475  6346 10066 W ExifInterface: 	at android.media.ExifInterface.isOrfFormat(ExifInterface.java:2437)
+10-18 08:02:56.475  6346 10066 W ExifInterface: 	at android.media.ExifInterface.getMimeType(ExifInterface.java:2315)
+10-18 08:02:56.475  6346 10066 W ExifInterface: 	at android.media.ExifInterface.loadAttributes(ExifInterface.java:1753)
+10-18 08:02:56.475  6346 10066 W ExifInterface: 	at android.media.ExifInterface.<init>(ExifInterface.java:1447)
+10-18 08:02:56.475  6346 10066 W ExifInterface: 	at com.android.providers.media.scan.ModernMediaScanner.scanItemImage(ModernMediaScanner.java:729)
+10-18 08:02:56.475  6346 10066 W ExifInterface: 	at com.android.providers.media.scan.ModernMediaScanner.scanItem(ModernMediaScanner.java:502)
+10-18 08:02:56.475  6346 10066 W ExifInterface: 	at com.android.providers.media.scan.ModernMediaScanner.access$500(ModernMediaScanner.java:118)
+10-18 08:02:56.475  6346 10066 W ExifInterface: 	at com.android.providers.media.scan.ModernMediaScanner$Scan.visitFile(ModernMediaScanner.java:406)
+10-18 08:02:56.475  6346 10066 W ExifInterface: 	at com.android.providers.media.scan.ModernMediaScanner$Scan.visitFile(ModernMediaScanner.java:207)
+10-18 08:02:56.475  6346 10066 W ExifInterface: 	at java.nio.file.Files.walkFileTree(Files.java:2670)
+10-18 08:02:56.475  6346 10066 W ExifInterface: 	at java.nio.file.Files.walkFileTree(Files.java:2742)
+10-18 08:02:56.475  6346 10066 W ExifInterface: 	at com.android.providers.media.scan.ModernMediaScanner$Scan.walkFileTree(ModernMediaScanner.java:267)
+10-18 08:02:56.475  6346 10066 W ExifInterface: 	at com.android.providers.media.scan.ModernMediaScanner$Scan.run(ModernMediaScanner.java:245)
+10-18 08:02:56.475  6346 10066 W ExifInterface: 	at com.android.providers.media.scan.ModernMediaScanner.scanFile(ModernMediaScanner.java:174)
+10-18 08:02:56.475  6346 10066 W ExifInterface: 	at com.android.providers.media.MediaProvider.updateInternal(MediaProvider.java:5024)
+10-18 08:02:56.475  6346 10066 W ExifInterface: 	at com.android.providers.media.MediaProvider.update(MediaProvider.java:4486)
+10-18 08:02:56.475  6346 10066 W ExifInterface: 	at android.content.ContentProvider$Transport.update(ContentProvider.java:420)
+10-18 08:02:56.475  6346 10066 W ExifInterface: 	at android.content.ContentProviderNative.onTransact(ContentProviderNative.java:215)
+10-18 08:02:56.475  6346 10066 W ExifInterface: 	at android.os.Binder.execTransactInternal(Binder.java:1021)
+10-18 08:02:56.475  6346 10066 W ExifInterface: 	at android.os.Binder.execTransact(Binder.java:994)
+10-18 08:02:56.543  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2465792
+10-18 08:02:56.572  5224  5262 E system_server: Invalid ID 0x00000000.
+10-18 08:02:56.574  8753  8753 D LifecycleMonitor: Lifecycle status change: com.tradereview.app.MainActivity@f728311 in: PAUSED
+10-18 08:02:56.574  8753  8753 V ActivityScenario: Update currentActivityStage to PAUSED, currentActivity=com.tradereview.app.MainActivity@f728311
+10-18 08:02:56.583  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2912256
+10-18 08:02:56.607  5224  7363 W InputReader: Device has associated, but no associated display id.
+10-18 08:02:56.607  5224  7363 I chatty  : uid=1000(system) Binder:5224_12 identical 8 lines
+10-18 08:02:56.607  5224  7363 W InputReader: Device has associated, but no associated display id.
+10-18 08:02:56.627  5636  5636 I KeyboardViewHelper: Get view with height ratio:1.000000; experiment height ratio:1.000000.
+10-18 08:02:56.639  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 1863680
+10-18 08:02:56.645  5224  7363 W InputReader: Device has associated, but no associated display id.
+10-18 08:02:56.646  5224  7363 I chatty  : uid=1000(system) Binder:5224_12 identical 28 lines
+10-18 08:02:56.646  5224  7363 W InputReader: Device has associated, but no associated display id.
+10-18 08:02:56.653  8782  8782 W ActivityThread: handleWindowVisibility: no activity for token android.os.BinderProxy@b0041ca
+10-18 08:02:56.663  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2912256
+10-18 08:02:56.664  5224  5261 I InputManager-JNI: Viewport [0] to add: local:0
+10-18 08:02:56.669  5224  5324 I InputReader: Reconfiguring input devices.  changes=0x00000004
+10-18 08:02:56.669  5224  5324 I InputReader: Touch device 'virtio_input_multi_touch_10' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+10-18 08:02:56.669  5224  5324 I InputReader: Touch device 'virtio_input_multi_touch_7' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+10-18 08:02:56.669  5224  5324 I InputReader: Touch device 'virtio_input_multi_touch_4' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+10-18 08:02:56.669  5224  5324 I InputReader: Touch device 'virtio_input_multi_touch_8' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+10-18 08:02:56.669  5224  5324 I InputReader: Touch device 'virtio_input_multi_touch_9' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+10-18 08:02:56.669  5224  5324 I InputReader: Device reconfigured: id=9, name='virtio_input_multi_touch_1', size 681x1136, orientation 0, mode 1, display id 0
+10-18 08:02:56.669  5224  5324 I InputReader: Touch device 'virtio_input_multi_touch_11' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+10-18 08:02:56.669  5224  5324 I InputReader: Touch device 'virtio_input_multi_touch_5' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+10-18 08:02:56.669  5224  5324 I InputReader: Touch device 'virtio_input_multi_touch_2' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+10-18 08:02:56.669  5224  5324 I InputReader: Touch device 'virtio_input_multi_touch_6' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+10-18 08:02:56.669  5224  5324 I InputReader: Touch device 'virtio_input_multi_touch_3' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+10-18 08:02:56.673  5636  5636 I AndroidIME: LatinIme.onDeactivate()
+10-18 08:02:56.678  5636 10106 I DlamWrapper: close(): Successfully wrote DLAM properties file.
+10-18 08:02:56.680  5365  5365 D StatusBar: disable<e i a s b h r c s > disable2<q i n >
+10-18 08:02:56.689  8753  8856 D EGL_emulation: eglMakeCurrent: 0x7d6f33634a20: ver 3 0 (tinfo 0x7d6f33618b40)
+10-18 08:02:56.692  5636  5636 I KeyboardViewUtil: systemKeyboardHeightRatio:1.000000; userKeyboardHeightRatio:1.000000.
+10-18 08:02:56.696  8753  8753 D LifecycleMonitor: Lifecycle status change: com.tradereview.app.MainActivity@f728311 in: STOPPED
+10-18 08:02:56.696  8753  8753 V ActivityScenario: Update currentActivityStage to STOPPED, currentActivity=com.tradereview.app.MainActivity@f728311
+10-18 08:02:56.706  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2912256
+10-18 08:02:56.728  5224  8903 D HostConnection: HostConnection::get() New Host Connection established 0x7d6ed35915e0, tid 8903
+10-18 08:02:56.729  5224  8903 D HostConnection: HostComposition ext ANDROID_EMU_CHECKSUM_HELPER_v1 ANDROID_EMU_native_sync_v2 ANDROID_EMU_dma_v1 ANDROID_EMU_direct_mem ANDROID_EMU_host_composition_v1 ANDROID_EMU_host_composition_v2 ANDROID_EMU_YUV_Cache ANDROID_EMU_sync_buffer_data ANDROID_EMU_hwc_color_transform GL_OES_EGL_image_external_essl3 GL_OES_vertex_array_object GL_KHR_texture_compression_astc_ldr ANDROID_EMU_host_side_tracing ANDROID_EMU_gles_max_version_3_0
+10-18 08:02:56.730  5224  8903 D EGL_emulation: eglCreateContext: 0x7d6ed3591ae0: maj 3 min 0 rcv 3
+10-18 08:02:56.731  5224  8903 D EGL_emulation: eglMakeCurrent: 0x7d6ed3591ae0: ver 3 0 (tinfo 0x7d6ee429ba20)
+10-18 08:02:56.749  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2912256
+10-18 08:02:56.757  1709  1709 I chatty  : uid=1000(system) allocator@2.0-s identical 1 line
+10-18 08:02:56.758  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2912256
+10-18 08:02:56.760  8782  8899 D EGL_emulation: eglMakeCurrent: 0x7d6f31ac8780: ver 3 0 (tinfo 0x7d6f31a57ac0)
+10-18 08:02:56.847  8753  8753 W IInputConnectionWrapper: getTextAfterCursor on inactive InputConnection
+10-18 08:02:56.849  5636  5636 I KeyboardViewUtil: systemKeyboardHeightRatio:1.000000; userKeyboardHeightRatio:1.000000.
+10-18 08:02:56.852  5636  5636 I LatinIme: initialize() : Language = en-US
+10-18 08:02:56.852  5636  5636 I Delight5Facilitator: initializeForIme() : Locale = [en_US]
+10-18 08:02:56.862  5636  5636 I AndroidIME: LatinIme.onActivate() : EditorInfo = Package = com.tradereview.app : Type = Text : Learning = Enable : Suggestion = Show : AutoCorrection = Enable : Microphone = Show : NoPersonalizedLearning = Disable
+10-18 08:02:56.876  5224  5266 I ActivityTaskManager: Displayed com.tradereview.app.test/androidx.test.core.app.InstrumentationActivityInvoker$EmptyActivity: +319ms
+10-18 08:02:56.879  5365  5540 D EGL_emulation: eglMakeCurrent: 0x7d6f33663860: ver 3 0 (tinfo 0x7d6f33618fe0)
+10-18 08:02:56.879  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 1863680
+10-18 08:02:56.881  5224  6117 W InputReader: Device has associated, but no associated display id.
+10-18 08:02:56.881  5224  6117 I chatty  : uid=1000(system) Binder:5224_B identical 8 lines
+10-18 08:02:56.881  5224  6117 W InputReader: Device has associated, but no associated display id.
+10-18 08:02:56.882  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 249856
+10-18 08:02:56.895  5224  7606 W InputReader: Device has associated, but no associated display id.
+10-18 08:02:56.895  5224  7606 I chatty  : uid=1000(system) Binder:5224_15 identical 8 lines
+10-18 08:02:56.895  5224  7606 W InputReader: Device has associated, but no associated display id.
+10-18 08:02:56.898  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 16384
+10-18 08:02:56.907  8782  8899 D EGL_emulation: eglMakeCurrent: 0x7d6f31ac8780: ver 3 0 (tinfo 0x7d6f31a57ac0)
+10-18 08:02:56.908  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 16384
+10-18 08:02:56.911  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 16384
+10-18 08:02:56.913  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2912256
+10-18 08:02:56.923  1709  9575 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 16384
+10-18 08:02:56.924  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2912256
+10-18 08:02:56.926  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2912256
+10-18 08:02:56.927  6076  6184 D EGL_emulation: eglMakeCurrent: 0xe7573f80: ver 3 0 (tinfo 0xc3e89960)
+10-18 08:02:56.938  8753  8753 D LifecycleMonitor: Lifecycle status change: com.tradereview.app.MainActivity@f728311 in: DESTROYED
+10-18 08:02:56.938  5365  5540 D EGL_emulation: eglMakeCurrent: 0x7d6f33663860: ver 3 0 (tinfo 0x7d6f33618fe0)
+10-18 08:02:56.938  8753  8753 V ActivityScenario: Update currentActivityStage to DESTROYED, currentActivity=null
+10-18 08:02:56.943  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 249856
+10-18 08:02:56.952  8753  8753 W IInputConnectionWrapper: beginBatchEdit on inactive InputConnection
+10-18 08:02:56.952  8753  8753 W IInputConnectionWrapper: endBatchEdit on inactive InputConnection
+10-18 08:02:56.953  8753  8773 D IdlingRegistry: Unregistering idling resources: [androidx.compose.ui.test.EspressoLink@53aba9d]
+10-18 08:02:56.957  5636  5636 I KeyboardViewHelper: Get view with height ratio:1.000000; experiment height ratio:1.000000.
+10-18 08:02:56.957  5365  5540 D EGL_emulation: eglMakeCurrent: 0x7d6f33663860: ver 3 0 (tinfo 0x7d6f33618fe0)
+10-18 08:02:56.961  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2912256
+10-18 08:02:56.963  1709  1709 I chatty  : uid=1000(system) allocator@2.0-s identical 1 line
+10-18 08:02:56.964  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2912256
+10-18 08:02:56.965  5511  6008 D EGL_emulation: eglMakeCurrent: 0x7d6ee7009140: ver 3 0 (tinfo 0x7d6ee709a2e0)
+10-18 08:02:56.998  5224  8539 W InputReader: Device has associated, but no associated display id.
+10-18 08:02:56.998  5224  8539 I chatty  : uid=1000(system) Binder:5224_1D identical 8 lines
+10-18 08:02:56.998  5224  8539 W InputReader: Device has associated, but no associated display id.
+10-18 08:02:57.002  5224  5261 W InputReader: Device has associated, but no associated display id.
+10-18 08:02:57.003  5224  5261 I chatty  : uid=1000(system) android.display identical 8 lines
+10-18 08:02:57.003  5224  5261 W InputReader: Device has associated, but no associated display id.
+10-18 08:02:57.005  5224  5235 I system_server: ThreadFlipBegin blocked for 11.600ms
+10-18 08:02:57.006  5224  7606 I system_server: IncrementDisableThreadFlip blocked for 12.813ms
+10-18 08:02:57.007  5224  8036 I system_server: IncrementDisableThreadFlip blocked for 10.026ms
+10-18 08:02:57.007  5224  5358 I system_server: IncrementDisableThreadFlip blocked for 12.883ms
+10-18 08:02:57.008  5224  5967 I system_server: IncrementDisableThreadFlip blocked for 7.567ms
+10-18 08:02:57.008  5224  6117 I system_server: IncrementDisableThreadFlip blocked for 14.595ms
+10-18 08:02:57.011  5224  8539 I system_server: IncrementDisableThreadFlip blocked for 7.983ms
+10-18 08:02:57.013  5511  6008 D EGL_emulation: eglMakeCurrent: 0x7d6ee7009140: ver 3 0 (tinfo 0x7d6ee709a2e0)
+10-18 08:02:57.015  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2912256
+10-18 08:02:57.018  5511  6008 D EGL_emulation: eglMakeCurrent: 0x7d6ee7009140: ver 3 0 (tinfo 0x7d6ee709a2e0)
+10-18 08:02:57.026  6076  6184 D EGL_emulation: eglMakeCurrent: 0xe7573f80: ver 3 0 (tinfo 0xc3e89960)
+10-18 08:02:57.026  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2912256
+10-18 08:02:57.028  5224  5925 I system_server: IncrementDisableThreadFlip blocked for 23.197ms
+10-18 08:02:57.029  5511  5535 D ConfigMonitor: Display size changed from Point(640, 1136) to Point(768, 1280)
+10-18 08:02:57.030  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2912256
+10-18 08:02:57.031  5636  5636 I EmojiSearchExtension: Created (instance count = 8)
+10-18 08:02:57.032  6076  6184 D EGL_emulation: eglMakeCurrent: 0xe7573f80: ver 3 0 (tinfo 0xc3e89960)
+10-18 08:02:57.034  5636 10179 I KeyboardGroupDefParser: parseKeyboardGroupDef() 2131296522 -> extension_emoji_search_extension_view : WaitTime = 3 ms : RunTime = 0 ms
+10-18 08:02:57.036  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2912256
+10-18 08:02:57.037  5636  5636 I Conv2QueryExtension: Current locale: en_US, config allows these locales: de,en,es,fr,it,ms,pt,ta
+10-18 08:02:57.037  5636  5636 I Conv2QueryExtension: Conv2Query not enabled due to current app [com.tradereview.app] not in whitelist
+10-18 08:02:57.037  5636  5636 I Conv2QueryExtension: onActivate() : Disabled by unsupported host app
+10-18 08:02:57.038  5636 10180 I KeyboardGroupDefParser: parseKeyboardGroupDef() 2131296524 -> extension_emoji_search_keyboards : WaitTime = 2 ms : RunTime = 0 ms
+10-18 08:02:57.090  5224  5358 W InputReader: Device has associated, but no associated display id.
+10-18 08:02:57.091  5224  5358 I chatty  : uid=1000(system) Binder:5224_4 identical 8 lines
+10-18 08:02:57.091  5224  5358 W InputReader: Device has associated, but no associated display id.
+10-18 08:02:57.095  5365  5365 I OpaEnabledReceiver: Dispatching OPA eligble = false; AGSA = true; OPA enabled = false
+10-18 08:02:57.097  5365  5365 I OpaLayout: Setting opa enabled to false
+10-18 08:02:57.097  5365  5365 I OpaLayout: Setting opa enabled to false
+10-18 08:02:57.099  5636  5636 I DeviceStatusMonitor: onReceive() : Action = android.intent.action.CONFIGURATION_CHANGED
+10-18 08:02:57.099  5636  5636 I ConfigNotification: Get device mode by ui mode:1 and smallestScreenWidthDp:320
+10-18 08:02:57.099  5636  5636 I ConfigNotification: Get device mode by ui mode:1 and smallestScreenWidthDp:320
+10-18 08:02:57.113  5224  5261 I InputManager-JNI: Viewport [0] to add: local:0
+10-18 08:02:57.117  5224  5324 I InputReader: Reconfiguring input devices.  changes=0x00000004
+10-18 08:02:57.117  5224  5324 I InputReader: Touch device 'virtio_input_multi_touch_10' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+10-18 08:02:57.117  5224  5324 I InputReader: Touch device 'virtio_input_multi_touch_7' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+10-18 08:02:57.117  5224  5324 I InputReader: Touch device 'virtio_input_multi_touch_4' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+10-18 08:02:57.117  5224  5324 I InputReader: Touch device 'virtio_input_multi_touch_8' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+10-18 08:02:57.117  5224  5324 I InputReader: Touch device 'virtio_input_multi_touch_9' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+10-18 08:02:57.118  5224  5324 I InputReader: Device reconfigured: id=9, name='virtio_input_multi_touch_1', size 768x1280, orientation 0, mode 1, display id 0
+10-18 08:02:57.118  5224  5324 I InputReader: Touch device 'virtio_input_multi_touch_11' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+10-18 08:02:57.118  5224  5324 I InputReader: Touch device 'virtio_input_multi_touch_5' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+10-18 08:02:57.118  5224  5324 I InputReader: Touch device 'virtio_input_multi_touch_2' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+10-18 08:02:57.118  5224  5324 I InputReader: Touch device 'virtio_input_multi_touch_6' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+10-18 08:02:57.118  5224  5324 I InputReader: Touch device 'virtio_input_multi_touch_3' could not query the properties of its associated display.  The device will be inoperable until the display size becomes available.
+10-18 08:02:57.118  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2912256
+10-18 08:02:57.146  6076  6076 W ThreadPoolDumper: Queue length for executor EventBus is now 11. Perhaps some tasks are too long, or the pool is too small.
+10-18 08:02:57.161  6076  6184 D EGL_emulation: eglMakeCurrent: 0xe7573f80: ver 3 0 (tinfo 0xc3e89960)
+10-18 08:02:57.163  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 3936256
+10-18 08:02:57.165  6076  6184 D EGL_emulation: eglMakeCurrent: 0xe7573f80: ver 3 0 (tinfo 0xc3e89960)
+10-18 08:02:57.171  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 3936256
+10-18 08:02:57.177  5636  8867 D EGL_emulation: eglMakeCurrent: 0x7d6f33658e20: ver 3 0 (tinfo 0x7d6f337156c0)
+10-18 08:02:57.185  5511  6008 D EGL_emulation: eglMakeCurrent: 0x7d6ee7009140: ver 3 0 (tinfo 0x7d6ee709a2e0)
+10-18 08:02:57.186  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 3936256
+10-18 08:02:57.186  1709  9575 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 466944
+10-18 08:02:57.187  5224  5261 W InputReader: Device has associated, but no associated display id.
+10-18 08:02:57.187  5224  5261 I chatty  : uid=1000(system) android.display identical 8 lines
+10-18 08:02:57.187  5224  5261 W InputReader: Device has associated, but no associated display id.
+10-18 08:02:57.187  5224  9432 D HostConnection: HostConnection::get() New Host Connection established 0x7d6ed89941c0, tid 9432
+10-18 08:02:57.189  5224  9432 D HostConnection: HostComposition ext ANDROID_EMU_CHECKSUM_HELPER_v1 ANDROID_EMU_native_sync_v2 ANDROID_EMU_dma_v1 ANDROID_EMU_direct_mem ANDROID_EMU_host_composition_v1 ANDROID_EMU_host_composition_v2 ANDROID_EMU_YUV_Cache ANDROID_EMU_sync_buffer_data ANDROID_EMU_hwc_color_transform GL_OES_EGL_image_external_essl3 GL_OES_vertex_array_object GL_KHR_texture_compression_astc_ldr ANDROID_EMU_host_side_tracing ANDROID_EMU_gles_max_version_3_0
+10-18 08:02:57.190  5224  9432 D EGL_emulation: eglCreateContext: 0x7d6ed8994260: maj 3 min 0 rcv 3
+10-18 08:02:57.197  5511  6008 D EGL_emulation: eglMakeCurrent: 0x7d6ee7009140: ver 3 0 (tinfo 0x7d6ee709a2e0)
+10-18 08:02:57.218  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 3936256
+10-18 08:02:57.226  5511  5908 D GridBackupTable: Backup table found
+10-18 08:02:57.243  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 3788800
+10-18 08:02:57.243  5224  9432 D EGL_emulation: eglMakeCurrent: 0x7d6ed8994260: ver 3 0 (tinfo 0x7d6ee4294920)
+10-18 08:02:57.246  5224  8616 D HostConnection: HostConnection::get() New Host Connection established 0x7d6ed879b000, tid 8616
+10-18 08:02:57.247  5224  8616 D HostConnection: HostComposition ext ANDROID_EMU_CHECKSUM_HELPER_v1 ANDROID_EMU_native_sync_v2 ANDROID_EMU_dma_v1 ANDROID_EMU_direct_mem ANDROID_EMU_host_composition_v1 ANDROID_EMU_host_composition_v2 ANDROID_EMU_YUV_Cache ANDROID_EMU_sync_buffer_data ANDROID_EMU_hwc_color_transform GL_OES_EGL_image_external_essl3 GL_OES_vertex_array_object GL_KHR_texture_compression_astc_ldr ANDROID_EMU_host_side_tracing ANDROID_EMU_gles_max_version_3_0
+10-18 08:02:57.259  5224  5235 I system_server: NativeAlloc concurrent copying GC freed 76435(3936KB) AllocSpace objects, 45(900KB) LOS objects, 32% free, 12MB/18MB, paused 987us total 432.179ms
+10-18 08:02:57.300  5636  8867 D EGL_emulation: eglMakeCurrent: 0x7d6f33658e20: ver 3 0 (tinfo 0x7d6f337156c0)
+10-18 08:02:57.339  6076  6145 W SessionLifecycleManager: Handover failed. Creating new session controller.
+10-18 08:02:57.344  6076  6184 D EGL_emulation: eglMakeCurrent: 0xe7573f80: ver 3 0 (tinfo 0xc3e89960)
+10-18 08:02:57.372  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 3936256
+10-18 08:02:57.388  5365  5382 I ndroid.systemu: NativeAlloc concurrent copying GC freed 28805(1265KB) AllocSpace objects, 0(0B) LOS objects, 45% free, 7270KB/13MB, paused 401us total 164.023ms
+10-18 08:02:57.401  5365  5365 I Choreographer: Skipped 33 frames!  The application may be doing too much work on its main thread.
+10-18 08:02:57.417  5224  8903 D HostConnection: HostConnection::get() New Host Connection established 0x7d6ed35915e0, tid 8903
+10-18 08:02:57.421  5224  8903 D HostConnection: HostComposition ext ANDROID_EMU_CHECKSUM_HELPER_v1 ANDROID_EMU_native_sync_v2 ANDROID_EMU_dma_v1 ANDROID_EMU_direct_mem ANDROID_EMU_host_composition_v1 ANDROID_EMU_host_composition_v2 ANDROID_EMU_YUV_Cache ANDROID_EMU_sync_buffer_data ANDROID_EMU_hwc_color_transform GL_OES_EGL_image_external_essl3 GL_OES_vertex_array_object GL_KHR_texture_compression_astc_ldr ANDROID_EMU_host_side_tracing ANDROID_EMU_gles_max_version_3_0
+10-18 08:02:57.421  5224  8903 D EGL_emulation: eglCreateContext: 0x7d6ed3591ae0: maj 3 min 0 rcv 3
+10-18 08:02:57.423  5224  8903 D EGL_emulation: eglMakeCurrent: 0x7d6ed3591ae0: ver 3 0 (tinfo 0x7d6ee429ba20)
+10-18 08:02:57.431  5511  6008 D EGL_emulation: eglMakeCurrent: 0x7d6ee7009140: ver 3 0 (tinfo 0x7d6ee709a2e0)
+10-18 08:02:57.489  5511  5511 D ConfigMonitor: Configuration changed.
+10-18 08:02:57.501  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 299008
+10-18 08:02:57.517  5365  5540 D EGL_emulation: eglMakeCurrent: 0x7d6f33663860: ver 3 0 (tinfo 0x7d6f33618fe0)
+10-18 08:02:57.523  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 299008
+10-18 08:02:57.531  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 3936256
+10-18 08:02:57.531  1709  9575 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 3936256
+10-18 08:02:57.532  1709  9575 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 3936256
+10-18 08:02:57.539  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 49152
+10-18 08:02:57.541  5511  6113 D HostConnection: HostConnection::get() New Host Connection established 0x7d6f33661900, tid 6113
+10-18 08:02:57.543  5511  6113 D HostConnection: HostComposition ext ANDROID_EMU_CHECKSUM_HELPER_v1 ANDROID_EMU_native_sync_v2 ANDROID_EMU_dma_v1 ANDROID_EMU_direct_mem ANDROID_EMU_host_composition_v1 ANDROID_EMU_host_composition_v2 ANDROID_EMU_YUV_Cache ANDROID_EMU_sync_buffer_data ANDROID_EMU_hwc_color_transform GL_OES_EGL_image_external_essl3 GL_OES_vertex_array_object GL_KHR_texture_compression_astc_ldr ANDROID_EMU_host_side_tracing ANDROID_EMU_gles_max_version_3_0
+10-18 08:02:57.543  5511  6113 D EGL_emulation: eglCreateContext: 0x7d6f33661a40: maj 3 min 0 rcv 3
+10-18 08:02:57.544  5511  6113 D EGL_emulation: eglMakeCurrent: 0x7d6f33661a40: ver 3 0 (tinfo 0x7d6ee7218340)
+10-18 08:02:57.548  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 49152
+10-18 08:02:57.559  5511  6008 D EGL_emulation: eglMakeCurrent: 0x7d6ee7009140: ver 3 0 (tinfo 0x7d6ee709a2e0)
+10-18 08:02:57.570  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 3936256
+10-18 08:02:57.600  6076  6076 D eglCodecCommon: allocate: Ask for block of size 0x3c1000
+10-18 08:02:57.600  6076  6076 D eglCodecCommon: allocate: ioctl allocate returned offset 0x3ff866000 size 0x3c2000
+10-18 08:02:57.644  6076  6145 W SearchServiceCore: Abort, client detached.
+10-18 08:02:57.646  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 3788800
+10-18 08:02:57.647  5636  8867 I OpenGLRenderer: Davey! duration=840ms; Flags=1, IntendedVsync=773887175766, Vsync=774303842416, OldestInputEvent=9223372036854775807, NewestInputEvent=0, HandleInputStart=774314752270, AnimationStart=774314789670, PerformTraversalsStart=774314828860, DrawStart=774497579320, SyncQueued=774498595760, SyncStart=774623526310, IssueDrawCommandsStart=774706090240, SwapBuffers=774828325320, FrameCompleted=774852169570, DequeueBufferDuration=647000, QueueBufferDuration=20325000,
+10-18 08:02:57.649  6076  6145 E AttachedClient: Dropping clientEvent = MONET_CLIENT_EVENT coming from client[26724322911325003]
+10-18 08:02:57.649  6076  6145 I chatty  : uid=10122(com.google.android.googlequicksearchbox) EventBus0 identical 1 line
+10-18 08:02:57.650  6076  6145 E AttachedClient: Dropping clientEvent = MONET_CLIENT_EVENT coming from client[26724322911325003]
+10-18 08:02:57.650  6076  6145 E AttachedClient: Dropping clientEvent = MONET_CLIENT_LIFECYCLE_EVENT coming from client[26724322911325003]
+10-18 08:02:57.656  6076  6214 I PBSessionCacheImpl: Deleted sessionId[155362059244] from persistence.
+10-18 08:02:57.660  5636  5636 I PhenotypeExpConfig: refreshConfiguration() : Force = false : UpdateAvailable = false : Age = 5 minutes : MaxAge = 720 minutes
+10-18 08:02:57.661  5636  5636 I AndroidIME: LatinIme.onDeactivate()
+10-18 08:02:57.692  5636  5636 I KeyboardViewHelper: Get view with height ratio:1.000000; experiment height ratio:1.000000.
+10-18 08:02:57.708  6076  6145 E AttachedClient: Dropping clientEvent = ACETONE_LOG_VERSION coming from client[26724322911325003]
+10-18 08:02:57.708  6076  6145 E AttachedClient: Dropping clientEvent = UPDATE_SEARCHPLATE_MIC coming from client[26724322911325003]
+10-18 08:02:57.708  6076  6145 E AttachedClient: Dropping clientEvent = MONET_CLIENT_EVENT coming from client[26724322911325003]
+10-18 08:02:57.708  6076  6145 E AttachedClient: Dropping clientEvent = MONET_CLIENT_LIFECYCLE_EVENT coming from client[26724322911325003]
+10-18 08:02:57.708  6076  6145 E AttachedClient: Dropping clientEvent = SET_HOTWORD_DETECTION_ENABLED coming from client[26724322911325003]
+10-18 08:02:57.722  6076  6145 E AttachedClient: Dropping clientEvent = MONET_CLIENT_LIFECYCLE_EVENT coming from client[26724322911325003]
+10-18 08:02:57.722  6076  6145 E AttachedClient: Dropping clientEvent = SET_HOTWORD_DETECTION_ENABLED coming from client[26724322911325003]
+10-18 08:02:57.722  6076  6145 E AttachedClient: Dropping clientEvent = MONET_CLIENT_LIFECYCLE_EVENT coming from client[26724322911325003]
+10-18 08:02:57.734  6076  8574 W LocationOracle: No location history returned by ContextManager
+10-18 08:02:57.746  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 3936256
+10-18 08:02:57.749  1709  9575 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 151552
+10-18 08:02:57.768 10519 10519 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 0 <<<<<<
+10-18 08:02:57.769 10519 10519 I AndroidRuntime: Using default boot image
+10-18 08:02:57.769 10519 10519 I AndroidRuntime: Leaving lock profiling enabled
+10-18 08:02:57.770 10519 10519 I app_process: Core platform API reporting enabled, enforcing=false
+10-18 08:02:57.777  5365  5540 D EGL_emulation: eglMakeCurrent: 0x7d6f33663860: ver 3 0 (tinfo 0x7d6f33618fe0)
+10-18 08:02:57.780  1709  9575 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 151552
+10-18 08:02:57.781  5365  5540 I OpenGLRenderer: Davey! duration=931ms; Flags=1, IntendedVsync=774053868330, Vsync=774603868308, OldestInputEvent=9223372036854775807, NewestInputEvent=0, HandleInputStart=774605866300, AnimationStart=774605923850, PerformTraversalsStart=774606050130, DrawStart=774981245730, SyncQueued=774981568520, SyncStart=774982187600, IssueDrawCommandsStart=774982270980, SwapBuffers=774984345140, FrameCompleted=774985686790, DequeueBufferDuration=522000, QueueBufferDuration=158000,
+10-18 08:02:57.811  5511  5522 I s.nexuslaunche: NativeAlloc concurrent copying GC freed 26565(1157KB) AllocSpace objects, 4(196KB) LOS objects, 49% free, 3328KB/6656KB, paused 95.412ms total 264.181ms
+10-18 08:02:57.820 10519 10519 D ICU     : Time zone APEX file found: /apex/com.android.tzdata/etc/icu/icu_tzdata.dat
+10-18 08:02:57.820  1709  9575 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 3936256
+10-18 08:02:57.822  1709  9575 I chatty  : uid=1000(system) HwBinder:1709_3 identical 1 line
+10-18 08:02:57.822  1709  9575 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 3936256
+10-18 08:02:57.825 10519 10519 W app_process: Unexpected CPU variant for X86 using defaults: x86_64
+10-18 08:02:57.825 10519 10519 I app_process: The ClassLoaderContext is a special shared library.
+10-18 08:02:57.828  6076  6184 D EGL_emulation: eglMakeCurrent: 0xe7573f80: ver 3 0 (tinfo 0xc3e89960)
+10-18 08:02:57.859  5636 10192 I DlamWrapper: close(): Successfully wrote DLAM properties file.
+10-18 08:02:57.890 10519 10519 W app_process: JNI RegisterNativeMethods: attempt to register 0 native methods for android.media.AudioAttributes
+10-18 08:02:57.892 10519 10519 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-18 08:02:57.903  5718  6307 W GCoreFlp: No location to return for getLastLocation()
+10-18 08:02:57.943  5636  5636 I DeviceStatusMonitor: onReceive() : Action = android.intent.action.CONFIGURATION_CHANGED
+10-18 08:02:57.943  5636  5636 I ConfigNotification: Get device mode by ui mode:1 and smallestScreenWidthDp:384
+10-18 08:02:57.946  5636  5636 I ConfigNotification: Get device mode by ui mode:1 and smallestScreenWidthDp:320
+10-18 08:02:57.947  5636  5636 I Choreographer: Skipped 45 frames!  The application may be doing too much work on its main thread.
+10-18 08:02:57.968  6076  6076 E SearchServiceClient: SearchServiceClient disposed and cannot be reused.
+10-18 08:02:57.969  5636  8867 D EGL_emulation: eglMakeCurrent: 0x7d6f33658e20: ver 3 0 (tinfo 0x7d6f337156c0)
+10-18 08:02:58.018  6076  6184 D EGL_emulation: eglMakeCurrent: 0xe7573f80: ver 3 0 (tinfo 0xc3e89960)
+10-18 08:02:58.085  5224  8036 W system_server: Long monitor contention with owner Binder:5224_7 (5507) at boolean com.android.server.am.ActivityManagerService.unbindService(android.app.IServiceConnection)(ActivityManagerService.java:14080) waiters=1 in android.app.ContentProviderHolder com.android.server.am.ActivityManagerService.getContentProviderImpl(android.app.IApplicationThread, java.lang.String, android.os.IBinder, int, java.lang.String, java.lang.String, boolean, int) for 182ms
+10-18 08:02:58.090  5224  6126 W system_server: Long monitor contention with owner Binder:5224_8 (5925) at int com.android.server.am.ActivityManagerService.bindIsolatedService(android.app.IApplicationThread, android.os.IBinder, android.content.Intent, java.lang.String, android.app.IServiceConnection, int, java.lang.String, java.lang.String, int)(ActivityManagerService.java:14067) waiters=3 in void com.android.server.am.ActivityManagerService.serviceDoneExecuting(android.os.IBinder, int, int, int) for 148ms
+10-18 08:02:58.111  5636  5636 I DeviceStatusMonitor: onReceive() : Action = android.intent.action.CONFIGURATION_CHANGED
+10-18 08:02:58.112  5636  5636 I ConfigNotification: Get device mode by ui mode:1 and smallestScreenWidthDp:384
+10-18 08:02:58.112  5636  5636 I ConfigNotification: Get device mode by ui mode:1 and smallestScreenWidthDp:384
+10-18 08:02:58.112  5636  5636 I DeviceStatusMonitor: onReceive() : Action = android.intent.action.CONFIGURATION_CHANGED
+10-18 08:02:58.112  5636  5636 I ConfigNotification: Get device mode by ui mode:1 and smallestScreenWidthDp:384
+10-18 08:02:58.112  5636  5636 I ConfigNotification: Get device mode by ui mode:1 and smallestScreenWidthDp:384
+10-18 08:02:58.117  5365  5365 D Tonal   : Tonal Palette - index: 10. Main color: ffe590b7
+10-18 08:02:58.117  5365  5365 D Tonal   : Colors: ff060104, ff1b0613, ff2f0b23, ff481135, ff671850, ff861f5d, ffa42773, ffbe4d91, ffd85a9e, ffde73aa, ffe590b7, ffefb9d1, fff5d6e5
+10-18 08:02:58.118  5365  5365 D Tonal   : Gradients:
+10-18 08:02:58.118  5365  5365 D Tonal   : 	Normal GradientColors(ffe590b7, ffe590b7)
+10-18 08:02:58.118  5365  5365 D Tonal   : 	Dark GradientColors(ff481135, ff481135)
+10-18 08:02:58.118  5365  5365 D Tonal   : 	Extra dark: GradientColors(ff2f0b23, ff2f0b23)
+10-18 08:02:58.118  5365  5365 D Tonal   : Tonal Palette - index: 10. Main color: ffe590b7
+10-18 08:02:58.118  5365  5365 D Tonal   : Colors: ff060104, ff1b0613, ff2f0b23, ff481135, ff671850, ff861f5d, ffa42773, ffbe4d91, ffd85a9e, ffde73aa, ffe590b7, ffefb9d1, fff5d6e5
+10-18 08:02:58.118  5365  5365 D Tonal   : Gradients:
+10-18 08:02:58.118  5365  5365 D Tonal   : 	Normal GradientColors(ffe590b7, ffe590b7)
+10-18 08:02:58.118  5365  5365 D Tonal   : 	Dark GradientColors(ff481135, ff481135)
+10-18 08:02:58.118  5365  5365 D Tonal   : 	Extra dark: GradientColors(ff2f0b23, ff2f0b23)
+10-18 08:02:58.147  5511  5908 V GridSizeMigrationTask: Workspace migration completed in 924
+10-18 08:02:58.148  5511  5908 D LoaderTask: loadWorkspace: loading default favorites
+10-18 08:02:58.204 10519 10519 D AndroidRuntime: Shutting down VM
+10-18 08:02:58.217  1709  9575 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 3936256
+10-18 08:02:58.253  6076  6076 E SearchServiceClient: SearchServiceClient disposed and cannot be reused.
+10-18 08:02:58.254  5224  5275 D EGL_emulation: eglMakeCurrent: 0x7d6ee22e7de0: ver 3 0 (tinfo 0x7d6ee2278160)
+10-18 08:02:58.255  5224  5275 E EGL_emulation: eglQueryContext 32c0  EGL_BAD_ATTRIBUTE
+10-18 08:02:58.255  5224  5275 E EGL_emulation: tid 5275: eglQueryContext(1903): error 0x3004 (EGL_BAD_ATTRIBUTE)
+10-18 08:02:58.260  1709  9575 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 3936256
+10-18 08:02:58.283  5224  5275 D EGL_emulation: eglMakeCurrent: 0x7d6ee22e7de0: ver 3 0 (tinfo 0x7d6ee2278160)
+10-18 08:02:58.294  5224  5275 D EGL_emulation: eglMakeCurrent: 0x7d6ee22e7de0: ver 3 0 (tinfo 0x7d6ee2278160)
+10-18 08:02:58.295  1709  9575 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 3936256
+10-18 08:02:58.327  5511  5908 D LoaderTask: loadWorkspace: loading default favorites
+10-18 08:02:58.378  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 3936256
+10-18 08:02:58.381  5224  5275 D EGL_emulation: eglMakeCurrent: 0x7d6ee22e7de0: ver 3 0 (tinfo 0x7d6ee2278160)
+10-18 08:02:58.386  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 3936256
+10-18 08:02:58.409  1709  1709 I chatty  : uid=1000(system) allocator@2.0-s identical 2 lines
+10-18 08:02:58.410  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 3936256
+10-18 08:02:58.410  6076  6184 D EGL_emulation: eglMakeCurrent: 0xe7573f80: ver 3 0 (tinfo 0xc3e89960)
+10-18 08:02:58.410  5224  5275 D EGL_emulation: eglMakeCurrent: 0x7d6ee22e7de0: ver 3 0 (tinfo 0x7d6ee2278160)
+10-18 08:02:58.439  5224  5275 I chatty  : uid=1000(system) PowerManagerSer identical 1 line
+10-18 08:02:58.467  5224  5275 D EGL_emulation: eglMakeCurrent: 0x7d6ee22e7de0: ver 3 0 (tinfo 0x7d6ee2278160)
+10-18 08:02:58.469  5224  5275 E Surface : getSlotFromBufferLocked: unknown buffer: 0x0
+10-18 08:02:58.469  5194  5194 D SurfaceFlinger: Setting power mode 0 on display 0
+10-18 08:02:58.470  5194  5194 D SurfaceFlinger: Finished setting power mode 0 on display 0
+10-18 08:02:58.480  5511  6008 D EGL_emulation: eglMakeCurrent: 0x7d6ee7009140: ver 3 0 (tinfo 0x7d6ee709a2e0)
+10-18 08:02:58.488  6076  6076 W MonetClient: Could not collect restore state: The DisplayCoordinator's controller has not taken over yet.
+10-18 08:02:58.490  5865 10540 I Authzen : [DeviceStateSyncManager] The server is in sync with current state. Nothing to do
+10-18 08:02:58.498  5365 10433 W ndroid.systemu: Long monitor contention with owner main (5365) at void com.android.systemui.Dependency.onConfigurationChanged(android.content.res.Configuration)(Dependency.java:-1) waiters=0 in java.lang.Object com.android.systemui.Dependency.getDependencyInner(java.lang.Object) for 503ms
+10-18 08:02:58.526  5718 10424 W ctxmgr  : [AclManager] No 3 for (accnt=account#-517948760#, com.google.android.gms(10119):UserVelocityProducer, vrsn=202414023, 0, 3pPkg = null ,  3pMdlId = null ,  pid = 5718). Was: 3 for 1, account#-517948760# [CONTEXT service_id=47 ]
+10-18 08:02:58.527  5718  6192 E ModuleIdSetter: exception when setting module id
+10-18 08:02:58.527  5718  6192 E ModuleIdSetter: java.lang.IllegalStateException: Unable to get current module info in ModuleManager created with non-module Context
+10-18 08:02:58.527  5718  6192 E ModuleIdSetter: 	at com.google.android.chimera.config.ModuleManager.getCurrentModule(:com.google.android.gms@202414023@20.24.14 (040800-319035315):2)
+10-18 08:02:58.527  5718  6192 E ModuleIdSetter: 	at aewd.a(:com.google.android.gms@202414023@20.24.14 (040800-319035315):4)
+10-18 08:02:58.527  5718  6192 E ModuleIdSetter: 	at aewg.b(:com.google.android.gms@202414023@20.24.14 (040800-319035315):9)
+10-18 08:02:58.527  5718  6192 E ModuleIdSetter: 	at aeso.a(Unknown Source:0)
+10-18 08:02:58.527  5718  6192 E ModuleIdSetter: 	at rpm.a(:com.google.android.gms@202414023@20.24.14 (040800-319035315):0)
+10-18 08:02:58.527  5718  6192 E ModuleIdSetter: 	at rlv.c(:com.google.android.gms@202414023@20.24.14 (040800-319035315):1)
+10-18 08:02:58.527  5718  6192 E ModuleIdSetter: 	at rlt.b(:com.google.android.gms@202414023@20.24.14 (040800-319035315):1)
+10-18 08:02:58.527  5718  6192 E ModuleIdSetter: 	at rok.b(:com.google.android.gms@202414023@20.24.14 (040800-319035315):6)
+10-18 08:02:58.527  5718  6192 E ModuleIdSetter: 	at rok.c(:com.google.android.gms@202414023@20.24.14 (040800-319035315):6)
+10-18 08:02:58.527  5718  6192 E ModuleIdSetter: 	at rok.b(:com.google.android.gms@202414023@20.24.14 (040800-319035315):10)
+10-18 08:02:58.527  5718  6192 E ModuleIdSetter: 	at rok.a(:com.google.android.gms@202414023@20.24.14 (040800-319035315):17)
+10-18 08:02:58.527  5718  6192 E ModuleIdSetter: 	at rok.g(:com.google.android.gms@202414023@20.24.14 (040800-319035315):3)
+10-18 08:02:58.527  5718  6192 E ModuleIdSetter: 	at sdr.a(:com.google.android.gms@202414023@20.24.14 (040800-319035315):2)
+10-18 08:02:58.527  5718  6192 E ModuleIdSetter: 	at scr.a(:com.google.android.gms@202414023@20.24.14 (040800-319035315):10)
+10-18 08:02:58.527  5718  6192 E ModuleIdSetter: 	at sci.a(:com.google.android.gms@202414023@20.24.14 (040800-319035315):0)
+10-18 08:02:58.527  5718  6192 E ModuleIdSetter: 	at scl.handleMessage(:com.google.android.gms@202414023@20.24.14 (040800-319035315):28)
+10-18 08:02:58.527  5718  6192 E ModuleIdSetter: 	at android.os.Handler.dispatchMessage(Handler.java:107)
+10-18 08:02:58.527  5718  6192 E ModuleIdSetter: 	at aekz.a(:com.google.android.gms@202414023@20.24.14 (040800-319035315):2)
+10-18 08:02:58.527  5718  6192 E ModuleIdSetter: 	at aekz.dispatchMessage(:com.google.android.gms@202414023@20.24.14 (040800-319035315):14)
+10-18 08:02:58.527  5718  6192 E ModuleIdSetter: 	at android.os.Looper.loop(Looper.java:214)
+10-18 08:02:58.527  5718  6192 E ModuleIdSetter: 	at android.os.HandlerThread.run(HandlerThread.java:67)
+10-18 08:02:58.529  5365  5365 I Choreographer: Skipped 61 frames!  The application may be doing too much work on its main thread.
+10-18 08:02:58.531  5365  5540 D EGL_emulation: eglMakeCurrent: 0x7d6f33663860: ver 3 0 (tinfo 0x7d6f33618fe0)
+10-18 08:02:58.535  1709  9575 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 299008
+10-18 08:02:58.535  5365  5540 I OpenGLRenderer: Davey! duration=1033ms; Flags=0, IntendedVsync=774703886327, Vsync=775720552953, OldestInputEvent=9223372036854775807, NewestInputEvent=0, HandleInputStart=775734589180, AnimationStart=775734628530, PerformTraversalsStart=775734780690, DrawStart=775735078770, SyncQueued=775735222130, SyncStart=775738277360, IssueDrawCommandsStart=775738323970, SwapBuffers=775739100200, FrameCompleted=775740433850, DequeueBufferDuration=676000, QueueBufferDuration=188000,
+10-18 08:02:58.540  5365  5540 D EGL_emulation: eglMakeCurrent: 0x7d6f33663860: ver 3 0 (tinfo 0x7d6f33618fe0)
+10-18 08:02:58.542  1709  9575 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 151552
+10-18 08:02:58.543  5365  5540 I OpenGLRenderer: Davey! duration=1043ms; Flags=0, IntendedVsync=774703886327, Vsync=775720552953, OldestInputEvent=9223372036854775807, NewestInputEvent=0, HandleInputStart=775734589180, AnimationStart=775734628530, PerformTraversalsStart=775734780690, DrawStart=775744479890, SyncQueued=775744775480, SyncStart=775745186140, IssueDrawCommandsStart=775745237770, SwapBuffers=775746411900, FrameCompleted=775747846680, DequeueBufferDuration=726000, QueueBufferDuration=280000,
+10-18 08:02:58.549  5718  6307 W GCoreFlp: No location to return for getLastLocation()
+10-18 08:02:58.557  5511  5511 E libprocessgroup: set_timerslack_ns write failed: Operation not permitted
+10-18 08:02:58.570  5365  5365 D StatusBar: disable<e i a s b h r c s > disable2<q i n >
+10-18 08:02:58.589  5718 10527 I LogUtils: [Places]: ?: Couldn't find platform key file. [CONTEXT service_id=253 ]
+10-18 08:02:58.621  5718  5718 I GeofencerStateMachine: removeGeofences: removeRequest=RemoveGeofencingRequest[REMOVE_BY_PENDING_INTENT pendingIntent=PendingIntent[creatorPackage=com.google.android.gms], packageName=com.google.android.gms]
+10-18 08:02:58.623  5718  5718 I GeofencerStateMachine: removeGeofences: removeRequest=RemoveGeofencingRequest[REMOVE_BY_PENDING_INTENT pendingIntent=PendingIntent[creatorPackage=com.google.android.gms], packageName=com.google.android.gms]
+10-18 08:02:58.626  5718 10542 I PlacesLogger: [PlaceInferenceEngine]: [anon] Changed inference mode: 0 [CONTEXT service_id=253 ]
+10-18 08:02:58.626  5718 10538 I LogUtils: [Places]: ?: Couldn't find platform key file. [CONTEXT service_id=253 ]
+10-18 08:02:58.627  5718 10339 I LogUtils: [Places]: ?: Couldn't find platform key file. [CONTEXT service_id=253 ]
+10-18 08:02:58.629  5718  6307 W GCoreFlp: No location to return for getLastLocation()
+10-18 08:02:58.648  5718 10526 I LogUtils: [Places]: ?: Couldn't find platform key file. [CONTEXT service_id=253 ]
+10-18 08:02:58.649  5718 10527 I LogUtils: [Places]: ?: Couldn't find platform key file. [CONTEXT service_id=253 ]
+10-18 08:02:58.649  5718 10538 I LogUtils: [Places]: ?: Couldn't find platform key file. [CONTEXT service_id=253 ]
+10-18 08:02:58.681  5718 10527 W Conscrypt: Could not set socket write timeout: java.net.SocketException: Socket closed
+10-18 08:02:58.681  5718 10527 W Conscrypt: 	at com.google.android.gms.org.conscrypt.Platform.setSocketWriteTimeout(:com.google.android.gms@202414023@20.24.14 (040800-319035315):2)
+10-18 08:02:58.681  5718 10527 W Conscrypt: 	at com.google.android.gms.org.conscrypt.ConscryptFileDescriptorSocket.setSoWriteTimeout(:com.google.android.gms@202414023@20.24.14 (040800-319035315):0)
+10-18 08:02:58.699  5365  5365 W View    : requestLayout() improperly called by com.android.keyguard.AlphaOptimizedLinearLayout{37ff47a V.E...... ......ID 5,0-35,44 #7f0a041c app:id/wifi_group} during layout: running second layout pass
+10-18 08:02:58.700  5365  5365 W View    : requestLayout() improperly called by com.android.keyguard.AlphaOptimizedLinearLayout{c88bd01 V.E...... ......ID 5,0-35,44 #7f0a041c app:id/wifi_group} during layout: running second layout pass
+10-18 08:02:58.706  5365  5365 I OpaEnabledReceiver: Dispatching OPA eligble = false; AGSA = true; OPA enabled = false
+10-18 08:02:58.706  5365  5365 I OpaLayout: Setting opa enabled to false
+10-18 08:02:58.706  5365  5365 I OpaLayout: Setting opa enabled to false
+10-18 08:02:58.726  5718 10424 I ctxmgr  : [ProducerStatusImpl] updateStateForNewContextData: inactive, contextName=7 [CONTEXT service_id=47 ]
+10-18 08:02:58.737  5718 10527 W Conscrypt: Could not set socket write timeout: java.net.SocketException: Socket closed
+10-18 08:02:58.737  5718 10527 W Conscrypt: 	at com.google.android.gms.org.conscrypt.Platform.setSocketWriteTimeout(:com.google.android.gms@202414023@20.24.14 (040800-319035315):2)
+10-18 08:02:58.737  5718 10527 W Conscrypt: 	at com.google.android.gms.org.conscrypt.ConscryptFileDescriptorSocket.setSoWriteTimeout(:com.google.android.gms@202414023@20.24.14 (040800-319035315):0)
+10-18 08:02:58.738  5636  5636 I DeviceStatusMonitor: onReceive() : Action = android.intent.action.SCREEN_OFF
+10-18 08:02:58.767  5718 10538 I LogUtils: [Places]: ?: Couldn't find platform key file. [CONTEXT service_id=253 ]
+10-18 08:02:58.772  5718  6307 W GCoreFlp: No location to return for getLastLocation()
+10-18 08:02:58.798  5718 10542 I LogUtils: [Places]: ?: PlacesBleScanner start() with priority 2 [CONTEXT service_id=253 ]
+10-18 08:02:58.798  5718 10542 I PlacesLogger: [PlaceInferenceEngine]: [anon] Changed inference mode: 1 [CONTEXT service_id=253 ]
+10-18 08:02:58.803  5718  6307 W GCoreFlp: No location to return for getLastLocation()
+10-18 08:02:58.811  5718  5718 E BeaconBle: Missing BluetoothAdapter [CONTEXT service_id=111 ]
+10-18 08:02:58.811  5718  5718 I BeaconBle: BLE 'KK+' software access layer enabled [CONTEXT service_id=111 ]
+10-18 08:02:58.819  5718 10542 W LogUtils: [Places]: ?: Failed to download inference model weights SLS
+10-18 08:02:58.819  5718 10542 W LogUtils: ckdr: NOT_FOUND: Requested entity was not found.
+10-18 08:02:58.819  5718 10542 W LogUtils: 	at ckdq.c(:com.google.android.gms@202414023@20.24.14 (040800-319035315):3)
+10-18 08:02:58.819  5718 10542 W LogUtils: 	at sjo.a(:com.google.android.gms@202414023@20.24.14 (040800-319035315):57)
+10-18 08:02:58.819  5718 10542 W LogUtils: 	at bjxj.call(:com.google.android.gms@202414023@20.24.14 (040800-319035315):0)
+10-18 08:02:58.819  5718 10542 W LogUtils: 	at bjvu.run(:com.google.android.gms@202414023@20.24.14 (040800-319035315):1)
+10-18 08:02:58.819  5718 10542 W LogUtils: 	at soy.b(:com.google.android.gms@202414023@20.24.14 (040800-319035315):12)
+10-18 08:02:58.819  5718 10542 W LogUtils: 	at soy.run(:com.google.android.gms@202414023@20.24.14 (040800-319035315):7)
+10-18 08:02:58.819  5718 10542 W LogUtils: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)
+10-18 08:02:58.819  5718 10542 W LogUtils: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)
+10-18 08:02:58.819  5718 10542 W LogUtils: 	at sux.run(:com.google.android.gms@202414023@20.24.14 (040800-319035315):0)
+10-18 08:02:58.819  5718 10542 W LogUtils: 	at java.lang.Thread.run(Thread.java:919)
+10-18 08:02:58.819  5718 10542 W LogUtils:
+10-18 08:02:58.819  5718 10542 W LogUtils: [CONTEXT service_id=253 ]
+10-18 08:02:58.819  5718 10542 W PlacesLogger: [PlaceInferenceEngine]: Failed to download model weights. Status code: 7 [CONTEXT service_id=253 ]
+10-18 08:02:58.824  5718 10339 I LogUtils: [Places]: ?: Couldn't find platform key file. [CONTEXT service_id=253 ]
+10-18 08:02:58.825  5718 10365 I LogUtils: [Places]: ?: Couldn't find platform key file. [CONTEXT service_id=253 ]
+10-18 08:02:58.837  5718  5718 I BeaconBle: Client requested scan, settings=BleSettings [scanMode=ZERO_POWER, callbackType=ALL_MATCHES, reportDelayMillis=0, 1 filters, 0 clients, callingClientName=Places] [CONTEXT service_id=111 ]
+10-18 08:02:58.837  5718  5718 I BeaconBle: Scan : No clients left, canceling alarm. [CONTEXT service_id=111 ]
+10-18 08:02:58.838  5718  5718 E BeaconBle: Scan couldn't start for Places [CONTEXT service_id=111 ]
+10-18 08:02:58.838  5718  5718 W Places  : BLE failure while scanning - code 5
+10-18 08:02:59.320 10548 10548 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 0 <<<<<<
+10-18 08:02:59.322 10548 10548 I AndroidRuntime: Using default boot image
+10-18 08:02:59.322 10548 10548 I AndroidRuntime: Leaving lock profiling enabled
+10-18 08:02:59.323 10548 10548 I app_process: Core platform API reporting enabled, enforcing=false
+10-18 08:02:59.350 10548 10548 D ICU     : Time zone APEX file found: /apex/com.android.tzdata/etc/icu/icu_tzdata.dat
+10-18 08:02:59.353 10548 10548 W app_process: Unexpected CPU variant for X86 using defaults: x86_64
+10-18 08:02:59.354 10548 10548 I app_process: The ClassLoaderContext is a special shared library.
+10-18 08:02:59.360 10548 10548 W app_process: JNI RegisterNativeMethods: attempt to register 0 native methods for android.media.AudioAttributes
+10-18 08:02:59.362 10548 10548 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-18 08:02:59.366  5224  5275 W InputReader: Device has associated, but no associated display id.
+10-18 08:02:59.366  5224  5275 I chatty  : uid=1000(system) PowerManagerSer identical 8 lines
+10-18 08:02:59.366  5224  5275 W InputReader: Device has associated, but no associated display id.
+10-18 08:02:59.377  5194  5194 D SurfaceFlinger: Setting power mode 2 on display 0
+10-18 08:02:59.378  5194  5194 D SurfaceFlinger: Finished setting power mode 2 on display 0
+10-18 08:02:59.380  5365  5365 D KeyguardClockSwitch: Updating clock: 802
+10-18 08:02:59.383  1710 10325 W EmuHWC2 : No layers, exit, buffer 0x0
+10-18 08:02:59.386  5895  5895 I GsaVoiceInteractionSrv: O received Intent { act=android.intent.action.USER_PRESENT flg=0x24200010 }
+10-18 08:02:59.390  1709  9575 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 3936256
+10-18 08:02:59.391  1709  9575 I chatty  : uid=1000(system) HwBinder:1709_3 identical 1 line
+10-18 08:02:59.391  1709  9575 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 3936256
+10-18 08:02:59.400  1710 10325 W EmuHWC2 : No layers, exit, buffer 0x0
+10-18 08:02:59.402  6076  6145 W SessionLifecycleManager: Handover failed. Creating new session controller.
+10-18 08:02:59.403  5511  6008 D EGL_emulation: eglMakeCurrent: 0x7d6ee7009140: ver 3 0 (tinfo 0x7d6ee709a2e0)
+10-18 08:02:59.413  6076  6214 E sb.v.u.LiteSuggestSourc: On-device lite suggest model loading error.
+10-18 08:02:59.416  1710 10325 W EmuHWC2 : No layers, exit, buffer 0x0
+10-18 08:02:59.417 10548 10548 D AndroidRuntime: Shutting down VM
+10-18 08:02:59.425  5511  5511 E libprocessgroup: set_timerslack_ns write failed: Operation not permitted
+10-18 08:02:59.466  1709  9575 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 16384
+10-18 08:02:59.480  1709  9575 I chatty  : uid=1000(system) HwBinder:1709_3 identical 4 lines
+10-18 08:02:59.482  1709  9575 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 16384
+10-18 08:02:59.484  5365  5540 D EGL_emulation: eglMakeCurrent: 0x7d6f33663860: ver 3 0 (tinfo 0x7d6f33618fe0)
+10-18 08:02:59.501  5636  5636 I DeviceStatusMonitor: onReceive() : Action = android.intent.action.SCREEN_ON
+10-18 08:02:59.508  5365  5540 D EGL_emulation: eglMakeCurrent: 0x7d6f33663860: ver 3 0 (tinfo 0x7d6f33618fe0)
+10-18 08:02:59.514  5365  5365 D KeyguardClockSwitch: Updating clock: 802
+10-18 08:02:59.587  8753  8773 E TestRunner: failed: realConfigurationBackupAndReopenPreserveFinancialFacts(com.tradereview.app.v210.V210ConsistencyJourneyTest)
+10-18 08:02:59.593  8753  8773 E TestRunner: ----- begin exception -----
+10-18 08:02:59.593  8753  8773 E TestRunner: java.lang.AssertionError: Accessible save control is visible and above IME: {label=保存, orientation=2, keyboardVisible=true, imeTopPx=248, buttonBoundsPx=null, touchHeightDp=null, aboveKeyboard=false}
+10-18 08:02:59.593  8753  8773 E TestRunner: 	at org.junit.Assert.fail(Assert.java:89)
+10-18 08:02:59.593  8753  8773 E TestRunner: 	at org.junit.Assert.assertTrue(Assert.java:42)
+10-18 08:02:59.593  8753  8773 E TestRunner: 	at com.tradereview.app.v210.V210ConsistencyJourneyTest.saveControl(V210ConsistencyJourneyTest.kt:181)
+10-18 08:02:59.593  8753  8773 E TestRunner: 	at com.tradereview.app.v210.V210ConsistencyJourneyTest.saveControl$default(V210ConsistencyJourneyTest.kt:151)
+10-18 08:02:59.593  8753  8773 E TestRunner: 	at com.tradereview.app.v210.V210ConsistencyJourneyTest.realConfigurationBackupAndReopenPreserveFinancialFacts$lambda$54(V210ConsistencyJourneyTest.kt:410)
+10-18 08:02:59.593  8753  8773 E TestRunner: 	at com.tradereview.app.v210.V210ConsistencyJourneyTest.$r8$lambda$TBr-1QJrdiqB-TSNBK8E5UycyjQ(Unknown Source:0)
+10-18 08:02:59.593  8753  8773 E TestRunner: 	at com.tradereview.app.v210.V210ConsistencyJourneyTest$$ExternalSyntheticLambda23.invoke(D8$$SyntheticClass:0)
+10-18 08:02:59.593  8753  8773 E TestRunner: 	at com.tradereview.app.v210.V210ConsistencyJourneyTest.step(V210ConsistencyJourneyTest.kt:61)
+10-18 08:02:59.593  8753  8773 E TestRunner: 	at com.tradereview.app.v210.V210ConsistencyJourneyTest.realConfigurationBackupAndReopenPreserveFinancialFacts(V210ConsistencyJourneyTest.kt:395)
+10-18 08:02:59.593  8753  8773 E TestRunner: 	at java.lang.reflect.Method.invoke(Native Method)
+10-18 08:02:59.593  8753  8773 E TestRunner: 	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
+10-18 08:02:59.593  8753  8773 E TestRunner: 	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+10-18 08:02:59.593  8753  8773 E TestRunner: 	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
+10-18 08:02:59.593  8753  8773 E TestRunner: 	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+10-18 08:02:59.593  8753  8773 E TestRunner: 	at androidx.test.internal.runner.junit4.statement.RunBefores.evaluate(RunBefores.java:80)
+10-18 08:02:59.593  8753  8773 E TestRunner: 	at org.junit.rules.TestWatcher$1.evaluate(TestWatcher.java:61)
+10-18 08:02:59.593  8753  8773 E TestRunner: 	at org.junit.rules.ExternalResource$1.evaluate(ExternalResource.java:54)
+10-18 08:02:59.593  8753  8773 E TestRunner: 	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1$evaluate$1.invoke(AndroidComposeTestRule.android.kt:295)
+10-18 08:02:59.593  8753  8773 E TestRunner: 	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1$evaluate$1.invoke(AndroidComposeTestRule.android.kt:295)
+10-18 08:02:59.593  8753  8773 E TestRunner: 	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.withDisposableContent(ComposeUiTest.android.kt:565)
+10-18 08:02:59.593  8753  8773 E TestRunner: 	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1$1$1$1.invoke(ComposeUiTest.android.kt:370)
+10-18 08:02:59.593  8753  8773 E TestRunner: 	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.withComposeIdlingResource(ComposeUiTest.android.kt:439)
+10-18 08:02:59.593  8753  8773 E TestRunner: 	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$withComposeIdlingResource(ComposeUiTest.android.kt:235)
+10-18 08:02:59.593  8753  8773 E TestRunner: 	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1$1$1.invoke(ComposeUiTest.android.kt:369)
+10-18 08:02:59.593  8753  8773 E TestRunner: 	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.withWindowRecomposer(ComposeUiTest.android.kt:413)
+10-18 08:02:59.593  8753  8773 E TestRunner: 	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$withWindowRecomposer(ComposeUiTest.android.kt:235)
+10-18 08:02:59.593  8753  8773 E TestRunner: 	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1$1.invoke(ComposeUiTest.android.kt:368)
+10-18 08:02:59.593  8753  8773 E TestRunner: 	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.withTestCoroutines(ComposeUiTest.android.kt:426)
+10-18 08:02:59.593  8753  8773 E TestRunner: 	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$withTestCoroutines(ComposeUiTest.android.kt:235)
+10-18 08:02:59.593  8753  8773 E TestRunner: 	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1.invoke(ComposeUiTest.android.kt:367)
+10-18 08:02:59.593  8753  8773 E TestRunner: 	at androidx.compose.ui.test.EspressoLink.withStrategy(EspressoLink.android.kt:69)
+10-18 08:02:59.593  8753  8773 E TestRunner: 	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1.invoke(ComposeUiTest.android.kt:366)
+10-18 08:02:59.593  8753  8773 E TestRunner: 	at androidx.compose.ui.test.IdlingResourceRegistry.withRegistry(IdlingResourceRegistry.jvm.kt:148)
+10-18 08:02:59.593  8753  8773 E TestRunner: 	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1.invoke(ComposeUiTest.android.kt:365)
+10-18 08:02:59.593  8753  8773 E TestRunner: 	at androidx.compose.ui.test.ComposeRootRegistry.withRegistry(ComposeRootRegistry.android.kt:139)
+10-18 08:02:59.593  8753  8773 E TestRunner: 	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.runTest(ComposeUiTest.android.kt:364)
+10-18 08:02:59.593  8753  8773 E TestRunner: 	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1.evaluate(AndroidComposeTestRule.android.kt:295)
+10-18 08:02:59.593  8753  8773 E TestRunner: 	at org.junit.rules.ExternalResource$1.evaluate(ExternalResource.java:54)
+10-18 08:02:59.593  8753  8773 E TestRunner: 	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
+10-18 08:02:59.593  8753  8773 E TestRunner: 	at org.junit.runners.BlockJUnit4ClassRunner$1.evaluate(BlockJUnit4ClassRunner.java:100)
+10-18 08:02:59.593  8753  8773 E TestRunner: 	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:366)
+10-18 08:02:59.593  8753  8773 E TestRunner: 	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:103)
+10-18 08:02:59.593  8753  8773 E TestRunner: 	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:63)
+10-18 08:02:59.593  8753  8773 E TestRunner: 	at org.junit.runners.ParentRunner$4.run(ParentRunner.java:331)
+10-18 08:02:59.593  8753  8773 E TestRunner: 	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:79)
+10-18 08:02:59.593  8753  8773 E TestRunner: 	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:329)
+10-18 08:02:59.593  8753  8773 E TestRunner: 	at org.junit.runners.ParentRunner.access$100(ParentRunner.java:66)
+10-18 08:02:59.593  8753  8773 E TestRunner: 	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:293)
+10-18 08:02:59.593  8753  8773 E TestRunner: 	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
+10-18 08:02:59.593  8753  8773 E TestRunner: 	at org.junit.runners.ParentRunner.run(ParentRunner.java:413)
+10-18 08:02:59.593  8753  8773 E TestRunner: 	at androidx.test.ext.junit.runners.AndroidJUnit4.run(AndroidJUnit4.java:162)
+10-18 08:02:59.593  8753  8773 E TestRunner: 	at org.junit.runners.Suite.runChild(Suite.java:128)
+10-18 08:02:59.593  8753  8773 E TestRunner: 	at org.junit.runners.Suite.runChild(Suite.java:27)
+10-18 08:02:59.593  8753  8773 E TestRunner: 	at org.junit.runners.ParentRunner$4.run(ParentRunner.java:331)
+10-18 08:02:59.593  8753  8773 E TestRunner: 	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:79)
+10-18 08:02:59.593  8753  8773 E TestRunner: 	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:329)
+10-18 08:02:59.593  8753  8773 E TestRunner: 	at org.junit.runners.ParentRunner.access$100(ParentRunner.java:66)
+10-18 08:02:59.593  8753  8773 E TestRunner: 	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:293)
+10-18 08:02:59.593  8753  8773 E TestRunner: 	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
+10-18 08:02:59.593  8753  8773 E TestRunner: 	at org.junit.runners.ParentRunner.run(ParentRunner.java:413)
+10-18 08:02:59.593  8753  8773 E TestRunner: 	at org.junit.runner.JUnitCore.run(JUnitCore.java:137)
+10-18 08:02:59.593  8753  8773 E TestRunner: 	at org.junit.runner.JUnitCore.run(JUnitCore.java:115)
+10-18 08:02:59.593  8753  8773 E TestRunner: 	at androidx.test.internal.runner.TestExecutor.execute(TestExecutor.java:68)
+10-18 08:02:59.593  8753  8773 E TestRunner: 	at androidx.test.internal.runner.TestExecutor.execute(TestExecutor.java:59)
+10-18 08:02:59.593  8753  8773 E TestRunner: 	at androidx.test.runner.AndroidJUnitRunner.onStart(AndroidJUnitRunner.java:463)
+10-18 08:02:59.593  8753  8773 E TestRunner: 	at android.app.Instrumentation$InstrumentationThread.run(Instrumentation.java:2189)
+10-18 08:02:59.593  8753  8773 E TestRunner: ----- end exception -----
+10-18 08:02:59.593  8753  8773 I TestRunner: finished: realConfigurationBackupAndReopenPreserveFinancialFacts(com.tradereview.app.v210.V210ConsistencyJourneyTest)

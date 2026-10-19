@@ -57,7 +57,7 @@ class V200MainUiTest {
     private fun page(n:Int){compose.onNodeWithTag("v2-main-page-$n").performClick()}
     private fun settledEntryViewport(){
         var previous:androidx.compose.ui.geometry.Rect?=null;var stableSince=android.os.SystemClock.elapsedRealtime()
-        compose.waitUntil(10000){val nodes=compose.onAllNodesWithTag("entry-scroll").fetchSemanticsNodes();if(nodes.isEmpty())true else{val bounds=nodes.single().boundsInRoot;val now=android.os.SystemClock.elapsedRealtime();if(bounds!=previous){previous=bounds;stableSince=now};now-stableSince>=150}}
+        compose.waitUntil(10000){val nodes=compose.onAllNodesWithTag("entry-scroll").fetchSemanticsNodes().ifEmpty{compose.onAllNodesWithTag("v2-risk-strategy").fetchSemanticsNodes()};if(nodes.isEmpty())true else{val bounds=nodes.single().boundsInRoot;val now=android.os.SystemClock.elapsedRealtime();if(bounds!=previous){previous=bounds;stableSince=now};now-stableSince>=150}}
     }
     private fun field(tag:String,text:String,scroll:Boolean=true){
         settledEntryViewport()
@@ -91,7 +91,10 @@ class V200MainUiTest {
         compose.onNodeWithTag("v2-risk-strategy").performScrollToNode(hasTestTag("risk-fund-stock"))
         field("risk-fund-stock","10000");field("risk-limit-stock","5")
         compose.onNodeWithTag("v2-risk-strategy").performScrollToNode(hasTestTag("save-risk-stock"))
-        compose.onNodeWithTag("save-risk-stock").assertIsEnabled().performClick()
+        // The risk card can be taller than the IME viewport: scroll the actual button,
+        // not only its lazy item, and retain the real save/confirmation assertions.
+        settledEntryViewport()
+        compose.onNodeWithTag("save-risk-stock").performScrollTo().assertIsDisplayed().assertIsEnabled().performClick()
         step("保存独立风险金") { model.state.value.ledger!!.risks.first { it.id=="stock" }.riskFund=="10000" && !model.busy.value }
         assertNull(model.state.value.ledger!!.risks.first { it.id=="futures" }.riskFund)
         capture("45-v200-risk-strategy")

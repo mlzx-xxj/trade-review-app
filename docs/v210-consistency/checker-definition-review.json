@@ -1,0 +1,46 @@
+{
+  "classification": "derived-checker-definition-review-not-complete-ui-pass",
+  "checker": "scripts/v210-consistency-evidence.py",
+  "checkerSha256": "b5ec64cf613f296032bee872dbbc503aa27d1f24e6fd21b3175d6ca806b95540",
+  "unchangedDefinitionSources": [
+    "app/src/main/java/com/tradereview/app/v200/MatchingEngine.kt",
+    "app/src/test/java/com/tradereview/app/v200/MatchingEngineTest.kt"
+  ],
+  "results": [
+    {
+      "api": 29,
+      "sourceCommit": "ac52d3b1c6340d037423ec7c9623572610d1b1c0",
+      "actualAveragePrice": "11",
+      "actualOpenCost": "5500.55",
+      "financialCheck": {
+        "knownRealized": "2487.65",
+        "stockRemaining": "500",
+        "stockOpenCost": "5500.55",
+        "unknownFeeExecutions": 2,
+        "unknownGross": "1000",
+        "unknownNet": null
+      },
+      "overall": "FAIL-landscape-save",
+      "inputFile": "docs/v210-consistency/failures/first-fix/api29/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-api29.json",
+      "inputSha256": "5d5e965a4f9645196803f9ada578e1abdde0fbfeed27fc1a89f6b77878585c7b"
+    },
+    {
+      "api": 35,
+      "sourceCommit": "ac52d3b1c6340d037423ec7c9623572610d1b1c0",
+      "actualAveragePrice": "11",
+      "actualOpenCost": "5500.55",
+      "financialCheck": {
+        "knownRealized": "2487.65",
+        "stockRemaining": "500",
+        "stockOpenCost": "5500.55",
+        "unknownFeeExecutions": 2,
+        "unknownGross": "1000",
+        "unknownNet": null
+      },
+      "overall": "FAIL-landscape-save",
+      "inputFile": "docs/v210-consistency/failures/first-fix/api35/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-api35.json",
+      "inputSha256": "161aa929f23e20f01cd5aac469129bdd96d04f3767ce78a637060405d402c2a0"
+    }
+  ],
+  "checkerSourceCommit": "0436db74391425250cb64aa9d33297bf0438a400"
+}

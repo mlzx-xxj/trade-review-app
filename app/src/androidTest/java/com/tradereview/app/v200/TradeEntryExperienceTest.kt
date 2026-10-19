@@ -14,6 +14,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiDevice
+import androidx.test.uiautomator.UiScrollable
+import androidx.test.uiautomator.UiSelector
 import androidx.test.uiautomator.Until
 import com.google.gson.GsonBuilder
 import com.tradereview.app.MainActivity
@@ -280,9 +282,27 @@ class TradeEntryExperienceTest {
         waitFor("真实SAF导出并回读校验"){!backup.busy.value && backup.message.value?.contains("已重新读取并通过 SHA-256")==true}
         back();val removable=before.executions.first{it.code=="al2701"};delete(removable);assertEquals(before.executions.size-1,facts().executions.size)
         ui.onNodeWithTag("open-backup").performClick();ui.onNodeWithTag("v2-import-backup").performClick()
-        var file=device.wait(Until.findObject(By.text(filename)),15000)
-        if(file==null){requireNotNull(device.findObject(By.desc(java.util.regex.Pattern.compile("(?i)(Show roots|Open navigation drawer|显示根目录|打开导航抽屉)")))){"文件选择器根目录入口缺失"}.click();requireNotNull(device.wait(Until.findObject(By.text(java.util.regex.Pattern.compile("(?i)(Downloads|下载)"))),10000)).click();file=device.wait(Until.findObject(By.text(filename)),15000)}
-        requireNotNull(file){"未在系统选择器找到刚导出的ZIP"}.click()
+        device.waitForIdle()
+        var file=device.findObject(By.text(filename))
+        if(file==null){
+            requireNotNull(device.wait(Until.findObject(By.desc(java.util.regex.Pattern.compile("(?i)(Show roots|Open navigation drawer|显示根目录|打开导航抽屉)"))),10000)){"文件选择器根目录入口缺失"}.click()
+            device.waitForIdle()
+            // The toolbar and breadcrumb also say Downloads. Only the drawer's
+            // roots list is a directory choice; its nodes settle after opening.
+            val roots=requireNotNull(device.wait(Until.findObject(By.res(java.util.regex.Pattern.compile(".*:id/roots_list"))),10000))
+            requireNotNull(roots.findObject(By.text(java.util.regex.Pattern.compile("(?i)(Downloads|下载)")))).click()
+            device.waitForIdle()
+            device.findObject(By.desc(java.util.regex.Pattern.compile("(?i)(List view|列表视图)")))?.let{it.click();device.waitForIdle()}
+            file=device.findObject(By.text(filename))
+            if(file==null){
+                val list=UiScrollable(UiSelector().resourceIdMatches(".*:id/dir_list").scrollable(true)).setAsVerticalList().setSwipeDeadZonePercentage(.2)
+                assertTrue("真实目录滚动后应找到刚导出的ZIP",list.scrollIntoView(UiSelector().text(filename)))
+                file=device.findObject(By.text(filename))
+            }
+        }
+        val title=requireNotNull(file){"未在系统选择器找到刚导出的ZIP"}
+        assertEquals(filename,title.text)
+        title.click()
         waitFor("ZIP校验预览"){!backup.busy.value && backup.preview.value!=null}
         ui.onNodeWithTag("v2-backup").performScrollToNode(hasText("覆盖备份范围"));ui.onNodeWithText("覆盖备份范围").performClick()
         ui.onNodeWithTag("v2-backup").performScrollToNode(hasTestTag("v2-restore-continue"));ui.onNodeWithTag("v2-restore-continue").performClick()

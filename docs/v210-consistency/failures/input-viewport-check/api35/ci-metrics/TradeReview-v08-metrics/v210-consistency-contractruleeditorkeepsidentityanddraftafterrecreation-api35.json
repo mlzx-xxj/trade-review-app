@@ -1,0 +1,88 @@
+{
+  "api": 35,
+  "profile": "narrow-dark",
+  "case": "contractruleeditorkeepsidentityanddraftafterrecreation",
+  "syntheticOnly": true,
+  "activity": "com.tradereview.app.MainActivity",
+  "pid": 3731,
+  "screenWidthDp": 320,
+  "fontScale": 1.3,
+  "night": true,
+  "lastStep": "recreate with unsaved editor",
+  "observations": [],
+  "screenshots": [
+    "v210-consistency-contractruleeditorkeepsidentityanddraftafterrecreation-narrow-dark-before-recreate.png",
+    "v210-consistency-contractruleeditorkeepsidentityanddraftafterrecreation-narrow-dark-after-recreate.png",
+    "v210-consistency-contractruleeditorkeepsidentityanddraftafterrecreation-narrow-dark-saved.png"
+  ],
+  "ledger": {
+    "accounts": [
+      {
+        "buyRate": "0.0001",
+        "historyComplete": false,
+        "id": "futures",
+        "initialCapital": null,
+        "market": "futures",
+        "name": "国内期货账户",
+        "sellRate": "0.0006"
+      },
+      {
+        "buyRate": "0.0001",
+        "historyComplete": false,
+        "id": "stock",
+        "initialCapital": null,
+        "market": "stock",
+        "name": "A股账户",
+        "sellRate": "0.0006"
+      }
+    ],
+    "audits": [],
+    "cashFlows": [],
+    "cycles": [],
+    "executions": [],
+    "lots": [],
+    "matches": [],
+    "plans": [],
+    "reviews": [],
+    "risks": [
+      {
+        "defaultLimit": null,
+        "id": "futures",
+        "limitMode": "amount",
+        "limitValue": null,
+        "riskFund": null,
+        "warnEnabled": true
+      },
+      {
+        "defaultLimit": null,
+        "id": "stock",
+        "limitMode": "amount",
+        "limitValue": null,
+        "riskFund": null,
+        "warnEnabled": true
+      }
+    ],
+    "rules": [
+      {
+        "addMode": "none",
+        "addValue": null,
+        "closeFee": "2",
+        "code": "i2701",
+        "effectiveDay": 20744,
+        "feeMode": "per_lot",
+        "id": "056eaf44bfac4b09b469d913b460c554",
+        "marginRate": "0.1",
+        "multiplier": "100",
+        "name": "合成合约规则已更正",
+        "openFee": "1",
+        "todayFee": "3",
+        "verified": true
+      }
+    ],
+    "strategies": []
+  },
+  "context": {},
+  "semantics": "Printing with useUnmergedTree \u003d \u0027true\u0027\nNode #45016 at (l\u003d0.0, t\u003d48.0, r\u003d640.0, b\u003d1040.0)px\nHas 1 child",
+  "error": null,
+  "result": "PASS"
+}

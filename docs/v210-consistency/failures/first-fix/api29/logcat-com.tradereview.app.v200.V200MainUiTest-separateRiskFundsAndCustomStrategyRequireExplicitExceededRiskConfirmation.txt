@@ -1,0 +1,301 @@
+10-18 08:02:04.173  8753  8773 I TestRunner: started: separateRiskFundsAndCustomStrategyRequireExplicitExceededRiskConfirmation(com.tradereview.app.v200.V200MainUiTest)
+10-18 08:02:04.177  5224  7754 W InputReader: Device has associated, but no associated display id.
+10-18 08:02:04.177  5224  7754 I chatty  : uid=1000(system) Binder:5224_18 identical 6 lines
+10-18 08:02:04.177  5224  7754 W InputReader: Device has associated, but no associated display id.
+10-18 08:02:04.177  8753  8773 D IdlingRegistry: Registering idling resources: [androidx.compose.ui.test.EspressoLink@e26a1a9]
+10-18 08:02:04.177  5224  7754 W InputReader: Device has associated, but no associated display id.
+10-18 08:02:04.177  5224  7754 W InputReader: Device has associated, but no associated display id.
+10-18 08:02:04.179  8753  8773 W Settings: Setting always_finish_activities has moved from android.provider.Settings.System to android.provider.Settings.Global, returning read-only value.
+10-18 08:02:04.194  1709  9575 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 3936256
+10-18 08:02:04.194  5224  5262 E system_server: Invalid ID 0x00000000.
+10-18 08:02:04.195  1709  9575 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 3936256
+10-18 08:02:04.195  1709  9575 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 3936256
+10-18 08:02:04.198  6076  6184 D EGL_emulation: eglMakeCurrent: 0xe7573f80: ver 3 0 (tinfo 0xc3e89960)
+10-18 08:02:04.213  1709  9575 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 3936256
+10-18 08:02:04.215  1709  9575 I chatty  : uid=1000(system) HwBinder:1709_3 identical 1 line
+10-18 08:02:04.225  1709  9575 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 3936256
+10-18 08:02:04.227  1709  1709 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 3936256
+10-18 08:02:04.229  5511  6008 D EGL_emulation: eglMakeCurrent: 0x7d6ee7009140: ver 3 0 (tinfo 0x7d6ee709a2e0)
+10-18 08:02:04.243  6076  6145 W SessionLifecycleManager: Handover failed. Creating new session controller.
+10-18 08:02:04.251  6076  6139 W ThreadPoolDumper: Queue length for executor EventBus is now 11. Perhaps some tasks are too long, or the pool is too small.
+10-18 08:02:04.254  6076  6146 E sb.v.u.LiteSuggestSourc: On-device lite suggest model loading error.
+10-18 08:02:04.259  5365  5382 I ndroid.systemu: NativeAlloc concurrent copying GC freed 7203(460KB) AllocSpace objects, 0(0B) LOS objects, 46% free, 6962KB/12MB, paused 23.361ms total 147.624ms
+10-18 08:02:04.260  5224  5310 W InputReader: Device has associated, but no associated display id.
+10-18 08:02:04.260  5224  5310 I chatty  : uid=1000(system) Binder:5224_3 identical 28 lines
+10-18 08:02:04.260  5224  5310 W InputReader: Device has associated, but no associated display id.
+10-18 08:02:04.261  8753  8753 W ActivityThread: handleWindowVisibility: no activity for token android.os.BinderProxy@691905c
+10-18 08:02:04.262  5224  5310 W InputReader: Device has associated, but no associated display id.
+10-18 08:02:04.263  5224  5310 I chatty  : uid=1000(system) Binder:5224_3 identical 28 lines
+10-18 08:02:04.263  5224  5310 W InputReader: Device has associated, but no associated display id.
+10-18 08:02:04.264  1709  9575 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2519040
+10-18 08:02:04.270  5224  5266 I ActivityTaskManager: Displayed com.tradereview.app/.MainActivity: +71ms
+10-18 08:02:04.272  6076  6184 D EGL_emulation: eglMakeCurrent: 0xe7573f80: ver 3 0 (tinfo 0xc3e89960)
+10-18 08:02:04.278  8782  8899 D EGL_emulation: eglMakeCurrent: 0x7d6f31ac8780: ver 3 0 (tinfo 0x7d6f31a57ac0)
+10-18 08:02:04.294  5224  8903 D HostConnection: HostConnection::get() New Host Connection established 0x7d6ed35915e0, tid 8903
+10-18 08:02:04.295  5224  8903 D HostConnection: HostComposition ext ANDROID_EMU_CHECKSUM_HELPER_v1 ANDROID_EMU_native_sync_v2 ANDROID_EMU_dma_v1 ANDROID_EMU_direct_mem ANDROID_EMU_host_composition_v1 ANDROID_EMU_host_composition_v2 ANDROID_EMU_YUV_Cache ANDROID_EMU_sync_buffer_data ANDROID_EMU_hwc_color_transform GL_OES_EGL_image_external_essl3 GL_OES_vertex_array_object GL_KHR_texture_compression_astc_ldr ANDROID_EMU_host_side_tracing ANDROID_EMU_gles_max_version_3_0
+10-18 08:02:04.295  6076  8574 W LocationOracle: No location history returned by ContextManager
+10-18 08:02:04.296  5224  8903 D EGL_emulation: eglCreateContext: 0x7d6ed3591ae0: maj 3 min 0 rcv 3
+10-18 08:02:04.296  5224  8903 D EGL_emulation: eglMakeCurrent: 0x7d6ed3591ae0: ver 3 0 (tinfo 0x7d6ee429ba20)
+10-18 08:02:04.298  5365  5540 D EGL_emulation: eglMakeCurrent: 0x7d6f33663860: ver 3 0 (tinfo 0x7d6f33618fe0)
+10-18 08:02:04.308  5511  6008 D EGL_emulation: eglMakeCurrent: 0x7d6ee7009140: ver 3 0 (tinfo 0x7d6ee709a2e0)
+10-18 08:02:04.309  8753  8753 D LifecycleMonitor: Lifecycle status change: com.tradereview.app.MainActivity@85f08c7 in: PRE_ON_CREATE
+10-18 08:02:04.309  8753  8753 V ActivityScenario: Activity lifecycle changed event received but ignored because the reported transition was not ON_CREATE while the last known transition was PRE_ON_CREATE
+10-18 08:02:04.329  8753  8753 D LifecycleMonitor: Lifecycle status change: com.tradereview.app.MainActivity@85f08c7 in: CREATED
+10-18 08:02:04.329  8753  8753 V ActivityScenario: Update currentActivityStage to CREATED, currentActivity=com.tradereview.app.MainActivity@85f08c7
+10-18 08:02:04.330  8753  8753 D LifecycleMonitor: Lifecycle status change: com.tradereview.app.MainActivity@85f08c7 in: STARTED
+10-18 08:02:04.330  8753  8753 V ActivityScenario: Update currentActivityStage to STARTED, currentActivity=com.tradereview.app.MainActivity@85f08c7
+10-18 08:02:04.330  8753  8753 D LifecycleMonitor: Lifecycle status change: com.tradereview.app.MainActivity@85f08c7 in: RESUMED
+10-18 08:02:04.330  8753  8753 V ActivityScenario: Update currentActivityStage to RESUMED, currentActivity=com.tradereview.app.MainActivity@85f08c7
+10-18 08:02:04.376  1709  9575 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 3936256
+10-18 08:02:04.380  1709  9575 I chatty  : uid=1000(system) HwBinder:1709_3 identical 1 line
+10-18 08:02:04.381  1709  9575 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 3936256
+10-18 08:02:04.395  8753  8856 D EGL_emulation: eglMakeCurrent: 0x7d6f33634a20: ver 3 0 (tinfo 0x7d6f33618b40)
+10-18 08:02:04.395  5718  6307 W GCoreFlp: No location to return for getLastLocation()
+10-18 08:02:04.460  6076  6145 W SearchServiceCore: Abort, client detached.
+10-18 08:02:04.539  5365  5540 D EGL_emulation: eglMakeCurrent: 0x7d6f33663860: ver 3 0 (tinfo 0x7d6f33618fe0)
+10-18 08:02:04.553  6076  6171 I PBSessionCacheImpl: Deleted sessionId[155362058422] from persistence.
+10-18 08:02:04.564  5718  6192 E ModuleIdSetter: exception when setting module id
+10-18 08:02:04.564  5718  6192 E ModuleIdSetter: java.lang.IllegalStateException: Unable to get current module info in ModuleManager created with non-module Context
+10-18 08:02:04.564  5718  6192 E ModuleIdSetter: 	at com.google.android.chimera.config.ModuleManager.getCurrentModule(:com.google.android.gms@202414023@20.24.14 (040800-319035315):2)
+10-18 08:02:04.564  5718  6192 E ModuleIdSetter: 	at aewd.a(:com.google.android.gms@202414023@20.24.14 (040800-319035315):4)
+10-18 08:02:04.564  5718  6192 E ModuleIdSetter: 	at aewg.b(:com.google.android.gms@202414023@20.24.14 (040800-319035315):9)
+10-18 08:02:04.564  5718  6192 E ModuleIdSetter: 	at aeso.a(Unknown Source:0)
+10-18 08:02:04.564  5718  6192 E ModuleIdSetter: 	at rpm.a(:com.google.android.gms@202414023@20.24.14 (040800-319035315):0)
+10-18 08:02:04.564  5718  6192 E ModuleIdSetter: 	at rlv.c(:com.google.android.gms@202414023@20.24.14 (040800-319035315):1)
+10-18 08:02:04.564  5718  6192 E ModuleIdSetter: 	at rlt.b(:com.google.android.gms@202414023@20.24.14 (040800-319035315):1)
+10-18 08:02:04.564  5718  6192 E ModuleIdSetter: 	at rok.b(:com.google.android.gms@202414023@20.24.14 (040800-319035315):6)
+10-18 08:02:04.564  5718  6192 E ModuleIdSetter: 	at rok.c(:com.google.android.gms@202414023@20.24.14 (040800-319035315):6)
+10-18 08:02:04.564  5718  6192 E ModuleIdSetter: 	at rok.a(:com.google.android.gms@202414023@20.24.14 (040800-319035315):63)
+10-18 08:02:04.564  5718  6192 E ModuleIdSetter: 	at roo.handleMessage(:com.google.android.gms@202414023@20.24.14 (040800-319035315):71)
+10-18 08:02:04.564  5718  6192 E ModuleIdSetter: 	at android.os.Handler.dispatchMessage(Handler.java:103)
+10-18 08:02:04.564  5718  6192 E ModuleIdSetter: 	at aekz.a(:com.google.android.gms@202414023@20.24.14 (040800-319035315):2)
+10-18 08:02:04.564  5718  6192 E ModuleIdSetter: 	at aekz.dispatchMessage(:com.google.android.gms@202414023@20.24.14 (040800-319035315):14)
+10-18 08:02:04.564  5718  6192 E ModuleIdSetter: 	at android.os.Looper.loop(Looper.java:214)
+10-18 08:02:04.564  5718  6192 E ModuleIdSetter: 	at android.os.HandlerThread.run(HandlerThread.java:67)
+10-18 08:02:04.569  5511  5522 I s.nexuslaunche: NativeAlloc concurrent copying GC freed 2692(273KB) AllocSpace objects, 0(0B) LOS objects, 49% free, 2977KB/5955KB, paused 894us total 244.994ms
+10-18 08:02:04.591  5195  5195 I Zygote  : Process 7239 exited due to signal 9 (Killed)
+10-18 08:02:04.615  5224  5269 I libprocessgroup: Successfully killed process cgroup uid 10104 pid 7239 in 85ms
+10-18 08:02:04.616  5718  6307 W GCoreFlp: No location to return for getLastLocation()
+10-18 08:02:04.618  5718 10071 W ctxmgr  : [AclManager] No 3 for (accnt=account#-517948760#, com.google.android.gms(10119):UserVelocityProducer, vrsn=202414023, 0, 3pPkg = null ,  3pMdlId = null ,  pid = 5718). Was: 3 for 1, account#-517948760# [CONTEXT service_id=47 ]
+10-18 08:02:04.651  5718  9690 I LogUtils: [Places]: ?: Couldn't find platform key file. [CONTEXT service_id=253 ]
+10-18 08:02:04.688  5718  5718 I GeofencerStateMachine: removeGeofences: removeRequest=RemoveGeofencingRequest[REMOVE_BY_PENDING_INTENT pendingIntent=PendingIntent[creatorPackage=com.google.android.gms], packageName=com.google.android.gms]
+10-18 08:02:04.692  5718 10332 I PlacesLogger: [PlaceInferenceEngine]: [anon] Changed inference mode: 0 [CONTEXT service_id=253 ]
+10-18 08:02:04.692  5718  9690 I LogUtils: [Places]: ?: Couldn't find platform key file. [CONTEXT service_id=253 ]
+10-18 08:02:04.693  5718  9376 I LogUtils: [Places]: ?: Couldn't find platform key file. [CONTEXT service_id=253 ]
+10-18 08:02:04.697  5718  5718 I GeofencerStateMachine: removeGeofences: removeRequest=RemoveGeofencingRequest[REMOVE_BY_PENDING_INTENT pendingIntent=PendingIntent[creatorPackage=com.google.android.gms], packageName=com.google.android.gms]
+10-18 08:02:04.705  5718  6307 W GCoreFlp: No location to return for getLastLocation()
+10-18 08:02:04.715  5718  9690 I LogUtils: [Places]: ?: Couldn't find platform key file. [CONTEXT service_id=253 ]
+10-18 08:02:04.738  5718  8873 I LogUtils: [Places]: ?: Couldn't find platform key file. [CONTEXT service_id=253 ]
+10-18 08:02:04.739  5718  9376 I LogUtils: [Places]: ?: Couldn't find platform key file. [CONTEXT service_id=253 ]
+10-18 08:02:04.770  5718  8873 W Conscrypt: Could not set socket write timeout: java.net.SocketException: Socket closed
+10-18 08:02:04.770  5718  8873 W Conscrypt: 	at com.google.android.gms.org.conscrypt.Platform.setSocketWriteTimeout(:com.google.android.gms@202414023@20.24.14 (040800-319035315):2)
+10-18 08:02:04.770  5718  8873 W Conscrypt: 	at com.google.android.gms.org.conscrypt.ConscryptFileDescriptorSocket.setSoWriteTimeout(:com.google.android.gms@202414023@20.24.14 (040800-319035315):0)
+10-18 08:02:04.780  5718  8873 W Conscrypt: Could not set socket write timeout: java.net.SocketException: Socket closed
+10-18 08:02:04.780  5718  8873 W Conscrypt: 	at com.google.android.gms.org.conscrypt.Platform.setSocketWriteTimeout(:com.google.android.gms@202414023@20.24.14 (040800-319035315):2)
+10-18 08:02:04.780  5718  8873 W Conscrypt: 	at com.google.android.gms.org.conscrypt.ConscryptFileDescriptorSocket.setSoWriteTimeout(:com.google.android.gms@202414023@20.24.14 (040800-319035315):0)
+10-18 08:02:04.791  5718 10071 I ctxmgr  : [ProducerStatusImpl] updateStateForNewContextData: inactive, contextName=7 [CONTEXT service_id=47 ]
+10-18 08:02:04.797  5718  6307 W GCoreFlp: No location to return for getLastLocation()
+10-18 08:02:04.819  5718 10071 I LogUtils: [Places]: ?: Couldn't find platform key file. [CONTEXT service_id=253 ]
+10-18 08:02:04.833  5718 10332 I LogUtils: [Places]: ?: PlacesBleScanner start() with priority 2 [CONTEXT service_id=253 ]
+10-18 08:02:04.833  5718 10332 I PlacesLogger: [PlaceInferenceEngine]: [anon] Changed inference mode: 1 [CONTEXT service_id=253 ]
+10-18 08:02:04.834  5718  6307 W GCoreFlp: No location to return for getLastLocation()
+10-18 08:02:04.851  5718 10332 W LogUtils: [Places]: ?: Failed to download inference model weights SLS
+10-18 08:02:04.851  5718 10332 W LogUtils: ckdr: NOT_FOUND: Requested entity was not found.
+10-18 08:02:04.851  5718 10332 W LogUtils: 	at ckdq.c(:com.google.android.gms@202414023@20.24.14 (040800-319035315):3)
+10-18 08:02:04.851  5718 10332 W LogUtils: 	at sjo.a(:com.google.android.gms@202414023@20.24.14 (040800-319035315):57)
+10-18 08:02:04.851  5718 10332 W LogUtils: 	at bjxj.call(:com.google.android.gms@202414023@20.24.14 (040800-319035315):0)
+10-18 08:02:04.851  5718 10332 W LogUtils: 	at bjvu.run(:com.google.android.gms@202414023@20.24.14 (040800-319035315):1)
+10-18 08:02:04.851  5718 10332 W LogUtils: 	at soy.b(:com.google.android.gms@202414023@20.24.14 (040800-319035315):12)
+10-18 08:02:04.851  5718 10332 W LogUtils: 	at soy.run(:com.google.android.gms@202414023@20.24.14 (040800-319035315):7)
+10-18 08:02:04.851  5718 10332 W LogUtils: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)
+10-18 08:02:04.851  5718 10332 W LogUtils: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)
+10-18 08:02:04.851  5718 10332 W LogUtils: 	at sux.run(:com.google.android.gms@202414023@20.24.14 (040800-319035315):0)
+10-18 08:02:04.851  5718 10332 W LogUtils: 	at java.lang.Thread.run(Thread.java:919)
+10-18 08:02:04.851  5718 10332 W LogUtils:
+10-18 08:02:04.851  5718 10332 W LogUtils: [CONTEXT service_id=253 ]
+10-18 08:02:04.851  5718 10332 W PlacesLogger: [PlaceInferenceEngine]: Failed to download model weights. Status code: 7 [CONTEXT service_id=253 ]
+10-18 08:02:04.852  5718 10334 I LogUtils: [Places]: ?: Couldn't find platform key file. [CONTEXT service_id=253 ]
+10-18 08:02:04.866  5718  9582 I LogUtils: [Places]: ?: Couldn't find platform key file. [CONTEXT service_id=253 ]
+10-18 08:02:04.877  5224  8903 D HostConnection: HostConnection::get() New Host Connection established 0x7d6ed35915e0, tid 8903
+10-18 08:02:04.877  5224  8903 D HostConnection: HostComposition ext ANDROID_EMU_CHECKSUM_HELPER_v1 ANDROID_EMU_native_sync_v2 ANDROID_EMU_dma_v1 ANDROID_EMU_direct_mem ANDROID_EMU_host_composition_v1 ANDROID_EMU_host_composition_v2 ANDROID_EMU_YUV_Cache ANDROID_EMU_sync_buffer_data ANDROID_EMU_hwc_color_transform GL_OES_EGL_image_external_essl3 GL_OES_vertex_array_object GL_KHR_texture_compression_astc_ldr ANDROID_EMU_host_side_tracing ANDROID_EMU_gles_max_version_3_0
+10-18 08:02:04.878  5224  8903 D EGL_emulation: eglCreateContext: 0x7d6ed3591ae0: maj 3 min 0 rcv 3
+10-18 08:02:04.878  5224  8903 D EGL_emulation: eglMakeCurrent: 0x7d6ed3591ae0: ver 3 0 (tinfo 0x7d6ee429ba20)
+10-18 08:02:04.919  5718  5718 I BeaconBle: Client requested scan, settings=BleSettings [scanMode=ZERO_POWER, callbackType=ALL_MATCHES, reportDelayMillis=0, 1 filters, 0 clients, callingClientName=Places] [CONTEXT service_id=111 ]
+10-18 08:02:04.919  5718  5718 I BeaconBle: Scan : No clients left, canceling alarm. [CONTEXT service_id=111 ]
+10-18 08:02:04.920  5718  5718 E BeaconBle: Scan couldn't start for Places [CONTEXT service_id=111 ]
+10-18 08:02:04.931  5718  5718 W Places  : BLE failure while scanning - code 5
+10-18 08:02:05.157  8753  8753 I AssistStructure: Flattened final assist data: 1284 bytes, containing 1 windows, 8 views
+10-18 08:02:05.175  5718  5718 W ktk     : Pending fill request while another request in the same session was triggered. [CONTEXT service_id=177 ]
+10-18 08:02:05.188  8753  8753 D Autofill Status: Autofill popup isn't shown because autofill is not available.
+10-18 08:02:05.188  8753  8753 D Autofill Status:
+10-18 08:02:05.188  8753  8753 D Autofill Status: Did you set up autofill?
+10-18 08:02:05.188  8753  8753 D Autofill Status: 1. Go to Settings > System > Languages&input > Advanced > Autofill Service
+10-18 08:02:05.188  8753  8753 D Autofill Status: 2. Pick a service
+10-18 08:02:05.188  8753  8753 D Autofill Status:
+10-18 08:02:05.188  8753  8753 D Autofill Status: Did you add an account?
+10-18 08:02:05.188  8753  8753 D Autofill Status: 1. Go to Settings > System > Languages&input > Advanced
+10-18 08:02:05.188  8753  8753 D Autofill Status: 2. Click on the settings icon next to the Autofill Service
+10-18 08:02:05.188  8753  8753 D Autofill Status: 3. Add your account
+10-18 08:02:05.191  5636  5636 I KeyboardViewUtil: systemKeyboardHeightRatio:1.000000; userKeyboardHeightRatio:1.000000.
+10-18 08:02:05.191  5636  5636 I AndroidIME: DummyIme.onActivate() : EditorInfo = Package = com.tradereview.app : Type = Number : Learning = Disable : Suggestion = Hide : AutoCorrection = Disable : Microphone = Hide : NoPersonalizedLearning = Disable
+10-18 08:02:05.192  5636  5636 I Conv2QueryExtension: Current locale: en_US, config allows these locales: de,en,es,fr,it,ms,pt,ta
+10-18 08:02:05.192  5636  5636 I Conv2QueryExtension: Conv2Query not enabled due to current app [com.tradereview.app] not in whitelist
+10-18 08:02:05.192  5636  5636 I Conv2QueryExtension: onActivate() : Disabled by unsupported host app
+10-18 08:02:05.193  5636  5636 I CurrentMicStatusHolder: Current Mic status = {MicIconHidden-PasswordOrNumberOrDateInputType,}
+10-18 08:02:05.207  1709  9575 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 3788800
+10-18 08:02:05.213  1709  9575 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 3788800
+10-18 08:02:05.213  5636  8867 D EGL_emulation: eglMakeCurrent: 0x7d6f33658e20: ver 3 0 (tinfo 0x7d6f337156c0)
+10-18 08:02:05.215  1709  9575 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 3788800
+10-18 08:02:05.504  8753  8753 I AssistStructure: Flattened final assist data: 836 bytes, containing 1 windows, 5 views
+10-18 08:02:05.513  5718  5718 W ktk     : Pending fill request while another request in the same session was triggered. [CONTEXT service_id=177 ]
+10-18 08:02:05.535  8753  8753 D Autofill Status: Autofill popup isn't shown because autofill is not available.
+10-18 08:02:05.535  8753  8753 D Autofill Status:
+10-18 08:02:05.535  8753  8753 D Autofill Status: Did you set up autofill?
+10-18 08:02:05.535  8753  8753 D Autofill Status: 1. Go to Settings > System > Languages&input > Advanced > Autofill Service
+10-18 08:02:05.535  8753  8753 D Autofill Status: 2. Pick a service
+10-18 08:02:05.535  8753  8753 D Autofill Status:
+10-18 08:02:05.535  8753  8753 D Autofill Status: Did you add an account?
+10-18 08:02:05.535  8753  8753 D Autofill Status: 1. Go to Settings > System > Languages&input > Advanced
+10-18 08:02:05.535  8753  8753 D Autofill Status: 2. Click on the settings icon next to the Autofill Service
+10-18 08:02:05.535  8753  8753 D Autofill Status: 3. Add your account
+10-18 08:02:05.537  5636  5636 I KeyboardViewUtil: systemKeyboardHeightRatio:1.000000; userKeyboardHeightRatio:1.000000.
+10-18 08:02:05.537  5636  5636 I AndroidIME: DummyIme.onDeactivate()
+10-18 08:02:05.537  5636  5636 I AndroidIME: DummyIme.onActivate() : EditorInfo = Package = com.tradereview.app : Type = Number : Learning = Disable : Suggestion = Hide : AutoCorrection = Disable : Microphone = Hide : NoPersonalizedLearning = Disable
+10-18 08:02:05.542  5636  5636 I Conv2QueryExtension: Current locale: en_US, config allows these locales: de,en,es,fr,it,ms,pt,ta
+10-18 08:02:05.542  5636  5636 I Conv2QueryExtension: Conv2Query not enabled due to current app [com.tradereview.app] not in whitelist
+10-18 08:02:05.542  5636  5636 I Conv2QueryExtension: onActivate() : Disabled by unsupported host app
+10-18 08:02:05.543  5636  5636 I CurrentMicStatusHolder: Current Mic status = {MicIconHidden-PasswordOrNumberOrDateInputType,}
+10-18 08:02:09.524  5718  9635 I LogUtils: [Places]: ?: Couldn't find platform key file. [CONTEXT service_id=253 ]
+10-18 08:02:09.528  5718  8873 I LogUtils: [Places]: ?: Couldn't find platform key file. [CONTEXT service_id=253 ]
+10-18 08:02:09.536  5224  5266 E memtrack: Couldn't load memtrack module
+10-18 08:02:09.536  5224  5266 W android.os.Debug: failed to get memory consumption info: -1
+10-18 08:02:09.541  5224  5266 E memtrack: Couldn't load memtrack module
+10-18 08:02:09.541  5224  5266 W android.os.Debug: failed to get memory consumption info: -1
+10-18 08:02:09.543  5224  5266 E memtrack: Couldn't load memtrack module
+10-18 08:02:09.543  5224  5266 W android.os.Debug: failed to get memory consumption info: -1
+10-18 08:02:09.545  5718 10332 I LogUtils: [Places]: ?: PlacesBleScanner stop() [CONTEXT service_id=253 ]
+10-18 08:02:09.545  5718  5718 I BeaconBle: Scan : No clients left, canceling alarm. [CONTEXT service_id=111 ]
+10-18 08:02:09.545  5718  5718 I BeaconBle: Scan canceled successfully. [CONTEXT service_id=111 ]
+10-18 08:02:09.548  5718 10332 I PlacesLogger: [PlaceInferenceEngine]: [anon] Changed inference mode: 0 [CONTEXT service_id=253 ]
+10-18 08:02:09.554  5718  6307 W GCoreFlp: No location to return for getLastLocation()
+10-18 08:02:09.560  5718 10071 I LogUtils: [Places]: ?: Couldn't find platform key file. [CONTEXT service_id=253 ]
+10-18 08:02:09.561  5718  9635 I LogUtils: [Places]: ?: Couldn't find platform key file. [CONTEXT service_id=253 ]
+10-18 08:02:09.605  5718  5718 I GeofencerStateMachine: removeGeofences: removeRequest=RemoveGeofencingRequest[REMOVE_BY_PENDING_INTENT pendingIntent=PendingIntent[creatorPackage=com.google.android.gms], packageName=com.google.android.gms]
+10-18 08:02:10.388  1757  1757 E netmgr  : Failed to open QEMU pipe 'qemud:network': Invalid argument
+10-18 08:02:10.432  1763  1763 E wifi_forwarder: RemoteConnection failed to initialize: RemoteConnection failed to open pipe
+10-18 08:02:14.450  6076  6145 I WorkerManager: dispose()
+10-18 08:02:14.451  6076  6145 W ThreadPoolDumper: Queue length for executor EventBus is now 11. Perhaps some tasks are too long, or the pool is too small.
+10-18 08:02:14.550  5224  5266 E memtrack: Couldn't load memtrack module
+10-18 08:02:14.550  5224  5266 W android.os.Debug: failed to get memory consumption info: -1
+10-18 08:02:14.550  5718  5718 I BeaconBle: Scan : No clients left, canceling alarm. [CONTEXT service_id=111 ]
+10-18 08:02:14.886  5224  5266 E memtrack: Couldn't load memtrack module
+10-18 08:02:14.887  5224  5266 W android.os.Debug: failed to get memory consumption info: -1
+10-18 08:02:20.539  5224  5266 E memtrack: Couldn't load memtrack module
+10-18 08:02:20.539  5224  5266 W android.os.Debug: failed to get memory consumption info: -1
+10-18 08:02:20.575  5196  5196 I Zygote  : Process 8325 exited due to signal 9 (Killed)
+10-18 08:02:20.585  5224  5269 I libprocessgroup: Successfully killed process cgroup uid 10131 pid 8325 in 43ms
+10-18 08:02:22.246  5224  6126 D WificondControl: Scan result ready event
+10-18 08:02:24.575  5195  5195 I Zygote  : Process 8540 exited due to signal 9 (Killed)
+10-18 08:02:24.615  5224  5269 I libprocessgroup: Successfully killed process cgroup uid 10107 pid 8540 in 81ms
+10-18 08:02:28.076  5196  5196 I Zygote  : Process 6555 exited due to signal 9 (Killed)
+10-18 08:02:28.115  5224  5269 I libprocessgroup: Successfully killed process cgroup uid 10131 pid 6555 in 81ms
+10-18 08:02:35.685  1709  9575 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 3936256
+10-18 08:02:35.740  8753  8753 D LifecycleMonitor: Lifecycle status change: com.tradereview.app.MainActivity@85f08c7 in: PAUSED
+10-18 08:02:35.740  8753  8753 V ActivityScenario: Update currentActivityStage to PAUSED, currentActivity=com.tradereview.app.MainActivity@85f08c7
+10-18 08:02:35.741  5224  8700 W InputReader: Device has associated, but no associated display id.
+10-18 08:02:35.742  5224  8700 I chatty  : uid=1000(system) Binder:5224_20 identical 48 lines
+10-18 08:02:35.743  5224  8700 W InputReader: Device has associated, but no associated display id.
+10-18 08:02:35.744  8782  8782 W ActivityThread: handleWindowVisibility: no activity for token android.os.BinderProxy@98ed4b
+10-18 08:02:35.762  1709  9575 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 3936256
+10-18 08:02:35.769  5224  5266 E memtrack: Couldn't load memtrack module
+10-18 08:02:35.769  5224  5266 W android.os.Debug: failed to get memory consumption info: -1
+10-18 08:02:35.777  5224  5266 E memtrack: Couldn't load memtrack module
+10-18 08:02:35.777  5224  5266 W android.os.Debug: failed to get memory consumption info: -1
+10-18 08:02:35.778  5224  5262 W InputReader: Device has associated, but no associated display id.
+10-18 08:02:35.778  5224  5262 I chatty  : uid=1000(system) android.anim identical 18 lines
+10-18 08:02:35.779  5224  5262 W InputReader: Device has associated, but no associated display id.
+10-18 08:02:35.780  1709  9575 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 2519040
+10-18 08:02:35.794  5195  5195 I Zygote  : Process 7474 exited due to signal 9 (Killed)
+10-18 08:02:35.794  8753  8856 D EGL_emulation: eglMakeCurrent: 0x7d6f33634a20: ver 3 0 (tinfo 0x7d6f33618b40)
+10-18 08:02:35.798  5224  5266 E memtrack: Couldn't load memtrack module
+10-18 08:02:35.798  5224  5266 W android.os.Debug: failed to get memory consumption info: -1
+10-18 08:02:35.806  5365  5540 D EGL_emulation: eglMakeCurrent: 0x7d6f33663860: ver 3 0 (tinfo 0x7d6f33618fe0)
+10-18 08:02:35.806  5224  5269 I libprocessgroup: Successfully killed process cgroup uid 10117 pid 7474 in 43ms
+10-18 08:02:35.823  8753  8753 D AutofillManager: onActivityFinishing(): calling cancelLocked()
+10-18 08:02:35.823  8753  8753 D LifecycleMonitor: Lifecycle status change: com.tradereview.app.MainActivity@85f08c7 in: STOPPED
+10-18 08:02:35.823  8753  8753 V ActivityScenario: Update currentActivityStage to STOPPED, currentActivity=com.tradereview.app.MainActivity@85f08c7
+10-18 08:02:35.841  8753  8753 D LifecycleMonitor: Lifecycle status change: com.tradereview.app.MainActivity@85f08c7 in: DESTROYED
+10-18 08:02:35.841  8753  8753 V ActivityScenario: Update currentActivityStage to DESTROYED, currentActivity=null
+10-18 08:02:35.850  8753  8773 D IdlingRegistry: Unregistering idling resources: [androidx.compose.ui.test.EspressoLink@e26a1a9]
+10-18 08:02:35.856  8753  8773 E TestRunner: failed: separateRiskFundsAndCustomStrategyRequireExplicitExceededRiskConfirmation(com.tradereview.app.v200.V200MainUiTest)
+10-18 08:02:35.856  8753  8773 E TestRunner: ----- begin exception -----
+10-18 08:02:35.856  8753  8773 E TestRunner: java.lang.AssertionError: 保存独立风险金: busy=false, problem=null, pending=false, executions=0
+10-18 08:02:35.856  8753  8773 E TestRunner: 	at com.tradereview.app.v200.V200MainUiTest.separateRiskFundsAndCustomStrategyRequireExplicitExceededRiskConfirmation$step(V200MainUiTest.kt:87)
+10-18 08:02:35.856  8753  8773 E TestRunner: 	at com.tradereview.app.v200.V200MainUiTest.separateRiskFundsAndCustomStrategyRequireExplicitExceededRiskConfirmation(V200MainUiTest.kt:95)
+10-18 08:02:35.856  8753  8773 E TestRunner: 	at java.lang.reflect.Method.invoke(Native Method)
+10-18 08:02:35.856  8753  8773 E TestRunner: 	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
+10-18 08:02:35.856  8753  8773 E TestRunner: 	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+10-18 08:02:35.856  8753  8773 E TestRunner: 	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
+10-18 08:02:35.856  8753  8773 E TestRunner: 	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+10-18 08:02:35.856  8753  8773 E TestRunner: 	at androidx.test.internal.runner.junit4.statement.RunBefores.evaluate(RunBefores.java:80)
+10-18 08:02:35.856  8753  8773 E TestRunner: 	at org.junit.rules.TestWatcher$1.evaluate(TestWatcher.java:61)
+10-18 08:02:35.856  8753  8773 E TestRunner: 	at org.junit.rules.ExternalResource$1.evaluate(ExternalResource.java:54)
+10-18 08:02:35.856  8753  8773 E TestRunner: 	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1$evaluate$1.invoke(AndroidComposeTestRule.android.kt:295)
+10-18 08:02:35.856  8753  8773 E TestRunner: 	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1$evaluate$1.invoke(AndroidComposeTestRule.android.kt:295)
+10-18 08:02:35.856  8753  8773 E TestRunner: 	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.withDisposableContent(ComposeUiTest.android.kt:565)
+10-18 08:02:35.856  8753  8773 E TestRunner: 	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1$1$1$1.invoke(ComposeUiTest.android.kt:370)
+10-18 08:02:35.856  8753  8773 E TestRunner: 	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.withComposeIdlingResource(ComposeUiTest.android.kt:439)
+10-18 08:02:35.856  8753  8773 E TestRunner: 	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$withComposeIdlingResource(ComposeUiTest.android.kt:235)
+10-18 08:02:35.856  8753  8773 E TestRunner: 	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1$1$1.invoke(ComposeUiTest.android.kt:369)
+10-18 08:02:35.856  8753  8773 E TestRunner: 	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.withWindowRecomposer(ComposeUiTest.android.kt:413)
+10-18 08:02:35.856  8753  8773 E TestRunner: 	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$withWindowRecomposer(ComposeUiTest.android.kt:235)
+10-18 08:02:35.856  8753  8773 E TestRunner: 	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1$1.invoke(ComposeUiTest.android.kt:368)
+10-18 08:02:35.856  8753  8773 E TestRunner: 	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.withTestCoroutines(ComposeUiTest.android.kt:426)
+10-18 08:02:35.856  8753  8773 E TestRunner: 	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$withTestCoroutines(ComposeUiTest.android.kt:235)
+10-18 08:02:35.856  8753  8773 E TestRunner: 	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1.invoke(ComposeUiTest.android.kt:367)
+10-18 08:02:35.856  8753  8773 E TestRunner: 	at androidx.compose.ui.test.EspressoLink.withStrategy(EspressoLink.android.kt:69)
+10-18 08:02:35.856  8753  8773 E TestRunner: 	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1.invoke(ComposeUiTest.android.kt:366)
+10-18 08:02:35.856  8753  8773 E TestRunner: 	at androidx.compose.ui.test.IdlingResourceRegistry.withRegistry(IdlingResourceRegistry.jvm.kt:148)
+10-18 08:02:35.856  8753  8773 E TestRunner: 	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1.invoke(ComposeUiTest.android.kt:365)
+10-18 08:02:35.856  8753  8773 E TestRunner: 	at androidx.compose.ui.test.ComposeRootRegistry.withRegistry(ComposeRootRegistry.android.kt:139)
+10-18 08:02:35.856  8753  8773 E TestRunner: 	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.runTest(ComposeUiTest.android.kt:364)
+10-18 08:02:35.856  8753  8773 E TestRunner: 	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1.evaluate(AndroidComposeTestRule.android.kt:295)
+10-18 08:02:35.856  8753  8773 E TestRunner: 	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
+10-18 08:02:35.856  8753  8773 E TestRunner: 	at org.junit.runners.BlockJUnit4ClassRunner$1.evaluate(BlockJUnit4ClassRunner.java:100)
+10-18 08:02:35.856  8753  8773 E TestRunner: 	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:366)
+10-18 08:02:35.856  8753  8773 E TestRunner: 	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:103)
+10-18 08:02:35.856  8753  8773 E TestRunner: 	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:63)
+10-18 08:02:35.856  8753  8773 E TestRunner: 	at org.junit.runners.ParentRunner$4.run(ParentRunner.java:331)
+10-18 08:02:35.856  8753  8773 E TestRunner: 	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:79)
+10-18 08:02:35.856  8753  8773 E TestRunner: 	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:329)
+10-18 08:02:35.856  8753  8773 E TestRunner: 	at org.junit.runners.ParentRunner.access$100(ParentRunner.java:66)
+10-18 08:02:35.857  8753  8773 E TestRunner: 	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:293)
+10-18 08:02:35.857  8753  8773 E TestRunner: 	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
+10-18 08:02:35.857  8753  8773 E TestRunner: 	at org.junit.runners.ParentRunner.run(ParentRunner.java:413)
+10-18 08:02:35.857  8753  8773 E TestRunner: 	at androidx.test.ext.junit.runners.AndroidJUnit4.run(AndroidJUnit4.java:162)
+10-18 08:02:35.857  8753  8773 E TestRunner: 	at org.junit.runners.Suite.runChild(Suite.java:128)
+10-18 08:02:35.857  8753  8773 E TestRunner: 	at org.junit.runners.Suite.runChild(Suite.java:27)
+10-18 08:02:35.857  8753  8773 E TestRunner: 	at org.junit.runners.ParentRunner$4.run(ParentRunner.java:331)
+10-18 08:02:35.857  8753  8773 E TestRunner: 	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:79)
+10-18 08:02:35.857  8753  8773 E TestRunner: 	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:329)
+10-18 08:02:35.857  8753  8773 E TestRunner: 	at org.junit.runners.ParentRunner.access$100(ParentRunner.java:66)
+10-18 08:02:35.857  8753  8773 E TestRunner: 	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:293)
+10-18 08:02:35.857  8753  8773 E TestRunner: 	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
+10-18 08:02:35.857  8753  8773 E TestRunner: 	at org.junit.runners.ParentRunner.run(ParentRunner.java:413)
+10-18 08:02:35.857  8753  8773 E TestRunner: 	at org.junit.runner.JUnitCore.run(JUnitCore.java:137)
+10-18 08:02:35.857  8753  8773 E TestRunner: 	at org.junit.runner.JUnitCore.run(JUnitCore.java:115)
+10-18 08:02:35.857  8753  8773 E TestRunner: 	at androidx.test.internal.runner.TestExecutor.execute(TestExecutor.java:68)
+10-18 08:02:35.857  8753  8773 E TestRunner: 	at androidx.test.internal.runner.TestExecutor.execute(TestExecutor.java:59)
+10-18 08:02:35.857  8753  8773 E TestRunner: 	at androidx.test.runner.AndroidJUnitRunner.onStart(AndroidJUnitRunner.java:463)
+10-18 08:02:35.857  8753  8773 E TestRunner: 	at android.app.Instrumentation$InstrumentationThread.run(Instrumentation.java:2189)
+10-18 08:02:35.857  8753  8773 E TestRunner: Caused by: androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 30000 ms
+10-18 08:02:35.857  8753  8773 E TestRunner: 	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:504)
+10-18 08:02:35.857  8753  8773 E TestRunner: 	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:339)
+10-18 08:02:35.857  8753  8773 E TestRunner: 	at com.tradereview.app.v200.V200MainUiTest.wait(V200MainUiTest.kt:46)
+10-18 08:02:35.857  8753  8773 E TestRunner: 	at com.tradereview.app.v200.V200MainUiTest.separateRiskFundsAndCustomStrategyRequireExplicitExceededRiskConfirmation$step(V200MainUiTest.kt:86)
+10-18 08:02:35.857  8753  8773 E TestRunner: 	... 57 more
+10-18 08:02:35.857  8753  8773 E TestRunner: ----- end exception -----
+10-18 08:02:35.864  1709  9575 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 3936256
+10-18 08:02:35.870  1709  9575 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 3936256
+10-18 08:02:35.873  8782  8899 D EGL_emulation: eglMakeCurrent: 0x7d6f31ac8780: ver 3 0 (tinfo 0x7d6f31a57ac0)
+10-18 08:02:35.876  8753  8773 I TestRunner: finished: separateRiskFundsAndCustomStrategyRequireExplicitExceededRiskConfirmation(com.tradereview.app.v200.V200MainUiTest)

@@ -1,0 +1,90 @@
+[
+  {
+    "step": "create strategy through UI",
+    "event": "begin",
+    "elapsedRealtimeMs": 2372477
+  },
+  {
+    "step": "create strategy through UI",
+    "event": "complete",
+    "elapsedRealtimeMs": 2377884
+  },
+  {
+    "step": "save five real-form executions",
+    "event": "begin",
+    "elapsedRealtimeMs": 2377886
+  },
+  {
+    "step": "save five real-form executions",
+    "event": "complete",
+    "elapsedRealtimeMs": 2391405
+  },
+  {
+    "step": "correct linked strategy and recreate editor",
+    "event": "begin",
+    "elapsedRealtimeMs": 2391406
+  },
+  {
+    "step": "correct linked strategy and recreate editor",
+    "event": "complete",
+    "elapsedRealtimeMs": 2399957
+  },
+  {
+    "step": "save independent stock risk through keyboard UI",
+    "event": "begin",
+    "elapsedRealtimeMs": 2399958
+  },
+  {
+    "step": "save independent stock risk through keyboard UI",
+    "event": "complete",
+    "elapsedRealtimeMs": 2401948
+  },
+  {
+    "step": "save verified future rule without repricing old unknown fees",
+    "event": "begin",
+    "elapsedRealtimeMs": 2401950
+  },
+  {
+    "step": "save verified future rule without repricing old unknown fees",
+    "event": "complete",
+    "elapsedRealtimeMs": 2414584
+  },
+  {
+    "step": "real DocumentsUI ZIP export preview cancel and replace restore",
+    "event": "begin",
+    "elapsedRealtimeMs": 2414586
+  },
+  {
+    "step": "DocumentsUI",
+    "kind": "CreateDocument",
+    "package": "com.android.documentsui",
+    "foregroundPackage": "com.android.documentsui"
+  },
+  {
+    "step": "DocumentsUI",
+    "kind": "OpenDocument",
+    "package": "com.android.documentsui",
+    "foregroundPackage": "com.android.documentsui"
+  },
+  {
+    "step": "DocumentsUI",
+    "kind": "OpenDocument",
+    "package": "com.android.documentsui",
+    "foregroundPackage": "com.android.documentsui"
+  },
+  {
+    "step": "real DocumentsUI ZIP export preview cancel and replace restore",
+    "event": "complete",
+    "elapsedRealtimeMs": 2433861
+  },
+  {
+    "step": "read restored financial UI",
+    "event": "begin",
+    "elapsedRealtimeMs": 2433862
+  },
+  {
+    "step": "read restored financial UI",
+    "event": "complete",
+    "elapsedRealtimeMs": 2437468
+  }
+]

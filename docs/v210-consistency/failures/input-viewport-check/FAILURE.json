@@ -1,0 +1,304 @@
+{
+  "sourceCommit": "7dcd4af1a9b23534ae121a238f3d6b7979329fe4",
+  "runId": 39128317494,
+  "result": "FAIL",
+  "classification": "test-measurement-and-finder-errors-not-product-financial-defects",
+  "artifacts": {
+    "35": {
+      "id": 12137936137,
+      "sha256": "f5088ac7bdf0768277a98b7bac8d37db9df71209d1e5f9c46487e2d30b9cde3c"
+    },
+    "29": {
+      "id": 12138022673,
+      "sha256": "4a45a67f2a3f0ffeafce9df7f92e0958caf1f063940926352d45eb1ae4998e48"
+    }
+  },
+  "api35": {
+    "tests": 148,
+    "failures": 1,
+    "errors": 0,
+    "skipped": 0,
+    "original143": "PASS",
+    "fourNewProbes": "PASS",
+    "saveBoundsPx": [
+      902,
+      48,
+      1024,
+      144
+    ],
+    "saveTouchHeightDp": 48,
+    "inputBoundsPx": [
+      24,
+      146,
+      1016,
+      272
+    ],
+    "imeTopPx": 271,
+    "readableInputIntersectionHeightDp": 62.5
+  },
+  "reason": "The assertion incorrectly required the entire clipped multiline input border above IME. Original PNG shows readable input lines and fully visible Save. Correct definition measures the actual readable intersection (>=24dp), retaining separate strict Save >=48dp wholly above IME.",
+  "api29": {
+    "nativeTests": 148,
+    "nativeFailures": 0,
+    "nativeErrors": 0,
+    "nativeSkipped": 0,
+    "originalExtraInstrumentations": 22,
+    "originalExtraResult": "PASS",
+    "newRegularLightJourney": "PASS",
+    "newRegularLightReopen": "FAIL",
+    "failure": "New test used merged semantics for the quantity child inside a merged position card. Original PNG and unmerged node show 500 股. Use the unmerged finder, retain exact visible text assertion.",
+    "previousPid": 17429,
+    "reopenPid": 17633,
+    "overall": "FAIL",
+    "zipBytesIndependentlyVerified": false,
+    "zipEvidenceLimit": "C4 pulled the ZIP only after reopen; reopen failed first, so actual ZIP bytes were not retained. No claim of independent ZIP verification for this failed run."
+  },
+  "files": {
+    "api35/ci-metrics/TradeReview-v08-metrics/v210-consistency-riskruleandaccountcontrolsexposenamesandstate-api35.json": {
+      "bytes": 2364,
+      "sha256": "f84a615e42267110b095228fb473bc73ed79f419b66af1e8684be483d2171129",
+      "artifactId": 12137936137,
+      "originalPath": "ci-metrics/TradeReview-v08-metrics/v210-consistency-riskruleandaccountcontrolsexposenamesandstate-api35.json"
+    },
+    "api35/ci-metrics/TradeReview-v08-metrics/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-api35.json": {
+      "bytes": 27484,
+      "sha256": "83488dad22c70b5a8fdd1f55a67b0d44ca0a49de4d315f89421ddef7f4425eab",
+      "artifactId": 12137936137,
+      "originalPath": "ci-metrics/TradeReview-v08-metrics/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-api35.json"
+    },
+    "api35/ci-metrics/TradeReview-v08-metrics/v210-consistency-riskinputkeepsheadervisiblewithrealkeyboard-api35.json": {
+      "bytes": 1970,
+      "sha256": "ad233efdef038f39183dc4eb5d4db8df7aa11ac2cd6b87786d91f1e5da83b80c",
+      "artifactId": 12137936137,
+      "originalPath": "ci-metrics/TradeReview-v08-metrics/v210-consistency-riskinputkeepsheadervisiblewithrealkeyboard-api35.json"
+    },
+    "api35/ci-metrics/TradeReview-v08-metrics/v210-consistency-strategyeditorkeepsidentityanddraftafterrecreation-api35.json": {
+      "bytes": 2527,
+      "sha256": "bb50e5ed599da64279a14181c291af933fddf856e1bb9e829ac87c94404c82bd",
+      "artifactId": 12137936137,
+      "originalPath": "ci-metrics/TradeReview-v08-metrics/v210-consistency-strategyeditorkeepsidentityanddraftafterrecreation-api35.json"
+    },
+    "api35/ci-metrics/TradeReview-v08-metrics/v210-consistency-contractruleeditorkeepsidentityanddraftafterrecreation-api35.json": {
+      "bytes": 2375,
+      "sha256": "6d89431a3ca5401e2ab906d92861541945a565b6073e278839202d861a0bfd21",
+      "artifactId": 12137936137,
+      "originalPath": "ci-metrics/TradeReview-v08-metrics/v210-consistency-contractruleeditorkeepsidentityanddraftafterrecreation-api35.json"
+    },
+    "api35/ci-v200/consistency-native/v210-consistency-riskruleandaccountcontrolsexposenamesandstate-narrow-dark-risk-control.png": {
+      "bytes": 103130,
+      "sha256": "0a02ab438e8ba3981a1ac060b74101b5785fa7189e0fcbfd284afb6d8f6aa3c8",
+      "artifactId": 12137936137,
+      "originalPath": "ci-v200/consistency-native/v210-consistency-riskruleandaccountcontrolsexposenamesandstate-narrow-dark-risk-control.png"
+    },
+    "api35/ci-v200/consistency-native/v210-consistency-riskruleandaccountcontrolsexposenamesandstate-narrow-dark-rule-control.png": {
+      "bytes": 104161,
+      "sha256": "589ba1300ac9ff183d5d5bbc377c84bbe4c087573dfdb18b1d683bf4d5d7c5e8",
+      "artifactId": 12137936137,
+      "originalPath": "ci-v200/consistency-native/v210-consistency-riskruleandaccountcontrolsexposenamesandstate-narrow-dark-rule-control.png"
+    },
+    "api35/ci-v200/consistency-native/v210-consistency-strategyeditorkeepsidentityanddraftafterrecreation-narrow-dark-before-recreate.png": {
+      "bytes": 88577,
+      "sha256": "90ee54e88c398531d88a56ac6548a58051d751547363b2ccd5f3359210a92246",
+      "artifactId": 12137936137,
+      "originalPath": "ci-v200/consistency-native/v210-consistency-strategyeditorkeepsidentityanddraftafterrecreation-narrow-dark-before-recreate.png"
+    },
+    "api35/ci-v200/consistency-native/v210-consistency-strategyeditorkeepsidentityanddraftafterrecreation-narrow-dark-saved.png": {
+      "bytes": 131965,
+      "sha256": "5d9b285dd0dea22499354085975aabdb1956158e28ae558f28ff4938f6a161a9",
+      "artifactId": 12137936137,
+      "originalPath": "ci-v200/consistency-native/v210-consistency-strategyeditorkeepsidentityanddraftafterrecreation-narrow-dark-saved.png"
+    },
+    "api35/ci-v200/consistency-native/v210-consistency-contractruleeditorkeepsidentityanddraftafterrecreation-narrow-dark-saved.png": {
+      "bytes": 89606,
+      "sha256": "5e8ef438655b6aab76009f9e7d6de7b3528cf8eb84ddfd58e3f5b2899435cef6",
+      "artifactId": 12137936137,
+      "originalPath": "ci-v200/consistency-native/v210-consistency-contractruleeditorkeepsidentityanddraftafterrecreation-narrow-dark-saved.png"
+    },
+    "api35/ci-v200/consistency-native/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-failure.png": {
+      "bytes": 95437,
+      "sha256": "13c02aecbd40d0d7044f77438b3582e1b6d2394a044ac8ef5ff9b51f6ad3c3eb",
+      "artifactId": 12137936137,
+      "originalPath": "ci-v200/consistency-native/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-failure.png"
+    },
+    "api35/ci-v200/consistency-native/v210-consistency-riskruleandaccountcontrolsexposenamesandstate-narrow-dark-account-control.png": {
+      "bytes": 95648,
+      "sha256": "7c58a34785babb20d7f75068313f0be18ff6865ba1e3688905c16def7670a9e4",
+      "artifactId": 12137936137,
+      "originalPath": "ci-v200/consistency-native/v210-consistency-riskruleandaccountcontrolsexposenamesandstate-narrow-dark-account-control.png"
+    },
+    "api35/ci-v200/consistency-native/v210-consistency-riskinputkeepsheadervisiblewithrealkeyboard-narrow-dark-saved-risk.png": {
+      "bytes": 53827,
+      "sha256": "50282860f3e4d8d02fe98678605efaeff059c71e4f306ec7d5ec1cbb255f52e8",
+      "artifactId": 12137936137,
+      "originalPath": "ci-v200/consistency-native/v210-consistency-riskinputkeepsheadervisiblewithrealkeyboard-narrow-dark-saved-risk.png"
+    },
+    "api35/ci-v200/consistency-native/v210-consistency-contractruleeditorkeepsidentityanddraftafterrecreation-narrow-dark-after-recreate.png": {
+      "bytes": 89527,
+      "sha256": "51bbe37b3bfdb7df5541d6e47aa6751795c9257458955c81bbad3035cc01caf9",
+      "artifactId": 12137936137,
+      "originalPath": "ci-v200/consistency-native/v210-consistency-contractruleeditorkeepsidentityanddraftafterrecreation-narrow-dark-after-recreate.png"
+    },
+    "api35/ci-v200/consistency-native/v210-consistency-contractruleeditorkeepsidentityanddraftafterrecreation-narrow-dark-before-recreate.png": {
+      "bytes": 80696,
+      "sha256": "adda43df27948de34e3e37ffa3b5e1b9cbfd1b90e5baeb35b3f317d660834fbb",
+      "artifactId": 12137936137,
+      "originalPath": "ci-v200/consistency-native/v210-consistency-contractruleeditorkeepsidentityanddraftafterrecreation-narrow-dark-before-recreate.png"
+    },
+    "api35/ci-v200/consistency-native/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-saved-executions-suite-journey.png": {
+      "bytes": 95601,
+      "sha256": "501eaa9edfdce977b70086170302b62e4437367df6d2babb8e99872358e4ff2b",
+      "artifactId": 12137936137,
+      "originalPath": "ci-v200/consistency-native/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-saved-executions-suite-journey.png"
+    },
+    "api35/ci-v200/consistency-native/v210-consistency-strategyeditorkeepsidentityanddraftafterrecreation-narrow-dark-after-recreate.png": {
+      "bytes": 161047,
+      "sha256": "e9b467dafa6281273aa85f5e2ef9335ee040954c3c9e4c76fc6928b0785c86f6",
+      "artifactId": 12137936137,
+      "originalPath": "ci-v200/consistency-native/v210-consistency-strategyeditorkeepsidentityanddraftafterrecreation-narrow-dark-after-recreate.png"
+    },
+    "api35/ci-v200/consistency-native/v210-consistency-riskinputkeepsheadervisiblewithrealkeyboard-narrow-dark-keyboard-header.png": {
+      "bytes": 71080,
+      "sha256": "4bc706b6f51869ac0bff3b04da7386c12de7c2c3c0cbdd53ea7f1dd4300c6a94",
+      "artifactId": 12137936137,
+      "originalPath": "ci-v200/consistency-native/v210-consistency-riskinputkeepsheadervisiblewithrealkeyboard-narrow-dark-keyboard-header.png"
+    },
+    "api35/app/build/outputs/androidTest-results/connected/debug/TEST-emulator-5554 - 15-_app-.xml": {
+      "bytes": 24511,
+      "sha256": "3064118e4ef24a1b6b90527ccc35a16d2c5686f50e20b0b9681efe119bbc7790",
+      "artifactId": 12137936137,
+      "originalPath": "app/build/outputs/androidTest-results/connected/debug/TEST-emulator-5554 - 15-_app-.xml"
+    },
+    "api35/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 15/logcat-com.tradereview.app.v210.V210ConsistencyUiTest-contractRuleEditorKeepsIdentityAndDraftAfterRecreation.txt": {
+      "bytes": 303415,
+      "sha256": "cb686fd25b9851c96ccd7332ba85a99b360346d8c35d906b86af15a57463072c",
+      "artifactId": 12137936137,
+      "originalPath": "app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 15/logcat-com.tradereview.app.v210.V210ConsistencyUiTest-contractRuleEditorKeepsIdentityAndDraftAfterRecreation.txt"
+    },
+    "api35/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 15/logcat-com.tradereview.app.v210.V210ConsistencyUiTest-strategyEditorKeepsIdentityAndDraftAfterRecreation.txt": {
+      "bytes": 293610,
+      "sha256": "f784cdbe997929c5b57760ad3b2e23eb4c42f8350f55f946f8b253f64691b22c",
+      "artifactId": 12137936137,
+      "originalPath": "app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 15/logcat-com.tradereview.app.v210.V210ConsistencyUiTest-strategyEditorKeepsIdentityAndDraftAfterRecreation.txt"
+    },
+    "api35/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 15/logcat-com.tradereview.app.v210.V210ConsistencyJourneyTest-realConfigurationBackupAndReopenPreserveFinancialFacts.txt": {
+      "bytes": 443450,
+      "sha256": "cd52b0bc040f5ec36b6887407f92e2054a20075ac86d711b3c16d7aae2ab34a8",
+      "artifactId": 12137936137,
+      "originalPath": "app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 15/logcat-com.tradereview.app.v210.V210ConsistencyJourneyTest-realConfigurationBackupAndReopenPreserveFinancialFacts.txt"
+    },
+    "api35/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 15/logcat-com.tradereview.app.v210.V210ConsistencyUiTest-riskRuleAndAccountControlsExposeNamesAndState.txt": {
+      "bytes": 264470,
+      "sha256": "b3997145a1d90c7952cead1dd0c1885d62bf1ec44eebd1b593e3cb9d988f342b",
+      "artifactId": 12137936137,
+      "originalPath": "app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 15/logcat-com.tradereview.app.v210.V210ConsistencyUiTest-riskRuleAndAccountControlsExposeNamesAndState.txt"
+    },
+    "api35/app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 15/logcat-com.tradereview.app.v210.V210ConsistencyUiTest-riskInputKeepsHeaderVisibleWithRealKeyboard.txt": {
+      "bytes": 276622,
+      "sha256": "c8df0ee00fa90b73b58601b0d6f0a1ae1951ee6f8974a6d29ce7cc37986ac8d9",
+      "artifactId": 12137936137,
+      "originalPath": "app/build/outputs/androidTest-results/connected/debug/emulator-5554 - 15/logcat-com.tradereview.app.v210.V210ConsistencyUiTest-riskInputKeepsHeaderVisibleWithRealKeyboard.txt"
+    },
+    "api35/app/build/reports/androidTests/connected/debug/com.tradereview.app.v210.V210ConsistencyJourneyTest.html": {
+      "bytes": 3399,
+      "sha256": "699c7d768c94a6032094e0d2d1614b01f8acbea9221e9b3dc4c1d44f7d1992ac",
+      "artifactId": 12137936137,
+      "originalPath": "app/build/reports/androidTests/connected/debug/com.tradereview.app.v210.V210ConsistencyJourneyTest.html"
+    },
+    "api35/app/build/reports/androidTests/connected/debug/com.tradereview.app.v210.V210ConsistencyUiTest.html": {
+      "bytes": 2145,
+      "sha256": "0b40774bf7efe9cc21d4090d7e4e689fcb112bd40ca699d1eefcdc8a71c53f73",
+      "artifactId": 12137936137,
+      "originalPath": "app/build/reports/androidTests/connected/debug/com.tradereview.app.v210.V210ConsistencyUiTest.html"
+    },
+    "api29/ci-v200/v210-visual/consistency-regular-light-reopen-instrumentation.txt": {
+      "bytes": 5957,
+      "sha256": "5dc7c807b76a5e0d2f050bd01bdd6320968c93383bff136ebfdf2880e2f38d54",
+      "artifactId": 12138022673,
+      "originalPath": "ci-v200/v210-visual/consistency-regular-light-reopen-instrumentation.txt"
+    },
+    "api29/ci-v200/v210-visual/v210-runner-api29.json": {
+      "bytes": 2124,
+      "sha256": "d4c95e691ea6985174432c60db8808e47f795631682ab8504cbaf3c1aaf5079f",
+      "artifactId": 12138022673,
+      "originalPath": "ci-v200/v210-visual/v210-runner-api29.json"
+    },
+    "api29/ci-v200/v210-visual/consistency-regular-light-journey-instrumentation.txt": {
+      "bytes": 828,
+      "sha256": "12acce33ef2be11449c72517fbe8d5d419bf22ef18f9e713d0ab098086aacad8",
+      "artifactId": 12138022673,
+      "originalPath": "ci-v200/v210-visual/consistency-regular-light-journey-instrumentation.txt"
+    },
+    "api29/ci-v200/v210-visual/regular-light/v210-visual-regular-light-api29.json": {
+      "bytes": 21765,
+      "sha256": "4f477edf5c896aec1a27a67fdd85e008a6f1b676a2dec529e683fdb0312c959e",
+      "artifactId": 12138022673,
+      "originalPath": "ci-v200/v210-visual/regular-light/v210-visual-regular-light-api29.json"
+    },
+    "api29/ci-v200/v210-consistency/regular-light/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-regular-light-system-save-regular-light-journey.png": {
+      "bytes": 53143,
+      "sha256": "f3b495f9fb3e0d8c46e7f302f77bda1db9eac901d43c7774b046e383b2478195",
+      "artifactId": 12138022673,
+      "originalPath": "ci-v200/v210-consistency/regular-light/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-regular-light-system-save-regular-light-journey.png"
+    },
+    "api29/ci-v200/v210-consistency/regular-light/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-regular-light-failure.png": {
+      "bytes": 100786,
+      "sha256": "65f9d9cd7d5fbb4e9a42ed78f04f711063ed60171af640e07be1d8f890f3aeae",
+      "artifactId": 12138022673,
+      "originalPath": "ci-v200/v210-consistency/regular-light/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-regular-light-failure.png"
+    },
+    "api29/ci-v200/v210-consistency/regular-light/v210-consistency-operations-regular-light-journey-api29.json": {
+      "bytes": 2204,
+      "sha256": "f427f805a6e05abc7012fb889ecac390b7830009b75ae6db6847ed74b0f6f1b9",
+      "artifactId": 12138022673,
+      "originalPath": "ci-v200/v210-consistency/regular-light/v210-consistency-operations-regular-light-journey-api29.json"
+    },
+    "api29/ci-v200/v210-consistency/regular-light/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-regular-light-restored-regular-light-journey.png": {
+      "bytes": 90816,
+      "sha256": "7012d7662174b0dba873f3861f633d8f0585ae2e204ab2456631be684b29a7ef",
+      "artifactId": 12138022673,
+      "originalPath": "ci-v200/v210-consistency/regular-light/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-regular-light-restored-regular-light-journey.png"
+    },
+    "api29/ci-v200/v210-consistency/regular-light/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-regular-light-stock-account-regular-light-journey.png": {
+      "bytes": 92419,
+      "sha256": "e76af7af9551b9ee023ce5fa2ece89f3ef10db8131da0b968a5f6b172122f6fd",
+      "artifactId": 12138022673,
+      "originalPath": "ci-v200/v210-consistency/regular-light/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-regular-light-stock-account-regular-light-journey.png"
+    },
+    "api29/ci-v200/v210-consistency/regular-light/v210-consistency-operations-regular-light-reopen-api29.json": {
+      "bytes": 123,
+      "sha256": "79cebb7213652fb7043c8cf8dbff205a0826e02de5ef102420980b4a661eaef9",
+      "artifactId": 12138022673,
+      "originalPath": "ci-v200/v210-consistency/regular-light/v210-consistency-operations-regular-light-reopen-api29.json"
+    },
+    "api29/ci-v200/v210-consistency/regular-light/v210-consistency-regular-light-api29.json": {
+      "bytes": 55710,
+      "sha256": "f3b70393d2118f4359e0ff4f91c14d9acd025d5189207738ad45a519499c07a0",
+      "artifactId": 12138022673,
+      "originalPath": "ci-v200/v210-consistency/regular-light/v210-consistency-regular-light-api29.json"
+    },
+    "api29/ci-v200/v210-consistency/regular-light/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-api29.json": {
+      "bytes": 17905,
+      "sha256": "4dc6758ab497ad62cd44d6629654a29465df149bf81c0285f3d3adda37fde71a",
+      "artifactId": 12138022673,
+      "originalPath": "ci-v200/v210-consistency/regular-light/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-api29.json"
+    },
+    "api29/app/build/outputs/androidTest-results/connected/debug/TEST-emulator-5554 - 10-_app-.xml": {
+      "bytes": 23231,
+      "sha256": "bdd2826c6a39bb00b722807ea36101c7b1aa5c70cde198a9785b8a61f24da645",
+      "artifactId": 12138022673,
+      "originalPath": "app/build/outputs/androidTest-results/connected/debug/TEST-emulator-5554 - 10-_app-.xml"
+    },
+    "api29/job-original.log": {
+      "bytes": 76225,
+      "sha256": "96f1e0b5da3d6064e004d0e9919c659cba7734dd8b6c9db3f320064a3d398b0e",
+      "artifactId": null,
+      "originalPath": "GitHub completed job 117679701247 decoded original log"
+    },
+    "api29/ci-v200/entry-experience/entry-runner-api29.json": {
+      "bytes": 459,
+      "sha256": "41b2b59d3fc95af6510f50bc366f8a08835729fe0a81c9d00bacd83108d9ac8b",
+      "artifactId": 12138022673,
+      "originalPath": "ci-v200/entry-experience/entry-runner-api29.json"
+    }
+  }
+}

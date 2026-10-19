@@ -61,7 +61,24 @@ class ReleaseExperienceUiTest {
         compose.onNodeWithContentDescription("返回交易详情").performClick();compose.onNodeWithContentDescription("返回").performClick();compose.onNodeWithTag("main-page-0").performClick();compose.onNodeWithTag("home-list").performScrollToNode(hasTestTag("home-post-review"));compose.onNodeWithTag("home-post-review").performClick();compose.onNodeWithText("保存盘后复盘").performScrollTo().assertIsEnabled().assertHasClickAction().performClick();
         try { compose.waitUntil(20000){model.state.value.reviews.any{it.reviewSaved} && !model.busy.value} }
         catch(failure:Throwable){capture("v100-post-review-save-failure");val out=File(requireNotNull(InstrumentationRegistry.getArguments().getString("additionalTestOutputDir")),"v100-post-review-failure.txt");out.writeText("Synthetic fixture only\nmessage=${model.message.value}\nbusy=${model.busy.value}\nreviews=${model.state.value.reviews}\n"+compose.onRoot(useUnmergedTree=true).printToString());throw failure}
-        compose.onNodeWithTag("main-page-4").performClick();compose.onNodeWithTag("calendar-list").performScrollToNode(hasTestTag("calendar-day-${LocalDate.now().toEpochDay()}"));compose.onNodeWithTag("calendar-day-${LocalDate.now().toEpochDay()}").performClick();compose.onNodeWithTag("day-pnl-CNY").assertTextEquals("CNY：+123.45 · 1 笔");compose.onNodeWithContentDescription("返回主页面").performClick()
+        compose.onNodeWithTag("main-page-4").performClick();compose.onNodeWithTag("calendar-list").performScrollToNode(hasTestTag("calendar-day-${LocalDate.now().toEpochDay()}"))
+        try {
+            // The month is one lazy item: bring the actual date cell into the
+            // viewport as CalendarAnalyticsUiTest.openDay does before tapping.
+            compose.onNodeWithTag("calendar-day-${LocalDate.now().toEpochDay()}").performScrollTo().assertIsDisplayed().performClick()
+            // Calendar details use asynchronously calculated analytics. Keep the
+            // exact amount assertion after the real currency row becomes ready.
+            compose.waitUntil(20000){compose.onAllNodesWithTag("day-pnl-CNY").fetchSemanticsNodes().isNotEmpty()}
+            compose.onNodeWithTag("day-pnl-CNY").assertTextEquals("CNY：+123.45 · 1 笔")
+        } catch(failure:Throwable) {
+            runCatching {
+                capture("v100-calendar-detail-failure")
+                File(requireNotNull(InstrumentationRegistry.getArguments().getString("additionalTestOutputDir")),"v100-calendar-detail-failure.txt")
+                    .writeText("Synthetic fixture only\ndate=${LocalDate.now()}\ntrades=${model.state.value.trades}\nanalytics=${model.analytics.value}\n"+compose.onRoot(useUnmergedTree=true).printToString())
+            }.exceptionOrNull()?.let(failure::addSuppressed)
+            throw failure
+        }
+        compose.onNodeWithContentDescription("返回主页面").performClick()
         compose.onNodeWithTag("main-page-3").performClick();compose.onNodeWithTag("open-week-report").performClick();compose.waitUntil(20000){compose.onAllNodesWithContentDescription("复盘报告已就绪").fetchSemanticsNodes().isNotEmpty()};compose.onNodeWithTag("period-report-list").performScrollToNode(hasTestTag("report-net-CNY"));compose.onNodeWithTag("report-net-CNY").assertTextEquals("CNY · 1 笔 · +123.45");compose.onNodeWithTag("period-report-list").performScrollToNode(hasText("月报"));compose.onNodeWithText("月报").performClick();compose.onNodeWithText("每月复盘报告").assertIsDisplayed();compose.waitUntil(15000){compose.onAllNodesWithText("正在本地计算报告").fetchSemanticsNodes().isEmpty()};compose.onNodeWithTag("period-report-list").performScrollToNode(hasTestTag("report-net-CNY"));compose.onNodeWithTag("report-net-CNY").assertTextEquals("CNY · 1 笔 · +123.45");compose.onNodeWithContentDescription("返回主页面").performClick()
         compose.onNodeWithContentDescription("设置与备份").performClick();compose.onNodeWithTag("complete-backup").performClick();compose.runOnIdle{registry.dispatchResult(requireNotNull(chosenRequest),document)};compose.waitUntil(30000){!backup.busy.value && ops.state.value.verifiedZipMillis>0}
         compose.onNodeWithContentDescription("返回主页面").performClick();compose.onNodeWithTag("main-page-1").performClick();compose.onNodeWithText("沪深300").performClick();compose.onNodeWithContentDescription("删除交易").performClick();compose.onNodeWithText("删除").performClick();compose.waitUntil(20000){!model.busy.value && model.state.value.trades.isEmpty() && model.state.value.attachments.isEmpty()};assertFalse(model.evidenceStore!!.file(image).exists())

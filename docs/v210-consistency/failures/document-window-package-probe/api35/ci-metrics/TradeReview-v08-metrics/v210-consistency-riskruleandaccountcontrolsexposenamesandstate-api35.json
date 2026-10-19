@@ -1,0 +1,91 @@
+{
+  "api": 35,
+  "profile": "narrow-dark",
+  "case": "riskruleandaccountcontrolsexposenamesandstate",
+  "syntheticOnly": true,
+  "activity": "com.tradereview.app.MainActivity",
+  "pid": 3747,
+  "screenWidthDp": 320,
+  "fontScale": 1.3,
+  "night": true,
+  "lastStep": "initialization",
+  "observations": [
+    {
+      "label": "超风险提示",
+      "namedToggleCount": 2,
+      "namedVisibleToggleCount": 1,
+      "named": true
+    },
+    {
+      "label": "期初、所有买卖及出入金历史已完整核对",
+      "namedToggleCount": 1,
+      "namedVisibleToggleCount": 1,
+      "named": true
+    },
+    {
+      "label": "我已核实此合约参数",
+      "namedToggleCount": 1,
+      "namedVisibleToggleCount": 1,
+      "named": true
+    }
+  ],
+  "screenshots": [
+    "v210-consistency-riskruleandaccountcontrolsexposenamesandstate-narrow-dark-risk-control.png",
+    "v210-consistency-riskruleandaccountcontrolsexposenamesandstate-narrow-dark-account-control.png",
+    "v210-consistency-riskruleandaccountcontrolsexposenamesandstate-narrow-dark-rule-control.png"
+  ],
+  "ledger": {
+    "accounts": [
+      {
+        "buyRate": "0.0001",
+        "historyComplete": false,
+        "id": "futures",
+        "initialCapital": null,
+        "market": "futures",
+        "name": "国内期货账户",
+        "sellRate": "0.0006"
+      },
+      {
+        "buyRate": "0.0001",
+        "historyComplete": false,
+        "id": "stock",
+        "initialCapital": null,
+        "market": "stock",
+        "name": "A股账户",
+        "sellRate": "0.0006"
+      }
+    ],
+    "audits": [],
+    "cashFlows": [],
+    "cycles": [],
+    "executions": [],
+    "lots": [],
+    "matches": [],
+    "plans": [],
+    "reviews": [],
+    "risks": [
+      {
+        "defaultLimit": null,
+        "id": "futures",
+        "limitMode": "amount",
+        "limitValue": null,
+        "riskFund": null,
+        "warnEnabled": true
+      },
+      {
+        "defaultLimit": null,
+        "id": "stock",
+        "limitMode": "amount",
+        "limitValue": null,
+        "riskFund": null,
+        "warnEnabled": true
+      }
+    ],
+    "rules": [],
+    "strategies": []
+  },
+  "context": {},
+  "semantics": "Printing with useUnmergedTree \u003d \u0027true\u0027\nNode #47210 at (l\u003d0.0, t\u003d0.0, r\u003d640.0, b\u003d1136.0)px\nHas 1 child",
+  "error": null,
+  "result": "PASS"
+}
