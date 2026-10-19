@@ -275,14 +275,48 @@ class V210ConsistencyJourneyTest : ConsistencyUiProbe() {
         assertEquals(id, facts().rules.single().id)
         unchanged()
     }
+    @Suppress("DEPRECATION") // Recycle framework snapshots on API29; API33+ no longer pools them.
     private fun documentsWindow(kind: String) {
-        val window = requireNotNull(device.wait(Until.findObject(By.pkg(documents)), 20000)) { "Real DocumentsUI " + kind + " must open" }
-        operations += mapOf("step" to "DocumentsUI", "kind" to kind, "package" to window.applicationPackage,
+        var actualPackage: String? = null
+        var actualWindowId: Int? = null
+        val deadline = android.os.SystemClock.elapsedRealtime() + 20000
+        do {
+            // DocumentsUI can replace its loading root. Read package data from a
+            // fresh framework snapshot rather than refreshing a cached UiObject2.
+            for (window in instrumentation.uiAutomation.windows) {
+                val root = window.root ?: continue
+                val candidate = try { root.packageName?.toString() } finally { root.recycle() }
+                if (candidate != null && documents.matcher(candidate).matches()) {
+                    actualPackage = candidate
+                    actualWindowId = window.id
+                    break
+                }
+            }
+            if (actualPackage == null) {
+                val root = instrumentation.uiAutomation.rootInActiveWindow
+                if (root != null) {
+                    val candidate = root.packageName?.toString()
+                    val windowId = root.windowId
+                    root.recycle()
+                    if (candidate != null && documents.matcher(candidate).matches()) {
+                        actualPackage = candidate
+                        actualWindowId = windowId
+                    }
+                }
+            }
+            if (actualPackage == null) android.os.SystemClock.sleep(50)
+        } while (actualPackage == null && android.os.SystemClock.elapsedRealtime() < deadline)
+        val packageName = requireNotNull(actualPackage) { "Real DocumentsUI " + kind + " must open" }
+        device.waitForIdle()
+        operations += mapOf("step" to "DocumentsUI", "kind" to kind, "package" to packageName,
+            "windowId" to actualWindowId, "packageProbe" to "UiAutomation window root snapshot",
             "foregroundPackage" to device.currentPackageName)
+        flushOperations()
     }
     private fun downloadsRoot() {
         val drawer = requireNotNull(device.wait(Until.findObject(By.desc("Show roots")), 10000))
         drawer.click()
+        device.waitForIdle()
         val roots = requireNotNull(device.wait(Until.findObject(By.res(Pattern.compile(".*:id/roots_list"))), 10000))
         requireNotNull(roots.findObject(By.text("Downloads"))).click()
         device.waitForIdle()

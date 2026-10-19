@@ -1,0 +1,780 @@
+{
+  "profile": "narrow-dark",
+  "api": 35,
+  "device": "Android SDK built for x86_64",
+  "screenWidthDp": 320,
+  "screenHeightDp": 568,
+  "fontScale": 1.3,
+  "night": true,
+  "syntheticOnly": true,
+  "clockBeijing": "2026-10-14T10:00:00+08:00",
+  "allExecutionsCreatedViaRealForm": true,
+  "ledger": {
+    "accounts": [
+      {
+        "buyRate": "0.0001",
+        "historyComplete": false,
+        "id": "futures",
+        "initialCapital": null,
+        "market": "futures",
+        "name": "国内期货账户",
+        "sellRate": "0.0006"
+      },
+      {
+        "buyRate": "0.0001",
+        "historyComplete": false,
+        "id": "stock",
+        "initialCapital": null,
+        "market": "stock",
+        "name": "A股账户",
+        "sellRate": "0.0006"
+      }
+    ],
+    "audits": [],
+    "cashFlows": [],
+    "cycles": [
+      {
+        "accountId": "futures",
+        "averagePrice": "800",
+        "closedDay": null,
+        "code": "i2701",
+        "direction": "long",
+        "fees": null,
+        "firstDay": 20740,
+        "id": "cycle_89cd585d4bb0433f8f3ad29b155c2e5f",
+        "name": "铁矿石",
+        "openCost": null,
+        "realized": "0",
+        "referenceMargin": null,
+        "remaining": "2",
+        "stopLoss": null,
+        "takeProfit": null
+      },
+      {
+        "accountId": "futures",
+        "averagePrice": "4000",
+        "closedDay": null,
+        "code": "rb2701",
+        "direction": "short",
+        "fees": "12.03",
+        "firstDay": 20740,
+        "id": "cycle_97129d00d4b34f80bdba20c2e8b861c1",
+        "name": "螺纹钢",
+        "openCost": "4004.005",
+        "realized": "-108.025",
+        "referenceMargin": "2800",
+        "remaining": "1",
+        "stopLoss": null,
+        "takeProfit": null
+      },
+      {
+        "accountId": "futures",
+        "averagePrice": "3510",
+        "closedDay": null,
+        "code": "rb2701",
+        "direction": "long",
+        "fees": "31.68",
+        "firstDay": 20740,
+        "id": "cycle_b4a3a94497f24402b0a3192964e7efc0",
+        "name": "螺纹钢",
+        "openCost": "3513.513333333333",
+        "realized": "971.833333333333",
+        "referenceMargin": "2457",
+        "remaining": "1",
+        "stopLoss": null,
+        "takeProfit": null
+      },
+      {
+        "accountId": "stock",
+        "averagePrice": "10",
+        "closedDay": null,
+        "code": "600000",
+        "direction": "long",
+        "fees": "1",
+        "firstDay": 20740,
+        "id": "cycle_c3c317e015554b8d9d0777ab8583e886",
+        "name": "600000",
+        "openCost": "10001",
+        "realized": "0",
+        "referenceMargin": null,
+        "remaining": "1000",
+        "stopLoss": null,
+        "takeProfit": null
+      }
+    ],
+    "executions": [
+      {
+        "accountId": "futures",
+        "code": "rb2701",
+        "date": 20740,
+        "effect": "close",
+        "feeRateSnapshot": null,
+        "feeSource": "auto",
+        "fees": "14.13",
+        "id": "152889744bf24200b40083fedbeb90dc",
+        "marginRate": "0.07",
+        "minute": 600,
+        "multiplier": "10",
+        "name": "螺纹钢",
+        "orderConfirmed": false,
+        "ordinal": 4,
+        "parametersConfirmed": true,
+        "planId": null,
+        "price": "3530",
+        "quantity": "4",
+        "riskAmount": null,
+        "riskConfirmed": false,
+        "riskExceeded": false,
+        "riskFundSnapshot": null,
+        "riskLimitSnapshot": null,
+        "riskWarningEnabled": true,
+        "ruleSnapshot": "{\"addMode\":\"per_execution\",\"addValue\":\"0.01\",\"closeFee\":\"0.0001\",\"code\":\"rb2701\",\"effectiveDay\":20740,\"feeMode\":\"turnover_rate\",\"id\":\"reference_rb_20261015\",\"marginRate\":\"0.07\",\"multiplier\":\"10\",\"name\":\"螺纹钢\",\"openFee\":\"0.0001\",\"todayFee\":\"0.0001\",\"verified\":true}",
+        "second": 0,
+        "side": "sell",
+        "stopLoss": null,
+        "strategyId": null,
+        "takeProfit": null,
+        "tradingDay": 20740
+      },
+      {
+        "accountId": "futures",
+        "code": "rb2701",
+        "date": 20740,
+        "effect": "open",
+        "feeRateSnapshot": null,
+        "feeSource": "auto",
+        "fees": "10.54",
+        "id": "4646b221fa4e4ab1ae45c9a08c35c7cb",
+        "marginRate": "0.07",
+        "minute": 600,
+        "multiplier": "10",
+        "name": "螺纹钢",
+        "orderConfirmed": false,
+        "ordinal": 3,
+        "parametersConfirmed": true,
+        "planId": null,
+        "price": "3510",
+        "quantity": "3",
+        "riskAmount": null,
+        "riskConfirmed": false,
+        "riskExceeded": false,
+        "riskFundSnapshot": null,
+        "riskLimitSnapshot": null,
+        "riskWarningEnabled": true,
+        "ruleSnapshot": "{\"addMode\":\"per_execution\",\"addValue\":\"0.01\",\"closeFee\":\"0.0001\",\"code\":\"rb2701\",\"effectiveDay\":20740,\"feeMode\":\"turnover_rate\",\"id\":\"reference_rb_20261015\",\"marginRate\":\"0.07\",\"multiplier\":\"10\",\"name\":\"螺纹钢\",\"openFee\":\"0.0001\",\"todayFee\":\"0.0001\",\"verified\":true}",
+        "second": 0,
+        "side": "buy",
+        "stopLoss": null,
+        "strategyId": null,
+        "takeProfit": null,
+        "tradingDay": 20740
+      },
+      {
+        "accountId": "futures",
+        "code": "i2701",
+        "date": 20740,
+        "effect": "open",
+        "feeRateSnapshot": null,
+        "feeSource": "auto",
+        "fees": null,
+        "id": "89cd585d4bb0433f8f3ad29b155c2e5f",
+        "marginRate": null,
+        "minute": 600,
+        "multiplier": "100",
+        "name": "铁矿石",
+        "orderConfirmed": false,
+        "ordinal": 5,
+        "parametersConfirmed": true,
+        "planId": null,
+        "price": "800",
+        "quantity": "2",
+        "riskAmount": null,
+        "riskConfirmed": false,
+        "riskExceeded": false,
+        "riskFundSnapshot": null,
+        "riskLimitSnapshot": null,
+        "riskWarningEnabled": true,
+        "ruleSnapshot": "{\"addMode\":\"per_execution\",\"addValue\":\"0.01\",\"closeFee\":null,\"code\":\"i2701\",\"effectiveDay\":20740,\"feeMode\":\"unknown\",\"id\":\"reference_i_20261015\",\"marginRate\":null,\"multiplier\":\"100\",\"name\":\"铁矿石\",\"openFee\":null,\"todayFee\":null,\"verified\":true}",
+        "second": 0,
+        "side": "buy",
+        "stopLoss": null,
+        "strategyId": null,
+        "takeProfit": null,
+        "tradingDay": 20740
+      },
+      {
+        "accountId": "futures",
+        "code": "rb2701",
+        "date": 20740,
+        "effect": "open",
+        "feeRateSnapshot": null,
+        "feeSource": "auto",
+        "fees": "8.01",
+        "id": "97129d00d4b34f80bdba20c2e8b861c1",
+        "marginRate": "0.07",
+        "minute": 600,
+        "multiplier": "10",
+        "name": "螺纹钢",
+        "orderConfirmed": false,
+        "ordinal": 6,
+        "parametersConfirmed": true,
+        "planId": null,
+        "price": "4000",
+        "quantity": "2",
+        "riskAmount": null,
+        "riskConfirmed": false,
+        "riskExceeded": false,
+        "riskFundSnapshot": null,
+        "riskLimitSnapshot": null,
+        "riskWarningEnabled": true,
+        "ruleSnapshot": "{\"addMode\":\"per_execution\",\"addValue\":\"0.01\",\"closeFee\":\"0.0001\",\"code\":\"rb2701\",\"effectiveDay\":20740,\"feeMode\":\"turnover_rate\",\"id\":\"reference_rb_20261015\",\"marginRate\":\"0.07\",\"multiplier\":\"10\",\"name\":\"螺纹钢\",\"openFee\":\"0.0001\",\"todayFee\":\"0.0001\",\"verified\":true}",
+        "second": 0,
+        "side": "sell",
+        "stopLoss": null,
+        "strategyId": null,
+        "takeProfit": null,
+        "tradingDay": 20740
+      },
+      {
+        "accountId": "futures",
+        "code": "rb2701",
+        "date": 20740,
+        "effect": "open",
+        "feeRateSnapshot": null,
+        "feeSource": "auto",
+        "fees": "7.01",
+        "id": "b4a3a94497f24402b0a3192964e7efc0",
+        "marginRate": "0.07",
+        "minute": 600,
+        "multiplier": "10",
+        "name": "螺纹钢",
+        "orderConfirmed": false,
+        "ordinal": 2,
+        "parametersConfirmed": true,
+        "planId": null,
+        "price": "3500",
+        "quantity": "2",
+        "riskAmount": null,
+        "riskConfirmed": false,
+        "riskExceeded": false,
+        "riskFundSnapshot": null,
+        "riskLimitSnapshot": null,
+        "riskWarningEnabled": true,
+        "ruleSnapshot": "{\"addMode\":\"per_execution\",\"addValue\":\"0.01\",\"closeFee\":\"0.0001\",\"code\":\"rb2701\",\"effectiveDay\":20740,\"feeMode\":\"turnover_rate\",\"id\":\"reference_rb_20261015\",\"marginRate\":\"0.07\",\"multiplier\":\"10\",\"name\":\"螺纹钢\",\"openFee\":\"0.0001\",\"todayFee\":\"0.0001\",\"verified\":true}",
+        "second": 0,
+        "side": "buy",
+        "stopLoss": null,
+        "strategyId": null,
+        "takeProfit": null,
+        "tradingDay": 20740
+      },
+      {
+        "accountId": "stock",
+        "code": "600000",
+        "date": 20740,
+        "effect": "open",
+        "feeRateSnapshot": "0.0001",
+        "feeSource": "auto",
+        "fees": "1.00",
+        "id": "c3c317e015554b8d9d0777ab8583e886",
+        "marginRate": null,
+        "minute": 600,
+        "multiplier": null,
+        "name": "600000",
+        "orderConfirmed": false,
+        "ordinal": 1,
+        "parametersConfirmed": false,
+        "planId": null,
+        "price": "10",
+        "quantity": "1000",
+        "riskAmount": null,
+        "riskConfirmed": false,
+        "riskExceeded": false,
+        "riskFundSnapshot": null,
+        "riskLimitSnapshot": null,
+        "riskWarningEnabled": true,
+        "ruleSnapshot": null,
+        "second": 0,
+        "side": "buy",
+        "stopLoss": null,
+        "strategyId": null,
+        "takeProfit": null,
+        "tradingDay": 20740
+      },
+      {
+        "accountId": "futures",
+        "code": "rb2701",
+        "date": 20740,
+        "effect": "close",
+        "feeRateSnapshot": null,
+        "feeSource": "auto",
+        "fees": "4.02",
+        "id": "d5505413417f45fd8ac37ad56aec3a61",
+        "marginRate": "0.07",
+        "minute": 600,
+        "multiplier": "10",
+        "name": "螺纹钢",
+        "orderConfirmed": false,
+        "ordinal": 7,
+        "parametersConfirmed": true,
+        "planId": null,
+        "price": "4010",
+        "quantity": "1",
+        "riskAmount": null,
+        "riskConfirmed": false,
+        "riskExceeded": false,
+        "riskFundSnapshot": null,
+        "riskLimitSnapshot": null,
+        "riskWarningEnabled": true,
+        "ruleSnapshot": "{\"addMode\":\"per_execution\",\"addValue\":\"0.01\",\"closeFee\":\"0.0001\",\"code\":\"rb2701\",\"effectiveDay\":20740,\"feeMode\":\"turnover_rate\",\"id\":\"reference_rb_20261015\",\"marginRate\":\"0.07\",\"multiplier\":\"10\",\"name\":\"螺纹钢\",\"openFee\":\"0.0001\",\"todayFee\":\"0.0001\",\"verified\":true}",
+        "second": 0,
+        "side": "buy",
+        "stopLoss": null,
+        "strategyId": null,
+        "takeProfit": null,
+        "tradingDay": 20740
+      }
+    ],
+    "lots": [
+      {
+        "allocatedFees": "7.026666666667",
+        "cycleId": "cycle_b4a3a94497f24402b0a3192964e7efc0",
+        "executionId": "4646b221fa4e4ab1ae45c9a08c35c7cb",
+        "id": "lot_4646b221fa4e4ab1ae45c9a08c35c7cb",
+        "originalQuantity": "3",
+        "remaining": "1"
+      },
+      {
+        "allocatedFees": null,
+        "cycleId": "cycle_89cd585d4bb0433f8f3ad29b155c2e5f",
+        "executionId": "89cd585d4bb0433f8f3ad29b155c2e5f",
+        "id": "lot_89cd585d4bb0433f8f3ad29b155c2e5f",
+        "originalQuantity": "2",
+        "remaining": "2"
+      },
+      {
+        "allocatedFees": "4.005",
+        "cycleId": "cycle_97129d00d4b34f80bdba20c2e8b861c1",
+        "executionId": "97129d00d4b34f80bdba20c2e8b861c1",
+        "id": "lot_97129d00d4b34f80bdba20c2e8b861c1",
+        "originalQuantity": "2",
+        "remaining": "1"
+      },
+      {
+        "allocatedFees": "7.01",
+        "cycleId": "cycle_b4a3a94497f24402b0a3192964e7efc0",
+        "executionId": "b4a3a94497f24402b0a3192964e7efc0",
+        "id": "lot_b4a3a94497f24402b0a3192964e7efc0",
+        "originalQuantity": "2",
+        "remaining": "0"
+      },
+      {
+        "allocatedFees": "0",
+        "cycleId": "cycle_c3c317e015554b8d9d0777ab8583e886",
+        "executionId": "c3c317e015554b8d9d0777ab8583e886",
+        "id": "lot_c3c317e015554b8d9d0777ab8583e886",
+        "originalQuantity": "1000",
+        "remaining": "1000"
+      }
+    ],
+    "matches": [
+      {
+        "closeExecutionId": "152889744bf24200b40083fedbeb90dc",
+        "closeFees": "7.065",
+        "cycleId": "cycle_b4a3a94497f24402b0a3192964e7efc0",
+        "day": 20740,
+        "gross": "400",
+        "id": "match_152889744bf24200b40083fedbeb90dc_4646b221fa4e4ab1ae45c9a08c35c7cb",
+        "net": "385.908333333333",
+        "openExecutionId": "4646b221fa4e4ab1ae45c9a08c35c7cb",
+        "openFees": "7.026666666667",
+        "quantity": "2"
+      },
+      {
+        "closeExecutionId": "152889744bf24200b40083fedbeb90dc",
+        "closeFees": "7.065",
+        "cycleId": "cycle_b4a3a94497f24402b0a3192964e7efc0",
+        "day": 20740,
+        "gross": "600",
+        "id": "match_152889744bf24200b40083fedbeb90dc_b4a3a94497f24402b0a3192964e7efc0",
+        "net": "585.925",
+        "openExecutionId": "b4a3a94497f24402b0a3192964e7efc0",
+        "openFees": "7.01",
+        "quantity": "2"
+      },
+      {
+        "closeExecutionId": "d5505413417f45fd8ac37ad56aec3a61",
+        "closeFees": "4.02",
+        "cycleId": "cycle_97129d00d4b34f80bdba20c2e8b861c1",
+        "day": 20740,
+        "gross": "-100",
+        "id": "match_d5505413417f45fd8ac37ad56aec3a61_97129d00d4b34f80bdba20c2e8b861c1",
+        "net": "-108.025",
+        "openExecutionId": "97129d00d4b34f80bdba20c2e8b861c1",
+        "openFees": "4.005",
+        "quantity": "1"
+      }
+    ],
+    "plans": [],
+    "reviews": [],
+    "risks": [
+      {
+        "defaultLimit": null,
+        "id": "futures",
+        "limitMode": "amount",
+        "limitValue": null,
+        "riskFund": null,
+        "warnEnabled": true
+      },
+      {
+        "defaultLimit": null,
+        "id": "stock",
+        "limitMode": "amount",
+        "limitValue": null,
+        "riskFund": null,
+        "warnEnabled": true
+      }
+    ],
+    "rules": [],
+    "strategies": []
+  },
+  "observations": [
+    {
+      "code": "600000",
+      "action": "买入",
+      "price": "10",
+      "quantity": "1000",
+      "savedFees": "1.00",
+      "remaining": "1000",
+      "realized": "0",
+      "tapsIncludingEntryAndSave": 5,
+      "fieldsTyped": [
+        "execution-code",
+        "execution-price",
+        "execution-quantity"
+      ],
+      "requiredScrollCommands": 1,
+      "extraConfirmation": false,
+      "saveVisible": true,
+      "keyboardVisibleAtSave": false,
+      "result": "PASS"
+    },
+    {
+      "code": "rb2701",
+      "action": "买入开仓",
+      "price": "3500",
+      "quantity": "2",
+      "savedFees": "7.01",
+      "remaining": "2",
+      "realized": "0",
+      "tapsIncludingEntryAndSave": 7,
+      "fieldsTyped": [
+        "execution-code",
+        "execution-price",
+        "execution-quantity"
+      ],
+      "requiredScrollCommands": 1,
+      "extraConfirmation": false,
+      "saveVisible": true,
+      "keyboardVisibleAtSave": true,
+      "result": "PASS"
+    },
+    {
+      "code": "rb2701",
+      "action": "买入开仓",
+      "price": "3510",
+      "quantity": "3",
+      "savedFees": "10.54",
+      "remaining": "5",
+      "realized": "0",
+      "tapsIncludingEntryAndSave": 5,
+      "fieldsTyped": [
+        "execution-code",
+        "execution-price",
+        "execution-quantity"
+      ],
+      "requiredScrollCommands": 1,
+      "extraConfirmation": false,
+      "saveVisible": true,
+      "keyboardVisibleAtSave": true,
+      "result": "PASS"
+    },
+    {
+      "code": "rb2701",
+      "action": "卖出平仓",
+      "price": "3530",
+      "quantity": "4",
+      "savedFees": "14.13",
+      "remaining": "1",
+      "realized": "971.833333333333",
+      "tapsIncludingEntryAndSave": 6,
+      "fieldsTyped": [
+        "execution-code",
+        "execution-price",
+        "execution-quantity"
+      ],
+      "requiredScrollCommands": 2,
+      "extraConfirmation": false,
+      "saveVisible": true,
+      "keyboardVisibleAtSave": true,
+      "result": "PASS"
+    },
+    {
+      "code": "i2701",
+      "action": "买入开仓",
+      "price": "800",
+      "quantity": "2",
+      "savedFees": null,
+      "remaining": "2",
+      "realized": "0",
+      "tapsIncludingEntryAndSave": 5,
+      "fieldsTyped": [
+        "execution-code",
+        "execution-price",
+        "execution-quantity"
+      ],
+      "requiredScrollCommands": 1,
+      "extraConfirmation": false,
+      "saveVisible": true,
+      "keyboardVisibleAtSave": false,
+      "result": "PASS"
+    }
+  ],
+  "screenshots": [
+    {
+      "scene": "empty",
+      "file": "v210-narrow-dark-empty.png",
+      "pixels": [
+        640,
+        1136
+      ],
+      "componentDp": null
+    },
+    {
+      "scene": "stock-filled",
+      "file": "v210-narrow-dark-stock-filled.png",
+      "pixels": [
+        640,
+        1136
+      ],
+      "componentDp": null
+    },
+    {
+      "scene": "stock-position",
+      "file": "v210-narrow-dark-stock-position.png",
+      "pixels": [
+        640,
+        1136
+      ],
+      "componentDp": [
+        12.0,
+        156.5,
+        308.0,
+        450.0
+      ]
+    },
+    {
+      "scene": "futures-filled",
+      "file": "v210-narrow-dark-futures-filled.png",
+      "pixels": [
+        640,
+        1136
+      ],
+      "componentDp": null
+    },
+    {
+      "scene": "keyboard",
+      "file": "v210-narrow-dark-keyboard.png",
+      "pixels": [
+        640,
+        1136
+      ],
+      "componentDp": null
+    },
+    {
+      "scene": "futures-position",
+      "file": "v210-narrow-dark-futures-position.png",
+      "pixels": [
+        640,
+        1136
+      ],
+      "componentDp": [
+        12.0,
+        156.5,
+        308.0,
+        415.0
+      ]
+    },
+    {
+      "scene": "saved-list",
+      "file": "v210-narrow-dark-saved-list.png",
+      "pixels": [
+        640,
+        1136
+      ],
+      "componentDp": null
+    },
+    {
+      "scene": "partial-position",
+      "file": "v210-narrow-dark-partial-position.png",
+      "pixels": [
+        640,
+        1136
+      ],
+      "componentDp": [
+        12.0,
+        101.5,
+        308.0,
+        360.0
+      ]
+    },
+    {
+      "scene": "pending-filled",
+      "file": "v210-narrow-dark-pending-filled.png",
+      "pixels": [
+        640,
+        1136
+      ],
+      "componentDp": null
+    },
+    {
+      "scene": "pending-position",
+      "file": "v210-narrow-dark-pending-position.png",
+      "pixels": [
+        640,
+        1136
+      ],
+      "componentDp": [
+        12.0,
+        156.5,
+        308.0,
+        415.0
+      ]
+    },
+    {
+      "scene": "statistics",
+      "file": "v210-narrow-dark-statistics.png",
+      "pixels": [
+        640,
+        1136
+      ],
+      "componentDp": null
+    }
+  ],
+  "directionDensity": {
+    "allExecutionsCreatedViaRealForm": true,
+    "additionalExecutions": 2,
+    "executionCount": 7,
+    "positionCount": 4,
+    "positions": [
+      {
+        "code": "i2701",
+        "direction": "long",
+        "directionLabel": "多头",
+        "directionArgb": "#FFB4CBF7",
+        "remaining": "2",
+        "averagePrice": "800",
+        "realized": "0",
+        "displayedNet": "￥0.00",
+        "fees": null,
+        "referenceMargin": null,
+        "heightDp": 258.5
+      },
+      {
+        "code": "rb2701",
+        "direction": "short",
+        "directionLabel": "空头",
+        "directionArgb": "#FFB4CBF7",
+        "remaining": "1",
+        "averagePrice": "4000",
+        "realized": "-108.025",
+        "displayedNet": "￥-108.03",
+        "fees": "12.03",
+        "referenceMargin": "2800",
+        "heightDp": 258.5
+      },
+      {
+        "code": "rb2701",
+        "direction": "long",
+        "directionLabel": "多头",
+        "directionArgb": "#FFB4CBF7",
+        "remaining": "1",
+        "averagePrice": "3510",
+        "realized": "971.833333333333",
+        "displayedNet": "￥971.83",
+        "fees": "31.68",
+        "referenceMargin": "2457",
+        "heightDp": 258.5
+      },
+      {
+        "code": "600000",
+        "direction": "long",
+        "directionLabel": "股票",
+        "directionArgb": "#FFB4CBF7",
+        "remaining": "1000",
+        "averagePrice": "10",
+        "realized": "0",
+        "displayedNet": "￥0.00",
+        "fees": "1",
+        "referenceMargin": null,
+        "heightDp": 293.5
+      }
+    ],
+    "screenshots": [
+      {
+        "scene": "density-top",
+        "file": "v210-narrow-dark-density-top.png",
+        "pixels": [
+          640,
+          1136
+        ],
+        "componentDp": null
+      },
+      {
+        "scene": "density-pending",
+        "file": "v210-narrow-dark-density-pending.png",
+        "pixels": [
+          640,
+          1136
+        ],
+        "componentDp": [
+          12.0,
+          168.5,
+          308.0,
+          427.0
+        ]
+      },
+      {
+        "scene": "density-short",
+        "file": "v210-narrow-dark-density-short.png",
+        "pixels": [
+          640,
+          1136
+        ],
+        "componentDp": [
+          12.0,
+          181.5,
+          308.0,
+          440.0
+        ]
+      },
+      {
+        "scene": "density-long",
+        "file": "v210-narrow-dark-density-long.png",
+        "pixels": [
+          640,
+          1136
+        ],
+        "componentDp": [
+          12.0,
+          181.5,
+          308.0,
+          440.0
+        ]
+      }
+    ],
+    "result": "PASS"
+  },
+  "realPhone": "not-executed",
+  "result": "PASS"
+}

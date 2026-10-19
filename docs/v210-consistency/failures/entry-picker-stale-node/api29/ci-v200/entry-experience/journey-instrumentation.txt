@@ -1,0 +1,38 @@
+INSTRUMENTATION_STATUS: class=com.tradereview.app.v200.TradeEntryExperienceTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=1
+INSTRUMENTATION_STATUS: stream=
+com.tradereview.app.v200.TradeEntryExperienceTest:
+INSTRUMENTATION_STATUS: test=actualFormJourneyAndReopenEvidence
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.tradereview.app.v200.TradeEntryExperienceTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=1
+INSTRUMENTATION_STATUS: stack=java.lang.IllegalArgumentException: 未在系统选择器找到刚导出的ZIP
+	at com.tradereview.app.v200.TradeEntryExperienceTest.exerciseRealSafBackup(TradeEntryExperienceTest.kt:285)
+	at com.tradereview.app.v200.TradeEntryExperienceTest.actualFormJourneyAndReopenEvidence(TradeEntryExperienceTest.kt:217)
+
+INSTRUMENTATION_STATUS: stream=
+Error in actualFormJourneyAndReopenEvidence(com.tradereview.app.v200.TradeEntryExperienceTest):
+java.lang.IllegalArgumentException: 未在系统选择器找到刚导出的ZIP
+	at com.tradereview.app.v200.TradeEntryExperienceTest.exerciseRealSafBackup(TradeEntryExperienceTest.kt:285)
+	at com.tradereview.app.v200.TradeEntryExperienceTest.actualFormJourneyAndReopenEvidence(TradeEntryExperienceTest.kt:217)
+
+INSTRUMENTATION_STATUS: test=actualFormJourneyAndReopenEvidence
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_RESULT: stream=
+
+Time: 120.019
+There was 1 failure:
+1) actualFormJourneyAndReopenEvidence(com.tradereview.app.v200.TradeEntryExperienceTest)
+java.lang.IllegalArgumentException: 未在系统选择器找到刚导出的ZIP
+	at com.tradereview.app.v200.TradeEntryExperienceTest.exerciseRealSafBackup(TradeEntryExperienceTest.kt:285)
+	at com.tradereview.app.v200.TradeEntryExperienceTest.actualFormJourneyAndReopenEvidence(TradeEntryExperienceTest.kt:217)
+
+FAILURES!!!
+Tests run: 1,  Failures: 1
+
+
+INSTRUMENTATION_CODE: -1

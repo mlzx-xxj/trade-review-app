@@ -1,0 +1,29 @@
+{
+  "api": 35,
+  "profile": "narrow-light",
+  "pid": 10701,
+  "previousPid": 10511,
+  "allFactsIdentical": true,
+  "reviewPreserved": true,
+  "screenshots": [
+    {
+      "scene": "reopened-home",
+      "file": "v210-full-narrow-light-reopened-home.png",
+      "pixels": [
+        640,
+        1136
+      ],
+      "componentDp": null
+    },
+    {
+      "scene": "reopened-home-calendar",
+      "file": "v210-full-narrow-light-reopened-home-calendar.png",
+      "pixels": [
+        640,
+        1136
+      ],
+      "componentDp": null
+    }
+  ],
+  "result": "PASS"
+}

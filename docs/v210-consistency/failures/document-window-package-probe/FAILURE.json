@@ -1,0 +1,584 @@
+{
+  "sourceCommit": "9143d5d256e440b27361a45d62dd45115672fc61",
+  "runId": 39173642117,
+  "runAttempt": 2,
+  "jobId": 117823233021,
+  "result": "FAIL",
+  "classification": "cached-UiObject2-package-probe-became-stale-during-DocumentsUI-launch",
+  "native": {
+    "name": "com.tradereview.app.backup.BackupRepositoryTest",
+    "tests": "148",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0",
+    "time": "846.358",
+    "timestamp": "2026-10-18T23:58:49",
+    "hostname": "localhost"
+  },
+  "originalAdditional22": "PASS including all four full/review profiles; independently verified",
+  "newRegularLightJourney": "FAIL at CreateDocument package probe before filename entry; five initial configuration steps and five keyboard measurements completed",
+  "newRegularLightFinancialFacts": {
+    "knownRealized": "2487.65",
+    "stockRemaining": "500",
+    "stockOpenCost": "5500.55",
+    "unknownFeeExecutions": 2,
+    "unknownGross": "1000",
+    "unknownNet": null
+  },
+  "newRegularLightZipCreated": false,
+  "newRegularLightReopen": "Not started",
+  "remainingConsistencyProfiles": "Not started",
+  "observedError": "StaleObjectException from UiObject2.getApplicationPackage at documentsWindow:280",
+  "originalScreenshot": "Real system Save window already visible; no product backup error inferred",
+  "fix": "Wait for actual DocumentsUI package using fresh framework window-root snapshots, retain existing20s deadline, wait for system idle before drawer selection. No UI action retries or URI injection.",
+  "earlierAttempt1Transfer": "The earlier PNG read255 did not recur; all original22 journeys and raw collection completed on this same-source retry. Underlying original255 cause remains unknown.",
+  "artifact": {
+    "id": 12155517695,
+    "sha256": "d71bb066fd8f37cdadf3d0c52b683156b1c2152bac669aa016a6c67626361ced",
+    "bytes": 65763626,
+    "entries": 1056,
+    "shaAndCrcVerified": true
+  },
+  "files": {
+    "api35/app/build/outputs/androidTest-results/connected/debug/TEST-emulator-5554 - 15-_app-.xml": {
+      "bytes": 23226,
+      "sha256": "cec0e273c67b904e198dae93999260d7f5e21972521ac1963ac9a933d65c6038",
+      "artifactId": 12155517695,
+      "originalPath": "app/build/outputs/androidTest-results/connected/debug/TEST-emulator-5554 - 15-_app-.xml"
+    },
+    "api35/ci-metrics/TradeReview-v08-metrics/v210-consistency-contractruleeditorkeepsidentityanddraftafterrecreation-api35.json": {
+      "bytes": 2375,
+      "sha256": "a8b73a4cbc5b08d8275e4551b6f00781c3234ab826833781c90040ffbe586bc1",
+      "artifactId": 12155517695,
+      "originalPath": "ci-metrics/TradeReview-v08-metrics/v210-consistency-contractruleeditorkeepsidentityanddraftafterrecreation-api35.json"
+    },
+    "api35/ci-metrics/TradeReview-v08-metrics/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-api35.json": {
+      "bytes": 60308,
+      "sha256": "b5e7b106fcd44a575e06a0f479f33ba3b2a7b319d1e022735d7648febe532044",
+      "artifactId": 12155517695,
+      "originalPath": "ci-metrics/TradeReview-v08-metrics/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-api35.json"
+    },
+    "api35/ci-metrics/TradeReview-v08-metrics/v210-consistency-riskinputkeepsheadervisiblewithrealkeyboard-api35.json": {
+      "bytes": 1970,
+      "sha256": "cadedb060d62e33415031c70fb340b00bed38e249a34ac8cd13ab4839574e356",
+      "artifactId": 12155517695,
+      "originalPath": "ci-metrics/TradeReview-v08-metrics/v210-consistency-riskinputkeepsheadervisiblewithrealkeyboard-api35.json"
+    },
+    "api35/ci-metrics/TradeReview-v08-metrics/v210-consistency-riskruleandaccountcontrolsexposenamesandstate-api35.json": {
+      "bytes": 2364,
+      "sha256": "00b5c52cce2c4d366a84006b8cc36d1fbc39c411a7113cab4322ac2cfaaa37a5",
+      "artifactId": 12155517695,
+      "originalPath": "ci-metrics/TradeReview-v08-metrics/v210-consistency-riskruleandaccountcontrolsexposenamesandstate-api35.json"
+    },
+    "api35/ci-metrics/TradeReview-v08-metrics/v210-consistency-strategyeditorkeepsidentityanddraftafterrecreation-api35.json": {
+      "bytes": 2527,
+      "sha256": "38ded6d8b2bb4cee5bb3cc1f6ff02c893d198c1effc83b5776655c5031f5eced",
+      "artifactId": 12155517695,
+      "originalPath": "ci-metrics/TradeReview-v08-metrics/v210-consistency-strategyeditorkeepsidentityanddraftafterrecreation-api35.json"
+    },
+    "api35/ci-metrics/TradeReview-v08-metrics/v210-consistency-suite-api35.json": {
+      "bytes": 58163,
+      "sha256": "6c11fac8893bde6657a17b6fa8fc0a77f06d3d92a5ff86ad8f3ebabf738c783b",
+      "artifactId": 12155517695,
+      "originalPath": "ci-metrics/TradeReview-v08-metrics/v210-consistency-suite-api35.json"
+    },
+    "api35/ci-screenshots/v210-consistency-contractruleeditorkeepsidentityanddraftafterrecreation-narrow-dark-after-recreate.png": {
+      "bytes": 89974,
+      "sha256": "2f1cef438e74c2c036f365a847c6ab74de359b58a08ea54af8c662c64636c69b",
+      "artifactId": 12155517695,
+      "originalPath": "ci-screenshots/v210-consistency-contractruleeditorkeepsidentityanddraftafterrecreation-narrow-dark-after-recreate.png"
+    },
+    "api35/ci-screenshots/v210-consistency-contractruleeditorkeepsidentityanddraftafterrecreation-narrow-dark-before-recreate.png": {
+      "bytes": 81136,
+      "sha256": "3aebfb66f875787761fff7ec623ca16fad03e5ef13aac1ebc52f28a6fcc966c8",
+      "artifactId": 12155517695,
+      "originalPath": "ci-screenshots/v210-consistency-contractruleeditorkeepsidentityanddraftafterrecreation-narrow-dark-before-recreate.png"
+    },
+    "api35/ci-screenshots/v210-consistency-contractruleeditorkeepsidentityanddraftafterrecreation-narrow-dark-saved.png": {
+      "bytes": 89921,
+      "sha256": "ae176ce2e06139214938bc8338ca4825521b0a61b15c39867548f6a2e82e8a67",
+      "artifactId": 12155517695,
+      "originalPath": "ci-screenshots/v210-consistency-contractruleeditorkeepsidentityanddraftafterrecreation-narrow-dark-saved.png"
+    },
+    "api35/ci-screenshots/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-account-landscape-keyboard-suite-journey.png": {
+      "bytes": 65613,
+      "sha256": "db912f92e1f5ef149f1b266da5c4ab4074537d79280c17c4f523757c16ac193e",
+      "artifactId": 12155517695,
+      "originalPath": "ci-screenshots/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-account-landscape-keyboard-suite-journey.png"
+    },
+    "api35/ci-screenshots/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-cashflow-landscape-keyboard-suite-journey.png": {
+      "bytes": 72879,
+      "sha256": "fb712bf211592bdf0abdf5c5c04bc69bd791ee6216534af789047209b1d9dc02",
+      "artifactId": 12155517695,
+      "originalPath": "ci-screenshots/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-cashflow-landscape-keyboard-suite-journey.png"
+    },
+    "api35/ci-screenshots/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-known-statistics-suite-journey.png": {
+      "bytes": 115890,
+      "sha256": "a112f919da4a2926ea374e26b60357c214efa00222be3559773c5144374f3773",
+      "artifactId": 12155517695,
+      "originalPath": "ci-screenshots/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-known-statistics-suite-journey.png"
+    },
+    "api35/ci-screenshots/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-plan-landscape-keyboard-suite-journey.png": {
+      "bytes": 68490,
+      "sha256": "56940b9e089e7fac60d308d2807c3056162d92aa772c7308780445d195801bcd",
+      "artifactId": 12155517695,
+      "originalPath": "ci-screenshots/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-plan-landscape-keyboard-suite-journey.png"
+    },
+    "api35/ci-screenshots/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-restore-confirm-suite-journey.png": {
+      "bytes": 114462,
+      "sha256": "e68e78de155f3ed971b1ca7eaa4cd5b0bf63f9b03beb714ce740b767cfee8ff7",
+      "artifactId": 12155517695,
+      "originalPath": "ci-screenshots/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-restore-confirm-suite-journey.png"
+    },
+    "api35/ci-screenshots/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-restore-preview-suite-journey.png": {
+      "bytes": 105853,
+      "sha256": "5c4c5909ef7fc0ce4cda2514fa2cfab55fe1d2a97845d8d709ee7a2daba46393",
+      "artifactId": 12155517695,
+      "originalPath": "ci-screenshots/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-restore-preview-suite-journey.png"
+    },
+    "api35/ci-screenshots/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-restored-suite-journey.png": {
+      "bytes": 102211,
+      "sha256": "9f30116473929736b08c811ea96eaa0f22ed3c017559c624977de6e5f8c9e08d",
+      "artifactId": 12155517695,
+      "originalPath": "ci-screenshots/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-restored-suite-journey.png"
+    },
+    "api35/ci-screenshots/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-review-landscape-keyboard-suite-journey.png": {
+      "bytes": 67652,
+      "sha256": "edf848ed455fed1adae1fd5ebdc8ad6842e7eff34840796bba04b8eaeeafbf42",
+      "artifactId": 12155517695,
+      "originalPath": "ci-screenshots/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-review-landscape-keyboard-suite-journey.png"
+    },
+    "api35/ci-screenshots/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-risk-keyboard-suite-journey.png": {
+      "bytes": 66997,
+      "sha256": "8894d57824cfacadc391d781cd67afd7bd9745a5a16e7187aa6e6780431f1fd6",
+      "artifactId": 12155517695,
+      "originalPath": "ci-screenshots/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-risk-keyboard-suite-journey.png"
+    },
+    "api35/ci-screenshots/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-rule-keyboard-suite-journey.png": {
+      "bytes": 90113,
+      "sha256": "eb6ccac63fe543d36a30e664cefd41aeb84caaad5e75c8984161e1c911ad8a58",
+      "artifactId": 12155517695,
+      "originalPath": "ci-screenshots/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-rule-keyboard-suite-journey.png"
+    },
+    "api35/ci-screenshots/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-rule-landscape-keyboard-suite-journey.png": {
+      "bytes": 76809,
+      "sha256": "8be89e08d784b0f2fc294df73220fda1172082d02785b77124f82eb297e0405d",
+      "artifactId": 12155517695,
+      "originalPath": "ci-screenshots/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-rule-landscape-keyboard-suite-journey.png"
+    },
+    "api35/ci-screenshots/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-saved-executions-suite-journey.png": {
+      "bytes": 96279,
+      "sha256": "6e79249fd9556284b51485aca990f1adc5ed9072a92f06830343c108e9dcfb5c",
+      "artifactId": 12155517695,
+      "originalPath": "ci-screenshots/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-saved-executions-suite-journey.png"
+    },
+    "api35/ci-screenshots/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-stock-account-suite-journey.png": {
+      "bytes": 95037,
+      "sha256": "cdec6a306e7c42449cf11ce8139b65942c06d358757dacad35703dcc9ffdf52c",
+      "artifactId": 12155517695,
+      "originalPath": "ci-screenshots/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-stock-account-suite-journey.png"
+    },
+    "api35/ci-screenshots/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-strategy-keyboard-suite-journey.png": {
+      "bytes": 103169,
+      "sha256": "c392b8fb1388a4e47541ae2b48b3cd7c71e541ba1f4ae42348fef13836f07ccb",
+      "artifactId": 12155517695,
+      "originalPath": "ci-screenshots/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-strategy-keyboard-suite-journey.png"
+    },
+    "api35/ci-screenshots/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-strategy-landscape-keyboard-suite-journey.png": {
+      "bytes": 96212,
+      "sha256": "63bcdad59f4aad26666b94ca94e59a9e9f712315ed51eb3831f0f40e3ceacce5",
+      "artifactId": 12155517695,
+      "originalPath": "ci-screenshots/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-strategy-landscape-keyboard-suite-journey.png"
+    },
+    "api35/ci-screenshots/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-system-save-suite-journey.png": {
+      "bytes": 49086,
+      "sha256": "19be5c5ff150a4485ca8dce93479aa07885942bd34df828cd417446a7a18253b",
+      "artifactId": 12155517695,
+      "originalPath": "ci-screenshots/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-system-save-suite-journey.png"
+    },
+    "api35/ci-screenshots/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-unknown-futures-account-suite-journey.png": {
+      "bytes": 84424,
+      "sha256": "1ae2791c7d1c027eaf6c374e2235d190d987164cd3ae348fe130184735eed11f",
+      "artifactId": 12155517695,
+      "originalPath": "ci-screenshots/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-narrow-dark-unknown-futures-account-suite-journey.png"
+    },
+    "api35/ci-screenshots/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-regular-light-failure.png": {
+      "bytes": 63810,
+      "sha256": "9159b9f61886d554a42e307208e79aedb528da07c76eb26221e47cadd8bd9a57",
+      "artifactId": 12155517695,
+      "originalPath": "ci-screenshots/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-regular-light-failure.png"
+    },
+    "api35/ci-screenshots/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-regular-light-risk-keyboard-regular-light-journey.png": {
+      "bytes": 72459,
+      "sha256": "b4f513b0ced1bc65c0d4f153574c64f86b601f8ede64cc79f3a9a62ed9317775",
+      "artifactId": 12155517695,
+      "originalPath": "ci-screenshots/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-regular-light-risk-keyboard-regular-light-journey.png"
+    },
+    "api35/ci-screenshots/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-regular-light-rule-keyboard-regular-light-journey.png": {
+      "bytes": 91881,
+      "sha256": "fac7e102689c309018a7872966b814672b68d89f00b10442f2b2748bf0e5a669",
+      "artifactId": 12155517695,
+      "originalPath": "ci-screenshots/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-regular-light-rule-keyboard-regular-light-journey.png"
+    },
+    "api35/ci-screenshots/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-regular-light-rule-landscape-keyboard-regular-light-journey.png": {
+      "bytes": 74887,
+      "sha256": "93cc347b2efaf163f148c89759c6efe0e15de9430b7c39203630013ac16c4b81",
+      "artifactId": 12155517695,
+      "originalPath": "ci-screenshots/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-regular-light-rule-landscape-keyboard-regular-light-journey.png"
+    },
+    "api35/ci-screenshots/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-regular-light-saved-executions-regular-light-journey.png": {
+      "bytes": 97209,
+      "sha256": "e7ad66d8865f2d26b481f173cbbee3b475176e0dbeb684c7c37d62a901c70783",
+      "artifactId": 12155517695,
+      "originalPath": "ci-screenshots/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-regular-light-saved-executions-regular-light-journey.png"
+    },
+    "api35/ci-screenshots/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-regular-light-strategy-keyboard-regular-light-journey.png": {
+      "bytes": 163782,
+      "sha256": "ae352d03f728f221cd0eca330b75ad80ab1aaaa309b1c91f3b525f8d5a136aed",
+      "artifactId": 12155517695,
+      "originalPath": "ci-screenshots/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-regular-light-strategy-keyboard-regular-light-journey.png"
+    },
+    "api35/ci-screenshots/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-regular-light-strategy-landscape-keyboard-regular-light-journey.png": {
+      "bytes": 119287,
+      "sha256": "b06ca749a1d968140b6312c6f2a20be1eedc5a3244ccf5c2df775dce7185b08a",
+      "artifactId": 12155517695,
+      "originalPath": "ci-screenshots/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-regular-light-strategy-landscape-keyboard-regular-light-journey.png"
+    },
+    "api35/ci-screenshots/v210-consistency-riskinputkeepsheadervisiblewithrealkeyboard-narrow-dark-keyboard-header.png": {
+      "bytes": 71774,
+      "sha256": "8f9bdea55d3bd7ba4fa841af895ad6e0b5fe0dae173c3badcfc777dae21202b8",
+      "artifactId": 12155517695,
+      "originalPath": "ci-screenshots/v210-consistency-riskinputkeepsheadervisiblewithrealkeyboard-narrow-dark-keyboard-header.png"
+    },
+    "api35/ci-screenshots/v210-consistency-riskinputkeepsheadervisiblewithrealkeyboard-narrow-dark-saved-risk.png": {
+      "bytes": 66973,
+      "sha256": "e1f389c261e8631193379bd27c1d0eb031fa2bde09cef9223109e79652ae3e14",
+      "artifactId": 12155517695,
+      "originalPath": "ci-screenshots/v210-consistency-riskinputkeepsheadervisiblewithrealkeyboard-narrow-dark-saved-risk.png"
+    },
+    "api35/ci-screenshots/v210-consistency-riskruleandaccountcontrolsexposenamesandstate-narrow-dark-account-control.png": {
+      "bytes": 96017,
+      "sha256": "945c5069ec30a3dac8fe924d04f440ec435fe5efeb5a96ba155a9567afd401e7",
+      "artifactId": 12155517695,
+      "originalPath": "ci-screenshots/v210-consistency-riskruleandaccountcontrolsexposenamesandstate-narrow-dark-account-control.png"
+    },
+    "api35/ci-screenshots/v210-consistency-riskruleandaccountcontrolsexposenamesandstate-narrow-dark-risk-control.png": {
+      "bytes": 103440,
+      "sha256": "25750fd10f2cb90e6d7cd4a3b5cd797701e5029b174b64580388c80284bba115",
+      "artifactId": 12155517695,
+      "originalPath": "ci-screenshots/v210-consistency-riskruleandaccountcontrolsexposenamesandstate-narrow-dark-risk-control.png"
+    },
+    "api35/ci-screenshots/v210-consistency-riskruleandaccountcontrolsexposenamesandstate-narrow-dark-rule-control.png": {
+      "bytes": 104386,
+      "sha256": "0ff4a2580e158d6f0f7f280ec05f0b23df7d068f85d95b3a14c3624a39874f75",
+      "artifactId": 12155517695,
+      "originalPath": "ci-screenshots/v210-consistency-riskruleandaccountcontrolsexposenamesandstate-narrow-dark-rule-control.png"
+    },
+    "api35/ci-screenshots/v210-consistency-strategyeditorkeepsidentityanddraftafterrecreation-narrow-dark-after-recreate.png": {
+      "bytes": 161509,
+      "sha256": "17176cce05fc642e7b036ce3d09f15fb694992facaa4b23dea86ddf1b6af5d40",
+      "artifactId": 12155517695,
+      "originalPath": "ci-screenshots/v210-consistency-strategyeditorkeepsidentityanddraftafterrecreation-narrow-dark-after-recreate.png"
+    },
+    "api35/ci-screenshots/v210-consistency-strategyeditorkeepsidentityanddraftafterrecreation-narrow-dark-before-recreate.png": {
+      "bytes": 89019,
+      "sha256": "47e5a8f6ed1e50ef471b22e8eba1b6c8394cf5b86faa73f693f1d56ddd2498ed",
+      "artifactId": 12155517695,
+      "originalPath": "ci-screenshots/v210-consistency-strategyeditorkeepsidentityanddraftafterrecreation-narrow-dark-before-recreate.png"
+    },
+    "api35/ci-screenshots/v210-consistency-strategyeditorkeepsidentityanddraftafterrecreation-narrow-dark-saved.png": {
+      "bytes": 132425,
+      "sha256": "3060262331a8e757050892ec845c3f4321f35dba1aa0fe2338c6df2d02020ba3",
+      "artifactId": 12155517695,
+      "originalPath": "ci-screenshots/v210-consistency-strategyeditorkeepsidentityanddraftafterrecreation-narrow-dark-saved.png"
+    },
+    "api35/ci-v200/entry-experience/entry-runner-api35.json": {
+      "bytes": 457,
+      "sha256": "806fbd864334987e67b1f0ef914d1f6ad8d52ae5d7c22de6dd1b4eacb4b1f4be",
+      "artifactId": 12155517695,
+      "originalPath": "ci-v200/entry-experience/entry-runner-api35.json"
+    },
+    "api35/ci-v200/entry-experience/journey-instrumentation.txt": {
+      "bytes": 782,
+      "sha256": "e389fd995c638363a1306d3ca1133ef0f3c7d283c9ac68d68a28428a3b4e521d",
+      "artifactId": 12155517695,
+      "originalPath": "ci-v200/entry-experience/journey-instrumentation.txt"
+    },
+    "api35/ci-v200/entry-experience/reopen-instrumentation.txt": {
+      "bytes": 781,
+      "sha256": "96aaa263c1c650262ea028ebbc1e674f9d15d11dd3a3a72509e2f1a72f5ee3bc",
+      "artifactId": 12155517695,
+      "originalPath": "ci-v200/entry-experience/reopen-instrumentation.txt"
+    },
+    "api35/ci-v200/v210-consistency/regular-light/v210-consistency-operations-regular-light-journey-api35.json": {
+      "bytes": 1371,
+      "sha256": "ecceded6ae068057f3167b4bdd3a012c90f035f16dfc85392543cb364bd41824",
+      "artifactId": 12155517695,
+      "originalPath": "ci-v200/v210-consistency/regular-light/v210-consistency-operations-regular-light-journey-api35.json"
+    },
+    "api35/ci-v200/v210-consistency/regular-light/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-api35.json": {
+      "bytes": 60308,
+      "sha256": "b5e7b106fcd44a575e06a0f479f33ba3b2a7b319d1e022735d7648febe532044",
+      "artifactId": 12155517695,
+      "originalPath": "ci-v200/v210-consistency/regular-light/v210-consistency-realconfigurationbackupandreopenpreservefinancialfacts-api35.json"
+    },
+    "api35/ci-v200/v210-visual/consistency-regular-light-journey-instrumentation.txt": {
+      "bytes": 4290,
+      "sha256": "93b1f1e29e7e0608422b5b50908c99d5a20d2f56b0cbbe824971d5b4eaae49b1",
+      "artifactId": 12155517695,
+      "originalPath": "ci-v200/v210-visual/consistency-regular-light-journey-instrumentation.txt"
+    },
+    "api35/ci-v200/v210-visual/full-narrow-dark-journey-instrumentation.txt": {
+      "bytes": 824,
+      "sha256": "77d6901c2b4df044d5a043e481803aa855d649186a80dcf6fcca7b3e2d86679e",
+      "artifactId": 12155517695,
+      "originalPath": "ci-v200/v210-visual/full-narrow-dark-journey-instrumentation.txt"
+    },
+    "api35/ci-v200/v210-visual/full-narrow-dark-reopen-instrumentation.txt": {
+      "bytes": 824,
+      "sha256": "fc6e727d38add58eccedfac94a6afe18dba04d274bcdf18279fca42fb8adea34",
+      "artifactId": 12155517695,
+      "originalPath": "ci-v200/v210-visual/full-narrow-dark-reopen-instrumentation.txt"
+    },
+    "api35/ci-v200/v210-visual/full-narrow-light-journey-instrumentation.txt": {
+      "bytes": 825,
+      "sha256": "6ca458c0b75d6bd5c23e2076ba594a5683c87e89694a4fefc40e1817a15d7edb",
+      "artifactId": 12155517695,
+      "originalPath": "ci-v200/v210-visual/full-narrow-light-journey-instrumentation.txt"
+    },
+    "api35/ci-v200/v210-visual/full-narrow-light-reopen-instrumentation.txt": {
+      "bytes": 824,
+      "sha256": "8e9b2c32ad62031ec4c8cd022f99de20c121ab58ed9124b4ec1bf8e206b237ec",
+      "artifactId": 12155517695,
+      "originalPath": "ci-v200/v210-visual/full-narrow-light-reopen-instrumentation.txt"
+    },
+    "api35/ci-v200/v210-visual/full-regular-dark-journey-instrumentation.txt": {
+      "bytes": 825,
+      "sha256": "a5a6c94af3cbf9b08dbf3ae097387ff1f990eea476903fce4419a3d267e34780",
+      "artifactId": 12155517695,
+      "originalPath": "ci-v200/v210-visual/full-regular-dark-journey-instrumentation.txt"
+    },
+    "api35/ci-v200/v210-visual/full-regular-dark-reopen-instrumentation.txt": {
+      "bytes": 824,
+      "sha256": "6875864b3cf2b96377bb6c4d85e6cb4cbd360c473a63c903fc0e5b0afa7e5829",
+      "artifactId": 12155517695,
+      "originalPath": "ci-v200/v210-visual/full-regular-dark-reopen-instrumentation.txt"
+    },
+    "api35/ci-v200/v210-visual/full-regular-light-journey-instrumentation.txt": {
+      "bytes": 825,
+      "sha256": "d0e7e13ea0983e12b9a234f456c365a9286dcd975428167504a7010c1f074ef9",
+      "artifactId": 12155517695,
+      "originalPath": "ci-v200/v210-visual/full-regular-light-journey-instrumentation.txt"
+    },
+    "api35/ci-v200/v210-visual/full-regular-light-reopen-instrumentation.txt": {
+      "bytes": 824,
+      "sha256": "24f1c993ef913babedc9b48f245a8b57ff65cb6aef81edcc40abe3321da89f8e",
+      "artifactId": 12155517695,
+      "originalPath": "ci-v200/v210-visual/full-regular-light-reopen-instrumentation.txt"
+    },
+    "api35/ci-v200/v210-visual/narrow-dark/full/v210-full-narrow-dark-api35.json": {
+      "bytes": 44094,
+      "sha256": "440dcbfdcc4399bc337e5d17462d01b8fcd5811bff9ebc35e7a7adf34aa8d293",
+      "artifactId": 12155517695,
+      "originalPath": "ci-v200/v210-visual/narrow-dark/full/v210-full-narrow-dark-api35.json"
+    },
+    "api35/ci-v200/v210-visual/narrow-dark/full/v210-full-reopen-narrow-dark-api35.json": {
+      "bytes": 562,
+      "sha256": "1f5fee70a36087a07d44b977a1cc2365b605efb60681e8f34358b507b46c9277",
+      "artifactId": 12155517695,
+      "originalPath": "ci-v200/v210-visual/narrow-dark/full/v210-full-reopen-narrow-dark-api35.json"
+    },
+    "api35/ci-v200/v210-visual/narrow-dark/review/v210-review-narrow-dark-api35.json": {
+      "bytes": 55396,
+      "sha256": "ce493ec84dfee19d58b365f102f9fca2a3ce1e7fe9dc8d26870634f0742a557d",
+      "artifactId": 12155517695,
+      "originalPath": "ci-v200/v210-visual/narrow-dark/review/v210-review-narrow-dark-api35.json"
+    },
+    "api35/ci-v200/v210-visual/narrow-dark/review/v210-review-reopen-narrow-dark-api35.json": {
+      "bytes": 19298,
+      "sha256": "b6c713ca32fe6b81fc78bb9447d198dffcba1f6b11f1872a8c80b460adc85162",
+      "artifactId": 12155517695,
+      "originalPath": "ci-v200/v210-visual/narrow-dark/review/v210-review-reopen-narrow-dark-api35.json"
+    },
+    "api35/ci-v200/v210-visual/narrow-dark/v210-visual-narrow-dark-api35.json": {
+      "bytes": 21732,
+      "sha256": "89ee79a57e09e1d94728a6b353131c29a2b69e84472b1a61e9292e7d2c38ddd8",
+      "artifactId": 12155517695,
+      "originalPath": "ci-v200/v210-visual/narrow-dark/v210-visual-narrow-dark-api35.json"
+    },
+    "api35/ci-v200/v210-visual/narrow-dark-instrumentation.txt": {
+      "bytes": 783,
+      "sha256": "7d1b596684fdf480594b3118357d488851234cab781647a980b2d50c5ade8756",
+      "artifactId": 12155517695,
+      "originalPath": "ci-v200/v210-visual/narrow-dark-instrumentation.txt"
+    },
+    "api35/ci-v200/v210-visual/narrow-light/full/v210-full-narrow-light-api35.json": {
+      "bytes": 44115,
+      "sha256": "a810321987ef54c81b34366281bcbe5fcfb9386c21c78ffb9768acc9114ab334",
+      "artifactId": 12155517695,
+      "originalPath": "ci-v200/v210-visual/narrow-light/full/v210-full-narrow-light-api35.json"
+    },
+    "api35/ci-v200/v210-visual/narrow-light/full/v210-full-reopen-narrow-light-api35.json": {
+      "bytes": 565,
+      "sha256": "96e2961d235058ff492ef3561badcf55f0f2d80439f0802001ef7a18f194fe2f",
+      "artifactId": 12155517695,
+      "originalPath": "ci-v200/v210-visual/narrow-light/full/v210-full-reopen-narrow-light-api35.json"
+    },
+    "api35/ci-v200/v210-visual/narrow-light/review/v210-review-narrow-light-api35.json": {
+      "bytes": 55426,
+      "sha256": "a5dae84312061e8cfef99dd8219cb559c98f9616a1aa71596acdddecfe6aabc0",
+      "artifactId": 12155517695,
+      "originalPath": "ci-v200/v210-visual/narrow-light/review/v210-review-narrow-light-api35.json"
+    },
+    "api35/ci-v200/v210-visual/narrow-light/review/v210-review-reopen-narrow-light-api35.json": {
+      "bytes": 19301,
+      "sha256": "def91a11823a56f47699a745093f956ee728b28fc14d78174984913d48d057de",
+      "artifactId": 12155517695,
+      "originalPath": "ci-v200/v210-visual/narrow-light/review/v210-review-reopen-narrow-light-api35.json"
+    },
+    "api35/ci-v200/v210-visual/narrow-light/v210-visual-narrow-light-api35.json": {
+      "bytes": 21749,
+      "sha256": "09d6b0a1bdd54e84c54c8869e9ed08c78ceb10addc43f7672408ffa0903bd259",
+      "artifactId": 12155517695,
+      "originalPath": "ci-v200/v210-visual/narrow-light/v210-visual-narrow-light-api35.json"
+    },
+    "api35/ci-v200/v210-visual/narrow-light-instrumentation.txt": {
+      "bytes": 783,
+      "sha256": "9b49a6b9bc9987bce83f81e399ea9c05dedf618c0bd3c679fc1361fc9be08b5b",
+      "artifactId": 12155517695,
+      "originalPath": "ci-v200/v210-visual/narrow-light-instrumentation.txt"
+    },
+    "api35/ci-v200/v210-visual/regular-dark/full/v210-full-regular-dark-api35.json": {
+      "bytes": 44115,
+      "sha256": "336d1485eb0fafa094315233aad2e57a3223da77634e863a0578fc1d9d96e847",
+      "artifactId": 12155517695,
+      "originalPath": "ci-v200/v210-visual/regular-dark/full/v210-full-regular-dark-api35.json"
+    },
+    "api35/ci-v200/v210-visual/regular-dark/full/v210-full-reopen-regular-dark-api35.json": {
+      "bytes": 563,
+      "sha256": "07e244ba7fc292fb8ad1b0e2f767362ed9cb5394c053bce8d83877a6e0e60d33",
+      "artifactId": 12155517695,
+      "originalPath": "ci-v200/v210-visual/regular-dark/full/v210-full-reopen-regular-dark-api35.json"
+    },
+    "api35/ci-v200/v210-visual/regular-dark/review/v210-review-regular-dark-api35.json": {
+      "bytes": 57544,
+      "sha256": "c46de676e555dc2bd249c28c859b9aa08164e3a9abfb6e4d33f77a7b197eead3",
+      "artifactId": 12155517695,
+      "originalPath": "ci-v200/v210-visual/regular-dark/review/v210-review-regular-dark-api35.json"
+    },
+    "api35/ci-v200/v210-visual/regular-dark/review/v210-review-reopen-regular-dark-api35.json": {
+      "bytes": 19300,
+      "sha256": "bad41098c16e614ad695de5345641b2ff6303c1bdcf439129df11abadeed065a",
+      "artifactId": 12155517695,
+      "originalPath": "ci-v200/v210-visual/regular-dark/review/v210-review-reopen-regular-dark-api35.json"
+    },
+    "api35/ci-v200/v210-visual/regular-dark/v210-visual-regular-dark-api35.json": {
+      "bytes": 21748,
+      "sha256": "2d4f5631edc9cc43a28be87ec27e14c51983bc3ae65b8f27ca1eebcbc22d4423",
+      "artifactId": 12155517695,
+      "originalPath": "ci-v200/v210-visual/regular-dark/v210-visual-regular-dark-api35.json"
+    },
+    "api35/ci-v200/v210-visual/regular-dark-instrumentation.txt": {
+      "bytes": 783,
+      "sha256": "a7ead3c15bdc29312ccc4ae281fdd8163be981e7273b1f71ddbc53f5880ccffe",
+      "artifactId": 12155517695,
+      "originalPath": "ci-v200/v210-visual/regular-dark-instrumentation.txt"
+    },
+    "api35/ci-v200/v210-visual/regular-light/full/v210-full-regular-light-api35.json": {
+      "bytes": 44136,
+      "sha256": "16b0cbd1840a468b0677ae544a680b4d1ec49048726aa91c9701aa611ca9f036",
+      "artifactId": 12155517695,
+      "originalPath": "ci-v200/v210-visual/regular-light/full/v210-full-regular-light-api35.json"
+    },
+    "api35/ci-v200/v210-visual/regular-light/full/v210-full-reopen-regular-light-api35.json": {
+      "bytes": 566,
+      "sha256": "4e77934ccf499511378a661b84a5b701326ac12e17fa6d2def55b9ad403a1e58",
+      "artifactId": 12155517695,
+      "originalPath": "ci-v200/v210-visual/regular-light/full/v210-full-reopen-regular-light-api35.json"
+    },
+    "api35/ci-v200/v210-visual/regular-light/review/v210-review-regular-light-api35.json": {
+      "bytes": 57989,
+      "sha256": "30b06b1b68c30e1b6b8fd38f7bec414dcd3a8420d41d44863322535defc05ace",
+      "artifactId": 12155517695,
+      "originalPath": "ci-v200/v210-visual/regular-light/review/v210-review-regular-light-api35.json"
+    },
+    "api35/ci-v200/v210-visual/regular-light/review/v210-review-reopen-regular-light-api35.json": {
+      "bytes": 19302,
+      "sha256": "c3920922c0ae00733287d3b819f65e0236a2789c9992dafc41b516dab02eb4b1",
+      "artifactId": 12155517695,
+      "originalPath": "ci-v200/v210-visual/regular-light/review/v210-review-reopen-regular-light-api35.json"
+    },
+    "api35/ci-v200/v210-visual/regular-light/v210-visual-regular-light-api35.json": {
+      "bytes": 21765,
+      "sha256": "4940d22788c5be22d689cf5def2f3530eb6e52716d2aabb8aae53b5d1115b59c",
+      "artifactId": 12155517695,
+      "originalPath": "ci-v200/v210-visual/regular-light/v210-visual-regular-light-api35.json"
+    },
+    "api35/ci-v200/v210-visual/regular-light-instrumentation.txt": {
+      "bytes": 783,
+      "sha256": "8ce23590d706b4ed2f062cd2ca5b164d8e4c56c7b44c42934c79eb38bac28302",
+      "artifactId": 12155517695,
+      "originalPath": "ci-v200/v210-visual/regular-light-instrumentation.txt"
+    },
+    "api35/ci-v200/v210-visual/review-narrow-dark-journey-instrumentation.txt": {
+      "bytes": 789,
+      "sha256": "be65f92aa827ea38c408ef3dd32626c93d5a3bccb9d41587d7f5a4adfce673a4",
+      "artifactId": 12155517695,
+      "originalPath": "ci-v200/v210-visual/review-narrow-dark-journey-instrumentation.txt"
+    },
+    "api35/ci-v200/v210-visual/review-narrow-dark-reopen-instrumentation.txt": {
+      "bytes": 788,
+      "sha256": "157b139250f17956560a5a8c23321d70589698a3058e924f951fac4056e62b37",
+      "artifactId": 12155517695,
+      "originalPath": "ci-v200/v210-visual/review-narrow-dark-reopen-instrumentation.txt"
+    },
+    "api35/ci-v200/v210-visual/review-narrow-light-journey-instrumentation.txt": {
+      "bytes": 789,
+      "sha256": "0c8301e1ccaa1ee741ff34cb6ed901a174342e88339b9ecd04ca473cfe2b83e2",
+      "artifactId": 12155517695,
+      "originalPath": "ci-v200/v210-visual/review-narrow-light-journey-instrumentation.txt"
+    },
+    "api35/ci-v200/v210-visual/review-narrow-light-reopen-instrumentation.txt": {
+      "bytes": 788,
+      "sha256": "0f441dfd56749f8fef57a533ed5d6b41e7d8818412bdcdec27fffeb99e944eaf",
+      "artifactId": 12155517695,
+      "originalPath": "ci-v200/v210-visual/review-narrow-light-reopen-instrumentation.txt"
+    },
+    "api35/ci-v200/v210-visual/review-regular-dark-journey-instrumentation.txt": {
+      "bytes": 788,
+      "sha256": "d23e89c943d9ce10c43435f6bd59165d0a8ed443d72808d427a9d7484eba26bb",
+      "artifactId": 12155517695,
+      "originalPath": "ci-v200/v210-visual/review-regular-dark-journey-instrumentation.txt"
+    },
+    "api35/ci-v200/v210-visual/review-regular-dark-reopen-instrumentation.txt": {
+      "bytes": 788,
+      "sha256": "6217d03d1898fd8ce2d5d1ee3a36a2cbd54f65069920b0fef8ddcc7f282e9dcf",
+      "artifactId": 12155517695,
+      "originalPath": "ci-v200/v210-visual/review-regular-dark-reopen-instrumentation.txt"
+    },
+    "api35/ci-v200/v210-visual/review-regular-light-journey-instrumentation.txt": {
+      "bytes": 789,
+      "sha256": "adb45913d77a534c87798def8f6d8284fd9adaa34013f6c47d81ad96f3d7dfe2",
+      "artifactId": 12155517695,
+      "originalPath": "ci-v200/v210-visual/review-regular-light-journey-instrumentation.txt"
+    },
+    "api35/ci-v200/v210-visual/review-regular-light-reopen-instrumentation.txt": {
+      "bytes": 788,
+      "sha256": "3968d3c3f3627ccfe5130877eea2a749f20634555185d6104235bd0197e2ad33",
+      "artifactId": 12155517695,
+      "originalPath": "ci-v200/v210-visual/review-regular-light-reopen-instrumentation.txt"
+    },
+    "api35/ci-v200/v210-visual/v210-runner-api35.json": {
+      "bytes": 2124,
+      "sha256": "2bc4c935b09d261149569e3b859b3e7aedc775e34ab71571e24e3d1a2522808e",
+      "artifactId": 12155517695,
+      "originalPath": "ci-v200/v210-visual/v210-runner-api35.json"
+    },
+    "api35-job-original.log": {
+      "bytes": 99711,
+      "sha256": "afa8d0c942b8d2171ec0cd3d05f86dcbfd565cdda7298f5d267b354f2eb9640d",
+      "artifactId": null,
+      "originalPath": "GitHub job117823233021 decoded original log"
+    }
+  }
+}

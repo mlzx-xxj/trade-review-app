@@ -1,0 +1,57 @@
+[
+  {
+    "step": "create strategy through UI",
+    "event": "begin",
+    "elapsedRealtimeMs": 2052541
+  },
+  {
+    "step": "create strategy through UI",
+    "event": "complete",
+    "elapsedRealtimeMs": 2057714
+  },
+  {
+    "step": "save five real-form executions",
+    "event": "begin",
+    "elapsedRealtimeMs": 2057716
+  },
+  {
+    "step": "save five real-form executions",
+    "event": "complete",
+    "elapsedRealtimeMs": 2069939
+  },
+  {
+    "step": "correct linked strategy and recreate editor",
+    "event": "begin",
+    "elapsedRealtimeMs": 2069940
+  },
+  {
+    "step": "correct linked strategy and recreate editor",
+    "event": "complete",
+    "elapsedRealtimeMs": 2077316
+  },
+  {
+    "step": "save independent stock risk through keyboard UI",
+    "event": "begin",
+    "elapsedRealtimeMs": 2077318
+  },
+  {
+    "step": "save independent stock risk through keyboard UI",
+    "event": "complete",
+    "elapsedRealtimeMs": 2079229
+  },
+  {
+    "step": "save verified future rule without repricing old unknown fees",
+    "event": "begin",
+    "elapsedRealtimeMs": 2079232
+  },
+  {
+    "step": "save verified future rule without repricing old unknown fees",
+    "event": "complete",
+    "elapsedRealtimeMs": 2090548
+  },
+  {
+    "step": "real DocumentsUI ZIP export preview cancel and replace restore",
+    "event": "begin",
+    "elapsedRealtimeMs": 2090550
+  }
+]
