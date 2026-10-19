@@ -1,4 +1,4 @@
-"""V2.0 actual APK identity gate. Never reads a private key/password."""
+"""Actual V2 APK identity gate. Never reads a private key/password."""
 import argparse
 import hashlib
 import json
@@ -7,6 +7,7 @@ import re
 import subprocess
 import zipfile
 from signing_identity import PIN, LEGACY_V03_PIN, require_committed_identity, upgrade_policy
+from release_version import VERSION_NAME, VERSION_CODE, RC_VERSION_NAME
 
 ROOT=Path(__file__).resolve().parents[1]
 
@@ -43,8 +44,8 @@ def require_identity(data,kind):
     if kind not in ("rc","release"):raise ValueError("Known build type required")
     require_committed_identity()
     package="com.tradereview.app.rc.v200" if kind=="rc" else "com.tradereview.app"
-    version="2.0.0-rc.3" if kind=="rc" else "2.0.0"
-    if data["applicationId"]!=package or data["versionName"]!=version or data["versionCode"]!=22 or data["debuggable"]:raise ValueError("Package/version/non-debuggable build identity mismatch")
+    version=RC_VERSION_NAME if kind=="rc" else VERSION_NAME
+    if data["applicationId"]!=package or data["versionName"]!=version or data["versionCode"]!=VERSION_CODE or data["debuggable"]:raise ValueError("Package/version/non-debuggable build identity mismatch")
     if kind=="release" and data["certificateSha256"]!=PIN:raise ValueError("Formal Release must use the permanent V2 private identity")
     if kind=="rc" and data["certificateSha256"] in (PIN,LEGACY_V03_PIN):raise ValueError("Isolated RC must not consume either permanent or historical formal identity")
 
@@ -82,7 +83,7 @@ def verify_delivery(directory,aapt,signer,source):
     (root/"SHA256SUMS.txt").write_text("\n".join(hashes)+"\n")
     (root/"PUBLICATION-CHECK.json").write_text(json.dumps(checked,indent=2)+"\n")
     rc=checked["TradeReview-v2.0-RC.apk"]
-    text=f'versionName={rc["versionName"]}\nversionCode=22\napplicationId={rc["applicationId"]}\nbuildType=rc\ndebuggable=false\nsourceCommit={source}\ncertificateSha256={rc["certificateSha256"]}\napkSha256={rc["apkSha256"]}\npermanentV2CertificatePin={PIN}\nhistoricalV03CertificatePin={LEGACY_V03_PIN}\nlegacyV03UpgradeCompatible=false\nsamePermanentSignerUpgrade=not-executed\nclassification=isolated-rc\nGitHubActionsSecretsConfigured={str(status["configured"]).lower()}\nThis RC uses a temporary runner test key; no sustainable RC-to-RC upgrades are promised. Old V0.3 and new permanent V2 certificates are incompatible: verify a full ZIP backup, then owner-approved reinstall and restore. Never uninstall/clear data automatically. Future permanent updates must retain com.tradereview.app and the V2 certificate, and increase versionCode. Stable publication and real phone acceptance are not claimed.\n'
+    text=f'versionName={rc["versionName"]}\nversionCode={rc["versionCode"]}\napplicationId={rc["applicationId"]}\nbuildType=rc\ndebuggable=false\nsourceCommit={source}\ncertificateSha256={rc["certificateSha256"]}\napkSha256={rc["apkSha256"]}\npermanentV2CertificatePin={PIN}\nhistoricalV03CertificatePin={LEGACY_V03_PIN}\nlegacyV03UpgradeCompatible=false\nsamePermanentSignerUpgrade=not-executed\nclassification=isolated-rc\nGitHubActionsSecretsConfigured={str(status["configured"]).lower()}\nThis RC uses a temporary runner test key; no sustainable RC-to-RC upgrades are promised. Old V0.3 and new permanent V2 certificates are incompatible: verify a full ZIP backup, then owner-approved reinstall and restore. Never uninstall/clear data automatically. Future permanent updates must retain com.tradereview.app and the V2 certificate, and increase versionCode. Stable publication and real phone acceptance are not claimed.\n'
     if "TradeReview-v2.0-fixed-candidate.apk" in checked:
         fixed=checked["TradeReview-v2.0-fixed-candidate.apk"]
         text+=f'\nPermanentCandidateApplicationId={fixed["applicationId"]}\nPermanentCandidateVersionName={fixed["versionName"]}\nPermanentCandidateVersionCode={fixed["versionCode"]}\nPermanentCandidateCertificateSha256={fixed["certificateSha256"]}\nPermanentCandidateApkSha256={fixed["apkSha256"]}\nPermanentCandidateDebuggable=false\nPermanentCandidateClassification=permanent-v2-release-candidate\nPermanentPinVerified=true\n'

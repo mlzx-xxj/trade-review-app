@@ -275,6 +275,7 @@ jobs:
 
   signed-install:
     name: API ${{ matrix.api }} permanent-V2 install
+    environment: v03-signing-main
     needs: [build, device-tests, trusted-signing]
     if: >-
       github.repository == 'mlzx-xxj/trade-review-app' && github.ref == 'refs/heads/main' &&
@@ -307,7 +308,7 @@ jobs:
           packages: platform-tools
           log-accepted-android-sdk-licenses: false
       - run: sdkmanager 'build-tools;35.0.0'
-      - name: Verify exact signed candidate and optional real old public APK
+      - name: Verify signed candidate, pinned Stable V2.0.0 and optional V0.3 APK
         env:
           GH_TOKEN: ${{ github.token }}
           BUILD_ATTEMPT: ${{ needs.build.outputs.artifact_attempt }}
@@ -322,7 +323,7 @@ jobs:
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
-      - name: Actual permanent APK install and optional incompatible V0.3 rejection
+      - name: Permanent install, Stable overlay upgrade, data retention and ZIP restore
         uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2
         with:
           api-level: ${{ matrix.api }}

@@ -8,7 +8,7 @@ adb shell dumpsys activity lastanr > ci-v200/boot-last-anr.txt
 [[ -s ci-v200/boot-logcat.txt && -s ci-v200/boot-last-anr.txt ]] || exit 1
 grep -Fq '<no ANR has occurred since boot>' ci-v200/boot-last-anr.txt || exit 1
 if grep -Fq 'FATAL EXCEPTION' ci-v200/boot-logcat.txt; then exit 1; fi
-args=(--directory delivered-packages --aapt "$ANDROID_HOME/build-tools/35.0.0/aapt" --apksigner "$ANDROID_HOME/build-tools/35.0.0/apksigner")
+args=(--directory delivered-packages --aapt "$ANDROID_HOME/build-tools/35.0.0/aapt" --apksigner "$ANDROID_HOME/build-tools/35.0.0/apksigner" --stable-apk delivered-packages/stable/TradeReview-v2.0-fixed-candidate.1.apk)
 if [[ -f delivered-packages/old-fixed.apk ]]; then
   args+=(--old-apk delivered-packages/old-fixed.apk)
 fi

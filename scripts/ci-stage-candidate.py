@@ -7,6 +7,7 @@ from pathlib import Path
 import re
 import shutil
 from ci_security import api, manifest, output, provenance, require, require_trusted, verify_manifest
+from stable_upgrade import PASS as UPGRADE_PASS, verify_evidence as verify_upgrade
 
 def module(name, filename):
     spec=importlib.util.spec_from_file_location(name,Path(__file__).with_name(filename))
@@ -56,8 +57,9 @@ def stage(include_signed=False):
             artifacts.download(prefix+str(max(values)),target,f"signed-install-{api_number}")
             probe=json.loads((target/f"package-probes-api{api_number}.json").read_text())
             require(probe["fixedReleaseInstall"]=="passed-permanent-v2-pin-non-debuggable-release","Permanent identity was not actually installed")
-            require(probe.get("legacyV03UpgradeCompatible") is False and probe.get("samePermanentSignerUpgrade")=="not-executed-no-earlier-permanent-apk","Upgrade compatibility claim invalid")
+            require(probe.get("legacyV03UpgradeCompatible") is False and probe.get("samePermanentSignerUpgrade")==UPGRADE_PASS,"Required Stable overlay upgrade did not pass")
             require(probe["fixedActualApkSha"]==json.loads((dist/"FIXED-IDENTITY.json").read_text())["apkSha256"],"Installed fixed APK differs from signed candidate")
+            verify_upgrade(target/"same-signer-upgrade",probe["fixedActualApkSha"],api_number)
             destination=Path("verified-reports/devices")/f"android-test-reports-api{api_number}"/"metrics"/f"package-probes-api{api_number}.json"
             destination.write_text(json.dumps(probe,indent=2)+"\n")
             shutil.copy2(target/"56-v200-fixed-release-install.png",Path("screenshots")/f"v200-emulator-screenshots-api{api_number}"/"56-v200-fixed-release-install.png")
