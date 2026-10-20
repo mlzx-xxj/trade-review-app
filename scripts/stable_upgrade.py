@@ -5,6 +5,7 @@ from pathlib import Path
 import re
 import subprocess
 import time
+import traceback
 import xml.etree.ElementTree as ET
 import zipfile
 from ci_security import api, digest, require, require_trusted, REPOSITORY
@@ -18,6 +19,35 @@ STABLE_SHA = "d157327870baa1dcd6d777de8ffcc95b1c504020a7c450ad615c7f56a6f92b5d"
 FIXTURE = Path(__file__).with_name("fixtures") / "v210-upgrade.zip"
 FIXTURE_SHA = "8494964bb73c6539b0e079ebbf904f313021ff7622f928682adc39a4921a45ac"
 PASS = "passed-stable-v2.0.0-to-v2.1.0"
+
+
+def bounds(node):
+    match = re.fullmatch(r"\[(-?\d+),(-?\d+)\]\[(-?\d+),(-?\d+)\]", node.get("bounds", ""))
+    require(match is not None, "UI bounds required")
+    box = tuple(map(int, match.groups()))
+    require(box[2] > box[0] and box[3] > box[1], "Visible UI target required")
+    return box
+
+
+def inside(box, area):
+    return area[0] <= box[0] < box[2] <= area[2] and area[1] <= box[1] < box[3] <= area[3]
+
+
+def document_target(tree, filename):
+    directory = next(n for n in tree.iter("node") if n.get("resource-id", "").endswith(":id/dir_list") and n.get("package", "").endswith(".documentsui"))
+    left, top, right, bottom = bounds(directory)
+    # Edge-to-edge DocumentsUI may report content behind the navigation bar.
+    # Require the whole file row/tile in the interior, not just a clipped title.
+    margin = max(1, (bottom - top) // 10)
+    area = (left, top + margin, right, bottom - margin)
+    title = next((n for n in directory.iter("node") if n.get("resource-id") == "android:id/title" and n.get("text") == filename and n.get("enabled") == "true"), None)
+    if title is None: return None, None, area
+    parents = {child: parent for parent in directory.iter() for child in parent}
+    row = title
+    while row is not None and not row.get("resource-id", "").endswith(":id/item_root"):
+        row = parents.get(row)
+    require(row is not None and row.get("clickable") == "true" and row.get("enabled") == "true", "Actual selectable document row required")
+    return title, row, area
 
 
 def load_check():
@@ -108,10 +138,43 @@ class Device:
             else: time.sleep(.2)
         raise ValueError("Expected real UI missing: " + text)
 
-    def tap(self, node):
-        box = [int(n) for n in re.findall(r"\d+", node.get("bounds", ""))]
-        require(len(box) == 4 and box[2] > box[0] and box[3] > box[1], "Visible UI target required")
+    def tap(self, node, *, within=None):
+        box = bounds(node)
+        require(within is None or inside(box, within), "Refusing clipped/unsafe UI target")
         self.adb("shell", "input", "tap", str((box[0] + box[2]) // 2), str((box[1] + box[3]) // 2))
+
+    def select_document(self, filename):
+        deadline = time.monotonic() + 45
+        for attempt in range(12):
+            # A fresh dump on every iteration discards coordinates before a scroll.
+            title, row, area = document_target(self.tree(), filename)
+            if title is not None and inside(bounds(row), area) and inside(bounds(title), area):
+                self.tap(title, within=area)
+                return
+            if time.monotonic() >= deadline: break
+            x = (area[0] + area[2]) // 2
+            inset = (area[3] - area[1]) // 5
+            start, end = area[3] - inset, area[1] + inset
+            if row is not None and bounds(row)[1] < area[1]: start, end = end, start
+            self.adb("shell", "input", "swipe", str(x), str(start), str(x), str(end), "300")
+        raise ValueError("Document never became fully visible: " + filename)
+
+    def restore_failure(self, filename):
+        error = f"Restore file: {filename}\n{traceback.format_exc()}"
+        try:
+            self.tree()
+            (self.root / "restore-failure.xml").write_bytes((self.root / "last-window.xml").read_bytes())
+        except Exception as diagnostic: error += f"\nHierarchy capture failed: {diagnostic}"
+        for name, command, binary in [
+            ("restore-failure.png", ("exec-out", "screencap", "-p"), True),
+            ("restore-failure-logcat.txt", ("logcat", "-d", "-s", "ActivityManager:I", "ActivityTaskManager:I", "AndroidRuntime:E"), False),
+        ]:
+            try:
+                result = self.adb(*command, binary=binary)
+                if binary: (self.root / name).write_bytes(result.stdout)
+                else: (self.root / name).write_text(result.stdout)
+            except Exception as diagnostic: error += f"\n{name} capture failed: {diagnostic}"
+        (self.root / "restore-failure.txt").write_text(error)
 
     def backup_page(self):
         self.adb("shell", "am", "force-stop", APP)
@@ -127,13 +190,19 @@ class Device:
         self.tap(next(n for n in roots.iter("node") if n.get("text") in ("Downloads", "下载")))
 
     def restore(self, filename):
-        self.backup_page(); self.tap(self.find("从 ZIP／JSON 恢复")); self.downloads()
-        self.tap(self.find(filename, system=True, scroll=True))
-        self.tap(self.find("覆盖备份范围", scroll=True))
-        self.tap(self.find("继续确认恢复", scroll=True))
-        self.find("确认覆盖备份范围？")
-        self.tap(self.find("确认恢复"))
-        self.find("覆盖恢复完成", scroll=True)
+        try:
+            self.backup_page(); self.tap(self.find("从 ZIP／JSON 恢复")); self.downloads()
+            self.select_document(filename)
+            self.find("恢复预览（尚未写入）", scroll=True)
+            self.tap(self.find("覆盖备份范围", scroll=True))
+            self.tap(self.find("继续确认恢复", scroll=True))
+            self.find("确认覆盖备份范围？")
+            self.tap(self.find("确认恢复"))
+            self.find("覆盖恢复完成", scroll=True)
+        except Exception:
+            try: self.restore_failure(filename)
+            except Exception: pass  # Diagnostics must never replace the real failure.
+            raise
 
     def export(self, filename):
         self.backup_page(); self.tap(self.find("保存完整 ZIP 备份")); self.tap(self.find("完整 ZIP（推荐）"))
