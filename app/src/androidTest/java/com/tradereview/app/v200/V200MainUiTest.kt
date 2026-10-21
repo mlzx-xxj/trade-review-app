@@ -116,7 +116,7 @@ class V200MainUiTest {
         field("rule-name","铁矿石参数");field("rule-multiplier","100");field("rule-margin","0.1")
         field("rule-open-fee","2");field("rule-close-fee","3");field("rule-today-fee","4")
         compose.onNodeWithTag("rule-verified").performScrollTo().performClick()
-        compose.onNodeWithTag("save-contract-rule").performScrollTo().performClick()
+        compose.onNodeWithTag("save-contract-rule").assertIsDisplayed().assertIsEnabled().performClick()
         wait{!model.busy.value && model.state.value.ledger!!.rules.size==1}
         val id=model.state.value.ledger!!.rules.single().id
         field("contract-rule-search","铁矿")
@@ -133,7 +133,7 @@ class V200MainUiTest {
         rules()
         compose.onNodeWithText("编辑，不改写历史").performScrollTo().performClick()
         field("rule-open-fee","")
-        compose.onNodeWithTag("save-contract-rule").performScrollTo().performClick()
+        compose.onNodeWithTag("save-contract-rule").assertIsDisplayed().assertIsEnabled().performClick()
         wait{!model.busy.value && model.state.value.ledger!!.rules.single().openFee==null}
         assertEquals(id,model.state.value.ledger!!.rules.single().id)
         compose.onNodeWithText("开仓：未设置（待估算）").performScrollTo().assertIsDisplayed()
