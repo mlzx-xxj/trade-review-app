@@ -81,6 +81,74 @@ class V200MainUiTest {
 
     @Test fun stockEntryEditDeleteRequirePreviewAndPreserveActualAudit(){start();fill();compose.onNodeWithTag("save-execution").performClick();wait{model.state.value.ledger?.executions?.size==1 && !model.busy.value};val original=model.state.value.ledger!!.executions.single();assertEquals("0.10",original.fees);compose.onNodeWithText("当前持仓").performClick();assertEquals("0",sellable(model.state.value.ledger!!,model.state.value.ledger!!.cycles.single(),today));compose.onNodeWithTag("v2-trades").performScrollToNode(hasTestTag("position-cycle_${original.id}"));capture("41-v200-positions");compose.onNodeWithText("历史成交").performClick();compose.onNodeWithTag("execution-${original.id}").performClick();compose.onNodeWithTag("edit-execution").performScrollTo().performClick();field("execution-price","12");compose.onNodeWithTag("save-execution").performClick();wait{model.pending.value!=null};assertEquals(original,runBlocking{model.repository.read().executions.single()});compose.onNodeWithTag("confirm-execution-change").performClick();wait{!model.busy.value && model.pending.value==null && model.state.value.ledger!!.executions.single().price=="12"};compose.onNodeWithTag("delete-execution").performScrollTo().performClick();wait{model.pending.value!=null};compose.onNodeWithTag("confirm-execution-change").performClick();wait{!model.busy.value && model.state.value.ledger!!.executions.isEmpty()};val after=runBlocking{model.repository.read()};assertEquals(2,after.audits.size);assertTrue(after.cycles.isEmpty());assertEquals(original.id,after.audits.first().executionId)}
 
+    @Test fun futuresContractShortcutKeepsDraftRefreshesQuoteAndNeverRepricesHistory() {
+        runBlocking{save(LedgerExecution("v22-history","futures","i2701","历史铁矿石",today-1,600,today-1,0,"buy","open","800","1","0",feeSource=AutomaticEntry.SOURCE,second=1))}
+        wait{model.state.value.ledger?.executions?.size==1}
+        val history=runBlocking{model.repository.read()}
+        assertNull(history.executions.single().fees)
+        start()
+        compose.onNodeWithTag("entry-contract-rules").assertDoesNotExist() // A股流程不增加入口。
+        compose.onNodeWithTag("entry-market-futures").performClick()
+        field("execution-code","i2701")
+        compose.onNodeWithTag("execution-action-sell-open").performScrollTo().performClick()
+        field("execution-price","810");field("execution-quantity","2")
+        field("execution-name","草稿铁矿石");field("execution-tp","790");field("execution-stop","820")
+        wait{compose.onAllNodesWithTag("entry-pending-note").fetchSemanticsNodes().isNotEmpty()}
+        val draft=model.restoredDraft().toMap()
+        fun rules(){
+            compose.onNodeWithTag("entry-contract-rules").performScrollTo()
+            settledEntryViewport()
+            compose.onNodeWithTag("entry-contract-rules").assertIsDisplayed().performClick()
+            compose.onNodeWithTag("contract-rule-search").assertTextContains("i2701")
+        }
+        fun resume(){
+            compose.onNodeWithContentDescription("返回成交录入").performClick()
+            wait{model.editor.value && compose.onAllNodesWithTag("save-execution").fetchSemanticsNodes().isNotEmpty()}
+            assertEquals(draft,model.restoredDraft())
+            compose.onNodeWithTag("execution-code").performScrollTo().assertTextContains("i2701")
+            compose.onNodeWithTag("execution-price").performScrollTo().assertTextContains("810")
+            compose.onNodeWithTag("execution-quantity").performScrollTo().assertTextContains("2")
+            compose.onNodeWithTag("execution-action-sell-open").assertIsSelected()
+        }
+        rules()
+        compose.onNodeWithTag("new-contract-rule").performScrollTo().performClick()
+        compose.onNodeWithTag("rule-code").assertTextContains("i2701")
+        field("rule-name","铁矿石参数");field("rule-multiplier","100");field("rule-margin","0.1")
+        field("rule-open-fee","2");field("rule-close-fee","3");field("rule-today-fee","4")
+        compose.onNodeWithTag("rule-verified").performScrollTo().performClick()
+        compose.onNodeWithTag("save-contract-rule").performScrollTo().performClick()
+        wait{!model.busy.value && model.state.value.ledger!!.rules.size==1}
+        val id=model.state.value.ledger!!.rules.single().id
+        field("contract-rule-search","铁矿")
+        compose.onNodeWithText("i2701 · 铁矿石参数").performScrollTo().assertIsDisplayed()
+        compose.onNodeWithText("开仓：2 元/手").performScrollTo().assertIsDisplayed()
+        resume()
+        wait{compose.onAllNodesWithText("预计手续费：¥4.01").fetchSemanticsNodes().isNotEmpty()}
+        compose.onNodeWithTag("entry-estimated-margin").assertTextEquals("预计新增保证金占用：¥16,200.00")
+        compose.onNodeWithTag("entry-options").performScrollTo().performClick()
+        compose.onNodeWithTag("execution-name").performScrollTo().assertTextContains("草稿铁矿石")
+        compose.onNodeWithTag("execution-tp").performScrollTo().assertTextContains("790")
+        compose.onNodeWithTag("execution-stop").performScrollTo().assertTextContains("820")
+        assertEquals(history,runBlocking{model.repository.read()}.copy(rules=history.rules))
+        rules()
+        compose.onNodeWithText("编辑，不改写历史").performScrollTo().performClick()
+        field("rule-open-fee","")
+        compose.onNodeWithTag("save-contract-rule").performScrollTo().performClick()
+        wait{!model.busy.value && model.state.value.ledger!!.rules.single().openFee==null}
+        assertEquals(id,model.state.value.ledger!!.rules.single().id)
+        compose.onNodeWithText("开仓：未设置（待估算）").performScrollTo().assertIsDisplayed()
+        resume()
+        wait{compose.onAllNodesWithTag("entry-pending-note").fetchSemanticsNodes().isNotEmpty()}
+        compose.onNodeWithTag("entry-estimated-fee").assertTextEquals("预计手续费：待估算")
+        assertEquals(history,runBlocking{model.repository.read()}.copy(rules=history.rules))
+        compose.onNodeWithTag("save-execution").performClick()
+        wait{!model.busy.value && !model.editor.value && model.state.value.ledger!!.executions.size==2}
+        assertNull(model.pending.value)
+        val after=runBlocking{model.repository.read()}
+        assertEquals(history.executions.single(),after.executions.first{it.id=="v22-history"})
+        assertNull(after.executions.first{it.id!="v22-history"}.fees)
+    }
+
     @Test fun separateRiskFundsAndCustomStrategyRequireExplicitExceededRiskConfirmation() {
         fun step(label:String,predicate:()->Boolean) {
             try { wait { predicate() } } catch(error:androidx.compose.ui.test.ComposeTimeoutException) {

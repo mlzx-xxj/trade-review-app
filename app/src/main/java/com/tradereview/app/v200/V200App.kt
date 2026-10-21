@@ -31,6 +31,7 @@ import java.time.LocalDate
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable fun V200App(model:V200ViewModel,backup:BackupViewModel,store:AttachmentStore){val screen by model.state.collectAsState();val ledger=screen.ledger;val page by model.page.collectAsState();val editor by model.editor.collectAsState();val pending by model.pending.collectAsState();val busy by model.busy.collectAsState();var route by rememberSaveable{mutableStateOf("")};var selected by rememberSaveable{mutableStateOf("")};var editing by rememberSaveable{mutableStateOf<String?>(null)};var resumeEntry by rememberSaveable{mutableStateOf(false)};var day by rememberSaveable{mutableStateOf<Long?>(null)};val snack=remember{SnackbarHostState()};var snackHeight by remember{mutableIntStateOf(0)};val density=LocalDensity.current;val holder=rememberSaveableStateHolder();val labels=listOf("首页","交易","复盘","统计","账户")
+    var entryRuleCode by rememberSaveable{mutableStateOf<String?>(null)}
     // Subscribe afresh after each display: null -> the same text can be conflated
     // before recomposition, leaving a completed LaunchedEffect(text) latched.
     LaunchedEffect(model){while(true){
@@ -38,10 +39,10 @@ import java.time.LocalDate
         snack.showSnackbar(next)
         model.message.compareAndSet(next,null)
     }}
-    fun back(){if(route=="rules" || route=="strategy"){route="risk"}else if(resumeEntry){route="";resumeEntry=false;model.openEditor()}else route=""}
+    fun back(){if(route=="rules" && entryRuleCode==null || route=="strategy"){route="risk"}else if(resumeEntry){route="";resumeEntry=false;entryRuleCode=null;model.openEditor()}else route=""}
     BackHandler(enabled=route.isNotEmpty() && !editor){back()}
     Scaffold(topBar={Row(Modifier.fillMaxWidth().windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal)).padding(horizontal=8.dp).heightIn(min=56.dp),horizontalArrangement=Arrangement.spacedBy(4.dp),verticalAlignment=androidx.compose.ui.Alignment.CenterVertically){
-        if(route.isNotEmpty())IconButton({back()}){Icon(Icons.AutoMirrored.Filled.ArrowBack,"返回主页面")}
+        if(route.isNotEmpty())IconButton({back()}){Icon(Icons.AutoMirrored.Filled.ArrowBack,if(route=="rules" && entryRuleCode!=null)"返回成交录入"else"返回主页面")}
         Text(when(route){"risk"->"风险与策略";"rules"->"合约参数";"backup"->"备份与导出";"position"->"持仓详情";"execution"->"成交详情";"archive"->"兼容历史";"strategy"->"策略关联历史";else->labels.getOrElse(page){"首页"}},Modifier.weight(1f).padding(vertical=14.dp),style=MaterialTheme.typography.titleLarge)
         FlowRow(Modifier.widthIn(max=250.dp),horizontalArrangement=Arrangement.End){
             if(route!="risk" && route!="rules")TextButton({route="risk"},modifier=Modifier.heightIn(min=48.dp).testTag("open-risk-strategy"),contentPadding=PaddingValues(horizontal=8.dp)){Text("风险与策略",style=MaterialTheme.typography.labelMedium)}
@@ -49,10 +50,10 @@ import java.time.LocalDate
             IconButton({route="backup"},modifier=Modifier.testTag("open-backup")){Icon(Icons.Default.Settings,"备份与导出")}
         }
     }},bottomBar={if(route.isEmpty())NavigationBar(containerColor=MaterialTheme.colorScheme.surface){labels.forEachIndexed{i,label->NavigationBarItem(selected=page==i,onClick={model.page(i)},icon={when(i){0->Icon(Icons.Default.Home,label);1->Icon(Icons.AutoMirrored.Filled.ReceiptLong,label);2->Icon(Icons.Default.Checklist,label);3->Icon(Icons.Default.Assessment,label);else->Icon(Icons.Default.Person,label)}},label={Text(label)},modifier=Modifier.testTag("v2-main-page-$i"))}}},snackbarHost={SnackbarHost(snack,Modifier.onSizeChanged{snackHeight=it.height})}){padding->Box(Modifier.fillMaxSize().padding(padding).padding(bottom=with(density){snackHeight.toDp()}+if(snackHeight>0)8.dp else 0.dp)){
-        if(screen.error!=null)Text(screen.error!!,Modifier.padding(16.dp))else if(ledger==null)Column(Modifier.padding(16.dp)){LinearProgressIndicator(Modifier.fillMaxWidth());Text("正在读取本机账本")}else holder.SaveableStateProvider(if(route.isEmpty())"page-$page"else if(route in listOf("position","execution","strategy"))"$route-$selected"else route){
+        if(screen.error!=null)Text(screen.error!!,Modifier.padding(16.dp))else if(ledger==null)Column(Modifier.padding(16.dp)){LinearProgressIndicator(Modifier.fillMaxWidth());Text("正在读取本机账本")}else holder.SaveableStateProvider(if(route.isEmpty())"page-$page"else if(route=="rules" && entryRuleCode!=null)"entry-rules-$entryRuleCode"else if(route in listOf("position","execution","strategy"))"$route-$selected"else route){
             when(route){
-                "risk"->V200RiskPage(model,ledger,{route="rules"},{selected=it;route="strategy"})
-                "rules"->ContractRulesPage(model,ledger)
+                "risk"->V200RiskPage(model,ledger,{entryRuleCode=null;route="rules"},{selected=it;route="strategy"})
+                "rules"->ContractRulesPage(model,ledger,entryRuleCode.orEmpty())
                 "backup"->V200BackupPage(backup)
                 "position"->PositionDetails(ledger,selected)
                 "execution"->ledger.executions.firstOrNull{it.id==selected}?.let{e->ExecutionDetails(ledger,e,{editing=e.id;model.openEditor()},{model.deleteExecution(e)})}?:EmptyLedger("成交已不存在")
@@ -63,7 +64,9 @@ import java.time.LocalDate
         }
     }}
     // Keep the editor mounted while derived data refreshes, preserving its state and save callback.
-    if(editor && ledger!=null)ExecutionEditor(model,ledger,ledger.executions.firstOrNull{it.id==editing},{resumeEntry=true;model.closeEditor();route="risk"})
+    if(editor && ledger!=null)ExecutionEditor(model,ledger,ledger.executions.firstOrNull{it.id==editing},
+        onRisk={resumeEntry=true;entryRuleCode=null;model.closeEditor();route="risk"},
+        onRules={holder.removeState("entry-rules-$it");entryRuleCode=it;resumeEntry=true;model.closeEditor();route="rules"})
     if(pending!=null){val change=pending!!;AlertDialog(onDismissRequest={model.cancelChange()},title={Text(if(change.deleting)"确认删除成交并重算？"else if(change.risk?.exceeded==true)"单笔计划风险超限"else if(change.orderWarning)"确认成交先后顺序？"else"确认成交影响并重算？")},text={Column{change.risk?.takeIf{it.exceeded}?.let{Text("风险 ${amount(it.amount)}，上限 ${amount(it.limit)}；可确认记录真实成交，不篡改事实。",color=MaterialTheme.colorScheme.error)};Text(change.impact)}},confirmButton={TextButton({model.confirmChange()},enabled=!busy,modifier=Modifier.heightIn(min=48.dp).testTag("confirm-execution-change"),colors=ButtonDefaults.textButtonColors(contentColor=if(change.deleting)MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary)){Text("确认真实记录并重算")}},dismissButton={TextButton({model.cancelChange()},enabled=!busy,modifier=Modifier.heightIn(min=48.dp)){Text("取消")}})}
     day?.let{ClosedDayDialog(screen,it,{day=null})}
 }
