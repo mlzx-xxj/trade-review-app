@@ -82,7 +82,7 @@ class V200MainUiTest {
     @Test fun stockEntryEditDeleteRequirePreviewAndPreserveActualAudit(){start();fill();compose.onNodeWithTag("save-execution").performClick();wait{model.state.value.ledger?.executions?.size==1 && !model.busy.value};val original=model.state.value.ledger!!.executions.single();assertEquals("0.10",original.fees);compose.onNodeWithText("当前持仓").performClick();assertEquals("0",sellable(model.state.value.ledger!!,model.state.value.ledger!!.cycles.single(),today));compose.onNodeWithTag("v2-trades").performScrollToNode(hasTestTag("position-cycle_${original.id}"));capture("41-v200-positions");compose.onNodeWithText("历史成交").performClick();compose.onNodeWithTag("execution-${original.id}").performClick();compose.onNodeWithTag("edit-execution").performScrollTo().performClick();field("execution-price","12");compose.onNodeWithTag("save-execution").performClick();wait{model.pending.value!=null};assertEquals(original,runBlocking{model.repository.read().executions.single()});compose.onNodeWithTag("confirm-execution-change").performClick();wait{!model.busy.value && model.pending.value==null && model.state.value.ledger!!.executions.single().price=="12"};compose.onNodeWithTag("delete-execution").performScrollTo().performClick();wait{model.pending.value!=null};compose.onNodeWithTag("confirm-execution-change").performClick();wait{!model.busy.value && model.state.value.ledger!!.executions.isEmpty()};val after=runBlocking{model.repository.read()};assertEquals(2,after.audits.size);assertTrue(after.cycles.isEmpty());assertEquals(original.id,after.audits.first().executionId)}
 
     @Test fun futuresContractShortcutKeepsDraftRefreshesQuoteAndNeverRepricesHistory() {
-        runBlocking{save(LedgerExecution("v22-history","futures","i2701","历史铁矿石",today-1,600,today-1,0,"buy","open","800","1","0",feeSource=AutomaticEntry.SOURCE,second=1))}
+        runBlocking{save(LedgerExecution("v22_history","futures","i2701","历史铁矿石",today-1,600,today-1,0,"buy","open","800","1","0",feeSource=AutomaticEntry.SOURCE,second=1))}
         wait{model.state.value.ledger?.executions?.size==1}
         val history=runBlocking{model.repository.read()}
         assertNull(history.executions.single().fees)
@@ -145,8 +145,8 @@ class V200MainUiTest {
         wait{!model.busy.value && !model.editor.value && model.state.value.ledger!!.executions.size==2}
         assertNull(model.pending.value)
         val after=runBlocking{model.repository.read()}
-        assertEquals(history.executions.single(),after.executions.first{it.id=="v22-history"})
-        assertNull(after.executions.first{it.id!="v22-history"}.fees)
+        assertEquals(history.executions.single(),after.executions.first{it.id=="v22_history"})
+        assertNull(after.executions.first{it.id!="v22_history"}.fees)
     }
 
     @Test fun separateRiskFundsAndCustomStrategyRequireExplicitExceededRiskConfirmation() {
