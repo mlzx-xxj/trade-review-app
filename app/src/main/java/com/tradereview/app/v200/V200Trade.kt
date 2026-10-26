@@ -30,11 +30,56 @@ import java.time.LocalDate
 import java.time.LocalTime
 import java.math.BigDecimal
 
-@Composable fun V200Trades(state:LedgerSnapshot,onCycle:(String)->Unit,onExecution:(String)->Unit,onArchive:()->Unit,savedId:String?=null){var tab by rememberSaveable{mutableStateOf("positions")};var presentedSave by rememberSaveable{mutableStateOf<String?>(null)};LaunchedEffect(savedId){if(savedId!=null && savedId!=presentedSave){presentedSave=savedId;tab="history"}};Column(Modifier.fillMaxSize()){Box(Modifier.padding(horizontal=12.dp,vertical=8.dp)){SegmentedChoices(tab,listOf("positions" to "当前持仓","history" to "历史成交"),{tab=it},"trade-mode-")};LazyColumn(Modifier.weight(1f).testTag("v2-trades"),contentPadding=PaddingValues(12.dp),verticalArrangement=Arrangement.spacedBy(8.dp)){
-    if(tab=="positions"){val current=state.cycles.filter{decimal(it.remaining)>BigDecimal.ZERO};if(current.isEmpty())item{EmptyLedger("暂无持仓，请在右上角记录真实买入或开仓")};items(current,key={it.id}){PositionCard(state,it,onCycle)}}
-    else{val history=MatchingEngine.ordered(state.executions).reversed();if(history.isEmpty())item{EmptyLedger("尚未记录实际成交")};items(history,key={it.id}){e->LedgerPanel("${e.name} ${e.code}",Modifier.clickable{onExecution(e.id)}.testTag("execution-${e.id}")){Text("${LocalDate.ofEpochDay(e.date)} %02d:%02d · ${actionLabel(e)}".format(e.minute/60,e.minute%60));Text("${e.quantity}${if(e.accountId=="stock")"股"else"手"} × ${amount(e.price)} · 费用 ${amount(e.fees)}");Text(strategyLabel(state,e.strategyId));if(e.effect!="open")NetText(completeTotal(state.matches.filter{it.closeExecutionId==e.id}.map{it.net}))}}}
-    item{TextButton(onArchive,modifier=Modifier.heightIn(min=48.dp).testTag("legacy-archive")){Text("兼容历史档案（只读，不计入新统计）",style=MaterialTheme.typography.bodySmall)}}
-}}}
+/** Filters an already ordered view; keeps the original facts and their relative order. */
+internal fun filterTradeHistory(executions:List<LedgerExecution>,query:String,market:String="all"):List<LedgerExecution> {
+    val text=query.trim()
+    return executions.filter{e->(market=="all" || e.accountId==market) &&
+        (text.isEmpty() || e.code.contains(text,ignoreCase=true) || e.name.contains(text,ignoreCase=true))}
+}
+
+@Composable fun V200Trades(state:LedgerSnapshot,onCycle:(String)->Unit,onExecution:(String)->Unit,onArchive:()->Unit,savedId:String?=null) {
+    var tab by rememberSaveable{mutableStateOf("positions")}
+    var presentedSave by rememberSaveable{mutableStateOf<String?>(null)}
+    var historyQuery by rememberSaveable{mutableStateOf("")}
+    var historyMarket by rememberSaveable{mutableStateOf("all")}
+    LaunchedEffect(savedId){if(savedId!=null && savedId!=presentedSave){
+        presentedSave=savedId;tab="history";historyQuery="";historyMarket="all"
+    }}
+    val history=if(tab=="history") {
+        val ordered=remember(state.executions){MatchingEngine.ordered(state.executions).reversed()}
+        remember(ordered,historyQuery,historyMarket){filterTradeHistory(ordered,historyQuery,historyMarket)}
+    } else emptyList()
+    Column(Modifier.fillMaxSize()) {
+        Box(Modifier.padding(horizontal=12.dp,vertical=8.dp)) {
+            SegmentedChoices(tab,listOf("positions" to "当前持仓","history" to "历史成交"),{tab=it},"trade-mode-")
+        }
+        LazyColumn(Modifier.weight(1f).then(if(tab=="history")Modifier.imePadding()else Modifier).testTag("v2-trades"),contentPadding=PaddingValues(12.dp),verticalArrangement=Arrangement.spacedBy(8.dp)) {
+            if(tab=="positions") {
+                val current=state.cycles.filter{decimal(it.remaining)>BigDecimal.ZERO}
+                if(current.isEmpty())item{EmptyLedger("暂无持仓，请在右上角记录真实买入或开仓")}
+                items(current,key={it.id}){PositionCard(state,it,onCycle)}
+            } else {
+                item(key="history-search") {
+                    EntryField("搜索代码或名称",historyQuery,{historyQuery=it},"history-search",trailing={
+                        if(historyQuery.isNotEmpty())TextButton({historyQuery=""},Modifier.heightIn(min=48.dp).testTag("history-search-clear")){Text("清除")}
+                    })
+                }
+                item(key="history-market") {
+                    SegmentedChoices(historyMarket,listOf("all" to "全部","stock" to "A股","futures" to "国内期货"),{historyMarket=it},"history-market-")
+                }
+                if(state.executions.isEmpty())item{EmptyLedger("尚未记录实际成交")}
+                else if(history.isEmpty())item{EmptyLedger("没有匹配的历史成交，请清除搜索或选择“全部”市场")}
+                items(history,key={it.id}){e->LedgerPanel("${e.name} ${e.code}",Modifier.clickable{onExecution(e.id)}.testTag("execution-${e.id}")){
+                    Text("${LocalDate.ofEpochDay(e.date)} %02d:%02d · ${actionLabel(e)}".format(e.minute/60,e.minute%60))
+                    Text("${e.quantity}${if(e.accountId=="stock")"股"else"手"} × ${amount(e.price)} · 费用 ${amount(e.fees)}")
+                    Text(strategyLabel(state,e.strategyId))
+                    if(e.effect!="open")NetText(completeTotal(state.matches.filter{it.closeExecutionId==e.id}.map{it.net}))
+                }}
+            }
+            item{TextButton(onArchive,modifier=Modifier.heightIn(min=48.dp).testTag("legacy-archive")){Text("兼容历史档案（只读，不计入新统计）",style=MaterialTheme.typography.bodySmall)}}
+        }
+    }
+}
 @Composable fun PositionDetails(state:LedgerSnapshot,id:String){val c=state.cycles.firstOrNull{it.id==id}?:return;val ids=state.lots.filter{it.cycleId==id}.map{it.executionId}.toSet()+state.matches.filter{it.cycleId==id}.map{it.closeExecutionId};val executions=MatchingEngine.ordered(state.executions.filter{it.id in ids})
     LazyColumn(Modifier.fillMaxSize().testTag("v2-position-details"),contentPadding=PaddingValues(12.dp),verticalArrangement=Arrangement.spacedBy(8.dp)){item{PositionCard(state,c,{})};item{LedgerPanel("持仓周期事实"){Text("${state.accounts.first{it.id==c.accountId}.name} · ${directionLabel(c)}");Text("开仓 ${LocalDate.ofEpochDay(c.firstDay)} · 平仓 ${c.closedDay?.let{LocalDate.ofEpochDay(it).toString()}?:"仍持有"}");Text("已记录费用 ${amount(c.fees)}");Text("止盈 ${c.takeProfit?.let(::amount)?:"未设置"} · 止损 ${c.stopLoss?.let(::amount)?:"未设置"}",style=MaterialTheme.typography.bodyMedium)}};items(executions,key={it.id}){e->LedgerPanel(actionLabel(e)){Text("${LocalDate.ofEpochDay(e.date)} %02d:%02d".format(e.minute/60,e.minute%60));if(e.accountId=="futures")Text("交易日 ${LocalDate.ofEpochDay(e.tradingDay)}");Text("价格 ${amount(e.price)} · 数量 ${e.quantity} · 已记录费用 ${amount(e.fees)}");Text("策略 ${strategyLabel(state,e.strategyId)}");e.planId?.let{p->Text("人工关联计划 ${state.plans.firstOrNull{it.id==p}?.let{LocalDate.ofEpochDay(it.day).toString()}?:p}")};state.matches.filter{it.closeExecutionId==e.id && it.cycleId==id}.forEach{m->Text("FIFO 匹配 ${m.openExecutionId}：${m.quantity} · 净盈亏 ${amount(m.net)}")}}}}
 }
