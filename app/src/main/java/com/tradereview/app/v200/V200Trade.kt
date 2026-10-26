@@ -43,7 +43,7 @@ import java.math.BigDecimal
 private data class EntryEstimateResult(val request:LedgerExecution,val executions:List<LedgerExecution>,val rules:List<LedgerContractRule>,val estimate:AutomaticEntry.Estimate)
 
 @OptIn(ExperimentalLayoutApi::class)
-@Composable fun ExecutionEditor(model:V200ViewModel,state:LedgerSnapshot,value:LedgerExecution?,onRisk:()->Unit){
+@Composable fun ExecutionEditor(model:V200ViewModel,state:LedgerSnapshot,value:LedgerExecution?,onRisk:()->Unit,onRules:(String)->Unit={}){
     val key=value?.id?:"new"
     val draft=remember(key){model.restoredDraft().takeIf{it["mode"]==key}.orEmpty()}
     var stamp by remember(key){mutableStateOf(model.entryNow())}
@@ -96,6 +96,7 @@ private data class EntryEstimateResult(val request:LedgerExecution,val execution
                     TextButton({picker=true},Modifier.heightIn(min=48.dp).testTag("entry-instrument-picker")){Text("常用",style=MaterialTheme.typography.labelLarge)}
                 })
                 Text(displayName.ifBlank{if(account=="stock")"输入代码，或选择常用股票"else"输入合约代码，如 rb2701"},Modifier.padding(start=4.dp),style=MaterialTheme.typography.bodyMedium,color=MaterialTheme.colorScheme.onSurfaceVariant)
+                if(account=="futures")TextButton({model.draft(fields);onRules(candidate.code)},enabled=!busy,modifier=Modifier.heightIn(min=48.dp).testTag("entry-contract-rules")){Text("合约参数")}
                 if(account=="stock")SegmentedChoices(side,listOf("buy" to "买入","sell" to "卖出"),{side=it},"execution-side-")
                 else SegmentedChoices("$side-${if(effect=="open")"open"else"close"}",listOf("buy-open" to "买开","sell-open" to "卖开","sell-close" to "卖平","buy-close" to "买平"),{val current="$side-${if(effect=="open")"open"else"close"}";if(it!=current){side=it.substringBefore('-');effect=it.substringAfter('-')}},"execution-action-")
                 Row(horizontalArrangement=Arrangement.spacedBy(8.dp)){
