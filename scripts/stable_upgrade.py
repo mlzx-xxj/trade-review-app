@@ -13,6 +13,7 @@ from release_version import VERSION_NAME, VERSION_CODE
 from signing_identity import PIN, upgrade_policy
 
 APP = "com.tradereview.app"
+DOCUMENT_PACKAGES = ("com.android.documentsui", "com.google.android.documentsui")
 STABLE_TAG = "v2.0.0"
 STABLE_ASSET = "TradeReview-v2.0-fixed-candidate.1.apk"
 STABLE_SHA = "d157327870baa1dcd6d777de8ffcc95b1c504020a7c450ad615c7f56a6f92b5d"
@@ -34,19 +35,25 @@ def inside(box, area):
 
 
 def document_target(tree, filename):
-    directory = next(n for n in tree.iter("node") if n.get("resource-id", "").endswith(":id/dir_list") and n.get("package", "").endswith(".documentsui"))
+    directory = next((n for n in tree.iter("node") if n.get("package") in DOCUMENT_PACKAGES and n.get("resource-id") == n.get("package") + ":id/dir_list"), None)
+    require(directory is not None, "Actual system document directory required")
+    package = directory.get("package")
     left, top, right, bottom = bounds(directory)
     # Edge-to-edge DocumentsUI may report content behind the navigation bar.
     # Require the whole file row/tile in the interior, not just a clipped title.
     margin = max(1, (bottom - top) // 10)
     area = (left, top + margin, right, bottom - margin)
-    title = next((n for n in directory.iter("node") if n.get("resource-id") == "android:id/title" and n.get("text") == filename and n.get("enabled") == "true"), None)
+    title = next((n for n in directory.iter("node") if n.get("package") == package and n.get("resource-id") == "android:id/title" and n.get("text") == filename and n.get("enabled") == "true"), None)
     if title is None: return None, None, area
     parents = {child: parent for parent in directory.iter() for child in parent}
     row = title
-    while row is not None and not row.get("resource-id", "").endswith(":id/item_root"):
+    while row is not None and row.get("resource-id") != package + ":id/item_root":
         row = parents.get(row)
-    require(row is not None and row.get("clickable") == "true" and row.get("enabled") == "true", "Actual selectable document row required")
+    # API29's RecyclerView handles activation for focusable grid/list items;
+    # item_root need not advertise clickable. Still require the real enabled
+    # system item containing the exact filename; selection checks its full bounds.
+    require(row is not None and row.get("package") == package and row.get("enabled") == "true"
+            and (row.get("clickable") == "true" or row.get("focusable") == "true"), "Actual selectable document row required")
     return title, row, area
 
 

@@ -14,10 +14,31 @@ import stable_upgrade as upgrade
 def picker(row="[48,911][376,1280]", title="[148,1255][273,1280]", package="com.android.documentsui"):
     # Exact failing API35 geometry: run39337950406 attempt3 operations[182].
     return ET.fromstring(f'''<hierarchy><node package="{package}" resource-id="{package}:id/dir_list" bounds="[0,48][768,1280]">
-      <node resource-id="{package}:id/item_root" clickable="true" enabled="true" bounds="{row}">
-        <node text="before.zip" resource-id="android:id/title" enabled="true" bounds="{title}"/>
+      <node package="{package}" resource-id="{package}:id/item_root" clickable="true" enabled="true" bounds="{row}">
+        <node package="{package}" text="before.zip" resource-id="android:id/title" enabled="true" bounds="{title}"/>
         <node content-desc="Quick preview: before.zip" clickable="true" bounds="[48,911][376,1239]"/>
       </node></node></hierarchy>''')
+
+
+def api29_grid():
+    # Reduced from run41442402292, signed-install-failure-api29-attempt1,
+    # same-signer-upgrade/restore-failure.xml. Preserve the real selection flags,
+    # title/nameplate ancestry and geometry; the filename is not the preview icon.
+    return ET.fromstring('''<hierarchy>
+      <node package="com.android.documentsui" resource-id="com.android.documentsui:id/dir_list"
+            class="androidx.recyclerview.widget.RecyclerView" bounds="[0,48][768,1184]">
+        <node package="com.android.documentsui" resource-id="com.android.documentsui:id/item_root"
+              class="android.widget.FrameLayout" enabled="true" focusable="true" clickable="false" bounds="[44,300][380,739]">
+          <node class="com.google.android.material.card.MaterialCardView" bounds="[48,304][376,735]">
+            <node package="com.android.documentsui" resource-id="com.android.documentsui:id/nameplate" bounds="[48,632][376,735]">
+              <node class="android.widget.RelativeLayout" bounds="[148,632][376,735]">
+                <node package="com.android.documentsui" resource-id="android:id/title" text="upgrade-fixture.zip"
+                      enabled="true" clickable="false" focusable="false" bounds="[148,648][352,686]"/>
+              </node>
+            </node>
+          </node>
+        </node>
+      </node></hierarchy>''')
 
 
 class PickerVisibilityTest(unittest.TestCase):
@@ -61,6 +82,42 @@ class PickerVisibilityTest(unittest.TestCase):
         self.device.tree = Mock(return_value=picker("[0,600][768,800]", "[148,712][273,750]", "com.google.android.documentsui"))
         self.device.select_document("before.zip")
         self.device.adb.assert_called_once_with("shell", "input", "tap", "210", "731")
+
+    def test_real_api29_focusable_grid_item_selects_its_exact_filename(self):
+        self.device.tree = Mock(return_value=api29_grid())
+        self.device.select_document("upgrade-fixture.zip")
+        self.device.adb.assert_called_once_with("shell", "input", "tap", "250", "667")
+
+    def test_focusable_grid_item_still_requires_scroll_and_fresh_visible_coordinates(self):
+        clipped = api29_grid()
+        next(n for n in clipped.iter("node") if n.get("resource-id", "").endswith(":id/item_root")).set("bounds", "[44,900][380,1184]")
+        next(n for n in clipped.iter("node") if n.get("resource-id") == "android:id/title").set("bounds", "[148,1146][352,1184]")
+        self.device.tree = Mock(side_effect=[clipped, api29_grid()])
+        self.device.select_document("upgrade-fixture.zip")
+        self.assertEqual("swipe", self.device.adb.call_args_list[0].args[2])
+        self.assertEqual(("shell", "input", "tap", "250", "667"), self.device.adb.call_args_list[1].args)
+        self.assertEqual(2, self.device.tree.call_count)
+
+    def test_focusable_fallback_rejects_disabled_foreign_or_nonselectable_items(self):
+        for field, value in (("enabled", "false"), ("focusable", "false"),
+                             ("package", "example.documentsui"), ("resource-id", "com.android.documentsui:id/not_a_document")):
+            tree = api29_grid()
+            row = next(n for n in tree.iter("node") if n.get("resource-id", "").endswith(":id/item_root"))
+            row.set(field, value)
+            with self.subTest(field=field), self.assertRaisesRegex(ValueError, "selectable document row"):
+                upgrade.document_target(tree, "upgrade-fixture.zip")
+
+    def test_exact_system_package_and_filename_are_still_required(self):
+        tree = api29_grid()
+        self.assertIsNone(upgrade.document_target(tree, "upgrade-fixture.zip.bak")[0])
+        title = next(n for n in tree.iter("node") if n.get("resource-id") == "android:id/title")
+        title.set("package", "example.documentsui")
+        self.assertIsNone(upgrade.document_target(tree, "upgrade-fixture.zip")[0])
+        directory = next(n for n in tree.iter("node") if n.get("resource-id", "").endswith(":id/dir_list"))
+        directory.set("package", "example.documentsui")
+        directory.set("resource-id", "example.documentsui:id/dir_list")
+        with self.assertRaisesRegex(ValueError, "system document directory"):
+            upgrade.document_target(tree, "upgrade-fixture.zip")
 
     def test_picker_exit_without_preview_cannot_reach_restore_confirmation(self):
         self.device.backup_page = Mock(); self.device.downloads = Mock()
