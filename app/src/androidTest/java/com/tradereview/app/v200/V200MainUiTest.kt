@@ -119,9 +119,18 @@ class V200MainUiTest {
         compose.onNodeWithTag("save-contract-rule").assertIsDisplayed().assertIsEnabled().performClick()
         wait{!model.busy.value && model.state.value.ledger!!.rules.size==1}
         val id=model.state.value.ledger!!.rules.single().id
+        fun ruleNode(text:String):SemanticsNodeInteraction {
+            val card=hasTestTag("contract-rule-$id")
+            val list=compose.onNodeWithTag("v2-contract-rules")
+            // LazyColumn children may not exist until the actual card is composed.
+            list.performScrollToNode(card)
+            val field=hasText(text) and hasAnyAncestor(card)
+            list.performScrollToNode(field)
+            return compose.onNode(field).assertIsDisplayed()
+        }
         field("contract-rule-search","铁矿")
-        compose.onNodeWithText("i2701 · 铁矿石参数").performScrollTo().assertIsDisplayed()
-        compose.onNodeWithText("开仓：2 元/手").performScrollTo().assertIsDisplayed()
+        ruleNode("i2701 · 铁矿石参数")
+        ruleNode("开仓：2 元/手")
         resume()
         wait{compose.onAllNodesWithText("预计手续费：¥4.01").fetchSemanticsNodes().isNotEmpty()}
         compose.onNodeWithTag("entry-estimated-margin").assertTextEquals("预计新增保证金占用：¥16,200.00")
@@ -131,12 +140,12 @@ class V200MainUiTest {
         compose.onNodeWithTag("execution-stop").performScrollTo().assertTextContains("820")
         assertEquals(history,runBlocking{model.repository.read()}.copy(rules=history.rules))
         rules()
-        compose.onNodeWithText("编辑，不改写历史").performScrollTo().performClick()
+        ruleNode("编辑，不改写历史").assertIsEnabled().performClick()
         field("rule-open-fee","")
         compose.onNodeWithTag("save-contract-rule").assertIsDisplayed().assertIsEnabled().performClick()
         wait{!model.busy.value && model.state.value.ledger!!.rules.single().openFee==null}
         assertEquals(id,model.state.value.ledger!!.rules.single().id)
-        compose.onNodeWithText("开仓：未设置（待估算）").performScrollTo().assertIsDisplayed()
+        ruleNode("开仓：未设置（待估算）")
         resume()
         wait{compose.onAllNodesWithTag("entry-pending-note").fetchSemanticsNodes().isNotEmpty()}
         compose.onNodeWithTag("entry-estimated-fee").assertTextEquals("预计手续费：待估算")

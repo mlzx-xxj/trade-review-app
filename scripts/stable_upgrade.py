@@ -18,7 +18,7 @@ STABLE_ASSET = "TradeReview-v2.0-fixed-candidate.1.apk"
 STABLE_SHA = "d157327870baa1dcd6d777de8ffcc95b1c504020a7c450ad615c7f56a6f92b5d"
 FIXTURE = Path(__file__).with_name("fixtures") / "v210-upgrade.zip"
 FIXTURE_SHA = "8494964bb73c6539b0e079ebbf904f313021ff7622f928682adc39a4921a45ac"
-PASS = "passed-stable-v2.0.0-to-v2.1.0"
+PASS = f"passed-stable-v2.0.0-to-v{VERSION_NAME}"
 
 
 def bounds(node):
