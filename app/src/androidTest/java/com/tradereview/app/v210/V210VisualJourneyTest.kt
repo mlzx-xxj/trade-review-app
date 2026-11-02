@@ -29,6 +29,7 @@ import java.math.BigDecimal
 import java.time.Clock
 import java.time.LocalDate
 import java.time.ZoneOffset
+import java.time.temporal.ChronoUnit
 
 /** Same five-trade MainActivity comparison as V2.0, then a two-trade direction/density fixture.
  * Only the empty synthetic ledger and device clock are injected. No execution inserts.
@@ -65,6 +66,22 @@ class V210VisualJourneyTest {
     private fun facts()=runBlocking{model.repository.read()}
     private fun waitFor(predicate:()->Boolean)=ui.waitUntil(45000){predicate()}
     private fun page(index:Int){ui.onNodeWithTag("v2-main-page-$index").performClick()}
+    private fun selectStatisticsMonth(day:LocalDate) {
+        ui.onNodeWithTag("v2-statistics").performScrollToIndex(0)
+        select("statistics-period-month")
+        select("statistics-market-all")
+        val range=Regex("""\d{4}-\d{2}-\d{2} — \d{4}-\d{2}-\d{2}""")
+        val caption=ui.onNode(SemanticsMatcher("statistics date range"){node->
+            node.config.getOrElse(SemanticsProperties.Text){emptyList()}.any{range.matches(it.text)}
+        } and hasAnyAncestor(hasTestTag("v2-statistics")))
+        val shown=LocalDate.parse(caption.fetchSemanticsNode().config[SemanticsProperties.Text].single().text.substringBefore(" — "))
+        // Use the saved close's month instead of assuming the device is still in October 2026.
+        val months=ChronoUnit.MONTHS.between(shown,day.withDayOfMonth(1)).toInt()
+        repeat(kotlin.math.abs(months)){tap(if(months<0)"statistics-previous"else"statistics-next")}
+        val period=LedgerPeriod.month(day)
+        caption.assertTextEquals("${LocalDate.ofEpochDay(period.start)} — ${LocalDate.ofEpochDay(period.end)}")
+        waitFor{ui.onAllNodesWithTag("statistics-results-month-all").fetchSemanticsNodes().isNotEmpty()}
+    }
     private fun settledViewport(){
         var previous:androidx.compose.ui.geometry.Rect?=null
         var stableSince=android.os.SystemClock.elapsedRealtime()
@@ -209,7 +226,9 @@ class V210VisualJourneyTest {
         ui.onNodeWithTag("execution-quantity").performImeAction();capture("pending-filled")
         val pending=save("i2701",null,"2");position(pending,"pending-position")
         assertNull(facts().cycles.single{it.code=="i2701"}.referenceMargin)
-        page(3);ui.onNodeWithTag("statistics-period-month").performClick();waitFor{ui.onAllNodesWithTag("period-realized-net").fetchSemanticsNodes().isNotEmpty()};capture("statistics")
+        page(3);selectStatisticsMonth(LocalDate.ofEpochDay(close.date))
+        ui.onNodeWithTag("v2-statistics").performScrollToNode(hasTestTag("period-realized-net"))
+        ui.onNodeWithTag("period-realized-net").assertIsDisplayed();capture("statistics")
         val density=directionDensity()
         val conf=app.resources.configuration
         if(profile!="suite"){

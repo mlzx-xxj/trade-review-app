@@ -7,6 +7,8 @@ import android.accessibilityservice.AccessibilityServiceInfo
 import android.view.accessibility.AccessibilityWindowInfo
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.room.withTransaction
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -122,11 +124,24 @@ class V200MainUiTest {
         fun ruleNode(text:String):SemanticsNodeInteraction {
             val card=hasTestTag("contract-rule-$id")
             val list=compose.onNodeWithTag("v2-contract-rules")
+            compose.runOnIdle {
+                (compose.activity.getSystemService(android.content.Context.INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager)
+                    .hideSoftInputFromWindow(compose.activity.window.decorView.windowToken,0)
+            }
+            var previous:androidx.compose.ui.geometry.Rect?=null
+            var stableSince=android.os.SystemClock.elapsedRealtime()
+            wait {
+                val hidden=compose.runOnIdle{ViewCompat.getRootWindowInsets(compose.activity.window.decorView)?.isVisible(WindowInsetsCompat.Type.ime())==false}
+                val bounds=list.fetchSemanticsNode().boundsInRoot
+                val now=android.os.SystemClock.elapsedRealtime()
+                if(bounds!=previous){previous=bounds;stableSince=now}
+                hidden && now-stableSince>=150
+            }
             // LazyColumn children may not exist until the actual card is composed.
             list.performScrollToNode(card)
             val field=hasText(text) and hasAnyAncestor(card)
-            list.performScrollToNode(field)
-            return compose.onNode(field).assertIsDisplayed()
+            // Scroll the composed child itself; locating its lazy item only exposes the card's top.
+            return compose.onNode(field).performScrollTo().assertIsDisplayed()
         }
         field("contract-rule-search","铁矿")
         ruleNode("i2701 · 铁矿石参数")
