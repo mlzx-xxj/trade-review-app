@@ -40,6 +40,7 @@ import java.math.BigDecimal
 import java.time.Clock
 import java.time.LocalDate
 import java.time.ZoneOffset
+import java.time.temporal.ChronoUnit
 import java.util.regex.Pattern
 
 /** Every financial/configuration write and SAF operation uses the production UI. */
@@ -473,6 +474,22 @@ class V210ConsistencyJourneyTest : ConsistencyUiProbe() {
             "overflowWidth" to layout.didOverflowWidth, "overflowHeight" to layout.didOverflowHeight,
             "argb" to String.format("#%08X", layout.layoutInput.style.color.toArgb()), "visible" to true)
     }
+    private fun selectStatisticsMonth(day:LocalDate) {
+        ui.onNodeWithTag("v2-statistics").performScrollToIndex(0)
+        select("statistics-period-month")
+        select("statistics-market-all")
+        val range=Regex("""\d{4}-\d{2}-\d{2} — \d{4}-\d{2}-\d{2}""")
+        val caption=ui.onNode(SemanticsMatcher("statistics date range"){node->
+            node.config.getOrElse(SemanticsProperties.Text){emptyList()}.any{range.matches(it.text)}
+        } and hasAnyAncestor(hasTestTag("v2-statistics")))
+        val shown=LocalDate.parse(caption.fetchSemanticsNode().config[SemanticsProperties.Text].single().text.substringBefore(" — "))
+        // Read the displayed month: saved offsets and future month/year rollovers are valid.
+        val months=ChronoUnit.MONTHS.between(shown,day.withDayOfMonth(1)).toInt()
+        repeat(kotlin.math.abs(months)){tap(if(months<0)"statistics-previous"else"statistics-next")}
+        val period=LedgerPeriod.month(day)
+        caption.assertTextEquals("${LocalDate.ofEpochDay(period.start)} — ${LocalDate.ofEpochDay(period.end)}")
+        waitFor{ui.onAllNodesWithTag("statistics-results-month-all").fetchSemanticsNodes().isNotEmpty()}
+    }
     private fun financialUi() {
         settled()
         page(4)
@@ -490,9 +507,7 @@ class V210ConsistencyJourneyTest : ConsistencyUiProbe() {
         ui.onNodeWithTag("v2-accounts").performScrollToIndex(0)
         snap("unknown-futures-account")
         page(3)
-        tap("statistics-period-month")
-        select("statistics-market-all")
-        waitFor { ui.onAllNodesWithTag("statistics-results-month-all").fetchSemanticsNodes().isNotEmpty() }
+        selectStatisticsMonth(anchor)
         money("period-realized-net", "￥2487.65", "v2-statistics")
         snap("known-statistics")
     }

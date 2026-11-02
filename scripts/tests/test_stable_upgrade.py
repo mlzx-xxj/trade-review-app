@@ -16,7 +16,7 @@ import zipfile
 SCRIPTS = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(SCRIPTS))
 import stable_upgrade as upgrade
-from release_version import VERSION_CODE, VERSION_NAME
+from release_version import VERSION_CODE, VERSION_NAME, RC_VERSION_NAME
 
 
 def identities():
@@ -75,6 +75,9 @@ class UpgradeGateTest(unittest.TestCase):
         self.assertEqual([str(VERSION_CODE)], re.findall(r"versionCode = (\d+)", gradle))
         self.assertEqual([VERSION_NAME], re.findall(r'versionName = "([^"]+)"', gradle))
         self.assertIn('applicationId = "com.tradereview.app"', gradle)
+        suffix = re.findall(r'versionNameSuffix = "([^"]+)"', gradle)
+        self.assertEqual([RC_VERSION_NAME], [VERSION_NAME + s for s in suffix])
+        self.assertIn('applicationIdSuffix = ".rc.v200"', gradle)
 
     def test_only_pinned_nondebuggable_stable_to_increasing_same_signer_formal_is_eligible(self):
         old, new = identities(); upgrade.eligible(old, new)
@@ -82,7 +85,8 @@ class UpgradeGateTest(unittest.TestCase):
                                  (0, "versionCode", 21), (0, "debuggable", True),
                                  (1, "certificateSha256", "b"*64), (0, "certificateSha256", "b"*64),
                                  (1, "applicationId", upgrade.APP + ".rc.v200"),
-                                 (1, "versionCode", 22), (1, "versionName", "2.0.0"), (1, "debuggable", True)]:
+                                 (1, "versionCode", 22), (1, "versionCode", 23),
+                                 (1, "versionName", "2.0.0"), (1, "versionName", "2.1.0"), (1, "debuggable", True)]:
             pair = [dict(old), dict(new)]; pair[side][key] = value
             with self.subTest(key=key, side=side), self.assertRaises(ValueError): upgrade.eligible(*pair)
 

@@ -1,10 +1,10 @@
-# V2.1 UI/UX 开发分支（未发布）
+# V2.2.0 发布准备（尚未发布 Stable）
 
-当前稳定基线是不可变的 [v2.0.0](https://github.com/mlzx-xxj/trade-review-app/releases/tag/v2.0.0)。本分支只重构成交录入与持仓的视觉层级，保留账本、数据库、备份、版本和签名身份。
+当前稳定基线是不可变的 [v2.0.0](https://github.com/mlzx-xxj/trade-review-app/releases/tag/v2.0.0)。PR #24 的合约参数维护/录入入口与 PR #25 的历史成交搜索/市场筛选已合并；本分支仅准备 2.2.0 / code24，正式包名与 V2 永久证书保持不变。
 
-[设计规范](docs/V210-DESIGN.md) · [真实模拟器体验与对照](docs/V210-UI-UX-EXPERIENCE.md) · [待审核 PR #16](https://github.com/mlzx-xxj/trade-review-app/pull/16)
+[本轮发布检查与未执行项](docs/V220-RELEASE-READINESS.md) · [设计规范](docs/V210-DESIGN.md) · [V2.1 体验记录](docs/V210-UI-UX-EXPERIENCE.md)
 
-本轮不发布 V2.1，不修改 V2.0 标签或已有 APK；真正生成下一安装候选时还需要递增 versionCode，并使用现有可信 main 签名流程。以下保留历史交付记录。
+独立 RC 为 com.tradereview.app.rc.v200 / 2.2.0-rc.1 / code24，使用原有临时测试签名机制。正式签名与覆盖升级只在既有受保护 main 流程执行；PR 不接触密钥，不把 RC 当作升级包，不自动发布 Stable。以下保留历史交付记录，历史版本数字不代表当前构建身份。
 
 # 交易复盘 V2.0 候选版
 
