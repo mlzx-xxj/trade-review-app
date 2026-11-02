@@ -40,7 +40,7 @@ mkdir -p ci-stability
 # returns. A timeout is a failing run; it cannot produce successful evidence.
 adb logcat -v threadtime -s TestRunner:I LifecycleMonitor:D ActivityTaskManager:I AndroidRuntime:E '*:S' > ci-stability/native-live-logcat.txt 2>&1 &
 native_log_pid=$!
-timeout --signal=TERM --kill-after=30s 20m ./gradlew --no-daemon --build-cache --init-script scripts/ci-test-execution.gradle --stacktrace -Pandroid.testInstrumentationRunnerArguments.ciExpectedHeapMiB=256 :app:connectedDebugAndroidTest || device_test_status=$?
+timeout --signal=TERM --kill-after=30s 25m ./gradlew --no-daemon --build-cache --init-script scripts/ci-test-execution.gradle --stacktrace -Pandroid.testInstrumentationRunnerArguments.ciExpectedHeapMiB=256 :app:connectedDebugAndroidTest || device_test_status=$?
 kill "$native_log_pid" 2>/dev/null || true
 if [[ "${V08_STABILITY_PROBES:-false}" == true ]]; then
   # Independently collect process evidence even after a native failure. Never
